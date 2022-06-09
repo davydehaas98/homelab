@@ -1,4 +1,4 @@
 adafruit-circuitpython-am2320==1.2.11
-adafruit-circuitpython-dht==3.7.2
+adafruit-circuitpython-dht==3.7.4
 adafruit_bme280==1.0.1
 RPi.GPIO==0.7.1
