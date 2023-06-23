@@ -1,7 +1,9 @@
+# Set environmentals and versions
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 CONTAINERD_VERSION=1.7.2
 RUNC_VERSION=1.1.7
 CNI_VERSION=1.3.0
+KUBERNETES_VERSION=1.27.3
 
 # Install general dependencies
 sudo apt-get update
@@ -10,15 +12,18 @@ sudo apt-get install -y apt-transport-https ca-certificates curl git open-iscsi
 # Install containerd
 curl -fsSLo containerd-config.toml \
   https://gist.githubusercontent.com/oradwell/31ef858de3ca43addef68ff971f459c2/raw/5099df007eb717a11825c3890a0517892fa12dbf/containerd-config.toml
+
 sudo mkdir /etc/containerd
 sudo mv containerd-config.toml /etc/containerd/config.toml
 
 curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
-https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+  https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+
 sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo curl -fsSLo /etc/systemd/system/containerd.service \
   https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+
 sudo systemctl daemon-reload
 sudo systemctl enable --now containerd
 
@@ -30,6 +35,7 @@ sudo install -m 755 runc.${PROCESSOR_ARCH} /usr/local/sbin/runc
 # Install CNI network plugins
 curl -fsSLo cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz \
   https://github.com/containernetworking/plugins/releases/download/v${CNI_VERSION}/cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
+
 sudo mkdir -p /opt/cni/bin
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
@@ -59,7 +65,7 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
   | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet=${KUBERNETES_VERSION}-00 kubeadm=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # Ensure swap is disabled
@@ -75,7 +81,7 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-# Untaint node
+# Untaint node to allow master node to accept pods
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
