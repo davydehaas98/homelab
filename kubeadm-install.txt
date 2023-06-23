@@ -1,5 +1,5 @@
-PROCESSOR_ARCH=amd64
-CONTAINERD_VERSION=1.7.1
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+CONTAINERD_VERSION=1.7.2
 RUNC_VERSION=1.1.7
 CNI_VERSION=1.3.0
 
@@ -53,7 +53,7 @@ sudo sysctl --system
 
 # Install kubeadm, kubelet & kubectl
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
-  https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  https://dl.k8s.io/apt/doc/apt-key.gpg
 
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
   | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -67,7 +67,7 @@ swapon --show
 sudo swapoff -a
 sudo sed -i -e '/swap/d' /etc/fstab
 
-# Create cluster using kubeadm
+# Create cluster using kubeadm (The number of available CPUs has to be 2 or more.)
 sudo kubeadm init --cri-socket=unix:///var/run/containerd/containerd.sock --pod-network-cidr=10.244.0.0/16
 
 # Configure kubectl
