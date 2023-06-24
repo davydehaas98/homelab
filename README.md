@@ -59,7 +59,7 @@ sudo mkdir -p /opt/cni/bin
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ```
 
-## Enable overlay and br_netfilter kernal modules, forward IPv4 and let iptables see bridged network traffic
+## Enable overlay and br_netfilter kernal modules, let iptables see bridged network traffic and enable IPv4 ip_forward
 ```
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
@@ -124,10 +124,17 @@ sudo mv linux-${PROCESSOR_ARCH}/helm /usr/local/bin/
 sudo rm linux-${PROCESSOR_ARCH} -r
 ```
 
-## Install CNI plugin (Flannel)
+## Install CNI plugin (Cilium)
 ```
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+helm repo add cilium https://helm.cilium.io/
+helm repo update
+helm install cilium cilium/cilium --namespace kube-system --version 1.13.4
 ```
+
+## Install Argo CD
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 5.36.7
 
 ## Add CSI driver
 ```
@@ -138,7 +145,7 @@ helm install longhorn longhorn/longhorn --namespace longhorn-system --create-nam
 
 ## Install Kubernetes Dashboard
 ```
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
 helm repo update
 helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace --version 6.0.8
 ```
@@ -166,7 +173,7 @@ helm install cert-manager jetstack/cert-manager --namespace cert-manager --creat
 
 ## Install Metrics Server
 ```
-helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server
 helm repo update
 helm install metrics-server metrics-server/metrics-server --namespace metrics-server --create-namespace --version 3.10.0
 ```
