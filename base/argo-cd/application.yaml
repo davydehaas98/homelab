@@ -13,7 +13,7 @@ spec:
     path: base
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: argocd
   revisionHistoryLimit: 2
   syncPolicy:
     automated:
