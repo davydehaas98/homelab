@@ -6,19 +6,15 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: Autosync is always enabled
-
+  description: Autosync is enabled
   sourceRepos:
     - '*'
-
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
-
   destinations:
     - namespace: '*'
       server: '*'
-
   syncWindows:
     - kind: allow
       schedule: '0 0 * * *'

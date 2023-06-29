@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sealed-secrets
+  name: longhorn
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,21 +10,21 @@ spec:
   project: no-sync
   sources:
     - repoURL: https://github.com/davydehaas98/gitops
-      targetRevision: HEAD
+      targetRevision: main
       ref: repo
-    - chart: sealed-secrets
-      repoURL: https://bitnami-labs.github.io/sealed-secrets
-      targetRevision: 2.10.0
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io
+      targetRevision: 1.4.2
       helm:
         valueFiles:
-          - $repo/base/sealed-secrets/values.yaml
+          - $repo/base/longhorn/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/sealed-secrets
+      path: base/longhorn
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: sealed-secrets
+    namespace: longhorn-system
 
   revisionHistoryLimit: 2
   syncPolicy:
