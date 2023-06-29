@@ -79,7 +79,7 @@ sudo sysctl --system
 
 ## Install kubeadm, kubelet & kubectl
 ```
-curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
   https://dl.k8s.io/apt/doc/apt-key.gpg
 
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
