@@ -35,7 +35,7 @@ curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
 
 sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
-curl -fsSLo /etc/systemd/system/containerd.service \
+sudo curl -fsSLo /etc/systemd/system/containerd.service \
   https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 
 sudo systemctl daemon-reload
