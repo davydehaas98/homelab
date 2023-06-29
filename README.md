@@ -132,7 +132,7 @@ helm install cilium cilium/cilium --namespace kube-system --version 1.13.4
 ```
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
-helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 5.36.7
+helm install argo-cd argo/argo-cd --namespace argocd --create-namespace --version 5.36.7
 ```
 
 ## Add CSI driver
