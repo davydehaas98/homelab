@@ -17,9 +17,6 @@ sudo apt-get install -y apt-transport-https ca-certificates curl git open-iscsi
 
 ## Install containerd
 ```
-curl -fsSLo containerd-config.toml \
-  https://gist.githubusercontent.com/oradwell/31ef858de3ca43addef68ff971f459c2/raw/5099df007eb717a11825c3890a0517892fa12dbf/containerd-config.toml
-
 sudo mkdir /etc/containerd
 cat <<EOF | sudo tee /etc/containerd/config.toml
 version = 2
