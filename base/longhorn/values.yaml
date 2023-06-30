@@ -1,0 +1,42 @@
+persistence:
+  defaultClass: true
+  defaultFsType: ext4
+  defaultClassReplicaCount: 2
+  reclaimPolicy: Retain
+  defaultDataLocality: best-effort
+  defaultReplicaAutoBalance: best-effort 
+
+csi:
+  attacherReplicaCount: 1
+  provisionerReplicaCount: 1
+  resizerReplicaCount: 1
+  snapshotterReplicaCount: 1
+
+longhornUI:
+  replicas: 1
+
+longhornConversionWebhook:
+  replicas: 1
+
+longhornAdmissionWebhook:
+  replicas: 1
+
+longhornRecoveryBackend:
+  replicas: 1
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+ingress:
+  enabled: true
+  host: longhorn.davydehaas.dev
+  tls: true
+  tlsSecret: longhorn-tls
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
+    cert-manager.io/cluster-issuer: letsencrypt
