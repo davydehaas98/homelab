@@ -2,11 +2,12 @@ server:
   ingress:
     enabled: true
     annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-staging
       external-dns.alpha.kubernetes.io/hostname: argocd.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
-      cert-manager.io/cluster-issuer: letsencrypt-staging
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     hosts:
       - argocd.davydehaas.dev
     tls:
