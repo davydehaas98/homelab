@@ -39,4 +39,4 @@ ingress:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt-staging
