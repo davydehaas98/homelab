@@ -183,9 +183,9 @@ helm repo update
 helm install my-release oci://registry-1.docker.io/bitnamicharts/external-dns
 ```
 
-## Install Sealed Secrets
+## Install kubeseal
 ```
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm repo update
-helm install sealed-secrets sealed-secrets/sealed-secrets --namespace sealed-secrets --create-namespace --version 2.8.2
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.22.0/kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz
+tar -xvzf kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
