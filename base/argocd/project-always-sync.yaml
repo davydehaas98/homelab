@@ -17,7 +17,7 @@ spec:
       server: '*'
   syncWindows:
     - kind: allow
-      schedule: '0 0 * * *'
+      schedule: '* * * * *'
       duration: 24h
       manualSync: true
       applications:
