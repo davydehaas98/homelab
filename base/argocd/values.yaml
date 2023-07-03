@@ -1,0 +1,15 @@
+server:
+  ingress:
+    enabled: true
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: argocd.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/ttl: "120"
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    hosts:
+      - argocd.davydehaas.dev
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.davydehaas.dev
