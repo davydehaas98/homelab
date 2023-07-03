@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: https://github.com/davydehaas98/gitops
+      targetRevision: main
+      ref: repo
+    - chart: kube-prometheus-stack
+      repoURL: https://prometheus-community.github.io/helm-charts
+      targetRevision: 47.1.0
+      helm:
+        skipCrds: true
+        valueFiles:
+          - $repo/base/prometheus/values.yaml
+    - repoURL: https://github.com/davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: base/prometheus
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prometheus
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 5
+        maxDuration: 10m
