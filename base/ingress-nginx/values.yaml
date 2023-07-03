@@ -1,0 +1,42 @@
+controller:
+  config:
+#     custom-http-errors: 401,403,404,500,501,502,503
+    use-forwarded-headers: "true"
+  ingressClassResource:
+    default: true
+
+  kind: Deployment
+  replicaCount: 2
+  minAvailable: 0
+  maxUnavailable: 2
+
+  service:
+    nodePorts:
+      http: 32080
+      https: 32443
+
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+
+revisionHistoryLimit: 2
+
+defaultBackend:
+  enabled: true
+  image:
+    repository: ghcr.io/tarampampam/error-pages
+    tag: 2.24.0
+  extraEnvs:
+  - name: TEMPLATE_NAME
+    value: ghost
+  - name: SHOW_DETAILS
+    value: 'true'
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      cpu: 10m
+      memory: 10Mi
