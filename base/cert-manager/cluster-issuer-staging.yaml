@@ -9,14 +9,6 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-staging-key
     solvers:
-    - dns01:
-        cloudflare:
-          apiTokenSecretRef:
-            name: cloudflare-api-token
-            key: api-token
-      selector:
-        dnsZones:
-        - 'davydehaas.dev'
     - http01:
         ingress:
           class: nginx
