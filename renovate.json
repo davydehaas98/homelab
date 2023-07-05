@@ -3,8 +3,8 @@
       "github>davydehaas98/renovate-config:default.json"
     ],
     "baseBranches": [
-      "main",
-    ]
+      "main"
+    ],
     "ignorePaths": ["disabled/**"],
     "argocd": {
         "fileMatch": ["\\.yaml$"]
