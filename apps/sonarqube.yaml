@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: main
       ref: repo
-    - chart: helm-chart-sonarqube
-      repoURL: https://SonarSource.github.io
+    - chart: sonarqube
+      repoURL: https://SonarSource.github.io/helm-chart-sonarqube
       targetRevision: v10.1.0
       helm:
         valueFiles:
