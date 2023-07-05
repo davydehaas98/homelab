@@ -17,7 +17,7 @@ spec:
       targetRevision: v10.1.0
       helm:
         valueFiles:
-          - $repo/base/sonarqube/values.yaml
+          - $repo/apps/sonarqube/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
       path: apps/sonarqube
