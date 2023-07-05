@@ -1,8 +1,12 @@
 {
     "extends": [
-      "github>davydehaas98/renovate-config:default.json",
+      "github>davydehaas98/renovate-config:default.json"
     ],
     "baseBranches": [
       "main",
     ]
+  "ignorePaths": ["disabled/**"],
+  "argocd": {
+    "fileMatch": ["\\.yaml$"]
+  }
 }
