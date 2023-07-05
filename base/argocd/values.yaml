@@ -2,11 +2,13 @@ server:
   ingress:
     enabled: true
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
+      external-dns.alpha.kubernetes.io/hostname: argocd.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
-      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: letsencrypt
     hosts:
       - argocd.davydehaas.dev
     tls:
