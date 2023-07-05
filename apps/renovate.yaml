@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: renovate
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: https://github.com/davydehaas98/gitops
+      targetRevision: main
+      ref: repo
+    - chart: renovate
+      repoURL: https://docs.renovatebot.com/helm-charts
+      targetRevision: v10.1.0
+      helm:
+        valueFiles:
+          - $repo/apps/renovate/values.yaml
+    - repoURL: https://github.com/davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: apps/renovate
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: renovate
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 5
+        maxDuration: 10m
