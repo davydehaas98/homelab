@@ -33,9 +33,6 @@ resources:
 
 ingress:
   enabled: true
-  host: longhorn.davydehaas.dev
-  tls: true
-  tlsSecret: longhorn-tls
   annotations:
     external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
@@ -44,3 +41,6 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt
+  host: longhorn.davydehaas.dev
+  tls: true
+  tlsSecret: longhorn-tls
