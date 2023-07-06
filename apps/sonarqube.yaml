@@ -13,7 +13,7 @@ spec:
       targetRevision: main
       ref: repo
     - chart: sonarqube
-      repoURL: oci://registry-1.docker.io/bitnamicharts
+      repoURL: registry-1.docker.io/bitnamicharts
       targetRevision: 3.2.5
       helm:
         valueFiles:
