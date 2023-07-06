@@ -13,8 +13,8 @@ spec:
       targetRevision: main
       ref: repo
     - chart: sonarqube
-      repoURL: https://SonarSource.github.io/helm-chart-sonarqube
-      targetRevision: v10.1.0
+      repoURL: oci://registry-1.docker.io/bitnamicharts/sonarqube
+      targetRevision: v3.2.5
       helm:
         valueFiles:
           - $repo/apps/sonarqube/values.yaml
