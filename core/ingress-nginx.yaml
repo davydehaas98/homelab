@@ -1,30 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: external-dns
+  name: ingress-nginx
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-
 spec:
   project: no-sync
   sources:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: main
       ref: repo
-    - chart: external-dns
-      repoURL: registry-1.docker.io/bitnamicharts
-      targetRevision: 6.20.4
+    - chart: ingress-nginx
+      repoURL: https://kubernetes.github.io/ingress-nginx
+      targetRevision: 4.7.1
       helm:
         valueFiles:
-          - $repo/base/external-dns/values.yaml
+          - $repo/core/ingress-nginx/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/external-dns
+      path: core/ingress-nginx
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: external-dns
+    namespace: ingress-nginx
 
   revisionHistoryLimit: 2
   syncPolicy:

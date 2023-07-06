@@ -47,7 +47,7 @@ curl -fsSLo runc.${PROCESSOR_ARCH} \
 sudo install -m 755 runc.${PROCESSOR_ARCH} /usr/local/sbin/runc
 ```
 
-## Install CNI network plugins
+## Install CNI (Container Network Interface) network plugins
 ```
 curl -fsSLo cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz \
   https://github.com/containernetworking/plugins/releases/download/v${CNI_VERSION}/cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
@@ -121,7 +121,7 @@ sudo mv linux-${PROCESSOR_ARCH}/helm /usr/local/bin/
 sudo rm linux-${PROCESSOR_ARCH} -r
 ```
 
-## Install CNI plugin (Cilium)
+## Install CNI (Container Network Interface) plugin (Cilium)
 ```
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -135,55 +135,7 @@ helm repo update
 helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 5.36.7
 ```
 
-## Add CSI driver
-```
-helm repo add longhorn https://charts.longhorn.io
-helm repo update
-helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.4.0
-```
-
-## Install Kubernetes Dashboard
-```
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
-helm repo update
-helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kubernetes-dashboard --create-namespace --version 6.0.8
-```
-
-## Install NGINX Ingress Controller
-```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --version 4.6.1
-```
-
-## Install MetalLB
-```
-helm repo add metallb https://metallb.github.io/metallb
-helm repo update
-helm install metallb metallb/metallb --namespace metallb-system --create-namespace --version 0.13.9
-```
-
-## Install Cert manager
-```
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.11.1 --set installCRDs=true
-```
-
-## Install Metrics Server
-```
-helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server
-helm repo update
-helm install metrics-server metrics-server/metrics-server --namespace metrics-server --create-namespace --version 3.10.0
-```
-
-## Install ExternalDNS
-```
-helm repo update
-helm install my-release oci://registry-1.docker.io/bitnamicharts/external-dns
-```
-
-## Install kubeseal
+## Install Kubeseal
 ```
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.22.0/kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz
 tar -xvzf kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz kubeseal

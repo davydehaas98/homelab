@@ -1,30 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cilium
+  name: external-dns
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-
 spec:
   project: no-sync
   sources:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: main
       ref: repo
-    - chart: cilium
-      repoURL: https://helm.cilium.io/
-      targetRevision: 1.13.4
+    - chart: external-dns
+      repoURL: registry-1.docker.io/bitnamicharts
+      targetRevision: 6.20.4
       helm:
         valueFiles:
-          - $repo/base/cilium/values.yaml
+          - $repo/core/external-dns/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/cilium
-
+      path: core/external-dns
+      
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: external-dns
 
   revisionHistoryLimit: 2
   syncPolicy:

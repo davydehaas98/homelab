@@ -17,7 +17,7 @@ spec:
       server: '*'
   syncWindows:
     - kind: deny
-      # We do not want autosync, but do not have a way to describe this
+      # We do not want autosync, but there is no way to describe this.
       schedule: '0 0 * * *'
       duration: 24h
       manualSync: true

@@ -1,9 +1,0 @@
-operator:
-  replicas: 1
-
-resources:
-  limits:
-    memory: 1500Mi
-  requests:
-    memory: 512Mi
-    cpu: 100m
