@@ -123,21 +123,32 @@ sudo rm linux-${PROCESSOR_ARCH} -r
 
 ## Install CNI (Container Network Interface) plugin (Cilium)
 ```
+CILIUM_HELM_VERSION=1.13.4
 helm repo add cilium https://helm.cilium.io/
 helm repo update
-helm install cilium cilium/cilium --namespace kube-system --version 1.13.4
+helm install cilium cilium/cilium --namespace kube-system --version ${CILIUM_HELM_VERSION}
 ```
 
 ## Install Argo CD
 ```
+ARGOCD_HELM_VERSION=5.36.7
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
-helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 5.36.7
+helm install argocd argo/argo-cd --namespace argocd --create-namespace --version ${ARGOCD_HELM_VERSION}
 ```
+### Setup ArgoCD
+```
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
+kubectl get svc argocd-server -n argocd
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+```
+Log in to ArgoCD
+
 
 ## Install Kubeseal
 ```
-wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.22.0/kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz
-tar -xvzf kubeseal-0.22.0-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
+KUBESEAL_VERSION=0.22.0
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```

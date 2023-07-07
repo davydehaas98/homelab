@@ -17,10 +17,10 @@ spec:
       targetRevision: 5.37.1
       helm:
         valueFiles:
-          - $repo/base/argocd/values.yaml
+          - $repo/core/argocd/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/argocd
+      path: core/argocd
 
   destination:
     server: https://kubernetes.default.svc
