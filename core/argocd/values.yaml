@@ -13,7 +13,8 @@ server:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       cert-manager.io/cluster-issuer: letsencrypt
-    hosts: argocd.cloud.davydehaas.dev
+    hosts:
+      - argocd.cloud.davydehaas.dev
     tls:
       - secretName: argocd-tls
         hosts:
