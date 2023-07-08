@@ -20,7 +20,7 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
       path: core/metallb
-      
+
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb

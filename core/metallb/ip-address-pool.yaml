@@ -12,7 +12,7 @@ spec:
 # kind: L2Advertisement
 # metadata:
 #   name: l2-advertisement
-#   namespace: metallb-system
+#   namespace: metallb
 # spec:
 #   ipAddressPools:
 #   - default
