@@ -4,7 +4,7 @@ persistence:
   defaultClassReplicaCount: 2
   reclaimPolicy: Retain
   defaultDataLocality: best-effort
-  defaultReplicaAutoBalance: best-effort 
+  defaultReplicaAutoBalance: best-effort
 
 csi:
   attacherReplicaCount: 1
@@ -34,13 +34,13 @@ resources:
 ingress:
   enabled: true
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
+    external-dns.alpha.kubernetes.io/hostname: longhorn.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt
-  host: longhorn.davydehaas.dev
+  host: longhorn.cloud.davydehaas.dev
   tls: true
   tlsSecret: longhorn-tls

@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: https://github.com/davydehaas98/gitops
+      targetRevision: main
+      ref: repo
+    - chart: nextcloud
+      repoURL: https://nextcloud.github.io/helm
+      targetRevision: 3.5.16
+      helm:
+        valueFiles:
+          - $repo/apps/nextcloud/values.yaml
+    - repoURL: https://github.com/davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: apps/nextcloud
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nextcloud
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 5
+        maxDuration: 10m
