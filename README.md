@@ -152,3 +152,5 @@ wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEA
 tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
+### Create cloudflare token secret
+cat secret.yaml | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
