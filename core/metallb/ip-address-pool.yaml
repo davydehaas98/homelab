@@ -1,18 +1,27 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: default
+  name: address-pool
   namespace: metallb
 spec:
   addresses:
-  - 141.148.235.200/32
+  - 192.168.10.0/24
   autoAssign: true
-# ---
-# apiVersion: metallb.io/v1beta1
-# kind: L2Advertisement
-# metadata:
-#   name: l2-advertisement
-#   namespace: metallb
-# spec:
-#   ipAddressPools:
-#   - default
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+  - address-pool
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgp-advertisement
+  namespace: metallb
+spec:
+  ipAddressPools:
+  - address-pool
