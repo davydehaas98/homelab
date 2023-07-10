@@ -1,0 +1,46 @@
+nodeExporter:
+  enabled: true
+
+prometheus-node-exporter:
+  prometheus:
+    monitor:
+      enabled: true
+
+prometheus:
+  enabled: true
+
+  serviceAccount:
+    create: true
+  serviceMonitor:
+    selfMonitor: true
+
+  prometheusSpec:
+    retention: 730d
+    replicas: 1
+    shards: 1
+
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+
+    scrapeInterval: "30s"
+
+    resources:
+      limits:
+        memory: 4096Mi
+      requests:
+        cpu: 130m
+        memory: 2048Mi
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 500Gi
+
+cleanPrometheusOperatorObjectNames: true
