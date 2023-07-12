@@ -1,8 +1,8 @@
 controller:
   resources:
     requests:
-      cpu: "50m"
-      memory: "256Mi"
+      cpu: 100m
+      memory: 256Mi
     limits:
       cpu: null
-      memory: "4096Mi"
+      memory: 4096Mi

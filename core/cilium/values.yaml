@@ -3,6 +3,7 @@ operator:
 
 resources:
   limits:
+    cpu: null
     memory: 1500Mi
   requests:
     memory: 512Mi

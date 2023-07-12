@@ -55,6 +55,7 @@ nextcloud:
 
   resources:
     limits:
+      cpu: null
       memory: 256Mi
     requests:
       cpu: 100m
@@ -73,7 +74,8 @@ persistence:
 
 resources:
   limits:
+    cpu: null
     memory: 512Mi
   requests:
-    cpu: 90m
+    cpu: 100m
     memory: 128Mi
