@@ -26,29 +26,29 @@ controller:
 dex:
   enabled: false
 
-redis:
-  enabled: true
+# redis:
+#   enabled: true
 
-  resources:
-    limits:
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+#   resources:
+#     limits:
+#       memory: 256Mi
+#     requests:
+#       cpu: 50m
+#       memory: 128Mi
 
-  exporter:
-    enabled: true
-    resources:
-      limits:
-        memory: 64Mi
-      requests:
-        cpu: 10m
-        memory: 32Mi
+#   exporter:
+#     enabled: true
+#     resources:
+#       limits:
+#         memory: 64Mi
+#       requests:
+#         cpu: 10m
+#         memory: 32Mi
 
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
+#   metrics:
+#     enabled: true
+#     serviceMonitor:
+#       enabled: true
 
 server:
   ingress:
