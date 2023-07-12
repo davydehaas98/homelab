@@ -41,6 +41,6 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 500Gi
+              storage: 5Gi
 
 cleanPrometheusOperatorObjectNames: true

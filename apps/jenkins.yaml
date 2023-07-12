@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: https://github.com/davydehaas98/gitops
+      targetRevision: main
+      ref: repo
+    - chart: jenkins
+      repoURL: https://charts.jenkins.io
+      targetRevision: 3.2.5
+      helm:
+        valueFiles:
+          - $repo/apps/jenkins/values.yaml
+    - repoURL: https://github.com/davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: apps/jenkins
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jenkins
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 5
+        maxDuration: 10m
