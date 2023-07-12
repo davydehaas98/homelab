@@ -6,7 +6,7 @@ metadata:
 spec:
   targetRef:
     apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       longhorn-driver-deployer
+    kind: Deployment
+    name: longhorn-driver-deployer
   updatePolicy:
     updateMode: "Auto"

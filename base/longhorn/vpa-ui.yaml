@@ -6,7 +6,7 @@ metadata:
 spec:
   targetRef:
     apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       longhorn-ui
+    kind: Deployment
+    name: longhorn-ui
   updatePolicy:
     updateMode: "Auto"

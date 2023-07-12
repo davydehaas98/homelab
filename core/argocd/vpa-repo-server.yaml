@@ -6,7 +6,7 @@ metadata:
 spec:
   targetRef:
     apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       argo-cd-argocd-repo-server
+    kind: Deployment
+    name: argo-cd-argocd-repo-server
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"

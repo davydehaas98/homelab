@@ -6,7 +6,7 @@ metadata:
 spec:
   targetRef:
     apiVersion: "apps/v1"
-    kind:       StatefulSet
-    name:       argocd-application-controller
+    kind: StatefulSet
+    name: argocd-application-controller
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"

@@ -6,7 +6,7 @@ metadata:
 spec:
   targetRef:
     apiVersion: "apps/v1"
-    kind:       Deployment
-    name:       argocd-redis
+    kind: Deployment
+    name: argocd-redis
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
