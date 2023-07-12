@@ -7,6 +7,6 @@ spec:
   targetRef:
     apiVersion: "apps/v1"
     kind: Deployment
-    name: argo-cd-argocd-server
+    name: argocd-server
   updatePolicy:
     updateMode: "Off"

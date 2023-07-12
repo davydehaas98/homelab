@@ -3,7 +3,7 @@ configs:
     exec.enabled: true
 
   secret:
-    createSecret: false
+    createSecret: true
 
   params:
     server.insecure: true
