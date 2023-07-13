@@ -35,9 +35,9 @@ resources:
 ingress:
   enabled: true
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     external-dns.alpha.kubernetes.io/hostname: longhorn.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
-    cert-manager.io/cluster-issuer: letsencrypt
   host: longhorn.cloud.davydehaas.dev
   tls: true
   tlsSecret: longhorn-tls
