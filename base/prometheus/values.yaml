@@ -30,7 +30,7 @@ prometheus:
 
     resources:
       limits:
-        cpu: null
+        cpu: 200m
         memory: 4096Mi
       requests:
         cpu: 100m

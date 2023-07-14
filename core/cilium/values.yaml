@@ -3,8 +3,8 @@ operator:
 
 resources:
   limits:
-    cpu: null
+    cpu: 500m
     memory: 1500Mi
   requests:
-    memory: 512Mi
     cpu: 100m
+    memory: 512Mi

@@ -4,5 +4,5 @@ controller:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: null
+      cpu: 500m
       memory: 4096Mi

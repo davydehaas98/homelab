@@ -53,14 +53,6 @@ nextcloud:
   mail:
     enabled: false
 
-  resources:
-    limits:
-      cpu: null
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-
 redis:
   enabled: false
 
@@ -74,8 +66,8 @@ persistence:
 
 resources:
   limits:
-    cpu: null
-    memory: 512Mi
+   cpu: 100m
+   memory: 128Mi
   requests:
-    cpu: 100m
-    memory: 128Mi
+   cpu: 100m
+   memory: 128Mi
