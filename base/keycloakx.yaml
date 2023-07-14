@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: keycloak
+  name: keycloakx
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,14 +17,14 @@ spec:
       targetRevision: 2.2.1
       helm:
         valueFiles:
-          - $repo/base/keycloak/values.yaml
+          - $repo/base/keycloakx/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/keycloak
+      path: base/keycloakx
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: keycloak
+    namespace: keycloakx
 
   revisionHistoryLimit: 2
   syncPolicy:
