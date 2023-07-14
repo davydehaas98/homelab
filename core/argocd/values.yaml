@@ -27,30 +27,6 @@ controller:
 dex:
   enabled: false
 
-redis:
-  enabled: true
-
-  resources:
-    limits:
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
-
-  exporter:
-    enabled: true
-    resources:
-      limits:
-        memory: 64Mi
-      requests:
-        cpu: 10m
-        memory: 32Mi
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-
 server:
   ingress:
     enabled: true
@@ -70,9 +46,9 @@ server:
   ingressGrpc:
     enabled: true
     annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
       external-dns.alpha.kubernetes.io/hostname: grpc.argocd.cloud.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
-      cert-manager.io/cluster-issuer: letsencrypt
       ingress-class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     hosts:
@@ -90,7 +66,7 @@ repoServer:
 
   resources:
     limits:
-      cpu: null
+      cpu: 200m
       memory: 512Mi
     requests:
       cpu: 50m
