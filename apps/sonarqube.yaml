@@ -10,7 +10,7 @@ spec:
   project: no-sync
   sources:
     - repoURL: https://github.com/davydehaas98/gitops
-      targetRevision: main
+      targetRevision: HEAD
       ref: repo
     - chart: sonarqube
       repoURL: registry-1.docker.io/bitnamicharts
@@ -37,4 +37,3 @@ spec:
         duration: 5s
         factor: 5
         maxDuration: 10m
-        

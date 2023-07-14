@@ -9,7 +9,7 @@ spec:
   project: no-sync
   sources:
     - repoURL: https://github.com/davydehaas98/gitops
-      targetRevision: main
+      targetRevision: HEAD
       ref: repo
     - chart: metallb
       repoURL: https://metallb.github.io/metallb

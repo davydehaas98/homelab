@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nextcloud
+  name: intel-device-plugins
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,19 +12,27 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: nextcloud
-      repoURL: https://nextcloud.github.io/helm
-      targetRevision: 3.5.19
+    - chart: intel-device-plugins-operator
+      repoURL: https://intel.github.io/helm-charts/
+      targetRevision: 0.27.1
+    - chart: intel-device-plugins-gpu
+      repoURL: https://intel.github.io/helm-charts/
+      targetRevision: 0.27.1
       helm:
         valueFiles:
-          - $repo/apps/nextcloud/values.yaml
+          - $repo/apps/intel-device-plugins/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: apps/nextcloud
-
+      path: apps/intel-device-plugins
   destination:
     server: https://kubernetes.default.svc
-    namespace: nextcloud
+    namespace: intel-device-plugins
+
+  ignoreDifferences:
+    - group: "deviceplugin.intel.com"
+      kind: "GpuDevicePlugin"
+      jsonPointers:
+        - /spec/resourceManager
 
   revisionHistoryLimit: 2
   syncPolicy:
