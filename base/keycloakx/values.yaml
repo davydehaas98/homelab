@@ -8,6 +8,9 @@ ingress:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
   rules:
     - host: auth.cloud.davydehaas.dev
+      paths:
+        - path: '/'
+          pathType: Prefix
   tls:
     - secretName: auth-tls
       hosts:
