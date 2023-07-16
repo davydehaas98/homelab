@@ -49,3 +49,5 @@ ingress:
     - secretName: auth-tls
       hosts:
         - auth.cloud.davydehaas.dev
+
+serviceMonitor: true
