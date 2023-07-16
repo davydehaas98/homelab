@@ -25,7 +25,7 @@ extraEnv: |
 
 
 database:
-  existingSecret: "keycloak-credentials"
+  existingSecret: "keycloakx-credentials"
   vendor: postgres
   hostname: postgresql.postgresql.svc.cluster.local
   port: 5432
