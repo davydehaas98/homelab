@@ -1,3 +1,21 @@
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start"
+  - "--auto-build"
+  - "--http-enabled=true"
+  - "--http-port=8080"
+  - "--hostname-strict=false"
+  - "--hostname-strict-https=false"
+  
+replicas: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    memory: 1024Mi
+
 ingress:
   enabled: true
   annotations:
