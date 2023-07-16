@@ -144,13 +144,74 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 Log in to ArgoCD
 
+---
 
-## Install Kubeseal
+# Install Kubeseal
+> Kubeseal makes it possible to store secrets encrypted on Git that only the cluster itself can decrypt.
+
+Install Kubeseal on a node to encrypt secrets:
 ```
 KUBESEAL_VERSION=0.22.0
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
-### Create cloudflare token secret
+Create secret.yaml:
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database-credentials
+  namespace: default
+type: Opaque
+stringData:
+  username: admin
+  password: p4ssw0rd
+```
+Convert secret.yaml to sealed-secret.yaml:
+```
 cat secret.yaml | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
+```
+
+---
+
+# Upgrade Kubernetes cluster
+Find the Kubernetes version in the apt-cache madison list you want to upgrade to.)
+```
+sudo apt update
+sudo apt-cache madison kubeadm | tac
+```
+
+## Upgrade kubeadm on control plane nodes
+Install kubeadm:
+```
+KUBERNETES_VERSION=1.27.3
+sudo apt update
+sudo apt-mark unhold kubeadm
+sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00
+sudo apt-mark hold kubeadm
+```
+Plan the upgrade:
+```
+sudo kubeadm version
+sudo kubeadm upgrade plan
+```
+Apply the upgrade plan:
+```
+sudo kubeadm upgrade apply v${KUBERNETES_VERSION}
+```
+## Upgrade kubelet on every node
+Cordon and drain node, and install kubelet:
+```
+KUBERNETES_VERSION=1.27.3
+NODE_NAME=node-1
+kubectl cordon ${NODE_NAME}
+kubectl drain ${NODE_NAME} --ignore-daemonsets --delete-emptydir-data
+sudo apt update
+sudo apt-mark unhold kubeadm kubectl kubelet
+sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00 kubelet=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
+sudo apt-mark hold kubeadm kubectl kubelet
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon ${NODE_NAME}
+```
