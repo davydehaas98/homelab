@@ -23,6 +23,15 @@ extraEnv: |
         name: 'keycloakx-credentials'
         key: keycloak-admin-password
 
+
+database:
+  existingSecret: "keycloak-credentials"
+  vendor: postgres
+  hostname: postgresql.postgresql.svc.cluster.local
+  port: 5432
+  username: keycloak
+  database: keycloak
+
 replicas: 1
 
 resources:
@@ -49,6 +58,12 @@ ingress:
     - secretName: auth-tls
       hosts:
         - auth.cloud.davydehaas.dev
+
+health:
+  enabled: true
+
+http:
+  relativePath: '/'
 
 metrics:
   enabled: true
