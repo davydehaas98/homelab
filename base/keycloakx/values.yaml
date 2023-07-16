@@ -5,7 +5,7 @@ command:
   - "--http-port=8080"
   - "--hostname-strict=false"
   - "--hostname-strict-https=false"
-  
+
 extraEnv: |
   - name: KEYCLOAK_STATISTICS
     value: all
@@ -15,12 +15,12 @@ extraEnv: |
   - name: KEYCLOAK_ADMIN
     valueFrom:
       secretKeyRef:
-        name: 'keycloak-credentials'
+        name: 'keycloakx-credentials'
         key: keycloak-admin
   - name: KEYCLOAK_ADMIN_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: 'keycloak-credentials'
+        name: 'keycloakx-credentials'
         key: keycloak-admin-password
 
 replicas: 1
