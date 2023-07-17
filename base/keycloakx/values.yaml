@@ -35,11 +35,12 @@ database:
 replicas: 1
 
 resources:
+  limits:
+    cpu: null
+    memory: 1024Mi
   requests:
     cpu: 50m
     memory: 256Mi
-  limits:
-    memory: 1024Mi
 
 ingress:
   enabled: true

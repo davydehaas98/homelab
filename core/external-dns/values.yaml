@@ -65,8 +65,8 @@ podSecurityContext:
 
 resources:
   limits:
-    cpu: 50m
-    memory: 50Mi
+    cpu: null
+    memory: 64Mi
   requests:
     cpu: 10m
-    memory: 30Mi
+    memory: 32Mi
