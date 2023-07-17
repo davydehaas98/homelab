@@ -1,4 +1,4 @@
-# Setup
+# Setup nodes
 ## Set environmentals and versions
 ```
 PROCESSOR_ARCH=$(dpkg --print-architecture)
@@ -13,6 +13,31 @@ HELM_VERSION=3.12.1
 ```
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl git open-iscsi
+```
+
+## Ensure swap is disabled
+```
+swapon --show
+sudo swapoff -a
+sudo sed -i -e '/swap/d' /etc/fstab
+```
+
+## Enable overlay and br_netfilter kernal modules, let iptables see bridged network traffic and enable IPv4 ip_forward
+```
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe -a overlay br_netfilter
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sudo sysctl --system
 ```
 
 ## Install containerd
@@ -56,23 +81,6 @@ sudo mkdir -p /opt/cni/bin
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ```
 
-## Enable overlay and br_netfilter kernal modules, let iptables see bridged network traffic and enable IPv4 ip_forward
-```
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
-
-sudo modprobe -a overlay br_netfilter
-
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward                 = 1
-EOF
-
-sudo sysctl --system
-```
 
 ## Install kubeadm, kubelet & kubectl
 ```
@@ -87,16 +95,17 @@ sudo apt-get install -y kubelet=${KUBERNETES_VERSION}-00 kubeadm=${KUBERNETES_VE
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-## Ensure swap is disabled
-```
-swapon --show
-sudo swapoff -a
-sudo sed -i -e '/swap/d' /etc/fstab
-```
+---
+# Configure Kubernetes Control Plane
+Configure the control plane on the master node only.
+## Create cluster using kubeadm
+`10.1.1.0/24` is the cidr range for Cilium CNI.
 
-## Create cluster using kubeadm (The number of available CPUs has to be 2 or more.)
+Set `--control-plane-endpoint` to the control plane ip address.
 ```
-sudo kubeadm init --cri-socket=unix:///var/run/containerd/containerd.sock --pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --cri-socket=unix:///var/run/containerd/containerd.sock \
+    --pod-network-cidr 10.1.1.0/24 \
+    --control-plane-endpoint <CONTROL_PLANE_IP_ADDRESS>:6443
 ```
 
 ## Configure kubectl
@@ -106,7 +115,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-## Untaint node to allow master node to accept pods
+## OPTIONAL - Untaint node to allow master node to accept pods
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
@@ -126,23 +135,31 @@ sudo rm linux-${PROCESSOR_ARCH} -r
 CILIUM_HELM_VERSION=1.13.4
 helm repo add cilium https://helm.cilium.io/
 helm repo update
-helm install cilium cilium/cilium --namespace kube-system --version ${CILIUM_HELM_VERSION}
+helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
+    --namespace kube-system \
+    --set operator.replicas=1
 ```
+
+---
+
+# Setup Argo CD
 
 ## Install Argo CD
 ```
 ARGOCD_HELM_VERSION=5.36.7
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
-helm install argocd argo/argo-cd --namespace argocd --create-namespace --version ${ARGOCD_HELM_VERSION}
+helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
+    --namespace argocd --create-namespace
 ```
+
 ### Setup ArgoCD
 ```
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 kubectl get svc argocd-server -n argocd
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
-Log in to ArgoCD
+Log in to ArgoCD.
 
 ---
 
