@@ -5,14 +5,38 @@ PROCESSOR_ARCH=$(dpkg --print-architecture)
 CONTAINERD_VERSION=1.7.2
 RUNC_VERSION=1.1.7
 CNI_VERSION=1.3.0
-KUBERNETES_VERSION=1.27.3
-HELM_VERSION=3.12.1
+KUBERNETES_VERSION=1.27.4
+HELM_VERSION=3.12.2
 ```
 
 ## Install general dependencies
 ```
 sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl git open-iscsi
+sudo apt-get install -y apt-transport-https curl
+```
+
+## Enable iptables bridged traffic on the node
+```
+echo "fs.inotify.max_user_instances=512" | sudo tee -a /etc/sysctl.conf
+echo "fs.inotify.max_user_watches=204800" | sudo tee -a /etc/sysctl.conf
+
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+# sysctl params required by setup, params persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
 ```
 
 ## Ensure swap is disabled
@@ -20,24 +44,6 @@ sudo apt-get install -y apt-transport-https ca-certificates curl git open-iscsi
 swapon --show
 sudo swapoff -a
 sudo sed -i -e '/swap/d' /etc/fstab
-```
-
-## Enable overlay and br_netfilter kernal modules, let iptables see bridged network traffic and enable IPv4 ip_forward
-```
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
-
-sudo modprobe -a overlay br_netfilter
-
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward                 = 1
-EOF
-
-sudo sysctl --system
 ```
 
 ## Install containerd
@@ -81,7 +87,6 @@ sudo mkdir -p /opt/cni/bin
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ```
 
-
 ## Install kubeadm, kubelet & kubectl
 ```
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
@@ -96,6 +101,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 ---
+
 # Configure Kubernetes Control Plane
 Configure the control plane on the master node only.
 ## Create cluster using kubeadm
@@ -136,10 +142,15 @@ CILIUM_HELM_VERSION=1.13.4
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
-    --namespace kube-system \
-    --set operator.replicas=1
+    --namespace kube-system
 ```
 
+---
+# Configure worker node
+Generate kubeadm join command to use on worker node.
+```
+kubeadm token create --print-join-command
+```
 ---
 
 # Setup Argo CD
@@ -199,29 +210,21 @@ sudo apt update
 sudo apt-cache madison kubeadm | tac
 ```
 
-## Upgrade kubeadm on control plane nodes
+## Upgrade control plane nodes
 Install kubeadm:
 ```
-KUBERNETES_VERSION=1.27.3
+KUBERNETES_VERSION=1.27.4
 sudo apt update
-sudo apt-mark unhold kubeadm
-sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00
-sudo apt-mark hold kubeadm
+sudo apt-mark unhold kubeadm kubectl kubelet
+sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00 kubelet=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
+sudo apt-mark hold kubeadm kubectl kubelet
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
 ```
-Plan the upgrade:
+## Upgrade worker nodes
 ```
-sudo kubeadm version
-sudo kubeadm upgrade plan
-```
-Apply the upgrade plan:
-```
-sudo kubeadm upgrade apply v${KUBERNETES_VERSION}
-```
-## Upgrade kubelet on every node
-Cordon and drain node, and install kubelet:
-```
-KUBERNETES_VERSION=1.27.3
-NODE_NAME=node-1
+KUBERNETES_VERSION=1.27.4
+NODE_NAME=instance-20230720-1942
 kubectl cordon ${NODE_NAME}
 kubectl drain ${NODE_NAME} --ignore-daemonsets --delete-emptydir-data
 sudo apt update
