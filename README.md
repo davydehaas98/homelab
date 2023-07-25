@@ -109,9 +109,12 @@ Configure the control plane on the master node only.
 
 Set `--control-plane-endpoint` to the control plane ip address.
 ```
-sudo kubeadm init --cri-socket=unix:///var/run/containerd/containerd.sock \
+CONTROL_PLANE_IP=<control_plane_ip>
+sudo kubeadm init \
+    --cri-socket=unix:///var/run/containerd/containerd.sock \
     --pod-network-cidr 10.1.1.0/24 \
-    --control-plane-endpoint <CONTROL_PLANE_IP_ADDRESS>:6443
+    --skip-phases=addon/kube-proxy \
+    --control-plane-endpoint ${CONTROL_PLANE_IP}:6443
 ```
 
 ## Configure kubectl
@@ -138,11 +141,16 @@ sudo rm linux-${PROCESSOR_ARCH} -r
 
 ## Install CNI (Container Network Interface) plugin (Cilium)
 ```
+API_SERVER_IP=<api_server_ip>
+API_SERVER_PORT=6443
 CILIUM_HELM_VERSION=1.13.4
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
-    --namespace kube-system
+    --namespace kube-system \
+    --set kubeProxyReplacement=strict \
+    --set k8sServiceHost=${API_SERVER_IP} \
+    --set k8sServicePort=${API_SERVER_PORT}
 ```
 
 ---
@@ -157,7 +165,7 @@ kubeadm token create --print-join-command
 
 ## Install Argo CD
 ```
-ARGOCD_HELM_VERSION=5.36.7
+ARGOCD_HELM_VERSION=5.41.1
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
