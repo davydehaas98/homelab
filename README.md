@@ -134,7 +134,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
   https://get.helm.sh/helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
-sudo tar xzvf helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz linux-arm64/helm
+sudo tar xzvf helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz linux-${PROCESSOR_ARCH}/helm
 sudo mv linux-${PROCESSOR_ARCH}/helm /usr/local/bin/
 sudo rm linux-${PROCESSOR_ARCH} -r
 ```
@@ -148,6 +148,7 @@ helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
     --namespace kube-system \
+	--set operator.replicas=1 \
     --set kubeProxyReplacement=strict \
     --set k8sServiceHost=${API_SERVER_IP} \
     --set k8sServicePort=${API_SERVER_PORT}
