@@ -1,7 +1,7 @@
 # k8sServiceHost: cloud.davydehaas.dev
-# k8sServicePort: 6443
+k8sServicePort: 6443
 
-# kubeProxyReplacement: strict
+kubeProxyReplacement: strict
 
 operator:
   replicas: 1
