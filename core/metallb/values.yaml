@@ -1,7 +1,6 @@
 controller:
   resources:
     limits:
-      # cpu: null
       memory: 100Mi
     requests:
       cpu: 30m
