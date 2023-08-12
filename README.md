@@ -143,7 +143,7 @@ sudo rm linux-${PROCESSOR_ARCH} -r
 ```
 API_SERVER_IP=<api_server_ip>
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.13.4
+CILIUM_HELM_VERSION=1.14.0
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
