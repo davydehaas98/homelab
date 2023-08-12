@@ -177,7 +177,7 @@ kubeadm token create --print-join-command
 
 ## Install Argo CD
 ```
-ARGOCD_HELM_VERSION=5.41.1
+ARGOCD_HELM_VERSION=5.43.3
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
