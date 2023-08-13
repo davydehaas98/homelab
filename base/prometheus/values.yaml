@@ -1,3 +1,6 @@
+crds:
+  enabled: false
+
 nodeExporter:
   enabled: true
 
