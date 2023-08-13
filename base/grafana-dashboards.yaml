@@ -12,6 +12,9 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
       path: base/grafana/dashboards
+    - repoURL: https://github.com/dotdc/grafana-dashboards-kubernetes
+      targetRevision: HEAD
+      path: ./
 
   destination:
     server: https://kubernetes.default.svc
