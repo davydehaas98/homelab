@@ -4,8 +4,6 @@ auth:
   existingSecret: postgresql-credentials
   usePasswordFiles: true
 
-
-
 resources:
   limits:
     memory: 512Mi
