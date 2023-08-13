@@ -64,6 +64,7 @@ podSecurityContext:
   runAsUser: 1001
 
 resources:
+  limits:
     memory: 50Mi
   requests:
     cpu: 10m
