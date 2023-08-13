@@ -23,6 +23,19 @@ extraEnv: |
         name: 'keycloakx-credentials'
         key: keycloak-admin-password
 
+dbchecker:
+  enabled: true
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      memory: 32Mi
 
 database:
   existingSecret: "keycloakx-credentials"
@@ -47,8 +60,9 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
     external-dns.alpha.kubernetes.io/hostname: auth.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
   rules:
     - host: auth.cloud.davydehaas.dev
       paths:
