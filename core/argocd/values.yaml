@@ -13,7 +13,6 @@ controller:
 
   resources:
     limits:
-      cpu: null
       memory: 2048Mi
     requests:
       cpu: 150m
@@ -66,7 +65,6 @@ repoServer:
 
   resources:
     limits:
-      cpu: null
       memory: 512Mi
     requests:
       cpu: 50m

@@ -26,7 +26,6 @@ longhornRecoveryBackend:
 
 resources:
   limits:
-    cpu: null
     memory: 256Mi
   requests:
     cpu: 100m

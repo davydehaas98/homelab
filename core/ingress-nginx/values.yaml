@@ -17,7 +17,6 @@ controller:
 
   resources:
     limits:
-      cpu: null
       memory: 512Mi
     requests:
       cpu: 50m
@@ -37,7 +36,6 @@ defaultBackend:
     value: 'true'
   resources:
     limits:
-      cpu: null
       memory: 16Mi
     requests:
       cpu: 10m
