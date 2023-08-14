@@ -1,12 +1,12 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: address-pool
+  name: public-ip-pool
   namespace: metallb
 spec:
   addresses:
   - 38.242.242.71/32
-  autoAssign: true
+  autoAssign: false
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
@@ -15,7 +15,7 @@ metadata:
   namespace: metallb
 spec:
   ipAddressPools:
-  - address-pool
+  - public-ip-pool
 ---
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
@@ -24,4 +24,4 @@ metadata:
   namespace: metallb
 spec:
   ipAddressPools:
-  - address-pool
+  - public-ip-pool

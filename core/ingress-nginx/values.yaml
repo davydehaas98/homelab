@@ -11,6 +11,8 @@ controller:
   maxUnavailable: 2
 
   service:
+    annotations:
+      metallb.universe.tf/address-pool: public-ip-pool
     nodePorts:
       http: 32080
       https: 32443
