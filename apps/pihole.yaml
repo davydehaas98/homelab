@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: pihole-kubernetes
-      repoURL: https://mojo2600.github.io
+    - chart: pihole
+      repoURL: https://mojo2600.github.io/pihole-kubernetes
       targetRevision: 4.5.0
       helm:
         valueFiles:
