@@ -13,7 +13,7 @@ spec:
       ref: repo
     - chart: external-dns
       repoURL: registry-1.docker.io/bitnamicharts
-      targetRevision: 6.23.3
+      targetRevision: 6.23.5
       helm:
         valueFiles:
           - $repo/core/external-dns/values.yaml
