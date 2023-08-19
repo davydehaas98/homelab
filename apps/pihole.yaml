@@ -17,8 +17,8 @@ spec:
       targetRevision: 2.14.0
       helm:
         valueFiles:
-          - ${repo}/apps/pihole/values.yaml
-    - repoURL: ${repo}
+          - $repo/apps/pihole/values.yaml
+    - repoURL: $repo
       targetRevision: HEAD
       path: apps/pihole
 
