@@ -58,13 +58,17 @@ ingress:
   enabled: true
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    external-dns.alpha.kubernetes.io/hostname: auth.cloud.davydehaas.dev
+    external-dns.alpha.kubernetes.io/hostname: auth.cloud.davydehaas.dev,keycloak.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
   rules:
     - host: auth.cloud.davydehaas.dev
+      paths:
+        - path: '/'
+          pathType: Prefix
+    - host: keycloak.cloud.davydehaas.dev
       paths:
         - path: '/'
           pathType: Prefix
@@ -72,6 +76,9 @@ ingress:
     - secretName: auth-tls
       hosts:
         - auth.cloud.davydehaas.dev
+    - secretName: keycloak-tls
+      hosts:
+        - keycloak.cloud.davydehaas.dev
 
 health:
   enabled: true
