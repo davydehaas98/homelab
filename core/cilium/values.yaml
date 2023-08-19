@@ -1,7 +1,10 @@
-# k8sServiceHost: cloud.davydehaas.dev
+k8sServiceHost: cloud.davydehaas.dev
 k8sServicePort: 6443
 
 kubeProxyReplacement: strict
+
+certgen:
+  ttlSecondsAfterFinished: null
 
 operator:
   replicas: 1
@@ -20,6 +23,13 @@ hubble:
     auto:
       method: cronJob
 
+  metrics:
+    enableOpenMetrics: true
+    serviceMonitor:
+      enabled: true
+    dashboards:
+      enabled: true
+
   relay:
     enabled: true
     rollOutPods: true
@@ -32,6 +42,11 @@ hubble:
   ui:
     enabled: true
     rollOutPods: true
+    backend:
+      resources: {}
+    frontend:
+      resources: {}
+
 
     ingress:
       enabled: true
