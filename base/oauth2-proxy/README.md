@@ -21,7 +21,13 @@ cat sealed-secret.yaml
 ```
 ## Create client app with Keycloak
 Manage -> Clients -> Create client
-Client type: OpenID Connect
-Client ID: oauth2-proxy
-Access Type: confidential
-Valid redirect URLs: https://auth.cloud.davydehaas.dev/oauth2/callback
+
+### 1 General Settings:
+- Client type: OpenID Connect
+- Client ID: oauth2-proxy
+
+### 2 Capability config:
+- Client authentication: On
+
+### 3 Login settings:
+- Valid redirect URLs: https://auth.cloud.davydehaas.dev/oauth2/callback
