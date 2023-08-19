@@ -11,8 +11,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: metallb
-      repoURL: https://metallb.github.io/metallb
+    - repoURL: https://metallb.github.io/metallb
+      chart: metallb
       targetRevision: 0.13.10
       helm:
         valueFiles:

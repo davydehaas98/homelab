@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: renovate
-      repoURL: https://docs.renovatebot.com/helm-charts
+    - repoURL: https://docs.renovatebot.com/helm-charts
+      chart: renovate
       targetRevision: 36.52.2
       helm:
         valueFiles:

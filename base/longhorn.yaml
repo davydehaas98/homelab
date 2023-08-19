@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: longhorn
-      repoURL: https://charts.longhorn.io
+    - repoURL: https://charts.longhorn.io
+      chart: longhorn
       targetRevision: 1.5.1
       helm:
         valueFiles:

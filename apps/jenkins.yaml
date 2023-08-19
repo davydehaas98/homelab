@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: jenkins
-      repoURL: https://charts.jenkins.io
+    - repoURL: https://charts.jenkins.io
+      chart: jenkins
       targetRevision: 4.5.0
       helm:
         valueFiles:

@@ -11,8 +11,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: external-dns
-      repoURL: registry-1.docker.io/bitnamicharts
+    - repoURL: registry-1.docker.io/bitnamicharts
+      chart: external-dns
       targetRevision: 6.23.5
       helm:
         valueFiles:

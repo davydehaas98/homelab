@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: cert-manager
-      repoURL: https://charts.jetstack.io
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
       targetRevision: v1.12.3
       helm:
         valueFiles:

@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: argo-cd
-      repoURL: https://argoproj.github.io/argo-helm
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
       targetRevision: 5.43.4
       helm:
         valueFiles:

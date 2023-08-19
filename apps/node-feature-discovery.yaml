@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: node-feature-discovery
-      repoURL: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+    - repoURL: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+      chart: node-feature-discovery
       targetRevision: 0.13.3
       helm:
         valueFiles:

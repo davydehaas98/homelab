@@ -10,8 +10,8 @@ metadata:
 spec:
   project: no-sync
   sources:
-    - chart: prometheus-operator-crds
-      repoURL: https://prometheus-community.github.io/helm-charts
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: prometheus-operator-crds
       targetRevision: 5.1.0
 
   destination:

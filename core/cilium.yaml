@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: cilium
-      repoURL: https://helm.cilium.io/
+    - repoURL: https://helm.cilium.io/
+      chart: cilium
       targetRevision: 1.14.1
       helm:
         valueFiles:

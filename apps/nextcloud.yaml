@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: nextcloud
-      repoURL: https://nextcloud.github.io/helm
+    - repoURL: https://nextcloud.github.io/helm
+      chart: nextcloud
       targetRevision: 3.5.22
       helm:
         valueFiles:

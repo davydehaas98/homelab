@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: sonarqube
-      repoURL: registry-1.docker.io/bitnamicharts
+    - repoURL: registry-1.docker.io/bitnamicharts
+      chart: sonarqube
       targetRevision: 3.2.8
       helm:
         valueFiles:

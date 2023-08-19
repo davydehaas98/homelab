@@ -12,8 +12,8 @@ spec:
     - repoURL: https://github.com/davydehaas98/gitops
       targetRevision: HEAD
       ref: repo
-    - chart: postgresql
-      repoURL: registry-1.docker.io/bitnamicharts
+    - repoURL: registry-1.docker.io/bitnamicharts
+      chart: postgresql
       targetRevision: 12.8.3
       helm:
         valueFiles:
