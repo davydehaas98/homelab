@@ -13,7 +13,7 @@ ingress:
   enabled: true
   path: /oauth2
   hosts:
-    - longhorn.cloud.feddema.dev
+    - longhorn.cloud.davydehaas.dev
     - hubble.cloud.davydehaas.dev
   tls:
     - secretName: longhorn-tls
