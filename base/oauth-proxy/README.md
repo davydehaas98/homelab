@@ -7,7 +7,7 @@ metadata:
   namespace: oauth-proxy
 type: Opaque
 stringData:
-  client-id:
+  client-id: oauth2-proxy
   client-secret:
   cookie-secret:
 EOF
@@ -19,3 +19,9 @@ cat secret.yaml | kubeseal \
 
 cat sealed-secret.yaml
 ```
+## Create client app with Keycloak
+Manage -> Clients -> Create client
+Client type: OpenID Connect
+Client ID: oauth2-proxy
+Access Type: confidential
+Valid redirect URLs: https://auth.cloud.davydehaas.dev/oauth2/callback
