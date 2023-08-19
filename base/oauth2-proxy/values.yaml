@@ -1,5 +1,5 @@
 config:
-  existingSecret: oauth-proxy-credentials
+  existingSecret: oauth2-proxy-credentials
   configFile: |-
     email_domains = [ "*" ]
     upstreams = [ "file:///dev/null" ]

@@ -3,8 +3,8 @@ cat <<EOF > secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: oauth-proxy-credentials
-  namespace: oauth-proxy
+  name: oauth2-proxy-credentials
+  namespace: oauth2-proxy
 type: Opaque
 stringData:
   client-id: oauth2-proxy
