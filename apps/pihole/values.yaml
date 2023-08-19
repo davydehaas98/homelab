@@ -1,8 +1,19 @@
-persistentVolumeClaim:
-  enabled: true
 
 ingress:
   enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    external-dns.alpha.kubernetes.io/hostname: pihole.cloud.davydehaas.dev
+
+  tls:
+    - secretName: pihole-tls
+      hosts:
+        - pihole.cloud.davydehaas.dev
+
+persistentVolumeClaim:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 500Mi
 
 resources:
   limits:
