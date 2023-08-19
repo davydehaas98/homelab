@@ -1,3 +1,4 @@
+# Sealed secret
 ```
 cat <<EOF > secret.yaml
 apiVersion: v1

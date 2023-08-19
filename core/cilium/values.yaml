@@ -41,11 +41,11 @@ hubble:
     ingress:
       enabled: true
       annotations:
-        # nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-        # nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
         external-dns.alpha.kubernetes.io/hostname: hubble.cloud.davydehaas.dev
         external-dns.alpha.kubernetes.io/ttl: "120"
         cert-manager.io/cluster-issuer: letsencrypt
+        nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+        nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
       hosts:
         - hubble.cloud.davydehaas.dev
       tls:

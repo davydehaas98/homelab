@@ -1,3 +1,4 @@
+# Sealed secret
 ```
 cat <<EOF > secret.yaml
 apiVersion: v1
@@ -19,15 +20,24 @@ cat secret.yaml | kubeseal \
 
 cat sealed-secret.yaml
 ```
-## Create client app with Keycloak
-Manage -> Clients -> Create client
+# Create client app in Keycloak
+### Clients -> Create client
 
-### 1 General Settings:
-- Client type: OpenID Connect
-- Client ID: oauth2-proxy
+- 1 General Settings:
+    - Client type: OpenID Connect
+    - Client ID: oauth2-proxy
+- 2 Capability config:
+    - Client authentication: On
 
-### 2 Capability config:
-- Client authentication: On
+- 3 Login settings:
+    - Valid redirect URLs:
+        - https://hubble.cloud.davydehaas.dev/oauth2/callback
+        - https://longhorn.cloud.davydehaas.dev/oauth2/callback
+        - Etc...
 
-### 3 Login settings:
-- Valid redirect URLs: https://auth.cloud.davydehaas.dev/oauth2/callback
+### Clients -> oauth2-proxy -> Client scopes -> oauth2-proxy-dedicated -> Mappers
+- Click on 'Add mapper by configuration'
+    - Mapper type: Audience
+    - Name: oauth2-proxy-audience
+    - Included Client Audience: oauth2-proxy
+    - Add to access token: ON
