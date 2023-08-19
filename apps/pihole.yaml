@@ -9,16 +9,16 @@ metadata:
 spec:
   project: no-sync
   sources:
-    - repoURL: https://github.com/davydehaas98/gitops
+    - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - chart: pihole
-      repoURL: https://mojo2600.github.io/pihole-kubernetes
-      targetRevision: 4.5.0
+    - repoURL: https://mojo2600.github.io/pihole-kubernetes
+      chart: pihole
+      targetRevision: 2.14.0
       helm:
         valueFiles:
-          - $repo/apps/pihole/values.yaml
-    - repoURL: https://github.com/davydehaas98/gitops.git
+          - ${repo}/apps/pihole/values.yaml
+    - repoURL: ${repo}
       targetRevision: HEAD
       path: apps/pihole
 
