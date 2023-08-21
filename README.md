@@ -13,6 +13,7 @@
   - [OPTIONAL - Untaint node to allow master node to accept pods](#optional---untaint-node-to-allow-master-node-to-accept-pods)
   - [Install Helm](#install-helm)
   - [Install CNI (Container Network Interface) plugin (Cilium)](#install-cni-container-network-interface-plugin-cilium)
+  - [Install Prometheus CRD](#install-prometheus-crd)
   - [OPTIONAL - Install Cilium CLI](#optional---install-cilium-cli)
 - [Configure worker node](#configure-worker-node)
 - [Setup Argo CD](#setup-argo-cd)
@@ -175,13 +176,22 @@ API_SERVER_PORT=6443
 CILIUM_HELM_VERSION=1.14.0
 helm repo add cilium https://helm.cilium.io/
 helm repo update
-helm install cilium cilium/cilium --version ${CILIUM_HELM_VERSION} \
+helm install cilium cilium/cilium \
+    --version ${CILIUM_HELM_VERSION} \
     --namespace kube-system \
 	--set operator.replicas=1 \
     --set kubeProxyReplacement=strict \
     --set k8sServiceHost=${API_SERVER_IP} \
     --set k8sServicePort=${API_SERVER_PORT}
 ```
+
+## Install Prometheus CRD
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus-crds prometheus-community/prometheus-operator-crds
+```
+
 ## OPTIONAL - Install Cilium CLI
 ```
 CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
@@ -222,7 +232,21 @@ rm argocd-linux-${PROCESSOR_ARCH}
 ```
 
 ```
-argocd app create argocd --repo https://github.com/davydehaas98/gitops --path core --dest-server https://kubernetes.default.svc --dest-namespace argocd
+argocd proj create
+argocd app create argocd \
+    --repo https://github.com/davydehaas98/gitops --path core \
+    --dest-server https://kubernetes.default.svc --dest-namespace argocd
+argocd app sync argocd
+argocd app sync ingress-nginx \
+    metallb \
+    cert-manager \
+    sealed-secrets
+```
+
+Set cloudflare-api-token sealed secret.
+
+```
+argocd app sync external-dns
 ```
 
 ## Setup ArgoCD
