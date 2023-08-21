@@ -1,3 +1,30 @@
+- [Setup nodes](#setup-nodes)
+  - [Set environmentals and versions](#set-environmentals-and-versions)
+  - [Install general dependencies](#install-general-dependencies)
+  - [Enable iptables bridged traffic on the node](#enable-iptables-bridged-traffic-on-the-node)
+  - [Ensure swap is disabled](#ensure-swap-is-disabled)
+  - [Install containerd](#install-containerd)
+  - [Install runc](#install-runc)
+  - [Install CNI (Container Network Interface) network plugins](#install-cni-container-network-interface-network-plugins)
+  - [Install kubeadm, kubelet \& kubectl](#install-kubeadm-kubelet--kubectl)
+- [Configure Kubernetes Control Plane](#configure-kubernetes-control-plane)
+  - [Create cluster using kubeadm](#create-cluster-using-kubeadm)
+  - [Configure kubectl](#configure-kubectl)
+  - [OPTIONAL - Untaint node to allow master node to accept pods](#optional---untaint-node-to-allow-master-node-to-accept-pods)
+  - [Install Helm](#install-helm)
+  - [Install CNI (Container Network Interface) plugin (Cilium)](#install-cni-container-network-interface-plugin-cilium)
+  - [OPTIONAL - Install Cilium CLI](#optional---install-cilium-cli)
+- [Configure worker node](#configure-worker-node)
+- [Setup Argo CD](#setup-argo-cd)
+  - [Install Argo CD](#install-argo-cd)
+  - [Install Argo CD CLI](#install-argo-cd-cli)
+  - [Setup ArgoCD](#setup-argocd)
+- [Install Kubeseal](#install-kubeseal)
+- [Upgrade Kubernetes cluster](#upgrade-kubernetes-cluster)
+  - [Upgrade control plane nodes](#upgrade-control-plane-nodes)
+  - [Upgrade worker nodes](#upgrade-worker-nodes)
+
+
 # Setup nodes
 ## Set environmentals and versions
 ```
@@ -6,7 +33,6 @@ CONTAINERD_VERSION=1.7.2
 RUNC_VERSION=1.1.7
 CNI_VERSION=1.3.0
 KUBERNETES_VERSION=1.27.4
-HELM_VERSION=3.12.2
 ```
 
 ## Install general dependencies
@@ -28,20 +54,17 @@ EOF
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
-# sysctl params required by setup, params persist across reboots
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
 EOF
 
-# Apply sysctl params without reboot
 sudo sysctl --system
 ```
 
 ## Ensure swap is disabled
 ```
-swapon --show
 sudo swapoff -a
 sudo sed -i -e '/swap/d' /etc/fstab
 ```
@@ -62,6 +85,7 @@ curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
   https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+sudo rm containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo curl -fsSLo /etc/systemd/system/containerd.service \
   https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
@@ -76,6 +100,7 @@ curl -fsSLo runc.${PROCESSOR_ARCH} \
   https://github.com/opencontainers/runc/releases/download/v${RUNC_VERSION}/runc.${PROCESSOR_ARCH}
 
 sudo install -m 755 runc.${PROCESSOR_ARCH} /usr/local/sbin/runc
+rm runc.${PROCESSOR_ARCH}
 ```
 
 ## Install CNI (Container Network Interface) network plugins
@@ -85,6 +110,8 @@ curl -fsSLo cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz \
 
 sudo mkdir -p /opt/cni/bin
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
+
+sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ```
 
 ## Install kubeadm, kubelet & kubectl
@@ -109,7 +136,7 @@ Configure the control plane on the master node only.
 
 Set `--control-plane-endpoint` to the control plane ip address.
 ```
-CONTROL_PLANE_IP=<control_plane_ip>
+CONTROL_PLANE_IP=cloud.davydehaas.dev
 sudo kubeadm init \
     --cri-socket=unix:///var/run/containerd/containerd.sock \
     --pod-network-cidr 10.1.1.0/24 \
@@ -120,7 +147,7 @@ sudo kubeadm init \
 ## Configure kubectl
 ```
 sudo mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
@@ -132,16 +159,18 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 ## Install Helm
 ```
+HELM_VERSION=3.12.2
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
   https://get.helm.sh/helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 sudo tar xzvf helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz linux-${PROCESSOR_ARCH}/helm
 sudo mv linux-${PROCESSOR_ARCH}/helm /usr/local/bin/
 sudo rm linux-${PROCESSOR_ARCH} -r
+sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 ```
 
 ## Install CNI (Container Network Interface) plugin (Cilium)
 ```
-API_SERVER_IP=<api_server_ip>
+API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
 CILIUM_HELM_VERSION=1.14.0
 helm repo add cilium https://helm.cilium.io/
@@ -184,6 +213,18 @@ helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
     --namespace argocd --create-namespace
 ```
 
+## Install Argo CD CLI
+```
+ARGOCD_CLI_VERSION=v2.8.0
+curl -sSL -o argocd-linux-${PROCESSOR_ARCH} https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_CLI_VERSION}/argocd-linux-${PROCESSOR_ARCH}
+sudo install -m 555 argocd-linux-${PROCESSOR_ARCH} /usr/local/bin/argocd
+rm argocd-linux-${PROCESSOR_ARCH}
+```
+
+```
+argocd app create argocd --repo https://github.com/davydehaas98/gitops --path core --dest-server https://kubernetes.default.svc --dest-namespace argocd
+```
+
 ## Setup ArgoCD
 ```
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
@@ -191,47 +232,6 @@ kubectl get svc argocd-server -n argocd
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
 Log in to ArgoCD.
-
-## Add application projects
-```
-kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: AppProject
-metadata:
-  name: always-sync
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io  
-spec:
-  description: Autosync is enabled
-  sourceRepos:
-    - '*'
-  clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
-  destinations:
-    - namespace: '*'
-      server: '*'
----
-apiVersion: argoproj.io/v1alpha1
-kind: AppProject
-metadata:
-  name: no-sync
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:  
-  description: Autosync is disabled
-  sourceRepos:
-    - '*'
-  clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
-  destinations:
-    - namespace: '*'
-      server: '*'
-EOF
-```
 
 ---
 
@@ -243,6 +243,8 @@ Install Kubeseal on a node to encrypt secrets:
 KUBESEAL_VERSION=0.22.0
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
+rm kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 Create secret.yaml:
