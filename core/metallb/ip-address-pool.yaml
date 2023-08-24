@@ -5,7 +5,7 @@ metadata:
   namespace: metallb
 spec:
   addresses:
-  - 38.242.242.71/32
+  - 192.168.100.0/24
   autoAssign: false
 ---
 apiVersion: metallb.io/v1beta1
@@ -29,18 +29,18 @@ spec:
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: default-bgp-peer
+  name: bgp-peer
   namespace: metallb
 spec:
   myASN: 64512
   peerASN: 64512
   peerAddress: 192.168.1.1
-  bfdProfile: default-bfd-profile
+  bfdProfile: bfd-profile
 ---
 apiVersion: metallb.io/v1beta1
 kind: BFDProfile
 metadata:
-  name: default-bfd-profile
+  name: bfd-profile
   namespace: metallb
 spec:
   receiveInterval: 380
