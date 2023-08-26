@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      targetRevision: 48.3.3
+      targetRevision: 48.3.6
       helm:
         skipCrds: true
         valueFiles:
