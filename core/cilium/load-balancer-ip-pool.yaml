@@ -1,0 +1,8 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lb-ip-pool
+  namespace: kube-system
+spec:
+  cidrs:
+    - cidr: 38.242.242.71/32

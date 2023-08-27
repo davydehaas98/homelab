@@ -3,8 +3,13 @@ k8sServicePort: 6443
 
 kubeProxyReplacement: strict
 
+bgpControlPlane:
+  enabled: true
+
 certgen:
   ttlSecondsAfterFinished: null
+
+rollOutCiliumPods: true
 
 operator:
   replicas: 1
