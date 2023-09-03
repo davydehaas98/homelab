@@ -1,5 +1,4 @@
 - [Setup nodes](#setup-nodes)
-  - [Set environmentals and versions](#set-environmentals-and-versions)
   - [Install general dependencies](#install-general-dependencies)
   - [Enable iptables bridged traffic on the node](#enable-iptables-bridged-traffic-on-the-node)
   - [Ensure swap is disabled](#ensure-swap-is-disabled)
@@ -9,12 +8,11 @@
   - [Install kubeadm, kubelet \& kubectl](#install-kubeadm-kubelet--kubectl)
 - [Configure Kubernetes Control Plane](#configure-kubernetes-control-plane)
   - [Create cluster using kubeadm](#create-cluster-using-kubeadm)
-  - [Configure kubectl](#configure-kubectl)
   - [OPTIONAL - Untaint node to allow master node to accept pods](#optional---untaint-node-to-allow-master-node-to-accept-pods)
   - [Install Helm](#install-helm)
   - [Install CNI (Container Network Interface) plugin (Cilium)](#install-cni-container-network-interface-plugin-cilium)
-  - [Install Prometheus CRD](#install-prometheus-crd)
   - [OPTIONAL - Install Cilium CLI](#optional---install-cilium-cli)
+  - [Install Prometheus CRD](#install-prometheus-crd)
 - [Configure worker node](#configure-worker-node)
 - [Setup Argo CD](#setup-argo-cd)
   - [Install Argo CD](#install-argo-cd)
@@ -27,15 +25,6 @@
 
 
 # Setup nodes
-## Set environmentals and versions
-```
-PROCESSOR_ARCH=$(dpkg --print-architecture)
-CONTAINERD_VERSION=1.7.2
-RUNC_VERSION=1.1.7
-CNI_VERSION=1.3.0
-KUBERNETES_VERSION=1.27.4
-```
-
 ## Install general dependencies
 ```
 sudo apt-get update
@@ -72,6 +61,9 @@ sudo sed -i -e '/swap/d' /etc/fstab
 
 ## Install containerd
 ```
+CONTAINERD_VERSION=1.7.2
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 sudo mkdir /etc/containerd
 cat <<EOF | sudo tee /etc/containerd/config.toml
 version = 2
@@ -97,6 +89,9 @@ sudo systemctl enable --now containerd
 
 ## Install runc
 ```
+RUNC_VERSION=1.1.7
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 curl -fsSLo runc.${PROCESSOR_ARCH} \
   https://github.com/opencontainers/runc/releases/download/v${RUNC_VERSION}/runc.${PROCESSOR_ARCH}
 
@@ -106,6 +101,9 @@ rm runc.${PROCESSOR_ARCH}
 
 ## Install CNI (Container Network Interface) network plugins
 ```
+CNI_VERSION=1.3.0
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 curl -fsSLo cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz \
   https://github.com/containernetworking/plugins/releases/download/v${CNI_VERSION}/cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
@@ -117,6 +115,7 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 ```
+KUBERNETES_VERSION=1.28.1
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
   https://dl.k8s.io/apt/doc/apt-key.gpg
 
@@ -133,20 +132,9 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # Configure Kubernetes Control Plane
 Configure the control plane on the master node only.
 ## Create cluster using kubeadm
-`10.1.1.0/24` is the cidr range for Cilium CNI.
+```
+sudo kubeadm init --config config.yaml --upload-certs
 
-Set `--control-plane-endpoint` to the control plane ip address.
-```
-CONTROL_PLANE_IP=cloud.davydehaas.dev
-sudo kubeadm init \
-    --cri-socket=unix:///var/run/containerd/containerd.sock \
-    --pod-network-cidr 10.1.1.0/24 \
-    --skip-phases=addon/kube-proxy \
-    --control-plane-endpoint ${CONTROL_PLANE_IP}:6443
-```
-
-## Configure kubectl
-```
 sudo mkdir -p $HOME/.kube
 sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -154,13 +142,14 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ## OPTIONAL - Untaint node to allow master node to accept pods
 ```
-kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
 ## Install Helm
 ```
 HELM_VERSION=3.12.2
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
   https://get.helm.sh/helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 sudo tar xzvf helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz linux-${PROCESSOR_ARCH}/helm
@@ -173,7 +162,8 @@ sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.0
+CILIUM_HELM_VERSION=1.14.1
+
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium \
@@ -185,17 +175,11 @@ helm install cilium cilium/cilium \
     --set k8sServicePort=${API_SERVER_PORT}
 ```
 
-## Install Prometheus CRD
-```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install prometheus-crds prometheus-community/prometheus-operator-crds
-```
-
 ## OPTIONAL - Install Cilium CLI
 ```
 CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
 CLI_ARCH=$(dpkg --print-architecture)
+
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
 curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
@@ -203,6 +187,12 @@ sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
 rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 ```
 
+## Install Prometheus CRD
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus-crds prometheus-community/prometheus-operator-crds
+```
 
 ---
 # Configure worker node
@@ -216,7 +206,7 @@ kubeadm token create --print-join-command
 
 ## Install Argo CD
 ```
-ARGOCD_HELM_VERSION=5.43.3
+ARGOCD_HELM_VERSION=5.45.0
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -225,16 +215,19 @@ helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
 
 ## Install Argo CD CLI
 ```
-ARGOCD_CLI_VERSION=v2.8.0
+ARGOCD_CLI_VERSION=v2.8.2
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 curl -sSL -o argocd-linux-${PROCESSOR_ARCH} https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_CLI_VERSION}/argocd-linux-${PROCESSOR_ARCH}
 sudo install -m 555 argocd-linux-${PROCESSOR_ARCH} /usr/local/bin/argocd
 rm argocd-linux-${PROCESSOR_ARCH}
 ```
 
 ```
+kubectl config set-context --current --namespace=argocd
 argocd proj create
 argocd app create argocd \
-    --repo https://github.com/davydehaas98/gitops --path core \
+    --repo https://github.com/davydehaas98/gitops.git --path core \
     --dest-server https://kubernetes.default.svc --dest-namespace argocd
 argocd app sync argocd
 argocd app sync ingress-nginx \
@@ -265,6 +258,8 @@ Log in to ArgoCD.
 Install Kubeseal on a node to encrypt secrets:
 ```
 KUBESEAL_VERSION=0.22.0
+PROCESSOR_ARCH=$(dpkg --print-architecture)
+
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 tar -xvzf kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz kubeseal
 rm kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
@@ -300,7 +295,7 @@ sudo apt-cache madison kubeadm | tac
 ## Upgrade control plane nodes
 Install kubeadm:
 ```
-KUBERNETES_VERSION=1.27.4
+KUBERNETES_VERSION=1.28.1
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
 sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00 kubelet=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
@@ -310,8 +305,9 @@ sudo systemctl restart kubelet
 ```
 ## Upgrade worker nodes
 ```
-KUBERNETES_VERSION=1.27.4
+KUBERNETES_VERSION=1.28.1
 NODE_NAME=instance-20230720-1942
+
 kubectl cordon ${NODE_NAME}
 kubectl drain ${NODE_NAME} --ignore-daemonsets --delete-emptydir-data
 sudo apt update
