@@ -28,7 +28,7 @@
 ## Install general dependencies
 ```
 sudo apt-get update
-sudo apt-get install -y apt-transport-https curl
+sudo apt-get install -y apt-transport-https ca-certificates curl
 ```
 
 ## Enable iptables bridged traffic on the node
@@ -116,10 +116,12 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ## Install kubeadm, kubelet & kubectl
 ```
 KUBERNETES_VERSION=1.28.1
-sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
-  https://dl.k8s.io/apt/doc/apt-key.gpg
 
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
+sudo mkdir -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' \
   | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
