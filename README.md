@@ -18,7 +18,11 @@
   - [Install Argo CD](#install-argo-cd)
   - [Install Argo CD CLI](#install-argo-cd-cli)
   - [Setup ArgoCD](#setup-argocd)
-- [Install Kubeseal](#install-kubeseal)
+- [Kubeseal](#kubeseal)
+  - [Restore key in new cluster](#restore-key-in-new-cluster)
+  - [Install Kubeseal on a node to encrypt secrets](#install-kubeseal-on-a-node-to-encrypt-secrets)
+    - [Create secret.yaml](#create-secretyaml)
+    - [Convert secret.yaml to sealed-secret.yaml](#convert-secretyaml-to-sealed-secretyaml)
 - [Upgrade Kubernetes cluster](#upgrade-kubernetes-cluster)
   - [Upgrade control plane nodes](#upgrade-control-plane-nodes)
   - [Upgrade worker nodes](#upgrade-worker-nodes)
@@ -60,8 +64,9 @@ sudo sed -i -e '/swap/d' /etc/fstab
 ```
 
 ## Install containerd
+https://github.com/containerd/containerd
 ```
-CONTAINERD_VERSION=1.7.2
+CONTAINERD_VERSION=1.7.5
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 sudo mkdir /etc/containerd
@@ -88,8 +93,9 @@ sudo systemctl enable --now containerd
 ```
 
 ## Install runc
+https://github.com/opencontainers/runc
 ```
-RUNC_VERSION=1.1.7
+RUNC_VERSION=1.1.9
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo runc.${PROCESSOR_ARCH} \
@@ -100,6 +106,7 @@ rm runc.${PROCESSOR_ARCH}
 ```
 
 ## Install CNI (Container Network Interface) network plugins
+https://github.com/containernetworking/plugins
 ```
 CNI_VERSION=1.3.0
 PROCESSOR_ARCH=$(dpkg --print-architecture)
@@ -115,17 +122,17 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 ```
-KUBERNETES_VERSION=1.28.1
+KUBERNETES_VERSION=1.27.5
 
 sudo mkdir -m 755 /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key \
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key \
   | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' \
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' \
   | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
-sudo apt-get install -y kubelet=${KUBERNETES_VERSION}-00 kubeadm=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
+sudo apt-get install -y kubelet=${KUBERNETES_VERSION}-1.1 kubeadm=${KUBERNETES_VERSION}-1.1 kubectl=${KUBERNETES_VERSION}-1.1
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
@@ -138,7 +145,7 @@ Configure the control plane on the master node only.
 sudo kubeadm init --config config.yaml --upload-certs
 
 sudo mkdir -p $HOME/.kube
-sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
@@ -148,8 +155,9 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
 ## Install Helm
+https://github.com/helm/helm
 ```
-HELM_VERSION=3.12.2
+HELM_VERSION=3.12.3
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
@@ -161,6 +169,7 @@ sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 ```
 
 ## Install CNI (Container Network Interface) plugin (Cilium)
+https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
@@ -169,21 +178,23 @@ CILIUM_HELM_VERSION=1.14.1
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium \
-    --version ${CILIUM_HELM_VERSION} \
-    --namespace kube-system \
-	--set operator.replicas=1 \
-    --set kubeProxyReplacement=strict \
-    --set k8sServiceHost=${API_SERVER_IP} \
-    --set k8sServicePort=${API_SERVER_PORT}
+  --version ${CILIUM_HELM_VERSION} \
+  --namespace kube-system \
+  --set operator.replicas=1 \
+  --set kubeProxyReplacement=strict \
+  --set k8sServiceHost=${API_SERVER_IP} \
+  --set k8sServicePort=${API_SERVER_PORT}
 ```
 
 ## OPTIONAL - Install Cilium CLI
+https://github.com/cilium/cilium-cli
 ```
-CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+
+CILIUM_CLI_VERSION=0.15.7
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
-curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/v${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
 sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
 rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
@@ -207,15 +218,17 @@ kubeadm token create --print-join-command
 # Setup Argo CD
 
 ## Install Argo CD
+https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.45.0
+ARGOCD_HELM_VERSION=5.45.1
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
-    --namespace argocd --create-namespace
+  --namespace argocd --create-namespace
 ```
 
 ## Install Argo CD CLI
+https://github.com/argoproj/argo-cd
 ```
 ARGOCD_CLI_VERSION=v2.8.2
 PROCESSOR_ARCH=$(dpkg --print-architecture)
@@ -227,15 +240,15 @@ rm argocd-linux-${PROCESSOR_ARCH}
 
 ```
 kubectl config set-context --current --namespace=argocd
-argocd proj create
+argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
-    --repo https://github.com/davydehaas98/gitops.git --path core \
-    --dest-server https://kubernetes.default.svc --dest-namespace argocd
+  --repo https://github.com/davydehaas98/gitops.git --path core \
+  --dest-server https://kubernetes.default.svc --dest-namespace argocd
 argocd app sync argocd
 argocd app sync ingress-nginx \
-    metallb \
-    cert-manager \
-    sealed-secrets
+  metallb \
+  cert-manager \
+  sealed-secrets
 ```
 
 Set cloudflare-api-token sealed secret.
@@ -254,12 +267,24 @@ Log in to ArgoCD.
 
 ---
 
-# Install Kubeseal
+# Kubeseal
 > Kubeseal makes it possible to store secrets encrypted on Git that only the cluster itself can decrypt.
 
-Install Kubeseal on a node to encrypt secrets:
+## Restore key in new cluster
 ```
-KUBESEAL_VERSION=0.22.0
+kubectl get secrets -n sealed-secrets -o yaml > out.yaml
+```
+Update KEY and CRT in out.yaml
+```
+kubectl apply -f out.yaml
+sudo rm out.yaml
+kubectl rollout restart -n sealed-secrets deployment sealed-secrets-controller
+```
+
+## Install Kubeseal on a node to encrypt secrets
+https://github.com/bitnami-labs/sealed-secrets
+```
+KUBESEAL_VERSION=0.23.1
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
@@ -268,7 +293,7 @@ rm kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
-Create secret.yaml:
+### Create secret.yaml
 ```
 apiVersion: v1
 kind: Secret
@@ -280,7 +305,7 @@ stringData:
   username: admin
   password: p4ssw0rd
 ```
-Convert secret.yaml to sealed-secret.yaml:
+### Convert secret.yaml to sealed-secret.yaml
 ```
 cat secret.yaml | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
 ```
