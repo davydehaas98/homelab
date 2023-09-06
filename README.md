@@ -85,6 +85,7 @@ curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
 sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 sudo rm containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
+# Start containerd via systemd
 sudo curl -fsSLo /etc/systemd/system/containerd.service \
   https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 
