@@ -11,14 +11,14 @@ spec:
   sources:
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/prometheus/dashboards
+      path: base/grafana/dashboards
     - repoURL: https://github.com/dotdc/grafana-dashboards-kubernetes
       targetRevision: HEAD
       path: ./
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: prometheus
+    namespace: grafana
 
   revisionHistoryLimit: 2
   syncPolicy:
