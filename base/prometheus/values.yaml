@@ -10,26 +10,8 @@ prometheus-node-exporter:
       enabled: true
 
 grafana:
-  enabled: true
-  defaultDashboardsEnabled: true
-  defaultDashboardsTimezone: Europe/Amsterdam
-
-  replicas: 1
-
-  ingress:
-    enabled: true
-    annotations:
-      external-dns.alpha.kubernetes.io/hostname: grafana.cloud.davydehaas.dev
-      external-dns.alpha.kubernetes.io/ttl: "120"
-      ingress.kubernetes.io/rewrite-target: /
-      cert-manager.io/cluster-issuer: letsencrypt
-    path: /
-    hosts:
-      - grafana.cloud.davydehaas.dev
-    tls:
-      - hosts:
-          - grafana.cloud.davydehaas.dev
-        secretName: "grafana-tls"
+  enabled: false
+  forceDeployDashboards: true
 
 prometheus:
   enabled: true
