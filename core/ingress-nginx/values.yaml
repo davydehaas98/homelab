@@ -13,8 +13,8 @@ controller:
   service:
     annotations:
       metallb.universe.tf/address-pool: public-ip-pool
-    externalIPs:
-      - 38.242.242.71
+    # externalIPs:
+    #   - 38.242.242.71
     nodePorts:
       http: 32080
       https: 32443
