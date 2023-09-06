@@ -245,9 +245,8 @@ argocd app create argocd \
   --repo https://github.com/davydehaas98/gitops.git --path core \
   --dest-server https://kubernetes.default.svc --dest-namespace argocd
 argocd app sync argocd
-argocd app sync ingress-nginx \
-  metallb \
-  cert-manager \
+argocd app sync metallb \
+  ingress-nginx \
   sealed-secrets
 ```
 
@@ -255,6 +254,7 @@ Set cloudflare-api-token sealed secret.
 
 ```
 argocd app sync external-dns
+argocd app sync cert-manager
 ```
 
 ## Setup ArgoCD
