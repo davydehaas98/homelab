@@ -49,6 +49,8 @@ ingress:
       secretName: "grafana-tls"
 
 grafana.ini:
+  security:
+    disable_initial_admin_creation: true
   paths:
     data: /var/lib/grafana
     logs: /var/log/grafana
