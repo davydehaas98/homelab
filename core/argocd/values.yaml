@@ -30,7 +30,7 @@ server:
   ingress:
     enabled: true
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-dns
       external-dns.alpha.kubernetes.io/hostname: argocd.cloud.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -45,7 +45,7 @@ server:
   ingressGrpc:
     enabled: true
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-dns
       external-dns.alpha.kubernetes.io/hostname: grpc.argocd.cloud.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
       ingress-class: nginx

@@ -7,7 +7,7 @@ phpClientHttpsFix:
 ingress:
   enabled: true
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt-dns
     external-dns.alpha.kubernetes.io/hostname: drive.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/proxy-body-size: 4G
