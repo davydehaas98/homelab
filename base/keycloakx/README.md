@@ -1,3 +1,17 @@
+# Create user and database
+```
+echo $(kubectl get secret --namespace postgresql postgresql-credentials -o jsonpath="{.data.postgres-password}" | base64 -d)
+
+kubectl exec -it postgresql-0 -n postgresql -- psql -U postgres
+```
+
+```
+CREATE DATABASE keycloak;
+CREATE USER keycloak WITH ENCRYPTED PASSWORD '<PASSWORD>';
+GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
+ALTER DATABASE keycloak OWNER TO keycloak;
+```
+
 # Sealed secret
 ```
 cat <<EOF > secret.yaml

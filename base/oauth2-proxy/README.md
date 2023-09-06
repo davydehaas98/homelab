@@ -20,7 +20,18 @@ cat secret.yaml | kubeseal \
 
 cat sealed-secret.yaml
 ```
-# Create client app in Keycloak
+---
+
+# Create cookie-secret
+https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview/
+
+Bash:
+```
+dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\n' | tr -- '+/' '-_'; echo
+```
+---
+
+# Create client app and client-secret in Keycloak
 ### Clients -> Create client
 
 - 1 General Settings:
@@ -36,8 +47,12 @@ cat sealed-secret.yaml
         - Etc...
 
 ### Clients -> oauth2-proxy -> Client scopes -> oauth2-proxy-dedicated -> Mappers
-- Click on 'Add mapper by configuration'
+- Click on 'Configure a new mapper'
     - Mapper type: Audience
     - Name: oauth2-proxy-audience
     - Included Client Audience: oauth2-proxy
     - Add to access token: ON
+
+### Clients -> oauth2-proxy -> Credentials
+- Copy 'Client secret'
+  - Paste 'client-secret' in 'oauth2-proxy-credentials.yaml'
