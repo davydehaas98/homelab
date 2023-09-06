@@ -42,8 +42,10 @@ dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\n' | tr -- '+
 
 - 3 Login settings:
     - Valid redirect URLs:
+        - https://grafana.cloud.davydehaas.dev/oauth2/callback
         - https://hubble.cloud.davydehaas.dev/oauth2/callback
         - https://longhorn.cloud.davydehaas.dev/oauth2/callback
+        - https://prometheus.cloud.davydehaas.dev/oauth2/callback
         - Etc...
 
 ### Clients -> oauth2-proxy -> Client scopes -> oauth2-proxy-dedicated -> Mappers
