@@ -57,6 +57,8 @@ grafana.ini:
   auth:
     oauth_auto_login: true
     signout_redirect_url: "https://grafana.cloud.davydehaas.dev/oauth2/sign_out"
+  auth.basic:
+   enabled: false
   auth.proxy:
     auto_sign_up: true
     enabled: true
