@@ -38,37 +38,40 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-dns
     external-dns.alpha.kubernetes.io/hostname: grafana.cloud.davydehaas.dev
     external-dns.alpha.kubernetes.io/ttl: "120"
-    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      auth_request_set $user   $upstream_http_x_auth_request_user;
-      auth_request_set $email  $upstream_http_x_auth_request_email;
-      proxy_set_header X-User  $user;
-      proxy_set_header X-Email $email;
+    ingress.kubernetes.io/rewrite-target: /
   path: /
   hosts:
     - grafana.cloud.davydehaas.dev
   tls:
     - hosts:
         - grafana.cloud.davydehaas.dev
-      secretName: "grafana-tls"
+      secretName: grafana-tls
+
+extraSecretMounts:
+  - name: auth-generic-oauth-secret-mount
+    secretName: grafana-oauth-credentials
+    defaultMode: 0440
+    mountPath: /etc/secrets/auth_generic_oauth
+    readOnly: true
 
 grafana.ini:
   auth:
-    oauth_auto_login: true
-    signout_redirect_url: "https://grafana.cloud.davydehaas.dev/oauth2/sign_out"
-  auth.basic:
-   enabled: false
-  auth.proxy:
-    auto_sign_up: true
+    oauth_allow_insecure_email_lookup: true
+  auth.generic_oauth:
     enabled: true
-    header_name: X-Email
-    header_property: email
-  users:
-    allow_sign_up: false
-    auto_assign_org: true
-    auto_assign_org_role: Viewer
-
+    name: Keycloak
+    allow_sign_up: true
+    scopes: "openid email profile offline_access roles"
+    email_attribute_path: email
+    login_attribute_path: username
+    name_attribute_path: full_name
+    auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
+    token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
+    api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
+    client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+    client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+    allow_assign_grafana_admin: true
+    role_attribute_path: contains(realm_access.roles[*], 'admin') && 'GrafanaAdmin' || 'Admin'
   paths:
     data: /var/lib/grafana
     logs: /var/log/grafana
