@@ -45,7 +45,7 @@ ingress:
   tls:
     - hosts:
         - grafana.cloud.davydehaas.dev
-      secretName: "grafana-tls"
+      secretName: grafana-tls
 
 extraSecretMounts:
   - name: auth-generic-oauth-secret-mount

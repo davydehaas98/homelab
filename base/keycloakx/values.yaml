@@ -80,11 +80,21 @@ ingress:
       hosts:
         - keycloak.cloud.davydehaas.dev
 
+cache:
+  stack: default
+
+proxy:
+  enabled: true
+  mode: edge
+
 health:
   enabled: true
 
 http:
-  relativePath: '/'
+  relativePath: "/"
 
 metrics:
+  enabled: true
+
+serviceMonitor:
   enabled: true

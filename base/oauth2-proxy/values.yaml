@@ -61,3 +61,10 @@ redis:
   auth:
     enabled: true
     password: secret
+
+checkDeprecation: true
+
+metrics:
+  enabled: true
+  servicemonitor:
+    enabled: true

@@ -53,6 +53,30 @@ nextcloud:
   mail:
     enabled: false
 
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: postgresql.postgresql.svc.cluster.local
+  database: nextcloud
+
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-credentials
+    usernameKey: postgres-username
+    passwordKey: postgres-password
+
+
+
 redis:
   enabled: false
 
@@ -66,7 +90,18 @@ persistence:
 
 resources:
   limits:
-    memory: 256Mi
+    memory: 512Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+
+rbac:
+  enabled: true
+  serviceaccount:
+    create: true
+    name: nextcloud-serviceaccount

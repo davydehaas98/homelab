@@ -26,6 +26,11 @@ controller:
       cpu: 50m
       memory: 256Mi
 
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
 revisionHistoryLimit: 2
 
 defaultBackend:

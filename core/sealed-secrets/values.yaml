@@ -21,3 +21,20 @@ service:
 
 ingress:
   enabled: false
+
+networkPolicy:
+  enabled: false
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+  pspEnabled: false
+
+metrics:
+  serviceMonitor:
+    enabled: true
+
+  dashboards:
+    create: true

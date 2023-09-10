@@ -18,6 +18,7 @@ prometheus:
 
   serviceAccount:
     create: true
+    
   serviceMonitor:
     selfMonitor: true
 

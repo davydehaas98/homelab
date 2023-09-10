@@ -26,6 +26,30 @@ controller:
 dex:
   enabled: false
 
+redis:
+  enabled: true
+
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+  exporter:
+    enabled: true
+    resources:
+      limits:
+        memory: 64Mi
+      requests:
+        cpu: 10m
+        memory: 32Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
 server:
   ingress:
     enabled: true
@@ -38,9 +62,9 @@ server:
     hosts:
       - argocd.cloud.davydehaas.dev
     tls:
-      - secretName: argocd-tls
-        hosts:
+      - hosts:
           - argocd.cloud.davydehaas.dev
+        secretName: argocd-tls
 
   ingressGrpc:
     enabled: true
@@ -53,13 +77,15 @@ server:
     hosts:
       - grpc.argocd.cloud.davydehaas.dev
     tls:
-      - secretName: argocd-grpc-tls
-        hosts:
+      - hosts:
           - grpc.argocd.cloud.davydehaas.dev
+        secretName: argocd-grpc-tls
+        
 
   configEnabled: false
 
   rbacConfigCreate: false
+
 repoServer:
   replicas: 1
 

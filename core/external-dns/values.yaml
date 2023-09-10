@@ -13,7 +13,7 @@ publishHostIP: false
 serviceTypeFilter: []
 
 cloudflare:
-  secretName: "cloudflare-api-token"
+  secretName: cloudflare-api-token
   proxied: false
 
 domainFilters: []
@@ -69,3 +69,8 @@ resources:
   requests:
     cpu: 10m
     memory: 30Mi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
