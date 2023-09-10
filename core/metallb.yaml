@@ -13,7 +13,7 @@ spec:
       ref: repo
     - repoURL: https://metallb.github.io/metallb
       chart: metallb
-      targetRevision: 0.13.10
+      targetRevision: 0.13.11
       helm:
         valueFiles:
           - $repo/core/metallb/values.yaml
