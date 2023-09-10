@@ -15,7 +15,7 @@ datasources:
       - name: Prometheus
         type: prometheus
         uid: prometheus
-        url: http://prometheus-server.prometheus.svc.cluster.local/
+        url: http://prometheus-server.prometheus.svc.cluster.local:80/
         access: proxy
         isDefault: true
         jsonData:
@@ -106,7 +106,7 @@ persistence:
     - ReadWriteOnce
   size: 16Gi
 
-# admin:
-#   existingSecret: "grafana-credentials"
-#   userKey: admin-user
-#   passwordKey: admin-password
+admin:
+  existingSecret: grafana-credentials
+  userKey: admin-user
+  passwordKey: admin-password
