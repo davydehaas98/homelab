@@ -21,14 +21,14 @@ datasources:
         jsonData:
           httpMethod: POST
           timeInterval: 30s
-      # - name: Alertmanager
-      #   type: alertmanager
-      #   uid: alertmanager
-      #   url: http://prometheus-kube-prometheus-alertmanager.prometheus.svc.cluster.local:9093/
-      #   access: proxy
-      #   jsonData:
-      #     handleGrafanaManagedAlerts: false
-      #     implementation: prometheus
+      - name: Alertmanager
+        type: alertmanager
+        uid: alertmanager
+        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/
+        access: proxy
+        jsonData:
+          handleGrafanaManagedAlerts: false
+          implementation: prometheus
 
 replicas: 1
 
@@ -65,14 +65,15 @@ grafana.ini:
     client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
     client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
     scopes: "openid email profile offline_access roles"
-    allow_assign_grafana_admin: true
     email_attribute_path: email
     login_attribute_path: username
     name_attribute_path: full_name
     auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
     token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
     api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
-    role_attribute_path: contains(realm_access.roles[*], 'admin') && 'GrafanaAdmin' || 'Admin'
+    signout_redirect_url: https://auth.cloud.davydehaas.dev/auth/realms/master/protocol/openid-connect/logout?redirect_uri=https%3A%2F%2Fgrafana.cloud.davydehaas.dev%2Flogin
+    role_attribute_path: contains(roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
+    allow_assign_grafana_admin: true
   paths:
     data: /var/lib/grafana
     logs: /var/log/grafana
