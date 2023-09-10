@@ -13,14 +13,10 @@ ingress:
   enabled: true
   path: /oauth2
   hosts:
-    - grafana.cloud.davydehaas.dev
     - hubble.cloud.davydehaas.dev
     - longhorn.cloud.davydehaas.dev
     - prometheus.cloud.davydehaas.dev
   tls:
-    - secretName: grafana-tls
-      hosts:
-        - grafana.cloud.davydehaas.dev
     - secretName: hubble-tls
       hosts:
         - hubble.cloud.davydehaas.dev
