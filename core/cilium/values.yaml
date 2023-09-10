@@ -69,7 +69,7 @@ hubble:
       hosts:
         - hubble.cloud.davydehaas.dev
       tls:
-        - hosts:
+        - secretName: hubble-tls
+          hosts:
             - hubble.cloud.davydehaas.dev
-          secretName: hubble-tls
 

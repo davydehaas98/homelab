@@ -1,28 +1,4 @@
-crds:
-  enabled: false
-
-nodeExporter:
-  enabled: true
-
-prometheus-node-exporter:
-  prometheus:
-    monitor:
-      enabled: true
-
-grafana:
-  enabled: false
-  forceDeployDashboards: true
-
-prometheus:
-  enabled: true
-
-  serviceAccount:
-    create: true
-    
-  serviceMonitor:
-    selfMonitor: true
-
-
+server:
   ingress:
     enabled: true
     annotations:
@@ -34,37 +10,13 @@ prometheus:
     hosts:
       - prometheus.cloud.davydehaas.dev
     tls:
-      - hosts:
+      - secretName: prometheus-tls
+        hosts:
           - prometheus.cloud.davydehaas.dev
-        secretName: prometheus-tls
 
-  prometheusSpec:
-    retention: 730d
-    replicas: 1
-    shards: 1
-
-    serviceMonitorSelector: {}
-    serviceMonitorNamespaceSelector: {}
-    ruleSelectorNilUsesHelmValues: false
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    probeSelectorNilUsesHelmValues: false
-
-    scrapeInterval: "30s"
-
-    resources:
-      limits:
-        memory: 4096Mi
-      requests:
-        cpu: 100m
-        memory: 2048Mi
-
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 5Gi
-
-cleanPrometheusOperatorObjectNames: true
+  resources:
+    limits:
+      memory: 4096Mi
+    requests:
+      cpu: 100m
+      memory: 2048Mi
