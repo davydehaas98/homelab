@@ -4,9 +4,8 @@ config:
     email_domains = [ "*" ]
     upstreams = [ "file:///dev/null" ]
     provider = "keycloak-oidc"
-    provider_display_name = "Keycloak"
     oidc_issuer_url = "https://auth.cloud.davydehaas.dev/realms/master"
-    scope = "openid email profile"
+    scope = "openid email"
 
 serviceAccount:
   enabled: true
@@ -52,19 +51,12 @@ podDisruptionBudget:
 httpScheme: http
 
 sessionStorage:
-  type: redis
-  redis:
-    clientType: standalone
-    password: secret
-
-redis:
-  enabled: true
-  architecture: standalone
-  auth:
-    enabled: true
-    password: secret
+  type: cookie
 
 checkDeprecation: true
+
+extraArgs:
+  - "--session-cookie-minimal"
 
 metrics:
   enabled: true
