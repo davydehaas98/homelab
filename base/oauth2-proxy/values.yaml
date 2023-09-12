@@ -6,7 +6,7 @@ config:
     provider = "keycloak-oidc"
     provider_display_name = "Keycloak"
     oidc_issuer_url = "https://auth.cloud.davydehaas.dev/realms/master"
-    scope = "email"
+    scope = "openid email profile"
 
 serviceAccount:
   enabled: true
