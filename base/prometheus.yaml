@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: prometheus
-      targetRevision: 24.3.0
+      targetRevision: 24.4.0
       helm:
         skipCrds: true
         valueFiles:
