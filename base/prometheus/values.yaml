@@ -7,6 +7,7 @@ server:
       external-dns.alpha.kubernetes.io/ttl: "120"
       nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     hosts:
       - prometheus.cloud.davydehaas.dev
     tls:
