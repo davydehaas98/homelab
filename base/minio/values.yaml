@@ -1,0 +1,67 @@
+minio:
+  mode: standalone
+  existingSecret: "minio-credentials"
+
+  drivesPerNode: 1
+  replicas: 1
+  pools: 1
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 50Gi
+
+  service:
+    type: ClusterIP
+    clusterIP: ~
+    port: "9000"
+
+  ingress:
+    enabled: false
+
+  consoleIngress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-dns
+      external-dns.alpha.kubernetes.io/hostname: minio.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/ttl: "120"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    path: /
+    hosts:
+      - minio.cloud.davydehaas.dev
+    tls:
+      - secretName: minio-tls
+        hosts:
+          - minio.cloud.davydehaas.dev
+
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 256Mi
+      cpu: 50m
+
+  users:
+    - accessKey: loki
+      existingSecret: loki-credentials
+      existingSecretKey: secretKey
+      policy: readwrite
+
+  buckets:
+    - name: loki-chunks
+      policy: none
+      purge: false
+      versioning: false
+    - name: loki-ruler
+      policy: none
+      purge: false
+      versioning: false
+    - name: loki-admin
+      policy: none
+      purge: false
+      versioning: false
+
+  metrics:
+    serviceMonitor:
+      enabled: true
+      includeNode: true
