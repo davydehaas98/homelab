@@ -71,7 +71,6 @@ grafana.ini:
     auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
     token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
     api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
-    signout_redirect_url: "https://auth.cloud.davydehaas.dev/auth/realms/master/protocol/openid-connect/logout?redirect_uri=https%3A%2F%2Fgrafana.cloud.davydehaas.dev%2Flogin"
     role_attribute_path: contains(roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
     allow_assign_grafana_admin: true
     disable_login_form: true
