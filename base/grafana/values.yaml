@@ -15,7 +15,7 @@ datasources:
       - name: Prometheus
         type: prometheus
         uid: prometheus
-        url: http://prometheus-server.prometheus.svc.cluster.local:8080/
+        url: http://prometheus.prometheus.svc.cluster.local:9090/
         access: proxy
         isDefault: true
         jsonData:
