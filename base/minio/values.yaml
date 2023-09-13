@@ -8,7 +8,7 @@ pools: 1
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
-  size: 50Gi
+  size: 5Gi
 
 service:
   type: ClusterIP
