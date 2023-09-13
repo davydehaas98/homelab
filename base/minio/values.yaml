@@ -8,12 +8,7 @@ pools: 1
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
-  size: 5Gi
-
-service:
-  type: ClusterIP
-  clusterIP: ~
-  port: "9000"
+  size: 10Gi
 
 ingress:
   enabled: false
