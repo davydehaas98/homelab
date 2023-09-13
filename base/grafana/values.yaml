@@ -12,23 +12,23 @@ datasources:
       #   uid: loki
       #   url: http://loki-gateway.loki.svc.cluster.local
       #   editable: false
-      # - name: Prometheus
-      #   type: prometheus
-      #   uid: prometheus
-      #   url: http://prometheus.prometheus.svc.cluster.local:9090/
-      #   access: proxy
-      #   isDefault: true
-      #   jsonData:
-      #     httpMethod: POST
-      #     timeInterval: 30s
-      # - name: Alertmanager
-      #   type: alertmanager
-      #   uid: alertmanager
-      #   url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/
-      #   access: proxy
-      #   jsonData:
-      #     handleGrafanaManagedAlerts: false
-      #     implementation: prometheus
+      - name: Prometheus
+        type: prometheus
+        uid: prometheus
+        url: http://prometheus.prometheus.svc.cluster.local:9090/
+        access: proxy
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+          timeInterval: 30s
+      - name: Alertmanager
+        type: alertmanager
+        uid: alertmanager
+        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/
+        access: proxy
+        jsonData:
+          handleGrafanaManagedAlerts: false
+          implementation: prometheus
 
 replicas: 1
 
@@ -71,8 +71,7 @@ grafana.ini:
     auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
     token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
     api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
-    role_attribute_path: contains(realm_access.roles[*], 'admin') && 'GrafanaAdmin' || 'Admin'
-    # role_attribute_path: contains(realm_access.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
+    role_attribute_path: contains(realm_access.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
     allow_assign_grafana_admin: true
     # disable_login_form: true
     disable_signout_menu: false
@@ -108,7 +107,7 @@ persistence:
     - ReadWriteOnce
   size: 16Gi
 
-# admin:
-#   existingSecret: grafana-credentials
-#   userKey: admin-user
-#   passwordKey: admin-password
+admin:
+  existingSecret: grafana-credentials
+  userKey: admin-user
+  passwordKey: admin-password
