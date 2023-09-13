@@ -17,10 +17,10 @@ spec:
       targetRevision: 2.5.1
       helm:
         valueFiles:
-          - $repo/base/vpa/values.yaml
+          - $repo/core/vpa/values.yaml
     - repoURL: https://github.com/davydehaas98/gitops.git
       targetRevision: HEAD
-      path: base/vpa
+      path: core/vpa
 
   destination:
     server: https://kubernetes.default.svc
