@@ -8,7 +8,7 @@ metadata:
 spec:
   project: no-sync
   sources:
-    - repoURL: https://github.com/davydehaas98/gitops
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
     - repoURL: https://metallb.github.io/metallb
