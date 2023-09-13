@@ -12,23 +12,23 @@ datasources:
       #   uid: loki
       #   url: http://loki-gateway.loki.svc.cluster.local
       #   editable: false
-      - name: Prometheus
-        type: prometheus
-        uid: prometheus
-        url: http://prometheus.prometheus.svc.cluster.local:9090/
-        access: proxy
-        isDefault: true
-        jsonData:
-          httpMethod: POST
-          timeInterval: 30s
-      - name: Alertmanager
-        type: alertmanager
-        uid: alertmanager
-        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/
-        access: proxy
-        jsonData:
-          handleGrafanaManagedAlerts: false
-          implementation: prometheus
+      # - name: Prometheus
+      #   type: prometheus
+      #   uid: prometheus
+      #   url: http://prometheus.prometheus.svc.cluster.local:9090/
+      #   access: proxy
+      #   isDefault: true
+      #   jsonData:
+      #     httpMethod: POST
+      #     timeInterval: 30s
+      # - name: Alertmanager
+      #   type: alertmanager
+      #   uid: alertmanager
+      #   url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/
+      #   access: proxy
+      #   jsonData:
+      #     handleGrafanaManagedAlerts: false
+      #     implementation: prometheus
 
 replicas: 1
 
