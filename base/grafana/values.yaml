@@ -6,12 +6,12 @@ datasources:
   datasource.yaml:
     apiVersion: 1
     datasources:
-      # - name: Loki
-      #   type: loki
-      #   access: proxy
-      #   uid: loki
-      #   url: http://loki-gateway.loki.svc.cluster.local
-      #   editable: false
+      - name: Loki
+        type: loki
+        access: proxy
+        uid: loki
+        url: http://loki-gateway.loki.svc.cluster.local:3100
+        editable: false
       - name: Prometheus
         type: prometheus
         uid: prometheus
