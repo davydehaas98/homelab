@@ -23,6 +23,61 @@ extraEnv: |
         name: 'keycloakx-credentials'
         key: keycloak-admin-password
 
+replicas: 1
+
+enableServiceLinks: true
+
+serviceAccount:
+  create: true
+  allowReadPods: false
+
+rbac:
+  create: false
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+
+resources:
+  limits:
+    memory: 1024Mi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns
+    external-dns.alpha.kubernetes.io/hostname: auth.cloud.davydehaas.dev,keycloak.cloud.davydehaas.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
+  rules:
+    - host: auth.cloud.davydehaas.dev
+      paths:
+        - path: '/'
+          pathType: Prefix
+    - host: keycloak.cloud.davydehaas.dev
+      paths:
+        - path: '/'
+          pathType: Prefix
+  tls:
+    - secretName: auth-tls
+      hosts:
+        - auth.cloud.davydehaas.dev
+    - secretName: keycloak-tls
+      hosts:
+        - keycloak.cloud.davydehaas.dev
+
+  console:
+    enabled: false
+
+  networkPolicy:
+    enabled: false
+
 dbchecker:
   enabled: true
   securityContext:
@@ -44,41 +99,6 @@ database:
   port: 5432
   username: keycloak
   database: keycloak
-
-replicas: 1
-
-resources:
-  limits:
-    memory: 1024Mi
-  requests:
-    cpu: 50m
-    memory: 256Mi
-
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-dns
-    external-dns.alpha.kubernetes.io/hostname: auth.cloud.davydehaas.dev,keycloak.cloud.davydehaas.dev
-    external-dns.alpha.kubernetes.io/ttl: "120"
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
-  rules:
-    - host: auth.cloud.davydehaas.dev
-      paths:
-        - path: '/'
-          pathType: Prefix
-    - host: keycloak.cloud.davydehaas.dev
-      paths:
-        - path: '/'
-          pathType: Prefix
-  tls:
-    - secretName: auth-tls
-      hosts:
-        - auth.cloud.davydehaas.dev
-    - secretName: keycloak-tls
-      hosts:
-        - keycloak.cloud.davydehaas.dev
 
 cache:
   stack: default
