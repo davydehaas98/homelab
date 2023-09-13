@@ -18,7 +18,7 @@ spec:
       helm:
         valueFiles:
           - $repo/base/oauth2-proxy/values.yaml
-    - repoURL: https://github.com/davydehaas98/gitops.git
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       path: base/oauth2-proxy
 

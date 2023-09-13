@@ -9,7 +9,7 @@ metadata:
 spec:
   project: always-sync
   source:
-    repoURL: https://github.com/davydehaas98/gitops.git
+    repoURL: git@github.com:davydehaas98/gitops.git
     targetRevision: HEAD
     path: base
 

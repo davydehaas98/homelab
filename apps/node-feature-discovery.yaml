@@ -18,7 +18,7 @@ spec:
       helm:
         valueFiles:
           - $repo/apps/node-feature-discovery/values.yaml
-    - repoURL: https://github.com/davydehaas98/gitops.git
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       path: apps/node-feature-discovery
 

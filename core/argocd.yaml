@@ -9,7 +9,7 @@ metadata:
 spec:
   project: no-sync
   sources:
-    - repoURL: https://github.com/davydehaas98/gitops
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
     - repoURL: https://argoproj.github.io/argo-helm
@@ -18,7 +18,7 @@ spec:
       helm:
         valueFiles:
           - $repo/core/argocd/values.yaml
-    - repoURL: https://github.com/davydehaas98/gitops.git
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       path: core/argocd
 

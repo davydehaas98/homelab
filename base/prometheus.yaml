@@ -19,7 +19,7 @@ spec:
         skipCrds: true
         valueFiles:
           - $repo/base/prometheus/values.yaml
-    - repoURL: https://github.com/davydehaas98/gitops.git
+    - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       path: base/prometheus
 
