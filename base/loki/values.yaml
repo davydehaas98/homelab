@@ -49,7 +49,7 @@ write:
   replicas: 1
   resources: {}
   persistence:
-    size: 10Gi
+    size: 5Gi
   affinity: null
   extraArgs:
     - '-config.expand-env=true'
@@ -62,7 +62,7 @@ read:
   legacyReadTarget: false
   resources: {}
   persistence:
-    size: 10Gi
+    size: 5Gi
   affinity: null
   extraArgs:
     - '-config.expand-env=true'
@@ -74,7 +74,7 @@ backend:
   replicas: 1
   resources: {}
   persistence:
-    size: 10Gi
+    size: 5Gi
     enableStatefulSetAutoDeletePVC: false
   affinity: null
   extraArgs:
