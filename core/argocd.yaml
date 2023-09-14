@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-cd
-      targetRevision: 5.46.2
+      targetRevision: 5.46.3
       helm:
         valueFiles:
           - $repo/core/argocd/values.yaml
