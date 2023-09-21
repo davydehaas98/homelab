@@ -24,7 +24,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: plex
+    namespace: plex-media-server
 
   revisionHistoryLimit: 2
   syncPolicy:
