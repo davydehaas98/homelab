@@ -9,7 +9,7 @@ metadata:
 spec:
   project: no-sync
   sources:
-    - repoURL: https://kyverno.github.io/kyverno/
+    - repoURL: https://kyverno.github.io/kyverno
       chart: kyverno-policies
       targetRevision: 3.0.4
       helm:

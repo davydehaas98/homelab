@@ -12,7 +12,7 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://helm.cilium.io/
+    - repoURL: https://helm.cilium.io
       chart: cilium
       targetRevision: 1.14.2
       helm:

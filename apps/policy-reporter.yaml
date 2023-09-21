@@ -12,7 +12,7 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://kyverno.github.io/policy-reporter/
+    - repoURL: https://kyverno.github.io/policy-reporter
       chart: policy-reporter
       targetRevision: 2.20.0
       helm:

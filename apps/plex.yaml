@@ -12,7 +12,7 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages/plex
+    - repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
       chart: plex-media-server
       targetRevision: 0.1.5
       helm:

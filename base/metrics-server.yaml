@@ -12,7 +12,7 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://kubernetes-sigs.github.io/metrics-server/
+    - repoURL: https://kubernetes-sigs.github.io/metrics-server
       chart: metrics-server
       targetRevision: 3.11.0
       helm:

@@ -12,10 +12,10 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://intel.github.io/helm-charts/
+    - repoURL: https://intel.github.io/helm-charts
       chart: intel-device-plugins-operator
       targetRevision: 0.27.1
-    - repoURL: https://intel.github.io/helm-charts/
+    - repoURL: https://intel.github.io/helm-charts
       chart: intel-device-plugins-gpu
       targetRevision: 0.27.1
       helm:
