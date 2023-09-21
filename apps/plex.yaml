@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: plex
+  namespace: plex
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: git@github.com:davydehaas98/gitops.git
+      targetRevision: HEAD
+      ref: repo
+    - repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages/plex
+      chart: plex-media-server
+      targetRevision: 0.1.5
+      helm:
+        valueFiles:
+          - $repo/apps/plex/values.yaml
+    - repoURL: git@github.com:davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: apps/plex
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: plex
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 10m
