@@ -66,7 +66,7 @@ sudo sed -i -e '/swap/d' /etc/fstab
 ## Install containerd
 https://github.com/containerd/containerd
 ```
-CONTAINERD_VERSION=1.7.5
+CONTAINERD_VERSION=1.7.6
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 sudo mkdir /etc/containerd
@@ -123,7 +123,7 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 ```
-KUBERNETES_VERSION=1.27.5
+KUBERNETES_VERSION=1.27.6
 
 sudo mkdir -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key \
@@ -174,7 +174,7 @@ https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.1
+CILIUM_HELM_VERSION=1.14.2
 
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -191,7 +191,7 @@ helm install cilium cilium/cilium \
 https://github.com/cilium/cilium-cli
 ```
 
-CILIUM_CLI_VERSION=0.15.7
+CILIUM_CLI_VERSION=0.15.8
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
@@ -221,7 +221,7 @@ kubeadm token create --print-join-command
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.45.1
+ARGOCD_HELM_VERSION=5.46.6
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -231,7 +231,7 @@ helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
 ## Install Argo CD CLI
 https://github.com/argoproj/argo-cd
 ```
-ARGOCD_CLI_VERSION=v2.8.2
+ARGOCD_CLI_VERSION=v2.8.4
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -sSL -o argocd-linux-${PROCESSOR_ARCH} https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_CLI_VERSION}/argocd-linux-${PROCESSOR_ARCH}
@@ -285,7 +285,7 @@ kubectl rollout restart -n sealed-secrets deployment sealed-secrets-controller
 ## Install Kubeseal on a node to encrypt secrets
 https://github.com/bitnami-labs/sealed-secrets
 ```
-KUBESEAL_VERSION=0.23.1
+KUBESEAL_VERSION=0.24.0
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
@@ -322,25 +322,26 @@ sudo apt-cache madison kubeadm | tac
 
 ## Upgrade control plane nodes
 Install kubeadm:
+https://kubernetes.io/releases/
 ```
-KUBERNETES_VERSION=1.28.1
+KUBERNETES_VERSION=1.27.6
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
-sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00 kubelet=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
+sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-* kubelet=${KUBERNETES_VERSION}-* kubectl=${KUBERNETES_VERSION}-*
 sudo apt-mark hold kubeadm kubectl kubelet
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 ```
 ## Upgrade worker nodes
 ```
-KUBERNETES_VERSION=1.28.1
+KUBERNETES_VERSION=1.27.6
 NODE_NAME=instance-20230720-1942
 
 kubectl cordon ${NODE_NAME}
 kubectl drain ${NODE_NAME} --ignore-daemonsets --delete-emptydir-data
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
-sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-00 kubelet=${KUBERNETES_VERSION}-00 kubectl=${KUBERNETES_VERSION}-00
+sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-* kubelet=${KUBERNETES_VERSION}-* kubectl=${KUBERNETES_VERSION}-*
 sudo apt-mark hold kubeadm kubectl kubelet
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
