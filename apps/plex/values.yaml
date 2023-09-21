@@ -1,5 +1,5 @@
 pms:
-  configStorage: 10Gi
+  configStorage: 2Gi
 
   resources:
     limits:
@@ -16,6 +16,7 @@ ingress:
     external-dns.alpha.kubernetes.io/ttl: "120"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   url: plex.cloud.davydehaas.dev
+  ingressClassName: nginx
 
 extraEnv:
   PLEX_CLAIM: "claim"
