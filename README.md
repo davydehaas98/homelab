@@ -169,7 +169,7 @@ sudo rm linux-${PROCESSOR_ARCH} -r
 sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 ```
 
-## Install CNI (Container Network Interface) plugin (Cilium)
+## Install Cilium as CNI plugin (Container Network Interface)
 https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
@@ -208,12 +208,25 @@ helm repo update
 helm install prometheus-crds prometheus-community/prometheus-operator-crds
 ```
 
+## Install Sealed Secrets
+```
+SEALED_SECRETS_VERSION=2.13.0
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm repo update
+helm install sealed-secrets sealed-secrets/sealed-secrets \
+  --version ${SEALED_SECRETS_VERSION} \
+  --namespace kube-system \
+  --set-string fullnameOverride=sealed-secrets-controller \
+```
+
 ---
+
 # Configure worker node
 Generate kubeadm join command to use on worker node.
 ```
 kubeadm token create --print-join-command
 ```
+
 ---
 
 # Setup Argo CD
@@ -225,7 +238,7 @@ ARGOCD_HELM_VERSION=5.46.6
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
-  --namespace argocd --create-namespace
+  -n argocd --create-namespace
 ```
 
 ## Install Argo CD CLI
@@ -273,13 +286,15 @@ Log in to ArgoCD.
 
 ## Restore key in new cluster
 ```
-kubectl get secrets -n sealed-secrets -o yaml > out.yaml
+kubectl -n kube-system get secret \
+  -l sealedsecrets.bitnami.com/sealed-secrets-key \
+  -o yaml > key.yaml
 ```
-Update KEY and CRT in out.yaml
+Update `tls.key` and `tls.crt` in key.yaml
 ```
-kubectl apply -f out.yaml
-sudo rm out.yaml
-kubectl rollout restart -n sealed-secrets deployment sealed-secrets-controller
+kubectl apply -f key.yaml
+sudo rm key.yaml
+kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ```
 
 ## Install Kubeseal on a node to encrypt secrets
@@ -294,6 +309,7 @@ rm kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
+
 ### Create secret.yaml
 ```
 apiVersion: v1
@@ -306,6 +322,7 @@ stringData:
   username: admin
   password: p4ssw0rd
 ```
+
 ### Convert secret.yaml to sealed-secret.yaml
 ```
 cat secret.yaml | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
@@ -332,6 +349,7 @@ sudo apt-mark hold kubeadm kubectl kubelet
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 ```
+
 ## Upgrade worker nodes
 ```
 KUBERNETES_VERSION=1.27.6
