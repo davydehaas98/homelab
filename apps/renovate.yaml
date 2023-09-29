@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://docs.renovatebot.com/helm-charts
       chart: renovate
-      targetRevision: 36.106.2
+      targetRevision: 36.109.4
       helm:
         valueFiles:
           - $repo/apps/renovate/values.yaml
