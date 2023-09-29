@@ -1,77 +1,31 @@
-external-dns:
-  sources:
-    - ingress
+sources:
+  - ingress
 
-  provider: cloudflare
+provider: cloudflare
 
-  containerPorts:
-    http: 7979
+cloudflare:
+  secretName: "cloudflare-api-token"
+  proxied: false
 
-  combineFQDNAnnotation: false
-  ignoreHostnameAnnotation: false
-  publishInternalServices: false
-  publishHostIP: false
-  serviceTypeFilter: []
+policy: sync
 
-  cloudflare:
-    secretName: "cloudflare-api-token"
-    proxied: false
+replicaCount: 1
 
-  domainFilters: []
-  excludeDomains: []
-  regexDomainFilter: ""
-  regexDomainExclusion: ""
-  zoneNameFilters: []
-  zoneIdFilters: []
-  annotationFilter: ""
-  labelFilter: ""
+crd:
+  create: false
 
-  dryRun: false
-  triggerLoopOnEvent: false
-  interval: "1m"
-  logLevel: info
-  logFormat: text
-  policy: sync
+serviceAccount:
+  create: true
+  automountServiceAccountToken: true
 
-  registry: "txt"
-  txtPrefix: ""
-  txtSuffix: ""
-  txtOwnerId: ""
-  forceTxtOwnerId: false
-  replicaCount: 1
+resources:
+  limits:
+    memory: 50Mi
+  requests:
+    cpu: 10m
+    memory: 30Mi
 
-  crd:
-    create: false
-
-  service:
+metrics:
+  enabled: true
+  serviceMonitor:
     enabled: true
-    type: ClusterIP
-    ports:
-      http: 7979
-
-  serviceAccount:
-    create: true
-    automountServiceAccountToken: true
-
-  rbac:
-    create: true
-    clusterRole: true
-    apiVersion: v1
-    pspEnabled: false
-
-  podSecurityContext:
-    enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
-
-  resources:
-    limits:
-      memory: 50Mi
-    requests:
-      cpu: 10m
-      memory: 30Mi
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
