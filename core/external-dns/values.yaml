@@ -14,7 +14,7 @@ external-dns:
   serviceTypeFilter: []
 
   cloudflare:
-    secretName: cloudflare-api-token
+    secretName: "cloudflare-api-token"
     proxied: false
 
   domainFilters: []
