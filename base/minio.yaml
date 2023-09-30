@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://charts.min.io
       chart: minio
-      targetRevision: 5.0.13
+      targetRevision: 5.0.14
       helm:
         skipCrds: true
         valueFiles:
