@@ -158,7 +158,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ## Install Helm
 https://github.com/helm/helm
 ```
-HELM_VERSION=3.12.3
+HELM_VERSION=3.13.0
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
@@ -190,8 +190,7 @@ helm install cilium cilium/cilium \
 ## OPTIONAL - Install Cilium CLI
 https://github.com/cilium/cilium-cli
 ```
-
-CILIUM_CLI_VERSION=0.15.8
+CILIUM_CLI_VERSION=0.15.10
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
@@ -202,6 +201,7 @@ rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 ```
 
 ## Install Prometheus CRD
+https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
@@ -209,6 +209,7 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 ```
 
 ## Install Sealed Secrets
+https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
 ```
 SEALED_SECRETS_VERSION=2.13.0
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
@@ -234,7 +235,7 @@ kubeadm token create --print-join-command
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.46.6
+ARGOCD_HELM_VERSION=5.46.7
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -300,7 +301,7 @@ kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ## Install Kubeseal on a node to encrypt secrets
 https://github.com/bitnami-labs/sealed-secrets
 ```
-KUBESEAL_VERSION=0.24.0
+KUBESEAL_VERSION=0.24.1
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
