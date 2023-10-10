@@ -66,7 +66,7 @@ sudo sed -i -e '/swap/d' /etc/fstab
 ## Install containerd
 https://github.com/containerd/containerd
 ```
-CONTAINERD_VERSION=1.7.6
+CONTAINERD_VERSION=1.7.7
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 sudo mkdir /etc/containerd
