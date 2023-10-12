@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
       chart: plex-media-server
-      targetRevision: 0.1.5
+      targetRevision: 0.1.6
       helm:
         valueFiles:
           - $repo/apps/plex/values.yaml
