@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://codecentric.github.io/helm-charts
       chart: keycloakx
-      targetRevision: 2.2.2
+      targetRevision: 2.3.0
       helm:
         valueFiles:
           - $repo/base/keycloakx/values.yaml
