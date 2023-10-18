@@ -10,9 +10,10 @@
   - [Create cluster using kubeadm](#create-cluster-using-kubeadm)
   - [OPTIONAL - Untaint node to allow master node to accept pods](#optional---untaint-node-to-allow-master-node-to-accept-pods)
   - [Install Helm](#install-helm)
-  - [Install CNI (Container Network Interface) plugin (Cilium)](#install-cni-container-network-interface-plugin-cilium)
+  - [Install Cilium as CNI plugin (Container Network Interface)](#install-cilium-as-cni-plugin-container-network-interface)
   - [OPTIONAL - Install Cilium CLI](#optional---install-cilium-cli)
   - [Install Prometheus CRD](#install-prometheus-crd)
+  - [Install Sealed Secrets](#install-sealed-secrets)
 - [Configure worker node](#configure-worker-node)
 - [Setup Argo CD](#setup-argo-cd)
   - [Install Argo CD](#install-argo-cd)
@@ -20,7 +21,7 @@
   - [Setup ArgoCD](#setup-argocd)
 - [Kubeseal](#kubeseal)
   - [Restore key in new cluster](#restore-key-in-new-cluster)
-  - [Install Kubeseal on a node to encrypt secrets](#install-kubeseal-on-a-node-to-encrypt-secrets)
+  - [Install Kubeseal client tool to encrypt secrets](#install-kubeseal-client-tool-to-encrypt-secrets)
     - [Create secret.yaml](#create-secretyaml)
     - [Convert secret.yaml to sealed-secret.yaml](#convert-secretyaml-to-sealed-secretyaml)
 - [Upgrade Kubernetes cluster](#upgrade-kubernetes-cluster)
@@ -148,6 +149,7 @@ sudo kubeadm init --config config.yaml --upload-certs
 sudo mkdir -p $HOME/.kube
 sudo cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo chmod go-r ~/.kube/config
 ```
 
 ## OPTIONAL - Untaint node to allow master node to accept pods
@@ -298,7 +300,7 @@ sudo rm key.yaml
 kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ```
 
-## Install Kubeseal on a node to encrypt secrets
+## Install Kubeseal client tool to encrypt secrets
 https://github.com/bitnami-labs/sealed-secrets
 ```
 KUBESEAL_VERSION=0.24.1
@@ -326,7 +328,7 @@ stringData:
 
 ### Convert secret.yaml to sealed-secret.yaml
 ```
-cat secret.yaml | kubeseal --controller-namespace sealed-secrets --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
+cat secret.yaml | kubeseal --format yaml > sealed-secret.yaml
 ```
 
 ---

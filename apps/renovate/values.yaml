@@ -1,14 +1,6 @@
-renovate:
-  config: |-
-    {
-      "extends": [
-        "github>davydehaas98/renovate-config:default.json"
-      ],
-      "baseBranches": [
-        "main"
-      ],
-      "ignorePaths": ["disabled/**"],
-      "argocd": {
-        "fileMatch": ["\\.yaml$"]
-      }
-    }
+cronjob:
+  schedule: 0 * * * *
+  timeZone: 'UTC'
+ssh_config:
+  enabled: false
+  existingSecret: github-secret
