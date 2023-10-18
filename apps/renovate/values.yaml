@@ -3,4 +3,4 @@ cronjob:
   timeZone: 'UTC'
 ssh_config:
   enabled: false
-  existingSecret: github-secret
+  existingSecret: github-token

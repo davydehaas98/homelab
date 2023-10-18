@@ -1,0 +1,25 @@
+# Sealed secret
+```
+cat <<EOF> secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-token
+  namespace: renovate
+type: Opaque
+stringData:
+  GITHUB_COM_TOKEN: 'any-personal-user-token-for-github-com-for-fetching-changelogs'
+  # You can set RENOVATE_AUTODISCOVER to true to run Renovate on all repos you have push access to
+  RENOVATE_AUTODISCOVER: 'false'
+  RENOVATE_ENDPOINT: 'https://github.company.com/api/v3'
+  RENOVATE_GIT_AUTHOR: 'Renovate Bot <bot@renovateapp.com>'
+  RENOVATE_PLATFORM: 'github'
+  RENOVATE_TOKEN: 'your-github-enterprise-renovate-user-token'
+EOF
+```
+```
+cat secret.yaml | kubeseal \
+--format yaml > sealed-secret.yaml
+
+cat sealed-secret.yaml
+```
