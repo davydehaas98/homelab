@@ -33,14 +33,12 @@ metadata:
   namespace: postgresql
 type: Opaque
 stringData:
-  postgres-password:
-  replication-password:
+  postgres-password: RgwwwG623PwhLQreHxq
+  replication-password: 6Qb9MQEXLVKwhFBJyRDj
 EOF
 
 cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
+  --format yaml > sealed-secret.yaml
 
 cat sealed-secret.yaml
 ```
