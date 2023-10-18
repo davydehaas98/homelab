@@ -5,5 +5,5 @@ existingSecret: github-token
 ssh_config:
   enabled: false
   existingSecret: github-ssh
-# renovate:
-#   existingConfigFile: renovate-config
+renovate:
+  existingConfigFile: config.json
