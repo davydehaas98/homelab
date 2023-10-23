@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://charts.jenkins.io
       chart: jenkins
-      targetRevision: 4.8.1
+      targetRevision: 4.8.2
       helm:
         valueFiles:
           - $repo/apps/jenkins/values.yaml
