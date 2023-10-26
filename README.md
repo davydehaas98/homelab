@@ -124,7 +124,7 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 
 sudo mkdir -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key \
@@ -345,7 +345,7 @@ sudo apt-cache madison kubeadm | tac
 Install kubeadm:
 https://kubernetes.io/releases/
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
 sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-* kubelet=${KUBERNETES_VERSION}-* kubectl=${KUBERNETES_VERSION}-*
@@ -356,7 +356,7 @@ sudo systemctl restart kubelet
 
 ## Upgrade worker nodes
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 NODE_NAME=instance-20230720-1942
 
 kubectl cordon ${NODE_NAME}
