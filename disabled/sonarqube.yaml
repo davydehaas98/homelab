@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: registry-1.docker.io/bitnamicharts
       chart: sonarqube
-      targetRevision: 4.0.2
+      targetRevision: 4.1.0
       helm:
         valueFiles:
           - $repo/apps/sonarqube/values.yaml
