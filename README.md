@@ -160,7 +160,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ## Install Helm
 https://github.com/helm/helm
 ```
-HELM_VERSION=3.13.0
+HELM_VERSION=3.13.1
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
@@ -176,7 +176,7 @@ https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.2
+CILIUM_HELM_VERSION=1.14.3
 
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -192,7 +192,7 @@ helm install cilium cilium/cilium \
 ## OPTIONAL - Install Cilium CLI
 https://github.com/cilium/cilium-cli
 ```
-CILIUM_CLI_VERSION=0.15.10
+CILIUM_CLI_VERSION=0.15.12
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
