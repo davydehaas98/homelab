@@ -219,7 +219,7 @@ helm repo update
 helm install sealed-secrets sealed-secrets/sealed-secrets \
   --version ${SEALED_SECRETS_VERSION} \
   --namespace kube-system \
-  --set-string fullnameOverride=sealed-secrets-controller \
+  --set-string fullnameOverride=sealed-secrets-controller
 ```
 
 ---
