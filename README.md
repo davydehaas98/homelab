@@ -124,7 +124,7 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 
 sudo mkdir -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key \
@@ -160,7 +160,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ## Install Helm
 https://github.com/helm/helm
 ```
-HELM_VERSION=3.13.0
+HELM_VERSION=3.13.1
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
@@ -176,7 +176,7 @@ https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.2
+CILIUM_HELM_VERSION=1.14.3
 
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -192,7 +192,7 @@ helm install cilium cilium/cilium \
 ## OPTIONAL - Install Cilium CLI
 https://github.com/cilium/cilium-cli
 ```
-CILIUM_CLI_VERSION=0.15.10
+CILIUM_CLI_VERSION=0.15.12
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
@@ -213,13 +213,13 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 ## Install Sealed Secrets
 https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
 ```
-SEALED_SECRETS_VERSION=2.13.0
+SEALED_SECRETS_VERSION=2.13.2
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm repo update
 helm install sealed-secrets sealed-secrets/sealed-secrets \
   --version ${SEALED_SECRETS_VERSION} \
   --namespace kube-system \
-  --set-string fullnameOverride=sealed-secrets-controller \
+  --set-string fullnameOverride=sealed-secrets-controller
 ```
 
 ---
@@ -237,7 +237,7 @@ kubeadm token create --print-join-command
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.46.7
+ARGOCD_HELM_VERSION=5.50.1
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -345,7 +345,7 @@ sudo apt-cache madison kubeadm | tac
 Install kubeadm:
 https://kubernetes.io/releases/
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
 sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-* kubelet=${KUBERNETES_VERSION}-* kubectl=${KUBERNETES_VERSION}-*
@@ -356,7 +356,7 @@ sudo systemctl restart kubelet
 
 ## Upgrade worker nodes
 ```
-KUBERNETES_VERSION=1.27.6
+KUBERNETES_VERSION=1.27.7
 NODE_NAME=instance-20230720-1942
 
 kubectl cordon ${NODE_NAME}
