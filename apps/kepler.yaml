@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kepler
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: no-sync
+  sources:
+    - repoURL: git@github.com:davydehaas98/gitops.git
+      targetRevision: HEAD
+      ref: repo
+    - repoURL: https://sustainable-computing-io.github.io
+      chart: kepler-helm-chart
+      targetRevision: 0.5.3
+      helm:
+        valueFiles:
+          - $repo/apps/kepler/values.yaml
+    - repoURL: git@github.com:davydehaas98/gitops.git
+      targetRevision: HEAD
+      path: apps/kepler
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kepler
+
+  revisionHistoryLimit: 2
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 10m

@@ -47,7 +47,6 @@ ingress:
       hosts:
         - grafana.cloud.davydehaas.dev
 
-
 extraSecretMounts:
   - name: auth-generic-oauth-secret-mount
     secretName: grafana-oauth-credentials
