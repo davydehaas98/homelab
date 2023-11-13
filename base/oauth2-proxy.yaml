@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://oauth2-proxy.github.io/manifests
       chart: oauth2-proxy
-      targetRevision: 6.18.1
+      targetRevision: 6.19.0
       helm:
         valueFiles:
           - $repo/base/oauth2-proxy/values.yaml
