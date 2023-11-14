@@ -1,4 +1,5 @@
 # Sealed secret
+## gitops-repo-ssh
 ```
 cat <<EOF> secret.yaml
 apiVersion: v1
@@ -17,6 +18,24 @@ stringData:
     -----END OPENSSH PRIVATE KEY-----
 EOF
 ```
+## argocd-secret
+```
+cat <<EOF> secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-secret
+  namespace: argocd
+spec:
+  stringData:
+    admin.password:
+    admin.passwordMtime:
+    server.secretkey:
+EOF
+```
+
+---
+
 ```
 cat secret.yaml | kubeseal \
 --controller-namespace sealed-secrets \

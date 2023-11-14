@@ -12,8 +12,8 @@ spec:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
       ref: repo
-    - repoURL: https://sustainable-computing-io.github.io
-      chart: kepler-helm-chart
+    - repoURL: https://sustainable-computing-io.github.io/kepler-helm-chart
+      chart: kepler
       targetRevision: 0.5.3
       helm:
         valueFiles:

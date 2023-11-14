@@ -222,6 +222,7 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
   --set-string fullnameOverride=sealed-secrets-controller
 ```
 
+
 ---
 
 # Configure worker node
@@ -237,7 +238,7 @@ kubeadm token create --print-join-command
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.50.1
+ARGOCD_HELM_VERSION=5.51.1
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -262,6 +263,7 @@ argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
   --repo https://github.com/davydehaas98/gitops.git --path core \
   --dest-server https://kubernetes.default.svc --dest-namespace argocd
+
 argocd app sync argocd
 argocd app sync metallb \
   ingress-nginx \
@@ -277,8 +279,8 @@ argocd app sync cert-manager
 
 ## Setup ArgoCD
 ```
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
-kubectl get svc argocd-server -n argocd
+kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "NodePort"}}'
+kubectl -n argocd get svc argocd-server
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
 Log in to ArgoCD.
@@ -295,6 +297,7 @@ kubectl -n kube-system get secret \
   -o yaml > key.yaml
 ```
 Update `tls.key` and `tls.crt` in key.yaml
+kubectl -n kube-system patch secret sealed-secrets-key
 ```
 kubectl apply -f key.yaml
 sudo rm key.yaml
@@ -324,7 +327,7 @@ metadata:
 type: Opaque
 stringData:
   username: admin
-  password: p4ssw0rd
+  password: password123!
 ```
 
 ### Convert secret.yaml to sealed-secret.yaml
