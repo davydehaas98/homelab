@@ -176,7 +176,7 @@ https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.3
+CILIUM_HELM_VERSION=1.14.4
 
 helm repo add cilium https://helm.cilium.io/
 helm repo update
