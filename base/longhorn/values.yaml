@@ -6,6 +6,9 @@ persistence:
   defaultDataLocality: best-effort
   defaultReplicaAutoBalance: best-effort
 
+helmPreUpgradeCheckerJob:
+  enabled: false
+
 csi:
   attacherReplicaCount: 1
   provisionerReplicaCount: 1

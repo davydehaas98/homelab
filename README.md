@@ -14,16 +14,16 @@
   - [OPTIONAL - Install Cilium CLI](#optional---install-cilium-cli)
   - [Install Prometheus CRD](#install-prometheus-crd)
   - [Install Sealed Secrets](#install-sealed-secrets)
-- [Configure worker node](#configure-worker-node)
+  - [Restore key in new cluster](#restore-key-in-new-cluster)
 - [Setup Argo CD](#setup-argo-cd)
   - [Install Argo CD](#install-argo-cd)
   - [Install Argo CD CLI](#install-argo-cd-cli)
-  - [Setup ArgoCD](#setup-argocd)
+  - [Setup Argo CD via browser](#setup-argo-cd-via-browser)
 - [Kubeseal](#kubeseal)
-  - [Restore key in new cluster](#restore-key-in-new-cluster)
   - [Install Kubeseal client tool to encrypt secrets](#install-kubeseal-client-tool-to-encrypt-secrets)
     - [Create secret.yaml](#create-secretyaml)
     - [Convert secret.yaml to sealed-secret.yaml](#convert-secretyaml-to-sealed-secretyaml)
+- [Configure worker node](#configure-worker-node)
 - [Upgrade Kubernetes cluster](#upgrade-kubernetes-cluster)
   - [Upgrade control plane nodes](#upgrade-control-plane-nodes)
   - [Upgrade worker nodes](#upgrade-worker-nodes)
@@ -222,13 +222,19 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
   --set-string fullnameOverride=sealed-secrets-controller
 ```
 
-
----
-
-# Configure worker node
-Generate kubeadm join command to use on worker node.
+## Restore key in new cluster
+If you have an existing key backed up, restore it as shown below.
 ```
-kubeadm token create --print-join-command
+kubectl -n kube-system get secret \
+  -l sealedsecrets.bitnami.com/sealed-secrets-key \
+  -o yaml > key.yaml
+```
+Update `tls.key` and `tls.crt` in key.yaml
+kubectl -n kube-system patch secret sealed-secrets-key
+```
+kubectl apply -f key.yaml
+sudo rm key.yaml
+kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ```
 
 ---
@@ -267,17 +273,13 @@ argocd app create argocd \
 argocd app sync argocd
 argocd app sync metallb \
   ingress-nginx \
-  sealed-secrets
+  sealed-secrets \
+  external-dns \
+  cert-manager
 ```
 
-Set cloudflare-api-token sealed secret.
-
-```
-argocd app sync external-dns
-argocd app sync cert-manager
-```
-
-## Setup ArgoCD
+## Setup Argo CD via browser
+Alternatively, you can setup Argo CD via the browser instead.
 ```
 kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "NodePort"}}'
 kubectl -n argocd get svc argocd-server
@@ -289,20 +291,6 @@ Log in to ArgoCD.
 
 # Kubeseal
 > Kubeseal makes it possible to store secrets encrypted on Git that only the cluster itself can decrypt.
-
-## Restore key in new cluster
-```
-kubectl -n kube-system get secret \
-  -l sealedsecrets.bitnami.com/sealed-secrets-key \
-  -o yaml > key.yaml
-```
-Update `tls.key` and `tls.crt` in key.yaml
-kubectl -n kube-system patch secret sealed-secrets-key
-```
-kubectl apply -f key.yaml
-sudo rm key.yaml
-kubectl -n kube-system rollout restart deployment sealed-secrets-controller
-```
 
 ## Install Kubeseal client tool to encrypt secrets
 https://github.com/bitnami-labs/sealed-secrets
@@ -337,6 +325,14 @@ cat secret.yaml | kubeseal --format yaml > sealed-secret.yaml
 
 ---
 
+# Configure worker node
+Generate kubeadm join command to use on worker node.
+```
+kubeadm token create --print-join-command
+```
+
+---
+
 # Upgrade Kubernetes cluster
 Find the Kubernetes version in the apt-cache madison list you want to upgrade to.)
 ```
@@ -360,7 +356,7 @@ sudo systemctl restart kubelet
 ## Upgrade worker nodes
 ```
 KUBERNETES_VERSION=1.27.7
-NODE_NAME=instance-20230720-1942
+NODE_NAME=instance-1
 
 kubectl cordon ${NODE_NAME}
 kubectl drain ${NODE_NAME} --ignore-daemonsets --delete-emptydir-data
