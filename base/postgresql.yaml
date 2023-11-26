@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: registry-1.docker.io/bitnamicharts
       chart: postgresql
-      targetRevision: 13.2.15
+      targetRevision: 13.2.18
       helm:
         valueFiles:
           - $repo/base/postgresql/values.yaml
