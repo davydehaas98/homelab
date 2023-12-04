@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://mojo2600.github.io/pihole-kubernetes
       chart: pihole
-      targetRevision: 2.18.0
+      targetRevision: 2.19.0
       helm:
         valueFiles:
           - $repo/apps/pihole/values.yaml
