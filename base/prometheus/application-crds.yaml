@@ -12,7 +12,7 @@ spec:
   sources:
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: prometheus-operator-crds
-      targetRevision: 7.0.0
+      targetRevision: 8.0.1
 
   destination:
     server: https://kubernetes.default.svc
