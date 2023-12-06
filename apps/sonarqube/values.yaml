@@ -1,6 +1,12 @@
 
 replicaCount: 1
 
+service:
+  type: ClusterIP
+  ports:
+    http: 80
+    elastic: 9001
+
 ingress:
   enabled: true
   annotations:
