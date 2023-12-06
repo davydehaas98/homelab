@@ -1,0 +1,22 @@
+resources:
+  limits:
+    memory: 4096Mi
+  requests:
+    cpu: 100m
+    memory: 2048Mi
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns
+    external-dns.alpha.kubernetes.io/hostname: sonarqube.cloud.davydehaas.dev
+    external-dns.alpha.kubernetes.io/ttl: "120"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  ingressClassName: nginx
+  hosts:
+    - sonarqube.cloud.davydehaas.dev
+  tls:
+    - secretName: sonarqube-tls
+      hosts:
+        - sonarqube.cloud.davydehaas.dev
