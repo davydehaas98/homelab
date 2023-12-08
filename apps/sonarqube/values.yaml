@@ -17,9 +17,8 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "64m"
   ingressClassName: nginx
-  hosts:
-    - name: sonarqube.cloud.davydehaas.dev
-      path: /
+  hostname: sonarqube.cloud.davydehaas.dev
+  path: /
   tls:
     - secretName: sonarqube-tls
       hosts:
