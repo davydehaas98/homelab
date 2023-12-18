@@ -14,7 +14,7 @@ spec:
       ref: repo
     - repoURL: https://charts.fairwinds.com/stable
       chart: vpa
-      targetRevision: 4.0.0
+      targetRevision: 4.0.1
       helm:
         valueFiles:
           - $repo/core/vpa/values.yaml
