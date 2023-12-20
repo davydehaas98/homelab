@@ -17,7 +17,7 @@ spec:
       targetRevision: 0.29.0
     - repoURL: https://intel.github.io/helm-charts
       chart: intel-device-plugins-gpu
-      targetRevision: 0.28.0
+      targetRevision: 0.29.0
       helm:
         valueFiles:
           - $repo/apps/intel-device-plugins/values.yaml
