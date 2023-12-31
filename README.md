@@ -67,7 +67,7 @@ sudo sed -i -e '/swap/d' /etc/fstab
 ## Install containerd
 https://github.com/containerd/containerd
 ```
-CONTAINERD_VERSION=1.7.7
+CONTAINERD_VERSION=1.7.11
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 sudo mkdir /etc/containerd
@@ -97,7 +97,7 @@ sudo systemctl enable --now containerd
 ## Install runc
 https://github.com/opencontainers/runc
 ```
-RUNC_VERSION=1.1.9
+RUNC_VERSION=1.1.10
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo runc.${PROCESSOR_ARCH} \
@@ -110,7 +110,7 @@ rm runc.${PROCESSOR_ARCH}
 ## Install CNI (Container Network Interface) network plugins
 https://github.com/containernetworking/plugins
 ```
-CNI_VERSION=1.3.0
+CNI_VERSION=1.4.0
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz \
@@ -123,8 +123,9 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 ```
 
 ## Install kubeadm, kubelet & kubectl
+https://kubernetes.io/releases
 ```
-KUBERNETES_VERSION=1.27.7
+KUBERNETES_VERSION=1.27.9
 
 sudo mkdir -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key \
@@ -211,9 +212,9 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 ```
 
 ## Install Sealed Secrets
-https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
+https://github.com/bitnami-labs/sealed-secrets/tree/main
 ```
-SEALED_SECRETS_VERSION=2.13.2
+SEALED_SECRETS_VERSION=2.14.1
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm repo update
 helm install sealed-secrets sealed-secrets/sealed-secrets \
@@ -244,7 +245,7 @@ kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.51.1
+ARGOCD_HELM_VERSION=5.52.0
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
@@ -254,7 +255,7 @@ helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
 ## Install Argo CD CLI
 https://github.com/argoproj/argo-cd
 ```
-ARGOCD_CLI_VERSION=v2.8.4
+ARGOCD_CLI_VERSION=v2.9.4
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -sSL -o argocd-linux-${PROCESSOR_ARCH} https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_CLI_VERSION}/argocd-linux-${PROCESSOR_ARCH}
@@ -293,9 +294,9 @@ Log in to ArgoCD.
 > Kubeseal makes it possible to store secrets encrypted on Git that only the cluster itself can decrypt.
 
 ## Install Kubeseal client tool to encrypt secrets
-https://github.com/bitnami-labs/sealed-secrets
+https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
 ```
-KUBESEAL_VERSION=0.24.1
+KUBESEAL_VERSION=0.24.5
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
@@ -344,7 +345,7 @@ sudo apt-cache madison kubeadm | tac
 Install kubeadm:
 https://kubernetes.io/releases/
 ```
-KUBERNETES_VERSION=1.27.7
+KUBERNETES_VERSION=1.27.9
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
 sudo apt-get install -y kubeadm=${KUBERNETES_VERSION}-* kubelet=${KUBERNETES_VERSION}-* kubectl=${KUBERNETES_VERSION}-*
@@ -355,7 +356,7 @@ sudo systemctl restart kubelet
 
 ## Upgrade worker nodes
 ```
-KUBERNETES_VERSION=1.27.7
+KUBERNETES_VERSION=1.27.9
 NODE_NAME=instance-1
 
 kubectl cordon ${NODE_NAME}
