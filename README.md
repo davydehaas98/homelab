@@ -1,10 +1,11 @@
 - [Setup nodes](#setup-nodes)
-  - [Install general dependencies](#install-general-dependencies)
-  - [Enable iptables bridged traffic on the node](#enable-iptables-bridged-traffic-on-the-node)
-  - [Ensure swap is disabled](#ensure-swap-is-disabled)
-  - [Install containerd](#install-containerd)
+  - [Enable iptables bridged traffic](#enable-iptables-bridged-traffic)
+  - [Configure kernel](#configure-kernel)
+  - [Disable and stop swap from mounting](#disable-and-stop-swap-from-mounting)
+  - [Install and update dependencies](#install-and-update-dependencies)
+  - [Install and configure containerd](#install-and-configure-containerd)
   - [Install runc](#install-runc)
-  - [Install CNI (Container Network Interface) network plugins](#install-cni-container-network-interface-network-plugins)
+  - [Install Container Network Interface (CNI) network plugins](#install-container-network-interface-cni-network-plugins)
   - [Install kubeadm, kubelet \& kubectl](#install-kubeadm-kubelet--kubectl)
 - [Configure Kubernetes Control Plane](#configure-kubernetes-control-plane)
   - [Create cluster using kubeadm](#create-cluster-using-kubeadm)
@@ -30,17 +31,8 @@
 
 
 # Setup nodes
-## Install general dependencies
+## Enable iptables bridged traffic
 ```
-sudo apt-get update
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
-```
-
-## Enable iptables bridged traffic on the node
-```
-echo "fs.inotify.max_user_instances=512" | sudo tee -a /etc/sysctl.conf
-echo "fs.inotify.max_user_watches=204800" | sudo tee -a /etc/sysctl.conf
-
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -48,8 +40,16 @@ EOF
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
+```
 
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+## Configure kernel
+```
+cat <<EOF | sudo tee /etc/sysctl.d/inotify.conf
+fs.inotify.max_user_instances=8192
+fs.inotify.max_user_watches=524288
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf <<EOF
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
@@ -58,17 +58,30 @@ EOF
 sudo sysctl --system
 ```
 
-## Ensure swap is disabled
+## Disable and stop swap from mounting
 ```
 sudo swapoff -a
 sudo sed -i -e '/swap/d' /etc/fstab
 ```
 
-## Install containerd
+## Install and update dependencies
+Longhorn needs open-iscsi & nfs-common
+```
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg open-iscsi nfs-common
+```
+
+## Install and configure containerd
 https://github.com/containerd/containerd
 ```
-CONTAINERD_VERSION=1.7.11
+CONTAINERD_VERSION=1.7.12
 PROCESSOR_ARCH=$(dpkg --print-architecture)
+
+curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
+  https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+
+sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
+sudo rm containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 sudo mkdir /etc/containerd
 cat <<EOF | sudo tee /etc/containerd/config.toml
@@ -79,12 +92,6 @@ version = 2
     [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
       SystemdCgroup = true
 EOF
-
-curl -fsSLo containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
-  https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
-
-sudo tar Cxzvf /usr/local containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
-sudo rm containerd-${CONTAINERD_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 # Start containerd via systemd
 sudo curl -fsSLo /etc/systemd/system/containerd.service \
@@ -97,7 +104,7 @@ sudo systemctl enable --now containerd
 ## Install runc
 https://github.com/opencontainers/runc
 ```
-RUNC_VERSION=1.1.10
+RUNC_VERSION=1.1.11
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo runc.${PROCESSOR_ARCH} \
@@ -107,7 +114,7 @@ sudo install -m 755 runc.${PROCESSOR_ARCH} /usr/local/sbin/runc
 rm runc.${PROCESSOR_ARCH}
 ```
 
-## Install CNI (Container Network Interface) network plugins
+## Install Container Network Interface (CNI) network plugins
 https://github.com/containernetworking/plugins
 ```
 CNI_VERSION=1.4.0
@@ -161,7 +168,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ## Install Helm
 https://github.com/helm/helm
 ```
-HELM_VERSION=3.13.1
+HELM_VERSION=3.13.3
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -fsSLo helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz \
@@ -177,7 +184,7 @@ https://github.com/cilium/cilium
 ```
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
-CILIUM_HELM_VERSION=1.14.4
+CILIUM_HELM_VERSION=1.14.5
 
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -193,7 +200,7 @@ helm install cilium cilium/cilium \
 ## OPTIONAL - Install Cilium CLI
 https://github.com/cilium/cilium-cli
 ```
-CILIUM_CLI_VERSION=0.15.12
+CILIUM_CLI_VERSION=0.15.20
 CLI_ARCH=$(dpkg --print-architecture)
 
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
