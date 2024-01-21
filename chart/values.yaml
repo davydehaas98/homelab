@@ -1,0 +1,82 @@
+applications:
+  argocd:
+    deploy: true
+    namespace: argocd
+  certManager:
+    deploy: true
+    autoSync: true
+  cilium:
+    deploy: true
+    namespace: kube-system
+  externalDns:
+    deploy: true
+    autoSync: true
+  # genericDevicePlugin:
+  #   deploy: true
+  #   autoSync: true
+  grafana:
+    deploy: true
+    autoSync: true
+  grafanaDashboards:
+    deploy: true
+    autoSync: true
+    namespace: grafana
+    serverSideApply: true
+  homeAssistant:
+    deploy: true
+    autoSync: true
+  ingressNginx:
+    deploy: true
+    autoSync: true
+  intelDevicePluginsGpu:
+    deploy: true
+    ignoreDifferences:
+      - group: "deviceplugin.intel.com"
+        kind: "GpuDevicePlugin"
+        jsonPointers:
+          - /spec/resourceManager
+  kepler:
+    deploy: false
+    autoSync: true
+  loki:
+    deploy: true
+    autoSync: true
+  longhorn:
+    deploy: true
+    namespace: longhorn-system
+  metallb:
+    deploy: true
+    ignoreDifferences:
+      - group: "apiextensions.k8s.io"
+        kind: "CustomResourceDefinition"
+        jsonPointers:
+          - /spec/conversion/webhook/clientConfig/caBundle
+  metricsServer:
+    deploy: true
+    autoSync: true
+  minio:
+    deploy: true
+    autoSync: true
+  mongodbCommunityOperator:
+    deploy: false
+    autoSync: true
+  nextcloud:
+    deploy: false
+    autoSync: true
+  nodeFeatureDiscovery:
+    deploy: true
+    autoSync: true
+  prometheusCrd:
+    deploy: true
+    autoSync: true
+    namespace: defaults
+    serverSideApply: true
+  promtail:
+    deploy: true
+    autoSync: true
+  sealedSecrets:
+    deploy: true
+    autoSync: true
+  vpa:
+    deploy: true
+    autoSync: true

@@ -1,0 +1,76 @@
+cilium:
+  k8sServiceHost: cloud.davydehaas.dev
+  k8sServicePort: 6443
+
+  kubeProxyReplacement: strict
+
+  bgpControlPlane:
+    enabled: false
+
+  certgen:
+    ttlSecondsAfterFinished: null
+
+  rollOutCiliumPods: true
+
+  operator:
+    replicas: 1
+
+  resources:
+    limits:
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+  monitor:
+    enabled: true
+
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  dashboards:
+    enabled: true
+
+  hubble:
+    enabled: true
+
+    metrics:
+      enableOpenMetrics: true
+      serviceMonitor:
+        enabled: true
+      dashboards:
+        enabled: true
+
+    relay:
+      enabled: true
+      rollOutPods: true
+      resources: {}
+      prometheus:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+
+    ui:
+      enabled: true
+      rollOutPods: true
+      backend:
+        resources: {}
+      frontend:
+        resources: {}
+
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: hubble.cloud.davydehaas.dev
+          external-dns.alpha.kubernetes.io/ttl: "120"
+          cert-manager.io/cluster-issuer: letsencrypt-dns
+          nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+          nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+        hosts:
+          - hubble.cloud.davydehaas.dev
+        tls:
+          - secretName: hubble-tls
+            hosts:
+              - hubble.cloud.davydehaas.dev
+

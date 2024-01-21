@@ -1,0 +1,57 @@
+longhorn:
+  persistence:
+    defaultClass: true
+    defaultFsType: ext4
+    defaultClassReplicaCount: 1
+    reclaimPolicy: Retain
+    defaultDataLocality: best-effort
+    defaultReplicaAutoBalance: best-effort
+
+  helmPreUpgradeCheckerJob:
+    enabled: false
+
+  csi:
+    attacherReplicaCount: 1
+    provisionerReplicaCount: 1
+    resizerReplicaCount: 1
+    snapshotterReplicaCount: 1
+
+  defaultSettings:
+    defaultReplicaCount: 1
+    backupTarget: s3://backups@default/
+    backupTargetCredentialSecret: s3-credentials
+    defaultLonghornStaticStorageClass: longhorn
+    backupConcurrentLimit: 2
+    restoreConcurrentLimit: 2
+
+  longhornUI:
+    replicas: 1
+
+  longhornConversionWebhook:
+    replicas: 1
+
+  longhornAdmissionWebhook:
+    replicas: 1
+
+  longhornRecoveryBackend:
+    replicas: 1
+
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-dns
+      external-dns.alpha.kubernetes.io/hostname: longhorn.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/ttl: "120"
+      nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    host: longhorn.cloud.davydehaas.dev
+    tls: true
+    tlsSecret: longhorn-tls

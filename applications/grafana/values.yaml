@@ -1,0 +1,113 @@
+grafana:
+  sidecar:
+    dashboards:
+      enabled: true
+
+  datasources:
+    datasource.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          uid: loki
+          url: http://loki-gateway.loki.svc.cluster.local:3100
+          editable: false
+        - name: Prometheus
+          type: prometheus
+          uid: prometheus
+          url: http://prometheus-server.prometheus.svc.cluster.local:80
+          access: proxy
+          isDefault: true
+          jsonData:
+            httpMethod: POST
+            timeInterval: 30s
+        - name: Alertmanager
+          type: alertmanager
+          uid: alertmanager
+          url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
+          access: proxy
+          jsonData:
+            handleGrafanaManagedAlerts: false
+            implementation: prometheus
+
+  replicas: 1
+
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-dns
+      external-dns.alpha.kubernetes.io/hostname: grafana.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/ttl: "120"
+      ingress.kubernetes.io/rewrite-target: /
+    path: /
+    hosts:
+      - grafana.cloud.davydehaas.dev
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.cloud.davydehaas.dev
+
+  extraSecretMounts:
+    - name: auth-generic-oauth-secret-mount
+      secretName: grafana-oauth-credentials
+      defaultMode: 0440
+      mountPath: /etc/secrets/auth_generic_oauth
+      readOnly: true
+
+  grafana.ini:
+    auth:
+      oauth_allow_insecure_email_lookup: true
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak
+      allow_sign_up: true
+      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+      scopes: "openid email profile offline_access roles"
+      email_attribute_path: email
+      login_attribute_path: username
+      name_attribute_path: full_name
+      auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
+      token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
+      api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
+      role_attribute_path: contains(realm_access.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
+      allow_assign_grafana_admin: true
+      # disable_login_form: true
+      disable_signout_menu: false
+    paths:
+      data: /var/lib/grafana
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: https://grafana.net
+    server:
+      domain: "https://grafana.cloud.davydehaas.dev"
+      root_url: "https://grafana.cloud.davydehaas.dev"
+
+  serviceMonitor:
+    enabled: true
+
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+  persistence:
+    type: StatefulSet
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 16Gi
+
+  admin:
+    existingSecret: grafana-credentials
+    userKey: admin-user
+    passwordKey: admin-password

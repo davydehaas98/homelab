@@ -1,0 +1,32 @@
+external-dns:
+  sources:
+    - ingress
+
+  provider: cloudflare
+
+  cloudflare:
+    secretName: "cloudflare-api-token"
+    proxied: false
+
+  policy: sync
+
+  replicaCount: 1
+
+  crd:
+    create: false
+
+  serviceAccount:
+    create: true
+    automountServiceAccountToken: true
+
+  resources:
+    limits:
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 30Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
