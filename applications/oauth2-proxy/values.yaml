@@ -1,0 +1,65 @@
+oauth2-proxy:
+  config:
+    existingSecret: oauth2-proxy-credentials
+    configFile: |-
+      email_domains = [ "*" ]
+      upstreams = [ "file:///dev/null" ]
+      provider = "keycloak-oidc"
+      oidc_issuer_url = "https://auth.cloud.davydehaas.dev/realms/master"
+      scope = "openid email"
+
+  serviceAccount:
+    enabled: true
+
+  ingress:
+    enabled: true
+    path: /oauth2
+    hosts:
+      - hubble.cloud.davydehaas.dev
+      - longhorn.cloud.davydehaas.dev
+      - prometheus.cloud.davydehaas.dev
+    tls:
+      - secretName: hubble-tls
+        hosts:
+          - hubble.cloud.davydehaas.dev
+      - secretName: longhorn-tls
+        hosts:
+          - longhorn.cloud.davydehaas.dev
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.cloud.davydehaas.dev
+
+  resources:
+    limits:
+      memory: 100Mi
+    requests:
+      cpu: 30m
+      memory: 50Mi
+
+  proxyVarsAsSecrets: true
+
+  securityContext:
+    enabled: false
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    runAsUser: 2000
+
+  replicaCount: 1
+
+  podDisruptionBudget:
+    enabled: false
+
+  httpScheme: http
+
+  sessionStorage:
+    type: cookie
+
+  checkDeprecation: true
+
+  extraArgs:
+    - "--session-cookie-minimal"
+
+  metrics:
+    enabled: true
+    servicemonitor:
+      enabled: true

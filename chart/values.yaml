@@ -11,9 +11,6 @@ applications:
   externalDns:
     deploy: true
     autoSync: true
-  # genericDevicePlugin:
-  #   deploy: true
-  #   autoSync: true
   grafana:
     deploy: true
     autoSync: true
@@ -38,6 +35,9 @@ applications:
   kepler:
     deploy: false
     autoSync: true
+  keycloakx:
+    deploy: true
+    autoSync: true
   loki:
     deploy: true
     autoSync: true
@@ -57,13 +57,19 @@ applications:
   minio:
     deploy: true
     autoSync: true
-  mongodbCommunityOperator:
-    deploy: false
-    autoSync: true
   nextcloud:
     deploy: false
     autoSync: true
   nodeFeatureDiscovery:
+    deploy: true
+    autoSync: true
+  oauth2Proxy:
+    deploy: true
+    autoSync: true
+  postgresql:
+    deploy: true
+    autoSync: true
+  prometheus:
     deploy: true
     autoSync: true
   prometheusCrd:
