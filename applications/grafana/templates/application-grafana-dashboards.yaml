@@ -1,32 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sealed-secrets
+  name: grafana-dashboards
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+
 spec:
   project: no-sync
   sources:
     - repoURL: git@github.com:davydehaas98/gitops.git
       targetRevision: HEAD
-      ref: repo
-    - repoURL: https://bitnami-labs.github.io/sealed-secrets
-      chart: sealed-secrets
-      targetRevision: 2.14.1
-      helm:
-        valueFiles:
-          - $repo/core/sealed-secrets/values.yaml
-    - repoURL: git@github.com:davydehaas98/gitops.git
+      path: base/grafana/dashboards
+    - repoURL: https://github.com/dotdc/grafana-dashboards-kubernetes
       targetRevision: HEAD
-      path: core/sealed-secrets
+      path: ./
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: grafana
 
   revisionHistoryLimit: 2
-  syncPolicy:
+
     automated:
       prune: true
       selfHeal: true
