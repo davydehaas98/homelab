@@ -1,5 +1,5 @@
 applications:
-  argocd:
+  argoCd:
     deploy: true
     namespace: argocd
   certManager:

@@ -1,10 +1,10 @@
-argocd:
+argo-cd:
   global:
     revisionHistoryLimit: 0
     logging:
       format: json
       level: warn
-      
+
   configs:
     cm:
       exec.enabled: true
