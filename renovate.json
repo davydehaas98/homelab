@@ -5,7 +5,6 @@
   "baseBranches": [
     "main"
   ],
-  "ignorePaths": ["/disabled/**"],
   "argocd": {
     "fileMatch": ["\\.yaml$"]
   }
