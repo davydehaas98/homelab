@@ -1,7 +1,0 @@
-controller:
-  resources:
-    limits:
-      memory: 4096Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
