@@ -221,7 +221,7 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 ## Install Sealed Secrets
 https://github.com/bitnami-labs/sealed-secrets/tree/main
 ```
-SEALED_SECRETS_VERSION=2.14.1
+SEALED_SECRETS_VERSION=2.14.2
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm repo update
 helm install sealed-secrets sealed-secrets/sealed-secrets \
@@ -252,7 +252,7 @@ kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```
-ARGOCD_HELM_VERSION=5.52.0
+ARGOCD_HELM_VERSION=5.53.8
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \

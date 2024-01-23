@@ -94,3 +94,8 @@ kyverno:
 
     serviceMonitor:
       enabled: true
+
+kyverno-policies:
+  podSecurityStandard: restricted
+  podSecuritySeverity: high
+  validationFailureAction: audit

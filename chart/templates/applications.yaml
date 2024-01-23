@@ -8,7 +8,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  {{ if $v.autoSync}}
+  {{ if $v.autoSync }}
   project: always-sync
   {{ else }}
   project: no-sync

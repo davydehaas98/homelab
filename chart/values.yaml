@@ -1,12 +1,17 @@
 applications:
   argoCd:
     deploy: true
+    autoSync: false
     namespace: argocd
+  authentik:
+    deploy: false
+    autoSync: true
   certManager:
     deploy: true
     autoSync: true
   cilium:
     deploy: true
+    autoSync: false
     namespace: kube-system
   externalDns:
     deploy: true
@@ -20,7 +25,7 @@ applications:
     namespace: grafana
     serverSideApply: true
   homeAssistant:
-    deploy: true
+    deploy: false
     autoSync: true
   ingressNginx:
     deploy: true
@@ -32,20 +37,25 @@ applications:
         kind: "GpuDevicePlugin"
         jsonPointers:
           - /spec/resourceManager
+  jenkins:
+    deploy: false
+    autoSync: true
   kepler:
     deploy: false
     autoSync: true
   keycloakx:
     deploy: true
-    autoSync: true
+    autoSync: false
   loki:
     deploy: true
     autoSync: true
   longhorn:
     deploy: true
+    autoSync: false
     namespace: longhorn-system
   metallb:
     deploy: true
+    autoSync: true
     ignoreDifferences:
       - group: "apiextensions.k8s.io"
         kind: "CustomResourceDefinition"
@@ -83,6 +93,10 @@ applications:
   sealedSecrets:
     deploy: true
     autoSync: true
+  victoriaMetrics:
+    deploy: false
+    autoSync: true
+    serverSideApply: true
   vpa:
     deploy: true
     autoSync: true
