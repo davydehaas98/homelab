@@ -1,0 +1,6 @@
+CNI_VERSION: 1.4.0
+CONTAINERD_VERSION: 1.7.12
+HELM_VERSION: 3.13.3
+KUBERNETES_VERSION: 1.27.9
+RUNC_VERSION: 1.1.11
+ARCHITECTURE: '{{ (ansible_architecture == "aarch64") | ternary("arm64", "amd64") }}'

@@ -1,0 +1,137 @@
+# Ansible playbook to install the required packages on the control-plane and worker nodes
+- name: Install Kubernetes
+  hosts: "control_plane, worker"
+  become: yes # Run as root
+
+  tasks:
+    - name: Install and update dependencies
+      ansible.builtin.apt:
+        autoremove: true
+        update_cache: true
+        state: present
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - open-iscsi
+          - nfs-common
+
+    - name: Enable iptables bridged traffic
+      ansible.builtin.blockinfile:
+        path: /etc/modules-load.d/containerd.conf
+        create: true
+        block: |
+          overlay
+          br_netfilter
+
+    - name: Load br_netfilter kernel module
+      community.general.modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: Configure inotify
+      ansible.builtin.blockinfile:
+        path: /etc/sysctl.d/99-inotify.conf
+        create: true
+        block: |
+          fs.inotify.max_user_instances=8192
+          fs.inotify.max_user_watches=524288
+
+    - name: Configure kernel
+      ansible.builtin.blockinfile:
+        path: /etc/sysctl.d/99-kubernetes.conf
+        create: true
+        block: |
+          net.bridge.bridge-nf-call-iptables  = 1
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.ipv4.ip_forward                 = 1
+
+    - name: Apply sysctl changes
+      ansible.builtin.command: sudo sysctl --system
+
+    - name: Disable swap
+      ansible.builtin.command: sudo swapoff -a
+
+    - name: Stop swap from mounting in fstab
+      ansible.builtin.command: sudo sed -i -e '/swap/d' /etc/fstab
+
+    - name: Install containerd
+      ansible.builtin.unarchive:
+        src: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+        dest: /usr/local
+        mode: '755'
+        remote_src: true
+
+    - name: Configure containerd
+      ansible.builtin.blockinfile:
+        path: /etc/containerd/config.toml
+        create: true
+        block: |
+          version = 2
+          [plugins]
+            [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+              runtime_type = "io.containerd.runc.v2"
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                SystemdCgroup = true
+
+    - name: Install containerd.service
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+        dest: /etc/systemd/system/containerd.service
+
+    - name: Reload and enable containerd
+      ansible.builtin.systemd:
+        name: containerd
+        state: restarted
+        enabled: true
+        daemon-reload: true
+
+    - name: Install runc
+      ansible.builtin.get_url:
+        url: https://github.com/opencontainers/runc/releases/download/v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}
+        dest: /usr/local/sbin/runc
+        mode: '755'
+
+    - name: Install Container Network Interface (CNI) network plugins
+      ansible.builtin.unarchive:
+        src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_VERSION }}.tgz
+        dest: /opt/cni/bin
+        mode: '755'
+        remote_src: true
+
+    - name: Add Kubernetes gpg key
+      ansible.builtin.get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key
+        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+        mode: '755'
+        force: true
+
+    - name: Add Kubernetes repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /"
+        state: present
+        filename: kubernetes
+        update_cache: true
+
+    - name: Install Kubelet
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        name: kubelet={{ KUBERNETES_VERSION }}-*
+
+    - name: Hold Kubelet
+      ansible.builtin.dpkg_selections:
+        name: kubelet
+        selection: hold
+
+    - name: Install Kubeadm
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        name: kubeadm={{ KUBERNETES_VERSION }}-*
+
+    - name: Hold Kubeadm
+      ansible.builtin.dpkg_selections:
+        name: kubeadm
+        selection: hold
