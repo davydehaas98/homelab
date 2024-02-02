@@ -9,3 +9,6 @@ cd !$
 python3 -m venv ansible
 
 pipx install ansible-core==2.15.5
+
+ansible-galaxy collection install community.general
+ansible-galaxy collection install kubernetes.core

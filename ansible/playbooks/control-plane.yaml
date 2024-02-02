@@ -1,0 +1,55 @@
+- name: Install Helm
+  hosts: control_plane
+  become: yes
+
+  tasks:
+    - name: Install Kubectl
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        name: kubectl={{ KUBERNETES_VERSION }}-*
+
+    - name: Hold Kubectl
+      ansible.builtin.dpkg_selections:
+        name: kubectl
+        selection: hold
+
+    - name: Copy kubeadm-config.yaml
+      ansible.builtin.copy:
+        src: ../../kubeadm-config.yaml
+        dest: ~/kubeadm-config.yaml
+        mode: '644'
+
+    - name: Check if the control-plane is already initialized
+      ansible.builtin.stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeadm_init
+
+    - name: Initialize the control plane node
+      ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
+      when: kubeadm_init.stat.exists == false
+
+    - name: Copy admin.conf
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: ~/.kube/config
+        mode: '600'
+        remote_src: true
+
+    - name: Install Helm
+      include_tasks: install-helm.yaml
+
+    # - name: Get the token for joining the worker nodes
+    #   become: yes
+    #   become_user: k8sadmin
+    #   shell: kubeadm token create  --print-join-command
+    #   register: kubernetes_join_command
+
+    # - name: Display registered output
+    #   debug:
+    #     var: kubernetes_join_command.stdout_lines
+
+    # - name: Create dummy host to store variable for node config
+    #   add_host:
+    #     name: "DUMMY_HOST"
+    #     JOIN_COMMAND: "{{ kubernetes_join_command.stdout_lines[0] }}"

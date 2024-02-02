@@ -1,7 +1,7 @@
 # Ansible playbook to install the required packages on the control-plane and worker nodes
 - name: Install Kubernetes
-  hosts: "control_plane, worker"
-  become: yes # Run as root
+  hosts: "control_plane, worker_node"
+  become: yes
 
   tasks:
     - name: Install and update dependencies
@@ -12,7 +12,6 @@
         name:
           - apt-transport-https
           - ca-certificates
-          - curl
           - gnupg
           - open-iscsi
           - nfs-common
@@ -51,16 +50,25 @@
       ansible.builtin.command: sudo sysctl --system
 
     - name: Disable swap
-      ansible.builtin.command: sudo swapoff -a
+      ansible.builtin.command: swapoff -a
 
     - name: Stop swap from mounting in fstab
-      ansible.builtin.command: sudo sed -i -e '/swap/d' /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+
+    - name: Remove swap from fstab
+      ansible.builtin.mount:
+        name: swap
+        fstype: swap
+        state: absent
 
     - name: Install containerd
       ansible.builtin.unarchive:
         src: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
         dest: /usr/local
-        mode: '755'
+        mode: '644'
         remote_src: true
 
     - name: Configure containerd
@@ -91,20 +99,20 @@
       ansible.builtin.get_url:
         url: https://github.com/opencontainers/runc/releases/download/v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}
         dest: /usr/local/sbin/runc
-        mode: '755'
+        mode: '644'
 
     - name: Install Container Network Interface (CNI) network plugins
       ansible.builtin.unarchive:
         src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_VERSION }}.tgz
         dest: /opt/cni/bin
-        mode: '755'
+        mode: '644'
         remote_src: true
 
     - name: Add Kubernetes gpg key
       ansible.builtin.get_url:
         url: https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key
         dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
-        mode: '755'
+        mode: '644'
         force: true
 
     - name: Add Kubernetes repository

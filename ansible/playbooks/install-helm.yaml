@@ -1,0 +1,16 @@
+- name: Install Helm
+  ansible.builtin.unarchive:
+    src: https://get.helm.sh/helm-v{{ HELM_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+    dest: /usr/local/bin/
+    extra_opts: "--strip-components=1"
+    include:
+      - linux-{{ ARCHITECTURE }}/helm
+    mode: '755'
+    remote_src: true
+
+- name: Install Cilium
+  kubernetes.core.helm:
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: 1.14.5
+    namespace: kube-system
