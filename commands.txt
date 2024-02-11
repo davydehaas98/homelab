@@ -11,8 +11,8 @@ y
 sudo mkfs.ext4 /dev/nvme0n1p1
 # Mount partition
 lsblk -f
-sudo mkdir /mnt/ssd0
-echo "/dev/nvme0n1p1 /mnt/ssd0 ext4 defaults 0 0" | sudo tee -a /etc/fstab
+sudo mkdir /mnt/storage
+echo "/dev/nvme0n1p1 /mnt/storage ext4 defaults 0 0" | sudo tee -a /etc/fstab
 sudo reboot
 
 # Create SSH key
