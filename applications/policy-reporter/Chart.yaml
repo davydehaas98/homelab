@@ -1,8 +1,8 @@
 apiVersion: v2
 name: nextcloud
-version: 1.0.2
+version: 1.0.3
 
 dependencies:
   - name: policy-reporter
-    version: 2.22.1
+    version: 2.22.4
     repository: https://kyverno.github.io/policy-reporter/
