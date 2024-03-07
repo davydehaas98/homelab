@@ -103,21 +103,21 @@
 
     - name: Install Container Network Interface (CNI) network plugins
       ansible.builtin.unarchive:
-        src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_VERSION }}.tgz
+        src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_PLUGINS_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
         dest: /opt/cni/bin
         mode: '644'
         remote_src: true
 
     - name: Add Kubernetes gpg key
       ansible.builtin.get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key
+        url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
         dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
         mode: '644'
         force: true
 
     - name: Add Kubernetes repository
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /"
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
         state: present
         filename: kubernetes
         update_cache: true
