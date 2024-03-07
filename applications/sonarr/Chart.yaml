@@ -1,0 +1,8 @@
+apiVersion: v2
+name: sonarr
+version: 1.0.0
+
+dependencies:
+  - name: sonarr
+    version: 0.1.0
+    repository: file://../charts/sonarr

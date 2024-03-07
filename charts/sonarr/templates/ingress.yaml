@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: sonarr
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ .Release.Namespace }}
   labels:
     helm.sh/chart: sonarr
     app.kubernetes.io/name: sonarr
@@ -30,6 +30,6 @@ spec:
                 port:
                   number: 8989
   tls:
-    - secretName: argocd-tls
-          hosts:
-            - {{ Values.ingress.host }}
+    - secretName: sonarr-tls
+      hosts:
+        - {{ Values.ingress.host }}
