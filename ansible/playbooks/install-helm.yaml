@@ -12,5 +12,5 @@
   kubernetes.core.helm:
     name: cilium
     chart_ref: cilium/cilium
-    chart_version: 1.14.5
+    chart_version: '{{ CILIUM_VERSION }}'
     namespace: kube-system
