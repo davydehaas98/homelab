@@ -1,3 +1,4 @@
+- [Hardware setup](#hardware-setup)
 - [Setup nodes](#setup-nodes)
   - [Enable iptables bridged traffic](#enable-iptables-bridged-traffic)
   - [Configure kernel](#configure-kernel)
@@ -29,10 +30,22 @@
   - [Upgrade control plane nodes](#upgrade-control-plane-nodes)
   - [Upgrade worker nodes](#upgrade-worker-nodes)
 
+# Hardware setup
+- Yggdrasil
+  - **CPU:** Intel i5 10600K (6 cores)
+  - **RAM:** 2x 16GB DDR4 @ 3.200MT/s
+  - **HDD:** 3x Seagate IronWolf 4TB HDD
+  - **OS:** Ubuntu Server 22.04 LTS
+
+- Turing Pi 2.0 (4x Turing RK1 CM)
+  - **CPU:** Rockchip RK3588 SoC (8 cores)
+  - **RAM:** 16GB LPDDR4
+  - **HDD:** WD Blue SN580 1TB M.2 SSD
+  - **OS:** Ubuntu Server 22.04 LTS
 
 # Setup nodes
 ## Enable iptables bridged traffic
-```
+```shell
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -43,7 +56,7 @@ sudo modprobe br_netfilter
 ```
 
 ## Configure kernel
-```
+```shell
 cat <<EOF | sudo tee /etc/sysctl.d/inotify.conf
 fs.inotify.max_user_instances=8192
 fs.inotify.max_user_watches=524288
@@ -59,21 +72,21 @@ sudo sysctl --system
 ```
 
 ## Disable and stop swap from mounting
-```
+```shell
 sudo swapoff -a
 sudo sed -i -e '/swap/d' /etc/fstab
 ```
 
 ## Install and update dependencies
 Longhorn needs open-iscsi & nfs-common
-```
+```shell
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg open-iscsi nfs-common
 ```
 
 ## Install and configure containerd
 https://github.com/containerd/containerd
-```
+```shell
 CONTAINERD_VERSION=1.7.12
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -103,7 +116,7 @@ sudo systemctl enable --now containerd
 
 ## Install runc
 https://github.com/opencontainers/runc
-```
+```shell
 RUNC_VERSION=1.1.11
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -116,7 +129,7 @@ rm runc.${PROCESSOR_ARCH}
 
 ## Install Container Network Interface (CNI) network plugins
 https://github.com/containernetworking/plugins
-```
+```shell
 CNI_VERSION=1.4.0
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -131,7 +144,7 @@ sudo rm cni-plugins-linux-${PROCESSOR_ARCH}-v${CNI_VERSION}.tgz
 
 ## Install kubeadm, kubelet & kubectl
 https://kubernetes.io/releases
-```
+```shell
 KUBERNETES_VERSION=1.27.9
 
 sudo mkdir -m 755 /etc/apt/keyrings
@@ -151,7 +164,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # Configure Kubernetes Control Plane
 Configure the control plane on the master node only.
 ## Create cluster using kubeadm
-```
+```shell
 sudo kubeadm init --config config.yaml --upload-certs
 
 sudo mkdir -p $HOME/.kube
@@ -161,13 +174,13 @@ sudo chmod go-r ~/.kube/config
 ```
 
 ## OPTIONAL - Untaint node to allow master node to accept pods
-```
+```shell
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
 ## Install Helm
 https://github.com/helm/helm
-```
+```shell
 HELM_VERSION=3.13.3
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -181,7 +194,7 @@ sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 
 ## Install Cilium as CNI plugin (Container Network Interface)
 https://github.com/cilium/cilium
-```
+```shell
 API_SERVER_IP=cloud.davydehaas.dev
 API_SERVER_PORT=6443
 CILIUM_HELM_VERSION=1.14.5
@@ -199,7 +212,7 @@ helm install cilium cilium/cilium \
 
 ## OPTIONAL - Install Cilium CLI
 https://github.com/cilium/cilium-cli
-```
+```shell
 CILIUM_CLI_VERSION=0.15.20
 CLI_ARCH=$(dpkg --print-architecture)
 
@@ -212,7 +225,7 @@ rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 
 ## Install Prometheus CRD
 https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
-```
+```shell
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus-crds prometheus-community/prometheus-operator-crds
@@ -220,7 +233,7 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 
 ## Install Sealed Secrets
 https://github.com/bitnami-labs/sealed-secrets/tree/main
-```
+```shell
 SEALED_SECRETS_VERSION=2.14.2
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm repo update
@@ -232,14 +245,14 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
 
 ## Restore key in new cluster
 If you have an existing key backed up, restore it as shown below.
-```
+```shell
 kubectl -n kube-system get secret \
   -l sealedsecrets.bitnami.com/sealed-secrets-key \
   -o yaml > key.yaml
 ```
 Update `tls.key` and `tls.crt` in key.yaml
 kubectl -n kube-system patch secret sealed-secrets-key
-```
+```shell
 kubectl apply -f key.yaml
 sudo rm key.yaml
 kubectl -n kube-system rollout restart deployment sealed-secrets-controller
@@ -251,7 +264,7 @@ kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
-```
+```shell
 ARGOCD_HELM_VERSION=5.53.8
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
@@ -261,7 +274,7 @@ helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
 
 ## Install Argo CD CLI
 https://github.com/argoproj/argo-cd
-```
+```shell
 ARGOCD_CLI_VERSION=v2.9.4
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -270,7 +283,7 @@ sudo install -m 555 argocd-linux-${PROCESSOR_ARCH} /usr/local/bin/argocd
 rm argocd-linux-${PROCESSOR_ARCH}
 ```
 
-```
+```shell
 kubectl config set-context --current --namespace=argocd
 argocd login --core
 argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
@@ -288,7 +301,7 @@ argocd app sync metallb \
 
 ## Setup Argo CD via browser
 Alternatively, you can setup Argo CD via the browser instead.
-```
+```shell
 kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "NodePort"}}'
 kubectl -n argocd get svc argocd-server
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
@@ -302,7 +315,7 @@ Log in to ArgoCD.
 
 ## Install Kubeseal client tool to encrypt secrets
 https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
-```
+```shell
 KUBESEAL_VERSION=0.24.5
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
@@ -314,7 +327,7 @@ sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 
 ### Create secret.yaml
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -327,7 +340,7 @@ stringData:
 ```
 
 ### Convert secret.yaml to sealed-secret.yaml
-```
+```shell
 cat secret.yaml | kubeseal --format yaml > sealed-secret.yaml
 ```
 
@@ -335,7 +348,7 @@ cat secret.yaml | kubeseal --format yaml > sealed-secret.yaml
 
 # Configure worker node
 Generate kubeadm join command to use on worker node.
-```
+```shell
 kubeadm token create --print-join-command
 ```
 
@@ -343,7 +356,7 @@ kubeadm token create --print-join-command
 
 # Upgrade Kubernetes cluster
 Find the Kubernetes version in the apt-cache madison list you want to upgrade to.)
-```
+```shell
 sudo apt update
 sudo apt-cache madison kubeadm | tac
 ```
@@ -351,7 +364,7 @@ sudo apt-cache madison kubeadm | tac
 ## Upgrade control plane nodes
 Install kubeadm:
 https://kubernetes.io/releases/
-```
+```shell
 KUBERNETES_VERSION=1.27.9
 sudo apt update
 sudo apt-mark unhold kubeadm kubectl kubelet
@@ -362,7 +375,7 @@ sudo systemctl restart kubelet
 ```
 
 ## Upgrade worker nodes
-```
+```shell
 KUBERNETES_VERSION=1.27.9
 NODE_NAME=instance-1
 
