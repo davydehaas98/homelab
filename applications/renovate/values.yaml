@@ -1,9 +1,10 @@
-cronjob:
-  schedule: 0 * * * *
-  timeZone: UTC
-existingSecret: github-token
-ssh_config:
-  enabled: false
-  existingSecret: github-ssh
 renovate:
-  existingConfigFile: config.json
+  cronjob:
+    schedule: 0 * * * *
+    timeZone: UTC
+  existingSecret: github-token
+  ssh_config:
+    enabled: false
+    existingSecret: github-ssh
+  renovate:
+    existingConfigFile: config.json
