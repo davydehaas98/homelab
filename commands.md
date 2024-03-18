@@ -8,27 +8,46 @@ ssh-copy-id -i ~/.ssh/id_ed25519 root@turingpi.local
 `sshpass -p turing ssh root@turingpi.local`
 ```shell
 tpi uart --node 1 set --cmd 'ubuntu'
+tpi uart --node 1 set --cmd 'ubuntu'
+tpi uart --node 1 set --cmd 'ubuntu'
 tpi uart --node 1 set --cmd 'password'
+tpi uart --node 1 set --cmd 'password'
+tpi uart --node 1 get
 tpi uart --node 1 set --cmd 'sudo hostnamectl set-hostname node-rk1'
 tpi uart --node 1 set --cmd 'hostname'
 tpi uart --node 1 get
 
 tpi uart --node 2 set --cmd 'ubuntu'
+tpi uart --node 2 set --cmd 'ubuntu'
+tpi uart --node 2 set --cmd 'ubuntu'
 tpi uart --node 2 set --cmd 'password'
+tpi uart --node 2 set --cmd 'password'
+tpi uart --node 2 get
 tpi uart --node 2 set --cmd 'sudo hostnamectl set-hostname node-rk2'
 tpi uart --node 2 set --cmd 'hostname'
+tpi uart --node 2 set --cmd 'sudo reboot'
 tpi uart --node 2 get
 
 tpi uart --node 3 set --cmd 'ubuntu'
+tpi uart --node 3 set --cmd 'ubuntu'
+tpi uart --node 3 set --cmd 'ubuntu'
 tpi uart --node 3 set --cmd 'password'
+tpi uart --node 3 set --cmd 'password'
+tpi uart --node 3 get
 tpi uart --node 3 set --cmd 'sudo hostnamectl set-hostname node-rk3'
 tpi uart --node 3 set --cmd 'hostname'
+tpi uart --node 3 set --cmd 'sudo reboot'
 tpi uart --node 3 get
 
 tpi uart --node 4 set --cmd 'ubuntu'
+tpi uart --node 4 set --cmd 'ubuntu'
+tpi uart --node 4 set --cmd 'ubuntu'
 tpi uart --node 4 set --cmd 'password'
+tpi uart --node 4 set --cmd 'password'
+tpi uart --node 4 get
 tpi uart --node 4 set --cmd 'sudo hostnamectl set-hostname node-rk4'
 tpi uart --node 4 set --cmd 'hostname'
+tpi uart --node 4 set --cmd 'sudo reboot'
 tpi uart --node 4 get
 ```
 # Copy over the ssh keys

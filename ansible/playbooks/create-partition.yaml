@@ -6,7 +6,6 @@
       community.general.parted:
         device: /dev/nvme0n1
         number: 1
-        flags: [ lvm ]
         state: present
         fs_type: ext4
 
