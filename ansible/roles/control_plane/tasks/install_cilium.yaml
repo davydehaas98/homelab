@@ -1,0 +1,7 @@
+---
+- name: Install Cilium
+  kubernetes.core.helm:
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: '{{ CILIUM_VERSION }}'
+    namespace: kube-system

@@ -1,0 +1,26 @@
+---
+- name: Create directory /mnt/storage
+  ansible.builtin.file:
+    path: /mnt/storage
+    state: directory
+    mode: '755'
+
+- name: Create partition
+  community.general.parted:
+    device: /dev/nvme0n1
+    number: 1
+    state: present
+
+- name: Format partition
+  community.general.filesystem:
+    fstype: ext4
+    dev: /dev/nvme0n1p1
+
+- name: Mount partition
+  ansible.posix.mount:
+    src: /dev/nvme0n1p1
+    path: /mnt/storage
+    opts: defaults
+    state: mounted
+    fstype: ext4
+    boot: true

@@ -1,0 +1,11 @@
+---
+- name: Print join command
+  shell: sudo kubeadm token create --print-join-command
+  register: join_command
+  delegate_to: "{{ groups['control_plane'][0] }}"
+
+- name: Join control plane
+  become: true
+  shell: command sudo {{item}} --control-plane
+  with_items:
+  - "{{ join_command.stdout_lines }}"

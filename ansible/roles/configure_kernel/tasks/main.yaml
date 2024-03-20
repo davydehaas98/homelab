@@ -1,0 +1,63 @@
+---
+- name: Install and update dependencies
+  ansible.builtin.apt:
+    autoremove: true
+    update_cache: true
+    state: present
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+      - open-iscsi
+      - nfs-common
+
+- name: Enable iptables bridged traffic
+  ansible.builtin.blockinfile:
+    path: /etc/modules-load.d/containerd.conf
+    create: true
+    block: |
+      overlay
+      br_netfilter
+
+- name: Load br_netfilter kernel module
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Configure inotify
+  ansible.builtin.blockinfile:
+    path: /etc/sysctl.d/99-inotify.conf
+    create: true
+    block: |
+      fs.inotify.max_user_instances=8192
+      fs.inotify.max_user_watches=524288
+
+- name: Configure kernel
+  register: sysctl
+  ansible.builtin.blockinfile:
+    path: /etc/sysctl.d/99-kubernetes.conf
+    create: true
+    block: |
+      net.bridge.bridge-nf-call-iptables  = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.ipv4.ip_forward                 = 1
+
+- name: Apply sysctl changes
+  when: sysctl.changed
+  ansible.builtin.command: sysctl --system
+
+- name: Disable swap
+  when: ansible_memory_mb['swap']['total'] > 0
+  ansible.builtin.command: swapoff -a
+
+- name: Stop swap from mounting in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: Remove swap from fstab
+  ansible.builtin.mount:
+    name: swap
+    fstype: swap
+    state: absent

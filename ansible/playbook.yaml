@@ -1,0 +1,22 @@
+---
+- name: Setup cluster
+  hosts: cluster
+  become: true
+  roles:
+    - commons
+    - partition
+    - configure_kernel
+    - containerd
+    - kubernetes
+
+- name: Setup control plane
+  hosts: control_plane
+  become: true
+  roles:
+    - control_plane
+
+- name: Setup worker node
+  hosts: worker_node
+  become: true
+  roles:
+    - worker_node

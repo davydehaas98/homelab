@@ -1,0 +1,29 @@
+---
+- name: Install Kubectl
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    state: present
+    name: kubectl={{ KUBERNETES_VERSION }}-*
+
+- name: Hold Kubectl
+  ansible.builtin.dpkg_selections:
+    name: kubectl
+    selection: hold
+
+- name: Create '.kube' directory
+  ansible.builtin.file:
+    path: .kube
+    state: directory
+
+- name: Initialize control plane
+  include_tasks: init_control_plane.yaml
+
+- name: Join control plane replicas
+  include_tasks: join_control_plane.yaml
+
+- name: Install Helm
+  include_tasks: install_helm.yaml
+
+- name: Install Cilium
+  include_tasks: install_cilium.yaml
