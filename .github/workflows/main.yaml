@@ -1,0 +1,14 @@
+# .github/workflows/ansible-lint.yml
+name: ansible-lint
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Ansible Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@v24.2.1
