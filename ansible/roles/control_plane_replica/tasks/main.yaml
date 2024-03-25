@@ -1,0 +1,4 @@
+---
+- name: Join control plane
+  include_tasks: join_control_plane.yaml
+  

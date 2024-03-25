@@ -13,7 +13,7 @@
     autoremove: true
 
 - name: Check if reboot is required
-  stat:
+  ansible.builtin.stat:
     path: /var/run/reboot-required
   register: reboot
 
