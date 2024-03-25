@@ -3,7 +3,6 @@
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
   register: kubeadm_init
-  delegate_to: "{{ groups['control_plane'][0] }}"
 
 - name: Copy kubeadm-config.yaml
   when: kubeadm_init.stat.exists == false
@@ -11,12 +10,10 @@
     src: ../../../../kubeadm-config.yaml
     dest: ~/kubeadm-config.yaml
     mode: '644'
-  delegate_to: "{{ groups['control_plane'][0] }}"
 
 - name: Initialize the control-plane
   when: kubeadm_init.stat.exists == false
   ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
-  delegate_to: "{{ groups['control_plane'][0] }}"
 
 - name: Copy admin.conf
   ansible.builtin.copy:
@@ -26,4 +23,33 @@
     group: "{{ ansible_user | default(ansible_user_id) }}"
     mode: '755'
     remote_src: true
-  delegate_to: "{{ groups['control_plane'][0] }}"
+
+- name: "Fetching Kubernetes Master PKI files from primary master"
+  fetch:
+    src: /etc/kubernetes/pki/{{item}}
+    dest: /tmp/kubeadm-ha/pki/{{item}}
+    flat: yes
+  with_items:
+    - ca.crt
+    - ca.key
+    - sa.key
+    - sa.pub
+    - front-proxy-ca.crt
+    - front-proxy-ca.key
+
+- name: "Fetching Kubernetes Master ETCD files from primary master"
+  fetch:
+    src: /etc/kubernetes/pki/etcd/{{item}}
+    dest: /tmp/kubeadm-ha/pki/etcd/{{item}}
+    flat: yes
+  with_items:
+    - ca.crt
+    - ca.key
+
+- name: "Fetching Kubernetes Master Admin files from primary master"
+  fetch:
+    src: /etc/kubernetes/{{item}}
+    dest: /tmp/kubeadm-ha/{{item}}
+    flat: yes
+  with_items:
+    - admin.conf

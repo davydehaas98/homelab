@@ -10,10 +10,16 @@
     - kubernetes
 
 - name: Setup control plane
-  hosts: control_plane
+  hosts: control_plane_primary
   become: true
   roles:
-    - control_plane
+    - control_plane_primary
+
+- name: Setup control plane replica nodes
+  hosts: control_plane_replica
+  become: true
+  roles:
+    - control_plane_replica
 
 - name: Setup worker node
   hosts: worker_node
