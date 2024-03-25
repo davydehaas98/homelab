@@ -1,15 +1,20 @@
 ---
+- name: Get containerd
+  ansible.builtin.get_url:
+    url: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+    dest: /opt/containerd/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+
 - name: Install containerd
   register: containerd
   ansible.builtin.unarchive:
-    src: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+    src: /opt/containerd/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
     dest: /usr/local
     mode: '755'
     remote_src: true
 
-- name: Install containerd.service
+- name: Download containerd.service
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+    url: https://raw.githubusercontent.com/containerd/containerd/v{{ CONTAINERD_VERSION }}/containerd.service
     dest: /etc/systemd/system/containerd.service
 
 - name: Configure containerd
@@ -32,20 +37,31 @@
     enabled: true
     daemon-reload: true
 
-- name: Install runc
+- name: Get runc
   ansible.builtin.get_url:
     url: https://github.com/opencontainers/runc/releases/download/v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}
+    dest: /opt/runc.{{ ARCHITECTURE }}
+
+- name: Install runc
+  ansible.builtin.copy:
+    src: /opt/runc.{{ ARCHITECTURE }}
     dest: /usr/local/sbin/runc
     mode: '755'
+    remote_src: true
 
 - name: Create '/opt/cni/bin' directory
   ansible.builtin.file:
     path: /opt/cni/bin
     state: directory
 
+- name: Get Container Network Interface (CNI) plugins
+  ansible.builtin.get_url:
+    url: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_PLUGINS_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
+    dest: /opt/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
+
 - name: Install Container Network Interface (CNI) plugins
   ansible.builtin.unarchive:
-    src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_PLUGINS_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
+    src: /opt/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
     dest: /opt/cni/bin
     mode: '755'
     remote_src: true

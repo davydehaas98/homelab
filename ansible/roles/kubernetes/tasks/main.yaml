@@ -1,14 +1,14 @@
 ---
-- name: Add Kubernetes gpg key
+- name: Get Kubernetes keyring
   ansible.builtin.get_url:
-    url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
+    url: https://pkgs.k8s.io/core:/stable:/v{{ KUBERNETES_KEYRING_VERSION }}/deb/Release.key
     dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
     mode: '644'
     force: true
 
-- name: Add Kubernetes repository
+- name: Add Kubernetes apt repository
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v{{ KUBERNETES_KEYRING_VERSION }}/deb/ /"
     state: present
     filename: kubernetes
     update_cache: true
