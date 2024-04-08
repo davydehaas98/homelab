@@ -18,6 +18,6 @@
   register: reboot
 
 - name: Reboot if required
-  when: reboot.stat.exists == true
+  when: reboot.stat.exists
   ansible.builtin.reboot:
     msg: "Reboot initiated by Ansible"

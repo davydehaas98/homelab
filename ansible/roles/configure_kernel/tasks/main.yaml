@@ -15,6 +15,7 @@
   ansible.builtin.blockinfile:
     path: /etc/modules-load.d/containerd.conf
     create: true
+    mode: '644'
     block: |
       overlay
       br_netfilter
@@ -28,6 +29,7 @@
   ansible.builtin.blockinfile:
     path: /etc/sysctl.d/99-inotify.conf
     create: true
+    mode: '644'
     block: |
       fs.inotify.max_user_instances=8192
       fs.inotify.max_user_watches=524288
@@ -36,6 +38,7 @@
   register: sysctl
   ansible.builtin.blockinfile:
     path: /etc/sysctl.d/99-kubernetes.conf
+    mode: '644'
     create: true
     block: |
       net.bridge.bridge-nf-call-iptables  = 1

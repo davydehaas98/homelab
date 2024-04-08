@@ -21,6 +21,7 @@
   ansible.builtin.blockinfile:
     path: /etc/containerd/config.toml
     create: true
+    mode: '644'
     block: |
       version = 2
       [plugins]
