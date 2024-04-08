@@ -57,7 +57,7 @@
     replace: '# \1'
 
 - name: Remove swap from fstab
-  ansible.builtin.mount:
+  ansible.posix.mount:
     name: swap
     fstype: swap
     state: absent

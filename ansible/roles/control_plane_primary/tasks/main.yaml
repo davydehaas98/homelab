@@ -17,10 +17,10 @@
     state: directory
 
 - name: Initialize control plane
-  include_tasks: init_control_plane.yaml
+  ansible.builtin.include_tasks: init_control_plane.yaml
 
 - name: Install Helm
-  include_tasks: install_helm.yaml
+  ansible.builtin.include_tasks: install_helm.yaml
 
 - name: Install Cilium
-  include_tasks: install_cilium.yaml
+  ansible.builtin.include_tasks: install_cilium.yaml

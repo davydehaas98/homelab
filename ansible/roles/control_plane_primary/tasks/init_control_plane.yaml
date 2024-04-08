@@ -5,14 +5,14 @@
   register: kubeadm_init
 
 - name: Copy kubeadm-config.yaml
-  when: kubeadm_init.stat.exists == false
+  when: not kubeadm_init.stat.exists
   ansible.builtin.copy:
     src: ../../../../kubeadm-config.yaml
     dest: ~/kubeadm-config.yaml
     mode: '644'
 
 - name: Initialize the control-plane
-  when: kubeadm_init.stat.exists == false
+  when: not kubeadm_init.stat.existse
   ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
 
 - name: Copy admin.conf
@@ -26,8 +26,8 @@
 
 - name: "Fetching Kubernetes Master PKI files from primary master"
   ansible.builtin.fetch:
-    src: /etc/kubernetes/pki/{{item}}
-    dest: /tmp/kubeadm-ha/pki/{{item}}
+    src: /etc/kubernetes/pki/{{ item }}
+    dest: /tmp/kubeadm-ha/pki/{{ item }}
     flat: true
   with_items:
     - ca.crt
@@ -53,4 +53,3 @@
     flat: true
   with_items:
     - admin.conf
-    
