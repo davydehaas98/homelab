@@ -12,7 +12,7 @@
     mode: '644'
 
 - name: Initialize the control-plane
-  when: not kubeadm_init.stat.existse
+  when: not kubeadm_init.stat.exists
   ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
 
 - name: Copy admin.conf

@@ -1,9 +1,9 @@
 ---
 - name: Get containerd
   ansible.builtin.get_url:
-    url: >-
-      https://github.com/containerd/containerd/releases/download
-      /v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+    url:
+      "https://github.com/containerd/containerd/releases/download\
+      /v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz"
     dest: /opt/containerd/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
 
 - name: Install containerd
@@ -59,9 +59,9 @@
 
 - name: Get Container Network Interface (CNI) plugins
   ansible.builtin.get_url:
-    url: >-
-      https://github.com/containernetworking/plugins/releases/download
-      /v{{ CNI_PLUGINS_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
+    url:
+      "https://github.com/containernetworking/plugins/releases/download\
+      /v{{ CNI_PLUGINS_VERSION }}/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz"
     dest: /opt/cni-plugins-linux-{{ ARCHITECTURE }}-v{{ CNI_PLUGINS_VERSION }}.tgz
 
 - name: Install Container Network Interface (CNI) plugins
