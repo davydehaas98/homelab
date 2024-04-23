@@ -20,6 +20,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          ansible-galaxy -r requirements.yaml
       - name: Run ansible-playbook syntax-check
         run: |
           cd ./ansible
