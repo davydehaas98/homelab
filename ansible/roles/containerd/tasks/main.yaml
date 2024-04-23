@@ -5,6 +5,7 @@
       "https://github.com/containerd/containerd/releases/download\
       /v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz"
     dest: /opt/containerd/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
+    mode: '644'
 
 - name: Install containerd
   register: containerd
@@ -18,8 +19,10 @@
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/containerd/containerd/v{{ CONTAINERD_VERSION }}/containerd.service
     dest: /etc/systemd/system/containerd.service
+    mode: '644'
 
 - name: Configure containerd
+  notify: Restart containerd
   ansible.builtin.blockinfile:
     path: /etc/containerd/config.toml
     create: true
@@ -32,17 +35,11 @@
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
             SystemdCgroup = true
 
-- name: Reload and enable containerd
-  when: containerd.changed
-  ansible.builtin.systemd:
-    name: containerd
-    state: restarted
-    enabled: true
-    daemon-reload: true
-
 - name: Get runc
   ansible.builtin.get_url:
-    url: https://github.com/opencontainers/runc/releases/download/v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}
+    url:
+      "https://github.com/opencontainers/runc/releases/download\
+      /v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}"
     dest: /opt/runc.{{ ARCHITECTURE }}
 
 - name: Install runc

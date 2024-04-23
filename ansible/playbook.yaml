@@ -7,6 +7,11 @@
     - partition
     - configure_kernel
     - containerd
+
+- name: Setup Kubernetes
+  hosts: cluster
+  become: true
+  roles:
     - kubernetes
 
 - name: Setup control plane

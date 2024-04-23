@@ -50,6 +50,7 @@ tpi uart --node 4 set --cmd 'hostname'
 tpi uart --node 4 set --cmd 'sudo reboot'
 tpi uart --node 4 get
 ```
+
 # Copy over the ssh keys
 ```shell
 ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk1
@@ -57,6 +58,7 @@ ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk2
 ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk3
 ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk4
 ```
+
 # WSL
 ```shell
 export ANSIBLE_CONFIG=./ansible.cfg

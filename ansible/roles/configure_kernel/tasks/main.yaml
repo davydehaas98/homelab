@@ -35,7 +35,8 @@
       fs.inotify.max_user_watches=524288
 
 - name: Configure kernel
-  register: sysctl
+  notify:
+    - Reload sysctl
   ansible.builtin.blockinfile:
     path: /etc/sysctl.d/99-kubernetes.conf
     mode: '644'
@@ -44,10 +45,6 @@
       net.bridge.bridge-nf-call-iptables  = 1
       net.bridge.bridge-nf-call-ip6tables = 1
       net.ipv4.ip_forward                 = 1
-
-- name: Apply sysctl changes
-  when: sysctl.changed
-  ansible.builtin.command: sysctl --system
 
 - name: Disable swap
   when: ansible_memory_mb['swap']['total'] > 0
