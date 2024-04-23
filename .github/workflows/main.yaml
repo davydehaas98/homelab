@@ -25,4 +25,6 @@ jobs:
           cd ./ansible
           ansible-playbook playbook.yaml --syntax-check
       - name: Run ansible-lint
-        run: ansible-lint playbook.yaml
+        run: |
+          cd ./ansible
+          ansible-lint playbook.yaml
