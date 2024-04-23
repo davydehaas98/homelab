@@ -15,6 +15,7 @@
   ansible.builtin.file:
     path: .kube
     state: directory
+    mode: '644'
 
 - name: Initialize control plane
   ansible.builtin.include_tasks: init_control_plane.yaml

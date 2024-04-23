@@ -41,6 +41,7 @@
       "https://github.com/opencontainers/runc/releases/download\
       /v{{ RUNC_VERSION }}/runc.{{ ARCHITECTURE }}"
     dest: /opt/runc.{{ ARCHITECTURE }}
+    mode: '644'
 
 - name: Install runc
   ansible.builtin.copy:
@@ -53,6 +54,7 @@
   ansible.builtin.file:
     path: /opt/cni/bin
     state: directory
+    mode: '755'
 
 - name: Get Container Network Interface (CNI) plugins
   ansible.builtin.get_url:
