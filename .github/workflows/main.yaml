@@ -22,6 +22,6 @@ jobs:
           pip install -r requirements.txt
           ansible-galaxy install -r requirements.yaml
       - name: Run ansible-playbook syntax-check
-        run: ansible-playbook ./ansible/playbook.yaml --syntax-check
+        run: cd ./ansible && ansible-playbook playbook.yaml --syntax-check
       - name: Run ansible-lint
         run: ansible-lint ./ansible/playbook.yaml
