@@ -1,3 +1,5 @@
 ---
 - name: Reload sysctl
-  ansible.builtin.command: sysctl --system
+  ansible.posix.sysctl:
+    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+    reload: true

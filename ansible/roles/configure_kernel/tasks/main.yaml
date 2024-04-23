@@ -35,8 +35,6 @@
       fs.inotify.max_user_watches=524288
 
 - name: Configure kernel
-  notify:
-    - Reload sysctl
   ansible.builtin.blockinfile:
     path: /etc/sysctl.d/99-kubernetes.conf
     mode: '644'
