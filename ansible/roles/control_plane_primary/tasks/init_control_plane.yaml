@@ -14,6 +14,7 @@
 - name: Initialize the control-plane
   when: not kubeadm_init.stat.exists
   ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
+  changed_when: true
 
 - name: Copy admin.conf
   ansible.builtin.copy:

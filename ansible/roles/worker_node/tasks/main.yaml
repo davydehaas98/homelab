@@ -1,17 +1,18 @@
 ---
 - name: Get join command
   ansible.builtin.command: kubeadm token create --print-join-command
+  changed_when: true
   register: join_command_raw
 
-- name: Set join command
-  ansible.builtin.set_fact:
-    join_command: "{{ join_command_raw.stdout_lines[0] }}"
+# - name: Set join command
+#   ansible.builtin.set_fact:
+#     join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
-- name: TCP port 6443 on master is reachable from worker
-  ansible.builtin.wait_for: "host={{ hostvars['k8s-master-1']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
+# - name: TCP port 6443 on master is reachable from worker
+#   ansible.builtin.wait_for: "host={{ hostvars['k8s-master-1']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
 
-- name: Join cluster
-  ansible.builtin.command: "{{ hostvars['k8s-master-1'].join_command }} >> node_joined.log"
-  args:
-    chdir: /home/ubuntu
-    creates: node_joined.log
+# - name: Join cluster
+#   ansible.builtin.command: "{{ hostvars['k8s-master-1'].join_command }} >> node_joined.log"
+#   args:
+#     chdir: /home/ubuntu
+#     creates: node_joined.log

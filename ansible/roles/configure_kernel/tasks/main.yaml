@@ -47,6 +47,7 @@
 - name: Disable swap
   when: ansible_memory_mb['swap']['total'] > 0
   ansible.builtin.command: swapoff -a
+  changed_when: true
 
 - name: Stop swap from mounting in fstab
   ansible.builtin.replace:
