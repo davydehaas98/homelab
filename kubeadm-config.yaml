@@ -1,8 +1,8 @@
 # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-ClusterConfiguration
 kind: ClusterConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
-kubernetesVersion: v1.29.2
-controlPlaneEndpoint: cloud.davydehaas.dev
+kubernetesVersion: v1.29.4
+controlPlaneEndpoint: 192.168.10.10
 clusterName: test
 controllerManager:
   extraArgs:
@@ -12,15 +12,13 @@ scheduler:
     bind-address: "0.0.0.0"
 networking:
   podSubnet: 10.244.0.0/24
-  serviceSubnet: 10.96.0.0/16
-  dnsDomain: "cluster.local"
 ---
 kind: InitConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
 localAPIEndpoint:
-  advertiseAddress: "10.100.0.1"
+  advertiseAddress: 192.168.10.10
   bindPort: 6443
 skipPhases:
   - addon/kube-proxy

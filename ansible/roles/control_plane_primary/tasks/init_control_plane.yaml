@@ -4,6 +4,22 @@
     path: /etc/kubernetes/admin.conf
   register: kubeadm_init
 
+- name: Install kube-vip
+  ansible.builtin.shell: |
+    export VIP=192.168.10.10
+    export INTERFACE=eth0
+    export KVVERSION=v0.8.0
+    alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+
+- name: Install kube-vip manifest
+  ansible.builtin.shell: |
+    kube-vip manifest pod \
+      --interface $INTERFACE \
+      --address $VIP \
+      --controlplane \
+      --arp \
+      --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
+
 - name: Copy kubeadm-config.yaml
   when: not kubeadm_init.stat.exists
   ansible.builtin.copy:
@@ -25,7 +41,7 @@
     mode: '755'
     remote_src: true
 
-- name: "Fetching Kubernetes Master PKI files from primary master"
+- name: Fetching Kubernetes Master PKI files from primary master
   ansible.builtin.fetch:
     src: /etc/kubernetes/pki/{{ item }}
     dest: /tmp/kubeadm-ha/pki/{{ item }}
@@ -38,7 +54,7 @@
     - front-proxy-ca.crt
     - front-proxy-ca.key
 
-- name: "Fetching Kubernetes Master ETCD files from primary master"
+- name: Fetching Kubernetes Master ETCD files from primary master
   ansible.builtin.fetch:
     src: /etc/kubernetes/pki/etcd/{{ item }}
     dest: /tmp/kubeadm-ha/pki/etcd/{{ item }}
@@ -47,7 +63,7 @@
     - ca.crt
     - ca.key
 
-- name: "Fetching Kubernetes Master Admin files from primary master"
+- name: Fetching Kubernetes Master Admin files from primary master
   ansible.builtin.fetch:
     src: /etc/kubernetes/{{ item }}
     dest: /tmp/kubeadm-ha/{{ item }}
