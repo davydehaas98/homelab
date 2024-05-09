@@ -17,7 +17,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: {{ default (include "base.productName" (dict "key" $k "value" $v)) $v.namespace }}
   source:
-    repoURL: git@github.com:davydehaas98/gitops.git
+    repoURL: git@github.com:davydehaas98/homelab.git
     targetRevision: HEAD
     path: applications/{{ include "base.productName" (dict "key" $k "value" $v) }}
   revisionHistoryLimit: 2

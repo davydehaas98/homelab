@@ -1,17 +1,17 @@
 # Sealed secret
-## gitops-repo-ssh
+## homelab-repo-ssh
 ```
 cat <<EOF> secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: gitops-repo-ssh
+  name: homelab-repo-ssh
   namespace: argocd
   labels:
     argocd.argoproj.io/secret-type: repository
 stringData:
   type: git
-  url: git@github.com:davydehaas98/gitops.git
+  url: git@github.com:davydehaas98/homelab.git
   sshPrivateKey: |
     -----BEGIN OPENSSH PRIVATE KEY-----
     ...
