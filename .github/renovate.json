@@ -14,7 +14,7 @@
       "matchPackageNames": ["renovate"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
       "schedule": ["before 6am"]
     }
   ]
