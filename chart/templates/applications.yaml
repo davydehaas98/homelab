@@ -13,20 +13,21 @@ spec:
   {{ else }}
   project: no-sync
   {{ end }}
+  source:
+    repoURL: https://github.com/davydehaas98/homelab.git
+    targetRevision: HEAD
+    path: applications/{{ include "base.productName" (dict "key" $k "value" $v) }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ default (include "base.productName" (dict "key" $k "value" $v)) $v.namespace }}
-  source:
-    repoURL: git@github.com:davydehaas98/homelab.git
-    targetRevision: HEAD
-    path: applications/{{ include "base.productName" (dict "key" $k "value" $v) }}
   revisionHistoryLimit: 2
   {{- with $v.ignoreDifferences }}
   ignoreDifferences: {{ toYaml $v.ignoreDifferences | nindent 4 }}
   {{- end }}
   syncPolicy:
-    {{ if $v.serverSideApply }}
     syncOptions:
+      - RespectIgnoreDifferences=true
+    {{ if $v.serverSideApply }}
       - ServerSideApply=true
     {{ end }}
     automated:
