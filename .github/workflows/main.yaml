@@ -24,4 +24,4 @@ jobs:
       - name: Run ansible-playbook syntax-check
         run: cd ./ansible && ansible-playbook playbook.yaml --syntax-check
       - name: Run ansible-lint
-        run: ansible-lint ./ansible/playbook.yaml
+        run: ansible-lint ./ansible/playbook.yaml --profile moderate

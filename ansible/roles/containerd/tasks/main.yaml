@@ -1,5 +1,5 @@
 ---
-- name: Get containerd
+- name: Download containerd
   ansible.builtin.get_url:
     url:
       "https://github.com/containerd/containerd/releases/download\
@@ -35,7 +35,7 @@
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
             SystemdCgroup = true
 
-- name: Get runc
+- name: Download runc
   ansible.builtin.get_url:
     url:
       "https://github.com/opencontainers/runc/releases/download\
@@ -56,7 +56,7 @@
     state: directory
     mode: '755'
 
-- name: Get Container Network Interface (CNI) plugins
+- name: Download Container Network Interface (CNI) plugins
   ansible.builtin.get_url:
     url:
       "https://github.com/containernetworking/plugins/releases/download\

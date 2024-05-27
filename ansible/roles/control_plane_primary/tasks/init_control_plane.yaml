@@ -1,47 +1,68 @@
 ---
-- name: Check if control-plane is initialized
+- name: Check if control plane is initialized
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
   register: kubeadm_init
 
 - name: Install kube-vip
+  become: true
+  become_user: root
   ansible.builtin.shell: |
-    export VIP=192.168.10.10
-    export INTERFACE=eth0
-    export KVVERSION=v0.8.0
-    alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+    export KUBE_VIP_VERSION=v0.8.0
+    ctr image pull ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION
+    alias kube-vip="ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION vip /kube-vip"
 
 - name: Install kube-vip manifest
+  become: true
+  become_user: root
   ansible.builtin.shell: |
+    export VIP=192.168.2.247
+    export INTERFACE=eth0
     kube-vip manifest pod \
       --interface $INTERFACE \
       --address $VIP \
       --controlplane \
       --arp \
-      --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
+      --leaderElection \
+      --enableLoadBalancer | tee /etc/kubernetes/manifests/kube-vip.yaml
 
 - name: Copy kubeadm-config.yaml
   when: not kubeadm_init.stat.exists
+  become: true
+  become_user: root
   ansible.builtin.copy:
     src: ../../../../kubeadm-config.yaml
     dest: ~/kubeadm-config.yaml
     mode: '644'
 
-- name: Initialize the control-plane
+- name: Initialize control plane
   when: not kubeadm_init.stat.exists
+  become: true
+  become_user: root
+  # ansible.builtin.command: kubeadm init --control-plane-endpoint node-rk1 --pod-network-cidr 10.244.0.0/24
   ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
-  changed_when: true
+  # changed_when: true
+
+- name: Create '.kube' directory
+  ansible.builtin.file:
+    path: ~/.kube
+    state: directory
+    owner: '{{ USER }}'
+    mode: '755'
 
 - name: Copy admin.conf
+  become: true
+  become_user: root
   ansible.builtin.copy:
     src: /etc/kubernetes/admin.conf
-    dest: .kube/config
-    owner: "{{ ansible_user | default(ansible_user_id) }}"
-    group: "{{ ansible_user | default(ansible_user_id) }}"
-    mode: '755'
+    dest: /home/{{ USER }}/.kube/config
+    owner: '{{ USER }}'
+    mode: '600'
     remote_src: true
 
 - name: Fetching Kubernetes Master PKI files from primary master
+  become: true
+  become_user: root
   ansible.builtin.fetch:
     src: /etc/kubernetes/pki/{{ item }}
     dest: /tmp/kubeadm-ha/pki/{{ item }}
@@ -55,6 +76,8 @@
     - front-proxy-ca.key
 
 - name: Fetching Kubernetes Master ETCD files from primary master
+  become: true
+  become_user: root
   ansible.builtin.fetch:
     src: /etc/kubernetes/pki/etcd/{{ item }}
     dest: /tmp/kubeadm-ha/pki/etcd/{{ item }}
@@ -64,6 +87,8 @@
     - ca.key
 
 - name: Fetching Kubernetes Master Admin files from primary master
+  become: true
+  become_user: root
   ansible.builtin.fetch:
     src: /etc/kubernetes/{{ item }}
     dest: /tmp/kubeadm-ha/{{ item }}

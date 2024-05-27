@@ -1,12 +1,30 @@
 ---
+- name: Create kubernetes folders
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: /etc/kubernetes/pki/etcd
+    state: directory
+    owner: '{{ USER }}'
+    mode: '640'
+
+- name: Push Kubernetes Master PKI files to master replicas
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: /tmp/kubeadm-ha/
+    dest: /etc/kubernetes/
+    owner: '{{ USER }}'
+    mode: preserve
+
 - name: Print join command
   ansible.builtin.command: kubeadm token create --print-join-command
   register: join_command
-  delegate_to: "{{ groups['control_plane'][0] }}"
+  delegate_to: '{{ groups["control_plane"][0] }}'
   changed_when: true
 
 - name: Join control plane
   ansible.builtin.command: sudo {{ item }} --control-plane
   with_items:
-    - "{{ join_command.stdout_lines }}"
+    - '{{ join_command.stdout_lines }}'
   changed_when: true

@@ -1,0 +1,14 @@
+---
+- name: Install Kubectl
+  become: true
+  become_user: root
+  ansible.builtin.apt:
+    update_cache: true
+    allow_change_held_packages: true
+    state: present
+    name: kubectl={{ KUBERNETES_VERSION }}-*
+
+- name: Hold Kubectl
+  ansible.builtin.dpkg_selections:
+    name: kubectl
+    selection: hold

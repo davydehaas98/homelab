@@ -1,0 +1,27 @@
+---
+- name: Create user '{{ USER }}'
+  ansible.builtin.user:
+    name: "{{ USER }}"
+    groups: sudo
+    append: true
+    state: present
+    create_home: true
+
+- name: Set sudo permissions for user '{{ USER }}'
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    line: "{{ USER }} ALL=(ALL) NOPASSWD: ALL"
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Set authorized key for user '{{ USER }}'
+  ansible.posix.authorized_key:
+    user: "{{ USER }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+- name: Disable password authentication for root
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: ^#?PermitRootLogin
+    line: PermitRootLogin prohibit-password

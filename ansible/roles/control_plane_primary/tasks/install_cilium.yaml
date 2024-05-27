@@ -1,4 +1,9 @@
 ---
+- name: Add Cilium repository
+  kubernetes.core.helm_repository:
+    name: cilium
+    repo_url: https://helm.cilium.io
+
 - name: Install Cilium
   kubernetes.core.helm:
     name: cilium

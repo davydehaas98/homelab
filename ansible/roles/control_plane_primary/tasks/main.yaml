@@ -1,21 +1,6 @@
 ---
 - name: Install Kubectl
-  ansible.builtin.apt:
-    update_cache: true
-    allow_change_held_packages: true
-    state: present
-    name: kubectl={{ KUBERNETES_VERSION }}-*
-
-- name: Hold Kubectl
-  ansible.builtin.dpkg_selections:
-    name: kubectl
-    selection: hold
-
-- name: Create '.kube' directory
-  ansible.builtin.file:
-    path: .kube
-    state: directory
-    mode: '644'
+  ansible.builtin.include_tasks: install_kubectl.yaml
 
 - name: Initialize control plane
   ansible.builtin.include_tasks: init_control_plane.yaml

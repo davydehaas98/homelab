@@ -1,5 +1,5 @@
 ---
-- name: Setup cluster
+- name: Prepare cluster
   hosts: cluster
   become: true
   roles:
@@ -8,26 +8,29 @@
     - configure_kernel
     - containerd
 
-- name: Setup Kubernetes
+- name: Install Kubernetes
   hosts: cluster
   become: true
   roles:
     - kubernetes
 
-- name: Setup control plane
+- name: Configure control plane nodes
   hosts: control_plane_primary
   become: true
+  become_user: '{{ USER }}'
   roles:
     - control_plane_primary
 
-- name: Setup control plane replica nodes
-  hosts: control_plane_replica
+- name: Configure control plane replica nodes
   become: true
+  become_user: '{{ USER }}'
+  hosts: control_plane_replica
   roles:
     - control_plane_replica
 
-- name: Setup worker node
-  hosts: worker_node
+- name: Configure worker nodes
   become: true
+  become_user: '{{ USER }}'
+  hosts: worker_node
   roles:
     - worker_node

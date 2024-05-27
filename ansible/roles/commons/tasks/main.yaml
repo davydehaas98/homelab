@@ -1,23 +1,6 @@
 ---
-- name: Update apt packages
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 3600 # 1 hour
+- name: Create user
+  ansible.builtin.include_tasks: user.yaml
 
-- name: Upgrade apt packages
-  ansible.builtin.apt:
-    upgrade: true
-
-- name: Autoremove apt packages
-  ansible.builtin.apt:
-    autoremove: true
-
-- name: Check if reboot is required
-  ansible.builtin.stat:
-    path: /var/run/reboot-required
-  register: reboot
-
-- name: Reboot if required
-  when: reboot.stat.exists
-  ansible.builtin.reboot:
-    msg: "Reboot initiated by Ansible"
+- name: Update
+  ansible.builtin.include_tasks: update.yaml
