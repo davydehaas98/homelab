@@ -1,4 +1,9 @@
 ---
+- name: Check if control plane is initialized
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubeadm_init
+
 - name: Create kubernetes folders
   become: true
   become_user: root
@@ -18,13 +23,13 @@
     mode: preserve
 
 - name: Print join command
+  when: not kubeadm_init.stat.exists
   ansible.builtin.command: kubeadm token create --print-join-command
   register: join_command
-  delegate_to: '{{ groups["control_plane"][0] }}'
+  delegate_to: '{{ groups["control_plane_primary"][0] }}'
   changed_when: true
 
 - name: Join control plane
-  ansible.builtin.command: sudo {{ item }} --control-plane
-  with_items:
-    - '{{ join_command.stdout_lines }}'
+  when: not kubeadm_init.stat.exists
+  ansible.builtin.command: '{{ join_command.stdout_lines }} --control-plane'
   changed_when: true

@@ -10,3 +10,6 @@
     chart_ref: cilium/cilium
     chart_version: '{{ CILIUM_VERSION }}'
     namespace: kube-system
+    values:
+      operator.replica: 1
+      kubeProxyReplacement: strict
