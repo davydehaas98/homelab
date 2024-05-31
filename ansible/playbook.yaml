@@ -2,6 +2,7 @@
 - name: Prepare cluster
   hosts: cluster
   become: true
+  become_user: root
   roles:
     - commons
     - partition
@@ -11,6 +12,7 @@
 - name: Install Kubernetes
   hosts: cluster
   become: true
+  become_user: root
   roles:
     - kubernetes
 

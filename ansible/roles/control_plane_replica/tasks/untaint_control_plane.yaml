@@ -1,0 +1,4 @@
+---
+- name: Untaint control plane nodes
+  ansible.builtin.command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+  delegate_to: '{{ groups["control_plane_primary"][0] }}'

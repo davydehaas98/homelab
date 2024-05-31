@@ -1,20 +1,15 @@
+---
 # https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
 kubernetesVersion: v1.29.5
 controlPlaneEndpoint: node-rk1
 clusterName: test
-controllerManager:
-  extraArgs:
-    bind-address: "0.0.0.0"
-scheduler:
-  extraArgs:
-    bind-address: "0.0.0.0"
 networking:
   podSubnet: 10.244.0.0/24
 ---
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
 # localAPIEndpoint:
@@ -23,7 +18,8 @@ nodeRegistration:
 skipPhases:
   - addon/kube-proxy
 ---
+# https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/
+apiVersion: kubelet.config.k8s.io/v1
 kind: KubeletConfiguration
-apiVersion: kubelet.config.k8s.io/v1beta1
 cgroupDriver: systemd
 maxPods: 250

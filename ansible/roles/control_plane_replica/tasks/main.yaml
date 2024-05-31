@@ -1,3 +1,6 @@
 ---
 - name: Join control plane
   ansible.builtin.include_tasks: join_control_plane.yaml
+
+- name: Untaint control plane nodes
+  ansible.builtin.include_tasks: untaint_control_plane.yaml

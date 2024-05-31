@@ -4,29 +4,7 @@
     path: /etc/kubernetes/admin.conf
   register: kubeadm_init
 
-- name: Install kube-vip
-  become: true
-  become_user: root
-  ansible.builtin.shell: |
-    export KUBE_VIP_VERSION=v0.8.0
-    ctr image pull ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION
-    alias kube-vip="ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION vip /kube-vip"
-
-- name: Install kube-vip manifest
-  become: true
-  become_user: root
-  ansible.builtin.shell: |
-    export VIP=192.168.2.247
-    export INTERFACE=eth0
-    kube-vip manifest pod \
-      --interface $INTERFACE \
-      --address $VIP \
-      --controlplane \
-      --arp \
-      --leaderElection \
-      --enableLoadBalancer | tee /etc/kubernetes/manifests/kube-vip.yaml
-
-- name: Copy kubeadm-config.yaml
+- name: Copy 'kubeadm-config.yaml'
   when: not kubeadm_init.stat.exists
   become: true
   become_user: root
@@ -39,9 +17,7 @@
   when: not kubeadm_init.stat.exists
   become: true
   become_user: root
-  # ansible.builtin.command: kubeadm init --control-plane-endpoint node-rk1 --pod-network-cidr 10.244.0.0/24
-  ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml --upload-certs
-  # changed_when: true
+  ansible.builtin.command: kubeadm init --config ~/kubeadm-config.yaml
 
 - name: Create '.kube' directory
   ansible.builtin.file:
@@ -50,7 +26,7 @@
     owner: '{{ USER }}'
     mode: '755'
 
-- name: Copy admin.conf
+- name: Copy 'admin.conf' to '~/.kube/config'
   become: true
   become_user: root
   ansible.builtin.copy:
@@ -60,38 +36,36 @@
     mode: '600'
     remote_src: true
 
-- name: Fetching Kubernetes Master PKI files from primary master
+- name: Get join command
+  ansible.builtin.shell: kubeadm token create --print-join-command > /tmp/join_command.sh
+
+- name: Fetch join command
+  ansible.builtin.fetch:
+    src: /tmp/join_command.sh
+    dest: /tmp/join_command.sh
+    flat: true
+
+- name: Fetch PKI certificates
   become: true
   become_user: root
   ansible.builtin.fetch:
     src: /etc/kubernetes/pki/{{ item }}
-    dest: /tmp/kubeadm-ha/pki/{{ item }}
+    dest: /tmp/kubernetes/pki/{{ item }}
     flat: true
   with_items:
     - ca.crt
     - ca.key
+    - etcd/ca.crt
+    - etcd/ca.key
     - sa.key
     - sa.pub
-    - front-proxy-ca.crt
-    - front-proxy-ca.key
 
-- name: Fetching Kubernetes Master ETCD files from primary master
-  become: true
-  become_user: root
-  ansible.builtin.fetch:
-    src: /etc/kubernetes/pki/etcd/{{ item }}
-    dest: /tmp/kubeadm-ha/pki/etcd/{{ item }}
-    flat: true
-  with_items:
-    - ca.crt
-    - ca.key
-
-- name: Fetching Kubernetes Master Admin files from primary master
-  become: true
-  become_user: root
-  ansible.builtin.fetch:
-    src: /etc/kubernetes/{{ item }}
-    dest: /tmp/kubeadm-ha/{{ item }}
-    flat: true
-  with_items:
-    - admin.conf
+# - name: Fetch 'admin.conf'
+#   become: true
+#   become_user: root
+#   ansible.builtin.fetch:
+#     src: /etc/kubernetes/{{ item }}
+#     dest: /tmp/kubernetes/{{ item }}
+#     flat: true
+#   with_items:
+#     - admin.conf

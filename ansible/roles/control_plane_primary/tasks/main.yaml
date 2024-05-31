@@ -10,3 +10,6 @@
 
 - name: Install Cilium
   ansible.builtin.include_tasks: install_cilium.yaml
+
+- name: Install Argo CD
+  ansible.builtin.include_tasks: install_argocd.yaml

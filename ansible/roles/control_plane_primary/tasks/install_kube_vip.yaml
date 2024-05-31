@@ -1,0 +1,22 @@
+---
+- name: Install kube-vip
+  become: true
+  become_user: root
+  ansible.builtin.shell: |
+    export KUBE_VIP_VERSION=v0.8.0
+    ctr image pull ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION
+    alias kube-vip="ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KUBE_VIP_VERSION vip /kube-vip"
+
+- name: Install kube-vip manifest
+  become: true
+  become_user: root
+  ansible.builtin.shell: |
+    export VIP=192.168.2.247
+    export INTERFACE=eth0
+    kube-vip manifest pod \
+      --interface $INTERFACE \
+      --address $VIP \
+      --controlplane \
+      --arp \
+      --leaderElection \
+      --enableLoadBalancer | tee /etc/kubernetes/manifests/kube-vip.yaml

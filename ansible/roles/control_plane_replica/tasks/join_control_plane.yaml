@@ -4,7 +4,7 @@
     path: /etc/kubernetes/admin.conf
   register: kubeadm_init
 
-- name: Create kubernetes folders
+- name: Create '/kubernetes' directory
   become: true
   become_user: root
   ansible.builtin.file:
@@ -13,23 +13,32 @@
     owner: '{{ USER }}'
     mode: '640'
 
-- name: Push Kubernetes Master PKI files to master replicas
+- name: Copy PKI certificates
   become: true
   become_user: root
   ansible.builtin.copy:
-    src: /tmp/kubeadm-ha/
+    src: /tmp/kubernetes/
     dest: /etc/kubernetes/
     owner: '{{ USER }}'
     mode: preserve
 
-- name: Print join command
-  when: not kubeadm_init.stat.exists
-  ansible.builtin.command: kubeadm token create --print-join-command
-  register: join_command
-  delegate_to: '{{ groups["control_plane_primary"][0] }}'
-  changed_when: true
+- name: Copy join command
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: /tmp/join_command.sh
+    dest: /tmp/join_command.sh
+
+# - name: Get join command
+#   when: not kubeadm_init.stat.exists
+#   ansible.builtin.command: kubeadm token create --print-join-command
+#   register: join_command
+#   delegate_to: '{{ groups["control_plane_primary"][0] }}'
+#   changed_when: true
 
 - name: Join control plane
   when: not kubeadm_init.stat.exists
-  ansible.builtin.command: '{{ join_command.stdout_lines }} --control-plane'
+  become: true
+  become_user: root
+  ansible.builtin.command: "/tmp/join-command.sh --control-plane"
   changed_when: true

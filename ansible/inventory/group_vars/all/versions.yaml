@@ -1,4 +1,6 @@
 ARCHITECTURE: '{{ (ansible_architecture == "aarch64") | ternary("arm64", "amd64") }}'
+# https://github.com/argoproj/argo-helm
+ARGOCD_VERSION: 7.0.0
 # https://github.com/cilium/cilium
 CILIUM_VERSION: 1.15.5
 # https://github.com/containernetworking/plugins

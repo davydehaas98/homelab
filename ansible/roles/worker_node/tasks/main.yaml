@@ -11,7 +11,9 @@
   delegate_to: '{{ groups["control_plane_primary"][0] }}'
   changed_when: true
 
-- name: Join control plane
+- name: Join worker node
   when: not kubeadm_init.stat.exists
-  ansible.builtin.command: '{{ join_command.stdout_lines }}'
+  become: true
+  become_user: root
+  ansible.builtin.command: '{{ join_command.stdout_lines[0] }}'
   changed_when: true
