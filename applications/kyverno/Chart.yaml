@@ -1,10 +1,10 @@
 apiVersion: v2
 name: kyverno
-version: 1.0.6
+version: 1.0.7
 
 dependencies:
   - name: kyverno
-    version: 3.2.3
+    version: 3.2.4
     repository: https://kyverno.github.io/kyverno
   - name: kyverno-policies
     version: 3.2.3
