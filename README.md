@@ -35,7 +35,7 @@
   - **CPU:** Intel i5 10600K (6 cores)
   - **RAM:** 2x 16GB DDR4 @ 3.200MT/s
   - **HDD:** 3x Seagate IronWolf 4TB HDD
-  - **OS:** Ubuntu Server 22.04 LTS
+  - **OS:** Ubuntu Server 24.04 LTS
 
 - Turing Pi 2.0 (4x Turing RK1 CM)
   - **CPU:** Rockchip RK3588 SoC (8 cores)
