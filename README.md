@@ -37,7 +37,7 @@
   - **HDD:** 3x Seagate IronWolf 4TB HDD
   - **OS:** Ubuntu Server 24.04 LTS
 
-- Turing Pi 2.0 (4x Turing RK1 CM)
+- 4x Turing RK1 CM (Turing Pi 2.0)
   - **CPU:** Rockchip RK3588 SoC (8 cores)
   - **RAM:** 16GB LPDDR4
   - **HDD:** WD Blue SN580 1TB M.2 SSD
