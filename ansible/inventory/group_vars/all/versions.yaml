@@ -1,16 +1,16 @@
 ARCHITECTURE: '{{ (ansible_architecture == "aarch64") | ternary("arm64", "amd64") }}'
 # https://github.com/argoproj/argo-helm
-ARGOCD_VERSION: 7.3.7
+ARGOCD_VERSION: 7.3.11
 # https://github.com/cilium/cilium
-CILIUM_VERSION: 1.15.7
+CILIUM_VERSION: 1.16.0
 # https://github.com/containernetworking/plugins
 CNI_PLUGINS_VERSION: 1.5.1
 # https://github.com/containerd/containerd
-CONTAINERD_VERSION: 1.7.19
+CONTAINERD_VERSION: 1.7.20
 # https://github.com/helm/helm
 HELM_VERSION: 3.15.3
 # https://kubernetes.io/releases/
-KUBERNETES_VERSION: 1.29.6
-KUBERNETES_KEYRING_VERSION: 1.29
+KUBERNETES_VERSION: 1.30.3
+KUBERNETES_KEYRING_VERSION: 1.30
 # https://github.com/opencontainers/runc
 RUNC_VERSION: 1.1.13
