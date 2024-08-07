@@ -1,0 +1,43 @@
+patchBackupPvcJob:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/kubectl
+    tag: 1.30.3
+  pvcNames:
+    - immich-library
+
+immich:
+  persistence:
+    size: 200Gi
+    storageClass: longhorn
+    accessMode: ReadWriteMany
+
+  ingress:
+    enabled: true
+    domain: immich.cloud.davydehaas.dev
+    annotations:
+      # proxy-body-size is set to 0 to remove the body limit on file uploads
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      cert-manager.io/cluster-issuer: letsencrypt-dns
+    tls:
+      enabled: true
+      secretName: immich-tls
+
+  database:
+    clusterName: immich-postgresql
+    replicas: 2
+    monitoring:
+      enabled: true
+    size: 32Gi
+    backups:
+      enabled: false
+
+  machineLearning:
+    replicas: 1
+
+  server:
+    replicas: 1
+
+  microservices:
+    replicas: 1
