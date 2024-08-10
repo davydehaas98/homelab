@@ -7,15 +7,5 @@
   ],
   "argocd": {
     "fileMatch": ["\\.yaml$"]
-  },
-  "packageRules": [
-    {
-      "description": "Automatically merge minor and patch-level updates",
-      "matchPackageNames": ["renovate"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true,
-      "automergeType": "pr",
-      "automergeSchedule": ["* 0-15 * * *"]
-    }
-  ]
+  }
 }
