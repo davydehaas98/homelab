@@ -3,7 +3,7 @@ patchBackupPvcJob:
   image:
     registry: docker.io
     repository: bitnami/kubectl
-    tag: 1.30.3@sha256:fc6e48522aa4417275d6fa92bd820f426bbf27454c80b327c449ef6e32467bd3
+    tag: 1.30.4@sha256:4f74249f971f8ca158a03eaa0c8e7741a2a750fe53525dc69497cf23584df04a
   pvcNames:
     - immich-library
 
