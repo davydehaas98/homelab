@@ -29,16 +29,15 @@ https://192.168.1.172/
 ln -s /mnt/sdcard ~
 ```
 
-## Flash Talos images to RK1 Compute Modules
+## Flash Talos image to RK1
 
-* ssh to tpi2 bmc
-* cd to your sdcard storage
+* SSH to BMC
 
 ```bash
-# download talos metal rk1 arm64 image
+# Download Talos metal rk1 arm64 image
 # - source: https://github.com/nberlee/talos/releases
-cd ~/sdcard
-curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-turing_rk1-arm64.raw.xz
+cd /mnt/sdcard
+curl -LO https://github.com/nberlee/talos/releases/download/v1.7.6/metal-turing_rk1-arm64.raw.xz
 
 # Extract the xz compressed image
 unxz metal-turing_rk1-arm64.raw.xz
@@ -58,8 +57,6 @@ tpi power on --node 2
 tpi power on --node 3
 tpi power on --node 4
 ```
-
-## Coffee break
 
 Give these nodes a couple minutes to start up so you can collect the entire uart log output in one command.
 
