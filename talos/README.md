@@ -33,7 +33,7 @@ cd /mnt/sdcard
 curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-turing_rk1-arm64.raw.xz
 
 # Extract the xz compressed image
-unxz metal-turing_rk1-arm64.raw.xz
+unxz /mnt/sdcard/metal-turing_rk1-arm64.raw.xz
 
 # Flash the four nodes
 tpi flash --local --image-path /mnt/sdcard/metal-turing_rk1-arm64.raw --node 1
