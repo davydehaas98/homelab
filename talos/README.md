@@ -56,8 +56,8 @@ Give these nodes a couple minutes to start up so you can collect the entire uart
 ## Pull serial uart console to find each node's IP address
 
 ```shell
-tpi uart --node 1 get | tee /mnt/sdcard/uart.1.log | grep "assigned address"
-tpi uart --node 2 get | tee /mnt/sdcard/uart.2.log | grep "assigned address"
-tpi uart --node 3 get | tee /mnt/sdcard/uart.3.log | grep "assigned address"
-tpi uart --node 4 get | tee /mnt/sdcard/uart.4.log | grep "assigned address"
+tpi uart --node 1 get | tee -a /mnt/sdcard/uart.1.log | grep "assigned address"
+tpi uart --node 2 get | tee -a /mnt/sdcard/uart.2.log | grep "assigned address"
+tpi uart --node 3 get | tee -a /mnt/sdcard/uart.3.log | grep "assigned address"
+tpi uart --node 4 get | tee -a /mnt/sdcard/uart.4.log | grep "assigned address"
 ```
