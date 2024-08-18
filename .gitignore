@@ -1,2 +1,4 @@
 .vscode
+
 ansible/ansible_collections
+talos/gen

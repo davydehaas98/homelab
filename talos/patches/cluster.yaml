@@ -1,0 +1,20 @@
+cluster:
+  controlPlane:
+    endpoint: https://cloud.davydehaas.dev:6443
+  clusterName: test
+  allowSchedulingOnControlPlanes: true
+
+  network:
+    cni:
+      name: none
+
+  proxy:
+    disabled: true
+
+  controllerManager:
+    extraArgs:
+      bind-address: 0.0.0.0
+
+  scheduler:
+    extraArgs:
+      bind-address: 0.0.0.0

@@ -1,54 +1,33 @@
-## Update Turing Pi 2 BMC Firmware
-
-* https://docs.turingpi.com/docs/turing-pi2-bmc-v1x-to-v2x
-
+## Format SD Card in BMC
+SSH into BMC (root:turing) and create new partition via fdisk
 ```shell
-# download latest turingpi firmware
-# - source: https://firmware.turingpi.com/turing-pi2
-curl -LO https://firmware.turingpi.com/turing-pi2/v2.0.5/tp2-firmware-sdcard-v2.0.5.img
-
-# Write firmware to microsd card
-# - this command works on mac and linux
-# - replace your firmware file name and disk path with your actual file and disk
-# - use extreme caution this command can cause permanent data loss, mistakes can be costly
-sudo dd if=tp2-firmware-sdcard-v2.0.5.img of=/dev/disk6 conv=sync bs=32k status=progress
-
-# Insert microsd card on bottom of Turing Pi 2 board & power on
-# Press the power button 3x after you observe all nic led lights solid on indicating it is ready to flash
-# Node will auto reboot
-
-# SSH to BMC
-# root:turing
 ssh root@turingpi
+fdisk /dev/mmcblk0
+mkfs.ext4 /dev/mmcblk0p1
 ```
 
-## Flash Talos image to RK1
-
-* SSH to BMC
+## Flash Talos image to RK1 nodes
+Download Talos metal rk1 arm64 image
+(https://github.com/nberlee/talos/releases)
 
 ```shell
-# Download Talos metal rk1 arm64 image
-# - source: https://github.com/nberlee/talos/releases
 cd /mnt/sdcard
-curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-turing_rk1-arm64.raw.xz
+curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-arm64.raw.xz
+unxz metal-arm64.raw.xz
 
-# Extract the xz compressed image
-unxz /mnt/sdcard/metal-turing_rk1-arm64.raw.xz
-
-# Flash the four nodes
-tpi flash --local --image-path /mnt/sdcard/metal-turing_rk1-arm64.raw --node 1
-tpi flash --local --image-path /mnt/sdcard/metal-turing_rk1-arm64.raw --node 2
-tpi flash --local --image-path /mnt/sdcard/metal-turing_rk1-arm64.raw --node 3
-tpi flash --local --image-path /mnt/sdcard/metal-turing_rk1-arm64.raw --node 4
+tpi flash -i /mnt/sdcard/metal-arm64.raw -n 1
+tpi flash -i /mnt/sdcard/metal-arm64.raw -n 2
+tpi flash -i /mnt/sdcard/metal-arm64.raw -n 3
+tpi flash -i /mnt/sdcard/metal-arm64.raw -n 4
 ```
 
-## Boot all 4 nodes
+## Power on RK1 nodes
 
 ```shell
-tpi power on --node 1
-tpi power on --node 2
-tpi power on --node 3
-tpi power on --node 4
+tpi power on -n 1
+tpi power on -n 2
+tpi power on -n 3
+tpi power on -n 4
 ```
 
 Give these nodes a couple minutes to start up so you can collect the entire uart log output in one command.
@@ -56,8 +35,43 @@ Give these nodes a couple minutes to start up so you can collect the entire uart
 ## Pull serial uart console to find each node's IP address
 
 ```shell
-tpi uart --node 1 get | tee -a /mnt/sdcard/uart.1.log | grep "assigned address"
-tpi uart --node 2 get | tee -a /mnt/sdcard/uart.2.log | grep "assigned address"
-tpi uart --node 3 get | tee -a /mnt/sdcard/uart.3.log | grep "assigned address"
-tpi uart --node 4 get | tee -a /mnt/sdcard/uart.4.log | grep "assigned address"
+tpi uart -n 1 get | tee -a /mnt/sdcard/uart.1.log | grep "assigned address"
+tpi uart -n 2 get | tee -a /mnt/sdcard/uart.2.log | grep "assigned address"
+tpi uart -n 3 get | tee -a /mnt/sdcard/uart.3.log | grep "assigned address"
+tpi uart -n 4 get | tee -a /mnt/sdcard/uart.4.log | grep "assigned address"
+```
+
+## Talosctl
+
+```shell
+curl -sL 'https://www.talos.dev/install' | bash
+```
+
+```shell
+export CLUSTER_NAME="test"
+export NODE_IP="192.168.2.32"
+export CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
+
+# Talosconfig
+talosctl gen secrets -o gen/secrets.yaml
+talosctl gen config \
+    $CLUSTER_NAME $CLUSTER_ENDPOINT \
+    --with-secrets gen/secrets.yaml \
+    --output-types talosconfig \
+    --output gen/talosconfig
+    --force
+
+talosctl config merge gen/talosconfig
+```
+
+```shell
+./gen-config.sh -c test \
+    -k 1.30.0 \
+    -i 192.168.2.32 \
+    -t controlplane -n 0
+```
+
+```shell
+talosctl -n $NODE_IP dashboard
+talosctl -n $NODE_IP kubeconfig
 ```
