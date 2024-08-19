@@ -1,8 +1,8 @@
 apiVersion: v2
 name: jenkins
-version: 1.0.26
+version: 1.0.27
 
 dependencies:
   - name: jenkins
-    version: 5.5.7
+    version: 5.5.8
     repository: https://charts.jenkins.io
