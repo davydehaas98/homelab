@@ -12,7 +12,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: default
   source:
-    repoURL: git@github.com:davydehaas98/homelab.git
+    repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD
     path: chart
 
