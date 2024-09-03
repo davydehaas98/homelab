@@ -11,10 +11,6 @@ cluster:
   proxy:
     disabled: true
 
-
-  proxy:
-    disabled: true
-
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0

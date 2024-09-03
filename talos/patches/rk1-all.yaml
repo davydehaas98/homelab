@@ -1,12 +1,11 @@
 machine:
   install:
     disk: /dev/mmcblk0
-
+    image: ghcr.io/siderolabs/installer:v1.7.6
   disks:
     - device: /dev/nvme0n1
       partitions:
         - mountpoint: /var/mnt/nvme1
-
   kernel:
     modules:
       - name: rockchip-cpufreq

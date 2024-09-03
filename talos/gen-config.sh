@@ -23,7 +23,7 @@ talosctl gen config \
     --output gen/${NODE_NAME}.yaml \
     --output-types ${NODE_TYPE} \
     --with-cluster-discovery \
-    --with-secrets secrets.yaml \
+    --with-secrets gen/secrets.yaml \
     --config-patch @nodes/${NODE_NAME}.yaml \
     --config-patch @patches/cluster.yaml \
     --config-patch @patches/rk1-all.yaml \
@@ -33,7 +33,7 @@ talosctl gen config \
 if [ $APPLY ]; then
     echo "Applying config for '${NODE_NAME}'"
     talosctl apply-config \
-        --insecure -n $NODE_IP \
+        -n $NODE_IP \
         -f gen/${NODE_NAME}.yaml
 else
     echo "Skipped talosctl apply-config."

@@ -12,7 +12,9 @@ Download Talos metal rk1 arm64 image
 
 ```shell
 cd /mnt/sdcard
+rm metal-arm64.raw.xz
 curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-arm64.raw.xz
+# Might take a minute
 unxz metal-arm64.raw.xz
 
 tpi flash -i /mnt/sdcard/metal-arm64.raw -n 1
@@ -49,25 +51,26 @@ curl -sL 'https://www.talos.dev/install' | bash
 
 ```shell
 export CLUSTER_NAME="test"
-export NODE_IP="192.168.2.32"
+export NODE_IP="192.168.2.141"
 export CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
 
 # Talosconfig
-talosctl gen secrets -o gen/secrets.yaml
+touch gen
+talosctl gen secrets -o gen/secrets.yaml --force
 talosctl gen config \
     $CLUSTER_NAME $CLUSTER_ENDPOINT \
-    --with-secrets gen/secrets.yaml \
     --output-types talosconfig \
-    --output gen/talosconfig
+    --output talosconfig \
+    --with-secrets gen/secrets.yaml \
     --force
 
-talosctl config merge gen/talosconfig
+talosctl config merge talosconfig
 ```
 
 ```shell
 ./gen-config.sh -c test \
-    -k 1.30.0 \
-    -i 192.168.2.32 \
+    -k 1.30.4 \
+    -i 192.168.2.141 \
     -t controlplane -n 0
 ```
 
