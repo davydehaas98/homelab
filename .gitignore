@@ -2,3 +2,4 @@
 
 ansible/ansible_collections
 talos/gen
+talos/talosconfig

@@ -2,6 +2,23 @@ machine:
   install:
     disk: /dev/mmcblk0
     image: ghcr.io/siderolabs/installer:v1.7.6
+    extensions:
+      - image: ghcr.io/nberlee/rk3588:v1.7.6
+      - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+      - image: ghcr.io/siderolabs/util-linux-tools:2.40.1
+  files:
+    - content: '4'
+      path: /sys/class/thermal/cooling_device0/cur_state
+      op: overwrite
+    - content: '4'
+      path: /sys/class/thermal/cooling_device1/cur_state
+      op: overwrite
+    - content: '4'
+      path: /sys/class/thermal/cooling_device2/cur_state
+      op: overwrite
+    - content: '4'
+      path: /sys/class/thermal/cooling_device3/cur_state
+      op: overwrite
   disks:
     - device: /dev/nvme0n1
       partitions:

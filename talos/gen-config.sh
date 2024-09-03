@@ -34,7 +34,8 @@ if [ $APPLY ]; then
     echo "Applying config for '${NODE_NAME}'"
     talosctl apply-config \
         -n $NODE_IP \
-        -f gen/${NODE_NAME}.yaml
+        -f gen/${NODE_NAME}.yaml \
+        --mode reboot
 else
     echo "Skipped talosctl apply-config."
 fi
