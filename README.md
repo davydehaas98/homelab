@@ -265,17 +265,18 @@ kubectl -n kube-system rollout restart deployment sealed-secrets-controller
 ## Install Argo CD
 https://github.com/argoproj/argo-helm
 ```shell
-ARGOCD_HELM_VERSION=5.53.8
+ARGOCD_HELM_VERSION=7.4.4
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
-helm install argocd argo/argo-cd --version ${ARGOCD_HELM_VERSION} \
-  -n argocd --create-namespace
+helm install argocd argo/argo-cd \
+    --version ${ARGOCD_HELM_VERSION} \
+    -n argocd --create-namespace
 ```
 
 ## Install Argo CD CLI
 https://github.com/argoproj/argo-cd
 ```shell
-ARGOCD_CLI_VERSION=v2.9.4
+ARGOCD_CLI_VERSION=v2.12.2
 PROCESSOR_ARCH=$(dpkg --print-architecture)
 
 curl -sSL -o argocd-linux-${PROCESSOR_ARCH} https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_CLI_VERSION}/argocd-linux-${PROCESSOR_ARCH}
@@ -288,8 +289,11 @@ kubectl config set-context --current --namespace=argocd
 argocd login --core
 argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
-  --repo https://github.com/davydehaas98/homelab.git --path core \
-  --dest-server https://kubernetes.default.svc --dest-namespace argocd
+    --repo https://github.com/davydehaas98/homelab.git \
+    --path applications \
+    --dest-server https://kubernetes.default.svc \
+    --dest-namespace argocd \
+    --directory-recurse
 
 argocd app sync argocd
 argocd app sync metallb \
