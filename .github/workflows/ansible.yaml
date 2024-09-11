@@ -1,11 +1,11 @@
 # .github/workflows/ansible-lint.yml
-name: ansible-lint
+name: Ansible lint
 on:
   push:
     branches:
       - main
 jobs:
-  build:
+  ansible-lint:
     name: Ansible Lint
     runs-on: ubuntu-24.04
     steps:
