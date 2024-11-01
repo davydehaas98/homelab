@@ -12,7 +12,7 @@ env:
 jobs:
   installer:
     name: Installer
-    runs-on: ubuntu-24-04
+    runs-on: ubuntu-24.04
     steps:
       - name: Login to registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
