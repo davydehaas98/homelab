@@ -6,8 +6,6 @@ on:
         description: 'Talos version (example: v1.7.0)'
         required: true
         type: string
-env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}/talos-installer
 
 jobs:
   installer:
@@ -22,7 +20,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build images
         run: |
-          INSTALLER_IMAGE=${{ env.IMAGE_NAME }}
+          INSTALLER_IMAGE=ghcr.io/${{ github.repository }}/talos-installer
           TALOS_VERSION=${{ inputs.TALOS_VERSION }}
 
           ISCSI_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep iscsi-tools)
