@@ -34,14 +34,16 @@ jobs:
           RK3588_IMAGE=$(crane export ghcr.io/nberlee/extensions:${TALOS_VERSION} | tar x -O image-digests | grep rk3588)
           echo "Using system-extension-image (rk3588): ${RK3588_IMAGE}"
 
-          mkdir _images
+          mkdir _out
 
-          docker run --rm -t -v ./_images:/out --privileged ghcr.io/nberlee/imager:"${TALOS_VERSION}" installer \
+          docker run --rm -t -v ./_out:/out -v /dev:/dev 
+              --privileged --arch arm64 \
+              ghcr.io/nberlee/imager:${TALOS_VERSION} metal \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
               --system-extension-image ${UTIL_IMAGE} \
-              --system-extension-image ${RK3588_IMAGE}
+              --system-extension-image ${RK3588_IMAGE} \
           
           echo "Pushing custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'.."
-          crane push ./_images/installer-arm64.tar ${INSTALLER_IMAGE}
+          crane push ./tmp/out/installer-arm64.tar ${INSTALLER_IMAGE}
           echo "Pushed custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'."
