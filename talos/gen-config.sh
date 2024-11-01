@@ -2,7 +2,7 @@
 
 while getopts ac:k:i:n:t: flag;
 do
-    case $flag in
+    case ${flag} in
         a) APPLY="true" ;;
         c) CLUSTER_NAME=${OPTARG} ;;
         k) KUBERNETES_VERSION=${OPTARG} ;;
@@ -16,10 +16,9 @@ done
 CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
 NODE_NAME="${NODE_TYPE}-${NODE_NUMBER}"
 
-
 echo "Generating Talos config for '${NODE_NAME}'.."
 talosctl gen config \
-    $CLUSTER_NAME $CLUSTER_ENDPOINT \
+    ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
     --output gen/${NODE_NAME}.yaml \
     --output-types ${NODE_TYPE} \
     --with-cluster-discovery \
@@ -30,10 +29,10 @@ talosctl gen config \
     --kubernetes-version ${KUBERNETES_VERSION} \
     --force
 
-if [ $APPLY ]; then
+if [ ${APPLY} ]; then
     echo "Applying config for '${NODE_NAME}'"
     talosctl apply-config \
-        -n $NODE_IP \
+        -n ${NODE_IP} \
         -f gen/${NODE_NAME}.yaml \
         --mode reboot
 else
