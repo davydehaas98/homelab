@@ -1,42 +1,4 @@
-name: Talos Installer
-on:
-  workflow_dispatch:
-    inputs:
-      TALOS_VERSION:
-        description: 'Talos version (example: v1.7.0)'
-        required: true
-        type: string
-
-jobs:
-  installer:
-    name: Installer
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Set up crane
-        uses: imjasonh/setup-crane@v0.4
-      - name: Login to registry
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build images
-        run: |
-          INSTALLER_IMAGE=ghcr.io/${{ github.repository }}/talos-installer
-          TALOS_VERSION=${{ inputs.TALOS_VERSION }}
-
-          ISCSI_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep iscsi-tools)
-          echo "Using system-extension-image (iscsi-tools): ${ISCSI_IMAGE}"
-
-          UTIL_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep util-linux-tools)
-          echo "Using system-extension-image (util-linux-tools): ${UTIL_IMAGE}"
-
-          RK3588_IMAGE=$(crane export ghcr.io/nberlee/extensions:${TALOS_VERSION} | tar x -O image-digests | grep rk3588)
-          echo "Using system-extension-image (rk3588): ${RK3588_IMAGE}"
-
-          mkdir _out
-
-          name: Talos Installer
+name: Talos installer
 on:
   workflow_dispatch:
     inputs:
