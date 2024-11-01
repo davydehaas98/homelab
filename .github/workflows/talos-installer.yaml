@@ -6,9 +6,6 @@ on:
         description: 'Talos version (example: v1.7.0)'
         required: true
         type: string
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: false
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}/talos-installer
 
