@@ -1,0 +1,56 @@
+name: Talos Installer
+on:
+  workflow_dispatch:
+    inputs:
+      TALOS_VERSION:
+        description: 'Talos version (example: v1.7.0)'
+        required: true
+        type: string
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/talos-installer
+
+jobs:
+  installer:
+    name: Installer
+    runs-on: ubuntu-24-04
+    steps:
+      - name: Login to registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build images
+        run: |
+          INSTALLER_IMAGE=${{ env.IMAGE_NAME }}
+          TALOS_VERSION=${{ inputs.TALOS_VERSION }}
+
+          ISCSI_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep iscsi-tools)
+          echo "Using system-extension-image (iscsi-tools): ${ISCSI_IMAGE}"
+
+          UTIL_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep util-linux-tools)
+          echo "Using system-extension-image (util-linux-tools): ${UTIL_IMAGE}"
+
+          RK3588_IMAGE=$(crane export ghcr.io/nberlee/extensions:${TALOS_VERSION} | tar x -O image-digests | grep rk3588)
+          echo "Using system-extension-image (rk3588): ${RK3588_IMAGE}"
+
+          mkdir _images
+          
+          docker run --rm -t -v ./_images:/out --privileged ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
+              --base-installer-image ghcr.io/nberlee/installer:${TALOS_VERSION}-rk3588 \
+              --system-extension-image ${ISCSI_IMAGE} \
+              --system-extension-image ${UTIL_IMAGE} \
+              --system-extension-image ${RK3588_IMAGE}
+
+          docker run --rm -t -v ./_images:/out --privileged ghcr.io/nberlee/imager:"${TALOS_VERSION}" installer \
+              --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
+              --system-extension-image ${ISCSI_IMAGE} \
+              --system-extension-image ${UTIL_IMAGE} \
+              --system-extension-image ${RK3588_IMAGE}
+          
+          echo "Pushing custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'.."
+          crane push ./_images/installer-arm64.tar ${INSTALLER_IMAGE}
+          echo "Pushed custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'."
