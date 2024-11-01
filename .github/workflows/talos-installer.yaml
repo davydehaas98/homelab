@@ -35,12 +35,6 @@ jobs:
           echo "Using system-extension-image (rk3588): ${RK3588_IMAGE}"
 
           mkdir _images
-          
-          docker run --rm -t -v ./_images:/out --privileged ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
-              --base-installer-image ghcr.io/nberlee/installer:${TALOS_VERSION}-rk3588 \
-              --system-extension-image ${ISCSI_IMAGE} \
-              --system-extension-image ${UTIL_IMAGE} \
-              --system-extension-image ${RK3588_IMAGE}
 
           docker run --rm -t -v ./_images:/out --privileged ghcr.io/nberlee/imager:"${TALOS_VERSION}" installer \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
