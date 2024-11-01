@@ -37,7 +37,7 @@ jobs:
           mkdir _out
 
           docker run --rm -t -v ./_out:/out \
-              --privileged --arch arm64 \
+              --privileged \
               ghcr.io/nberlee/imager:${TALOS_VERSION} metal \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
