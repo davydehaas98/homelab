@@ -32,16 +32,18 @@ jobs:
 
           mkdir _out
 
-          docker run --rm -t -v ./_out:/out --arch arm64 \
+          docker run --rm -t -v ./_out:/out \
               ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
-              --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
+              --arch arm64 \
+              --base-installer-image ghcr.io/nberlee/installer:${TALOS_VERSION}-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
               --system-extension-image ${UTIL_IMAGE} \
               --system-extension-image ${RK3588_IMAGE}
               
-          docker run --rm -t -v ./_out:/out --arch arm64 \
+          docker run --rm -t -v ./_out:/out \
               ghcr.io/nberlee/imager:${TALOS_VERSION} installer \
-              --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
+              --arch arm64 \
+              --base-installer-image ghcr.io/nberlee/installer:${TALOS_VERSION}-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
               --system-extension-image ${UTIL_IMAGE} \
               --system-extension-image ${RK3588_IMAGE}
