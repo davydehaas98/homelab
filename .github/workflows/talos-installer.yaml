@@ -26,19 +26,21 @@ jobs:
           TALOS_VERSION=${{ inputs.TALOS_VERSION }}
 
           ISCSI_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep iscsi-tools)
-          echo "Using system-extension-image (iscsi-tools): ${ISCSI_IMAGE}"
-
           UTIL_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep util-linux-tools)
-          echo "Using system-extension-image (util-linux-tools): ${UTIL_IMAGE}"
-
           RK3588_IMAGE=$(crane export ghcr.io/nberlee/extensions:${TALOS_VERSION} | tar x -O image-digests | grep rk3588)
-          echo "Using system-extension-image (rk3588): ${RK3588_IMAGE}"
 
           mkdir _out
 
           docker run --rm -t -v ./_out:/out \
-              --privileged \
               ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
+              --arch arm64 \
+              --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
+              --system-extension-image ${ISCSI_IMAGE} \
+              --system-extension-image ${UTIL_IMAGE} \
+              --system-extension-image ${RK3588_IMAGE}
+              
+          docker run --rm -t -v ./_out:/out \
+              ghcr.io/nberlee/imager:${TALOS_VERSION} installer \
               --arch arm64 \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
