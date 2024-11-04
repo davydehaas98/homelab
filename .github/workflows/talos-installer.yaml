@@ -38,7 +38,12 @@ jobs:
 
           docker run --rm -t -v ./_out:/out \
               --privileged \
-              ghcr.io/nberlee/imager:${TALOS_VERSION} iso --arch arm64
+              ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
+              --arch arm64 \
+              --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
+              --system-extension-image ${ISCSI_IMAGE} \
+              --system-extension-image ${UTIL_IMAGE} \
+              --system-extension-image ${RK3588_IMAGE}
           
           echo "Pushing custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'.."
           crane push ./_out/installer-arm64.tar ${INSTALLER_IMAGE}
