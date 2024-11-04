@@ -6,11 +6,12 @@ on:
         description: 'Talos version (example: v1.7.0)'
         required: true
         type: string
-
 jobs:
   installer:
     name: Installer
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
     steps:
       - name: Set up crane
         uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e # v0.4
