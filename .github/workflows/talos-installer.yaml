@@ -23,8 +23,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build images
         run: |
-          INSTALLER_IMAGE=ghcr.io/${{ github.repository }}/talos-installer
           TALOS_VERSION=${{ inputs.TALOS_VERSION }}
+          INSTALLER_IMAGE=ghcr.io/${{ github.repository }}/talos-installer:${TALOS_VERSION}
 
           ISCSI_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep iscsi-tools)
           UTIL_IMAGE=$(crane export ghcr.io/siderolabs/extensions:${TALOS_VERSION} | tar x -O image-digests | grep util-linux-tools)
@@ -32,22 +32,18 @@ jobs:
 
           mkdir _out
 
-          docker run --rm -t -v ./_out:/out \
+          docker run --rm -t -v ./_out:/out --arch arm64 \
               ghcr.io/nberlee/imager:${TALOS_VERSION} iso \
-              --arch arm64 \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
               --system-extension-image ${UTIL_IMAGE} \
               --system-extension-image ${RK3588_IMAGE}
               
-          docker run --rm -t -v ./_out:/out \
+          docker run --rm -t -v ./_out:/out --arch arm64 \
               ghcr.io/nberlee/imager:${TALOS_VERSION} installer \
-              --arch arm64 \
               --base-installer-image ghcr.io/nberlee/installer:"${TALOS_VERSION}"-rk3588 \
               --system-extension-image ${ISCSI_IMAGE} \
               --system-extension-image ${UTIL_IMAGE} \
               --system-extension-image ${RK3588_IMAGE}
-          
-          echo "Pushing custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'.."
+              
           crane push ./_out/installer-arm64.tar ${INSTALLER_IMAGE}
-          echo "Pushed custom installer for Talos version '${TALOS_VERSION} to '${INSTALLER_IMAGE}'."
