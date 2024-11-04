@@ -34,14 +34,14 @@
 - Yggdrasil
   - **CPU:** Intel i5 10600K (6 cores, AMD64)
   - **RAM:** 2x 16GB DDR4 @ 3.200MT/s
-  - **HDD:** 3x Seagate IronWolf 4TB HDD
-  - **OS:** Ubuntu Server 24.04 LTS
+  - **Storage:** 3x Seagate IronWolf 4TB HDD
+  - **OS:** Ubuntu Server 24.10
 
 - 4x Turing RK1 CM (Turing Pi 2.0)
   - **CPU:** Rockchip RK3588 SoC (8 cores, ARM)
   - **RAM:** 16GB LPDDR4
-  - **HDD:** WD Blue SN580 1TB M.2 SSD
-  - **OS:** Talos OS v1.7.6
+  - **Storage:** WD Blue SN580 1TB M.2 SSD
+  - **OS:** Talos OS v1.8.2
 
 # Setup nodes
 ## Enable iptables bridged traffic
