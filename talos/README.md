@@ -14,7 +14,7 @@ Download Talos metal rk1 arm64 image
 ```shell
 cd /mnt/sdcard
 rm metal-arm64.raw.xz
-curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-arm64.raw.xz
+curl -LOk https://github.com/nberlee/talos/releases/download/v1.8.2/metal-arm64.raw.xz
 # Might take a minute
 unxz -f metal-arm64.raw.xz
 
@@ -70,7 +70,7 @@ talosctl config merge talosconfig
 
 ```shell
 ./gen-config.sh -c test \
-    -k 1.30.4 \
+    -k 1.30.6 \
     -i 192.168.2.141 \
     -t controlplane -n 0
 ```
@@ -89,7 +89,7 @@ talosctl kubeconfig -e controlplane-0 --nodes controlplane-0
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium \
-    --version 1.16.1 \
+    --version 1.16.3 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
