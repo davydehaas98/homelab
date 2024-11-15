@@ -1,5 +1,6 @@
 ## Format SD Card in BMC
 SSH into BMC (root:turing) and create new partition via fdisk
+
 ```shell
 ssh root@turingpi
 fdisk /dev/mmcblk0
@@ -15,7 +16,7 @@ cd /mnt/sdcard
 rm metal-arm64.raw.xz
 curl -LOk https://github.com/nberlee/talos/releases/download/v1.7.6/metal-arm64.raw.xz
 # Might take a minute
-unxz metal-arm64.raw.xz
+unxz -f metal-arm64.raw.xz
 
 tpi flash -i /mnt/sdcard/metal-arm64.raw -n 1
 tpi flash -i /mnt/sdcard/metal-arm64.raw -n 2
@@ -82,6 +83,8 @@ talosctl bootstrap -e controlplane-0 --nodes controlplane-0
 talosctl kubeconfig -e controlplane-0 --nodes controlplane-0
 ```
 
+## Install Helm charts
+
 ```shell
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -107,6 +110,8 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
   --namespace kube-system \
   --set-string fullnameOverride=sealed-secrets-controller
 ```
+
+## Install ArgoCD
 
 ```shell
 ARGOCD_HELM_VERSION=7.4.4
