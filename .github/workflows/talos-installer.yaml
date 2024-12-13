@@ -1,9 +1,9 @@
-name: Talos installer ${{ inputs.TALOS_VERSION }}
+name: Talos installer
 on:
   workflow_dispatch:
     inputs:
       TALOS_VERSION:
-        description: 'Talos version (example: v1.7.0)'
+        description: 'Talos version (example: v1.8.4)'
         required: true
         type: string
 jobs:
