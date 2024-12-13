@@ -1,4 +1,4 @@
-name: Talos installer
+name: Talos installer ${{ inputs.TALOS_VERSION }}
 on:
   workflow_dispatch:
     inputs:
