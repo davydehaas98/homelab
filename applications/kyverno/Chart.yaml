@@ -4,7 +4,7 @@ version: 1.0.17
 
 dependencies:
   - name: kyverno
-    version: 3.3.3
+    version: 3.3.4
     repository: https://kyverno.github.io/kyverno
   - name: kyverno-policies
     version: 3.3.2
