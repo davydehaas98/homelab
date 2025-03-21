@@ -1,8 +1,8 @@
 apiVersion: v2
 name: plex
-version: 1.0.8
+version: 1.0.9
 
 dependencies:
   - name: plex-media-server
-    version: 0.8.0
+    version: 0.9.1
     repository: https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages
