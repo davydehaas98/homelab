@@ -4,10 +4,13 @@
   ],
   "baseBranches": [
     "main"
-  ],  
+  ],
+  "automergeSchedule": [
+    "at any time"
+  ],
   "packageRules": [
     {
-      "matchUpdateTypes": [ 
+      "matchUpdateTypes": [
         "patch"
       ],
       "automerge": true
