@@ -4,7 +4,15 @@
   ],
   "baseBranches": [
     "main"
-  ],
+  ],  
+  "packageRules": [
+    {
+      "matchUpdateTypes": [ 
+        "patch", "digest"
+      ],
+      "automerge": true
+    }
+  ]
   "argocd": {
     "fileMatch": ["\\.yaml$"]
   }
