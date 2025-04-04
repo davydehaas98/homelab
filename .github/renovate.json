@@ -14,7 +14,7 @@
         "patch"
       ],
       "automerge": true,
-      "ignoreTests": true,
+      "ignoreTests": true
     }
   ],
   "argocd": {
