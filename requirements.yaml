@@ -9,4 +9,3 @@ collections:
     source: https://galaxy.ansible.com
   - name: kubernetes.core
     version: 5.2.0
-    source: https://galaxy.ansible.com
