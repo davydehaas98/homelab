@@ -6,12 +6,13 @@
     "main"
   ],
   "automergeSchedule": [
-    "at any time"
+    "* 0-6 * * *"
   ],
   "packageRules": [
     {
       "matchUpdateTypes": [
-        "patch"
+        "patch",
+        "digest"
       ],
       "automerge": true,
       "ignoreTests": true
