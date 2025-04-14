@@ -1,3 +1,21 @@
+## Install TPI
+
+```shell
+curl https://sh.rustup.rs -sSf | sh
+cargo install tpi
+```
+
+## Flash Talos image to RK1 nodes
+
+```shell
+rm metal-arm64.raw.xz
+rm metal-arm64.raw
+curl -LOk https://factory.talos.dev/image/eaff5a1425d525ccea8a1691d25426dc21c1b2eaab822c4cd2756ddf9f8658b0/v1.9.5/metal-arm64.raw.xz
+xz -d metal-arm64.raw.xz
+
+tpi flash -i metal-arm64.raw
+```
+
 ## Format SD Card in BMC
 SSH into BMC (root:turing) and create new partition via fdisk
 
@@ -16,12 +34,12 @@ cd /mnt/sdcard
 rm metal-arm64.raw.xz
 curl -LOk https://github.com/nberlee/talos/releases/download/v1.8.2/metal-arm64.raw.xz
 # Might take a minute
-unxz -f metal-arm64.raw.xz
+xz -d metal-arm64.raw.xz
 
-tpi flash -i /mnt/sdcard/metal-arm64.raw -n 1
-tpi flash -i /mnt/sdcard/metal-arm64.raw -n 2
-tpi flash -i /mnt/sdcard/metal-arm64.raw -n 3
-tpi flash -i /mnt/sdcard/metal-arm64.raw -n 4
+tpi flash -i metal-arm64.raw -n 1
+tpi flash -i metal-arm64.raw -n 2
+tpi flash -i metal-arm64.raw -n 3
+tpi flash -i metal-arm64.raw -n 4
 ```
 
 ## Power on RK1 nodes
@@ -52,14 +70,14 @@ curl -sL 'https://www.talos.dev/install' | bash
 
 ```shell
 export CLUSTER_NAME="test"
-export NODE_IP="192.168.2.141"
+export NODE_IP="192.168.2.18"
 export CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
 
 # Talosconfig
 touch gen
 talosctl gen secrets -o gen/secrets.yaml --force
 talosctl gen config \
-    $CLUSTER_NAME $CLUSTER_ENDPOINT \
+    ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
     --output-types talosconfig \
     --output talosconfig \
     --with-secrets gen/secrets.yaml \
@@ -69,9 +87,10 @@ talosctl config merge talosconfig
 ```
 
 ```shell
+export NODE_IP="192.168.2.18"
 ./gen-config.sh -c test \
     -k 1.30.6 \
-    -i 192.168.2.141 \
+    -i ${NODE_IP} \
     -t controlplane -n 0
 ```
 
