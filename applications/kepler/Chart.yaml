@@ -1,8 +1,8 @@
 apiVersion: v2
 name: kepler
-version: 1.0.11
+version: 1.0.12
 
 dependencies:
   - name: kepler
-    version: 0.5.17
+    version: 0.5.18
     repository: https://sustainable-computing-io.github.io/kepler-helm-chart
