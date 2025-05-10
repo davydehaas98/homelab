@@ -1,6 +1,7 @@
 machine:
+  type: worker
   network:
-    hostname: jotunheim-2
+    hostname: jotunheim_2
   install:
     disk: /dev/mmcblk0
   disks:

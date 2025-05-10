@@ -1,6 +1,7 @@
 machine:
+  type: controlplane
   network:
-    hostname: jotunheim-0
+    hostname: jotunheim_1
   install:
     disk: /dev/mmcblk0
   disks:

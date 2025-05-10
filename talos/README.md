@@ -5,44 +5,25 @@ curl https://sh.rustup.rs -sSf | sh
 cargo install tpi
 ```
 
-## Flash Talos image to RK1 nodes
+## Create Talos images
 
 ```shell
-rm metal-arm64.raw.xz
-rm metal-arm64.raw
-curl -LOk https://factory.talos.dev/image/eaff5a1425d525ccea8a1691d25426dc21c1b2eaab822c4cd2756ddf9f8658b0/v1.9.5/metal-arm64.raw.xz
-xz -d metal-arm64.raw.xz
-
-tpi flash -i metal-arm64.raw
+sh image.sh jotunheim_0
+sh image.sh jotunheim_1
+sh image.sh jotunheim_2
+sh image.sh jotunheim_3
 ```
 
-## Format SD Card in BMC
-SSH into BMC (root:turing) and create new partition via fdisk
-
+## Flash Talos image to nodes
+root:turing
 ```shell
-ssh root@turingpi
-fdisk /dev/mmcblk0
-mkfs.ext4 /dev/mmcblk0p1
+tpi flash -i jotunheim_0.metal-arm64.raw -n 1
+tpi flash -i jotunheim_1.metal-arm64.raw -n 2
+tpi flash -i jotunheim_2.metal-arm64.raw -n 3
+tpi flash -i jotunheim_3.metal-arm64.raw -n 4
 ```
 
-## Flash Talos image to RK1 nodes
-Download Talos metal rk1 arm64 image
-(https://github.com/nberlee/talos/releases)
-
-```shell
-cd /mnt/sdcard
-rm metal-arm64.raw.xz
-curl -LOk https://github.com/nberlee/talos/releases/download/v1.8.2/metal-arm64.raw.xz
-# Might take a minute
-xz -d metal-arm64.raw.xz
-
-tpi flash -i metal-arm64.raw -n 1
-tpi flash -i metal-arm64.raw -n 2
-tpi flash -i metal-arm64.raw -n 3
-tpi flash -i metal-arm64.raw -n 4
-```
-
-## Power on RK1 nodes
+## Power on nodes
 
 ```shell
 tpi power on -n 1
@@ -51,26 +32,16 @@ tpi power on -n 3
 tpi power on -n 4
 ```
 
-Give these nodes a couple minutes to start up so you can collect the entire uart log output in one command.
-
-## Pull serial uart console to find each node's IP address
-
-```shell
-tpi uart -n 1 get | tee -a /mnt/sdcard/uart.1.log | grep "assigned address"
-tpi uart -n 2 get | tee -a /mnt/sdcard/uart.2.log | grep "assigned address"
-tpi uart -n 3 get | tee -a /mnt/sdcard/uart.3.log | grep "assigned address"
-tpi uart -n 4 get | tee -a /mnt/sdcard/uart.4.log | grep "assigned address"
-```
-
 ## Talosctl
 
 ```shell
 curl -sL 'https://www.talos.dev/install' | bash
 ```
 
+Create talosconfig secrets
 ```shell
 export CLUSTER_NAME="test"
-export NODE_IP="192.168.2.18"
+export NODE_IP="jotunheim_0"
 export CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
 
 # Talosconfig
@@ -78,20 +49,21 @@ touch gen
 talosctl gen secrets -o gen/secrets.yaml --force
 talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
+    --endpoints jotunheim \
     --output-types talosconfig \
     --output talosconfig \
     --with-secrets gen/secrets.yaml \
     --force
 
 talosctl config merge talosconfig
+
+talosctl config endpoint jotunheim_0
 ```
 
 ```shell
-export NODE_IP="192.168.2.18"
 ./gen-config.sh -c test \
-    -k 1.30.6 \
-    -i ${NODE_IP} \
-    -t controlplane -n 0
+    -n jotunheim_0 \
+    -t controlplane
 ```
 
 Initialize etcd database
