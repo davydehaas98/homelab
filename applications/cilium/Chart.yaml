@@ -1,8 +1,8 @@
 apiVersion: v2
 name: cilium
-version: 1.0.18
+version: 1.0.19
 
 dependencies:
   - name: cilium
-    version: 1.17.4
+    version: 1.17.5
     repository: https://helm.cilium.io
