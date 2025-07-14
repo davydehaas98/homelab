@@ -60,7 +60,7 @@ talosctl config endpoint jotunheim_0
 
 Generate config
 ```shell
-export NODE_NAME="jotunheim_2"
+export NODE_NAME="jotunheim_0"
 export NODE_TYPE="controlplane" # controlplane | worker
 export KUBERNETES_VERSION="1.33.2"
 
@@ -78,23 +78,32 @@ talosctl gen config \
 
 Apply config to node
 ```shell
-export NODE_NAME="jotunheim_3"
+export NODE_NAME="jotunheim_0"
 
 talosctl apply-config \
-        --nodes ${NODE_NAME} \
-        --file gen/${NODE_NAME}.yaml \
-        --insecure \
-        --mode reboot
+    --nodes ${NODE_NAME} \
+    --file gen/${NODE_NAME}.yaml \
+    --insecure \
+    --mode reboot
 
 ```
 
 Initialize etcd database
 ```shell
-talosctl bootstrap -e jotunheim_0 --nodes jotunheim_0
+talosctl bootstrap --endpoints jotunheim_0 --nodes jotunheim_0 \
+    --talosconfig=./talosconfig
 ```
 ```shell
-talosctl kubeconfig -e jotunheim_0 --nodes jotunheim_0
+talosctl kubeconfig --endpoints jotunheim_0 --nodes jotunheim_0 \
+    --talosconfig=./talosconfig
 ```
+```shell
+talosctl --nodes jotunheim_0 --endpoints jotunheim_0 health \
+   --talosconfig=./talosconfig
+talosctl --nodes jotunheim_0 --endpoints jotunheim_0 dashboard \
+   --talosconfig=./talosconfig
+```
+
 
 ## Install Helm charts
 
@@ -127,7 +136,7 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
 ## Install ArgoCD
 
 ```shell
-ARGOCD_HELM_VERSION=7.4.4
+ARGOCD_HELM_VERSION=8.1.3
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd \
