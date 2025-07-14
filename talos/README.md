@@ -149,7 +149,7 @@ kubectl config set-context --current --namespace=argocd
 argocd login --core
 argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
-    --repo https://github.com/davydehaas98/homelab.git --path applications \
+    --repo https://github.com/davydehaas98/homelab.git --path applications/_core \
     --dest-server https://kubernetes.default.svc --dest-namespace argocd \
     --directory-recurse
 
