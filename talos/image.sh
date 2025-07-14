@@ -1,4 +1,9 @@
-TALOS_VERSION=v1.9.5
+#
+# This shell script will generate an image schemantic ID
+# and download it from factory.talos.dev
+#
+
+TALOS_VERSION=v1.10.3
 HOSTNAME=$1
 
 # Retrieve image schematic ID
@@ -16,7 +21,7 @@ ID=$(curl https://factory.talos.dev/schematics \
                 - siderolabs/iscsi-tools
     ' | jq -r '.id')
 
-echo $ID    
+echo $ID
 
 # Retrieve image
 curl https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/metal-arm64.raw.xz \

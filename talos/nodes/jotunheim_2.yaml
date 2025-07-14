@@ -1,5 +1,5 @@
 machine:
-  type: worker
+  type: controlplane
   network:
     hostname: jotunheim_2
   install:
