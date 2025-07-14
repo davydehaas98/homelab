@@ -18,38 +18,36 @@ sh image.sh jotunheim_3
 root:turing
 ```shell
 tpi flash -i jotunheim_0.metal-arm64.raw -n 1
-tpi flash -i jotunheim_1.metal-arm64.raw -n 2
-tpi flash -i jotunheim_2.metal-arm64.raw -n 3
-tpi flash -i jotunheim_3.metal-arm64.raw -n 4
-```
-
-## Power on nodes
-
-```shell
 tpi power on -n 1
+
+tpi flash -i jotunheim_1.metal-arm64.raw -n 2
 tpi power on -n 2
+
+tpi flash -i jotunheim_2.metal-arm64.raw -n 3
 tpi power on -n 3
+
+tpi flash -i jotunheim_3.metal-arm64.raw -n 4
 tpi power on -n 4
 ```
 
 ## Talosctl
-
+Install Talosctl
 ```shell
 curl -sL 'https://www.talos.dev/install' | bash
 ```
 
 Create talosconfig secrets
 ```shell
+export CLUSTER_IP="jotunheim_0"
+export CLUSTER_ENDPOINT="https://${CLUSTER_IP}:6443"
 export CLUSTER_NAME="test"
-export NODE_IP="jotunheim_0"
-export CLUSTER_ENDPOINT="https://${NODE_IP}:6443"
 
 # Talosconfig
 touch gen
-talosctl gen secrets -o gen/secrets.yaml --force
+talosctl gen secrets -o gen/secrets.yaml
+
 talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
-    --endpoints jotunheim \
     --output-types talosconfig \
     --output talosconfig \
     --with-secrets gen/secrets.yaml \
@@ -60,18 +58,42 @@ talosctl config merge talosconfig
 talosctl config endpoint jotunheim_0
 ```
 
+Generate config
 ```shell
-./gen-config.sh -c test \
-    -n jotunheim_0 \
-    -t controlplane
+export NODE_NAME="jotunheim_2"
+export NODE_TYPE="controlplane" # controlplane | worker
+export KUBERNETES_VERSION="1.33.2"
+
+talosctl gen config \
+    ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
+    --output-types ${NODE_TYPE} \
+    --output gen/${NODE_NAME}.yaml \
+    --with-cluster-discovery=false \
+    --with-secrets gen/secrets.yaml \
+    --config-patch @nodes/${NODE_NAME}.yaml \
+    --config-patch @patches/cluster.yaml \
+    --kubernetes-version ${KUBERNETES_VERSION} \
+    --force
+```
+
+Apply config to node
+```shell
+export NODE_NAME="jotunheim_3"
+
+talosctl apply-config \
+        --nodes ${NODE_NAME} \
+        --file gen/${NODE_NAME}.yaml \
+        --insecure \
+        --mode reboot
+
 ```
 
 Initialize etcd database
 ```shell
-talosctl bootstrap -e controlplane-0 --nodes controlplane-0
+talosctl bootstrap -e jotunheim_0 --nodes jotunheim_0
 ```
 ```shell
-talosctl kubeconfig -e controlplane-0 --nodes controlplane-0
+talosctl kubeconfig -e jotunheim_0 --nodes jotunheim_0
 ```
 
 ## Install Helm charts
