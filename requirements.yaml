@@ -2,7 +2,7 @@
 # Install Ansible collections
 collections:
   - name: community.general
-    version: 10.7.3
+    version: 10.7.4
     source: https://galaxy.ansible.com
   - name: ansible.posix
     version: 2.0.0
