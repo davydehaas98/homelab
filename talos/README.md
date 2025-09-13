@@ -145,8 +145,14 @@ helm install argocd argo/argo-cd \
 ```
 
 ```shell
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+kubectl port-forward service/argocd-server -n argocd 8080:443
+```
+
+```shell
 kubectl config set-context --current --namespace=argocd
 argocd login --core
+argocd proj create always-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
     --repo https://github.com/davydehaas98/homelab.git --path applications/_core \
