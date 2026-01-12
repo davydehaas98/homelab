@@ -1,21 +1,36 @@
 applications:
-  argoCd:
-    deploy: true
-    autoSync: false
-    namespace: argocd
+  _core:
+    argocd:
+      deploy: true
+      autoSync: false
+      namespace: argocd
+    certManager:
+      deploy: true
+      autoSync: true
+    externalDns:
+      deploy: true
+      autoSync: true
+    ingressNginx:
+      deploy: true
+      autoSync: true
+    metallb:
+      deploy: true
+      autoSync: true
+      ignoreDifferences:
+        - group: "apiextensions.k8s.io"
+          kind: "CustomResourceDefinition"
+          jsonPointers:
+            - /spec/conversion/webhook/clientConfig/caBundle
+    sealedSecrets:
+      deploy: true
+      autoSync: true
   authentik:
     deploy: false
-    autoSync: true
-  certManager:
-    deploy: true
     autoSync: true
   cilium:
     deploy: true
     autoSync: false
     namespace: kube-system
-  externalDns:
-    deploy: true
-    autoSync: true
   grafana:
     deploy: true
     autoSync: true
@@ -26,9 +41,6 @@ applications:
     serverSideApply: true
   homeAssistant:
     deploy: false
-    autoSync: true
-  ingressNginx:
-    deploy: true
     autoSync: true
   intelDevicePluginsGpu:
     deploy: true
@@ -53,14 +65,6 @@ applications:
     deploy: true
     autoSync: false
     namespace: longhorn-system
-  metallb:
-    deploy: true
-    autoSync: true
-    ignoreDifferences:
-      - group: "apiextensions.k8s.io"
-        kind: "CustomResourceDefinition"
-        jsonPointers:
-          - /spec/conversion/webhook/clientConfig/caBundle
   metricsServer:
     deploy: true
     autoSync: true
@@ -88,9 +92,6 @@ applications:
     namespace: defaults
     serverSideApply: true
   promtail:
-    deploy: true
-    autoSync: true
-  sealedSecrets:
     deploy: true
     autoSync: true
   victoriaMetrics:
