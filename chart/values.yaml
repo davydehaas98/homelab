@@ -1,5 +1,5 @@
 applications:
-  _core:
+  core:
     argocd:
       deploy: true
       autoSync: false

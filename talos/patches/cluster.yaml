@@ -6,9 +6,11 @@ cluster:
 
   network:
     cni:
+      # Disables the default CNI
       name: none
 
   proxy:
+    # Disables kube-proxy
     disabled: true
 
   controllerManager:
