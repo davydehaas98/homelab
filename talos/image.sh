@@ -1,10 +1,13 @@
 #
-# This shell script will generate an image schemantic ID
-# and download it from factory.talos.dev
+# This shell script will generate an image schemantic ID and download it from factory.talos.dev
 #
 
-TALOS_VERSION=v1.10.3
+TALOS_VERSION=v1.12.1
 HOSTNAME=$1
+
+echo "
+Generating Talos image for hostname: '${HOSTNAME}' with Talos version: '${TALOS_VERSION}' ..
+"
 
 # Retrieve image schematic ID
 ID=$(curl https://factory.talos.dev/schematics \
@@ -19,13 +22,25 @@ ID=$(curl https://factory.talos.dev/schematics \
         systemExtensions:
             officialExtensions:
                 - siderolabs/iscsi-tools
-    ' | jq -r '.id')
-
-echo $ID
+    ' | jq --raw-output '.id')
 
 # Retrieve image
-curl https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/metal-arm64.raw.xz \
-    -o ${HOSTNAME}.metal-arm64.raw.xz
+export WEBSITE=https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/metal-arm64.raw.xz
+export IMAGE=${HOSTNAME}.metal-arm64.raw
+
+echo "
+Retrieving image from '${WEBSITE}' ..
+"
+
+curl --location ${WEBSITE} --output ${IMAGE}.xz
+
+echo "
+Decompressing image '${IMAGE}.xz' ..
+"
 
 # Decompress .xz file
-xz -d -f -v ${HOSTNAME}.metal-arm64.raw.xz
+xz --decompress --force --verbose ${IMAGE}.xz
+
+echo "
+Image downloaded and decompressed to '${IMAGE}'
+"
