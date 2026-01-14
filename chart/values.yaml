@@ -28,6 +28,7 @@ applications:
     sealed-secrets:
       deploy: true
       autoSync: true
+      namespace: kube-system
     vpa:
       deploy: true
       autoSync: true
