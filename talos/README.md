@@ -1,3 +1,5 @@
+# Homelab
+
 ## Install TPI
 
 ```shell
@@ -15,7 +17,11 @@ sh image.sh jotunheim_3
 ```
 
 ## Flash Talos image to nodes
-root:turing
+
+| User | Password |
+| ---- | -------- |
+| root | turing   |
+
 ```shell
 tpi flash -i jotunheim_0.metal-arm64.raw -n 1
 tpi power on -n 1
@@ -31,21 +37,27 @@ tpi power on -n 4
 ```
 
 ## Talosctl
-Install Talosctl
+
+For more information, See: <https://docs.siderolabs.com/talos/latest/getting-started/getting-started>.
+
+Install Talosctl:
+
 ```shell
 curl -sL 'https://www.talos.dev/install' | bash
 ```
 
-Create talosconfig secrets
+Generate talosconfig with secrets:
+
 ```shell
-export CLUSTER_IP="jotunheim_0"
+export CLUSTER_IP="192.168.1.55"
 export CLUSTER_ENDPOINT="https://${CLUSTER_IP}:6443"
 export CLUSTER_NAME="test"
 
-# Talosconfig
+# Generate secrets
 touch gen
 talosctl gen secrets -o gen/secrets.yaml
 
+# Generate config
 talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
     --output-types talosconfig \
@@ -55,13 +67,14 @@ talosctl gen config \
 
 talosctl config merge talosconfig
 
-talosctl config endpoint jotunheim_0
+talosctl config endpoint $CLUSTER_IP
 ```
 
-Generate config
+Generate node config:
+
 ```shell
-export NODE_NAME="jotunheim_0"
-export NODE_TYPE="controlplane" # controlplane | worker
+export NODE_NAME="jotunheim_3"
+export NODE_TYPE="worker" # controlplane | worker
 export KUBERNETES_VERSION="1.33.2"
 
 talosctl gen config \
@@ -70,48 +83,63 @@ talosctl gen config \
     --output gen/${NODE_NAME}.yaml \
     --with-cluster-discovery=false \
     --with-secrets gen/secrets.yaml \
-    --config-patch @nodes/${NODE_NAME}.yaml \
     --config-patch @patches/cluster.yaml \
+    --config-patch @nodes/${NODE_NAME}.yaml \
     --kubernetes-version ${KUBERNETES_VERSION} \
     --force
 ```
 
-Apply config to node
+Apply node config and reboot:
+
 ```shell
-export NODE_NAME="jotunheim_0"
+export NODE_NAME="jotunheim_3"
 
 talosctl apply-config \
     --nodes ${NODE_NAME} \
     --file gen/${NODE_NAME}.yaml \
-    --insecure \
-    --mode reboot
-
+    --mode reboot \
+    --insecure
 ```
 
-Initialize etcd database
+Bootstrap the Kubernetes cluster. This will:
+
+- Initializes etcd cluster
+- Starts Kubernetes control plane components
+
 ```shell
-talosctl bootstrap --endpoints jotunheim_0 --nodes jotunheim_0 \
-    --talosconfig=./talosconfig
-```
-```shell
-talosctl kubeconfig --endpoints jotunheim_0 --nodes jotunheim_0 \
-    --talosconfig=./talosconfig
-```
-```shell
-talosctl --nodes jotunheim_0 --endpoints jotunheim_0 health \
-   --talosconfig=./talosconfig
-talosctl --nodes jotunheim_0 --endpoints jotunheim_0 dashboard \
-   --talosconfig=./talosconfig
+talosctl bootstrap --nodes jotunheim_0
 ```
 
+Download client configuration:
+
+```shell
+talosctl kubeconfig --nodes jotunheim_0
+```
+
+Check connection to Kubernetes and see your nodes
+
+```shell
+kubectl get nodes -o wide
+```
+
+Explore your cluster
+
+```shell
+# Health
+talosctl health --nodes jotunheim_0
+
+# Dashboard
+talosctl dashboard --nodes jotunheim_0,jotunheim_1,jotunheim_2,jotunheim_3
+```
 
 ## Install Helm charts
 
 ```shell
+CILIUM_VERSION=1.18.5
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 helm install cilium cilium/cilium \
-    --version 1.16.3 \
+    --version ${CILIUM_VERSION} \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -136,7 +164,7 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
 ## Install ArgoCD
 
 ```shell
-ARGOCD_HELM_VERSION=8.1.3
+ARGOCD_HELM_VERSION=7.9.1
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd \
@@ -155,7 +183,7 @@ argocd login --core
 argocd proj create always-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd proj create no-sync --dest '*,*' --src '*' --allow-cluster-resource '*/*'
 argocd app create argocd \
-    --repo https://github.com/davydehaas98/homelab.git --path applications/_core \
+    --repo https://github.com/davydehaas98/homelab.git --path applications/_core/argocd \
     --dest-server https://kubernetes.default.svc --dest-namespace argocd \
     --directory-recurse
 
