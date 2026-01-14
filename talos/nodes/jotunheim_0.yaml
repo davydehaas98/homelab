@@ -1,9 +1,18 @@
 machine:
   type: controlplane
+
   network:
-    hostname: jotunheim_0
+    # hostname: jotunheim_0
+    interfaces:
+      - deviceSelector:
+          physical: true
+        dhcp: true
+        vip:
+          ip: 192.168.1.55
+
   install:
     disk: /dev/mmcblk0
+
   disks:
     - device: /dev/nvme0n1
       partitions:
