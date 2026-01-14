@@ -1,4 +1,5 @@
-{{ range $appKey, $appValue :=.Values.applications }}
+{{ range $groupKey, $groupValue :=.Values.applications }}
+{{ range $appKey, $appValue := $groupValue }}
 {{ if $appValue.deploy }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -6,6 +7,9 @@ kind: Application
 metadata:
   name: {{ include "base.name" (dict "key" $appKey "value" $appValue) }}
   namespace: argocd
+  labels:
+    davydehaas.nl/group: {{ $groupKey }}
+    davydehaas.nl/app: {{ $appKey }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -17,7 +21,7 @@ spec:
   source:
     repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD
-    path: applications/{{ include "base.name" (dict "key" $appKey "value" $appValue) }}
+    path: applications/{{ ( kebabcase $groupKey ) }}/{{ include "base.name" (dict "key" $appKey "value" $appValue) }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ default (include "base.name" (dict "key" $appKey "value" $appValue)) $appValue.namespace }}
@@ -28,6 +32,7 @@ spec:
   syncPolicy:
     syncOptions:
       - RespectIgnoreDifferences=true
+      - FailOnSharedResource=true
     {{ if $appValue.serverSideApply }}
       - ServerSideApply=true
     {{ end }}
@@ -40,5 +45,6 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 10m
+{{ end -}}
 {{ end -}}
 {{ end -}}
