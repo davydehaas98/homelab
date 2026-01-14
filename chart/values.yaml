@@ -4,13 +4,17 @@ applications:
       deploy: true
       autoSync: false
       namespace: argocd
-    certManager:
+    cert-manager:
       deploy: true
       autoSync: true
-    externalDns:
+    cilium:
+      deploy: true
+      autoSync: false
+      namespace: kube-system
+    external-dns:
       deploy: true
       autoSync: true
-    ingressNginx:
+    ingress-nginx:
       deploy: true
       autoSync: true
     metallb:
@@ -21,83 +25,83 @@ applications:
           kind: "CustomResourceDefinition"
           jsonPointers:
             - /spec/conversion/webhook/clientConfig/caBundle
-    sealedSecrets:
+    sealed-secrets:
       deploy: true
       autoSync: true
-  authentik:
-    deploy: false
-    autoSync: true
-  cilium:
-    deploy: true
-    autoSync: false
-    namespace: kube-system
-  grafana:
-    deploy: true
-    autoSync: true
-  grafanaDashboards:
-    deploy: true
-    autoSync: true
-    namespace: grafana
-    serverSideApply: true
-  homeAssistant:
-    deploy: false
-    autoSync: true
-  intelDevicePluginsGpu:
-    deploy: true
-    ignoreDifferences:
-      - group: "deviceplugin.intel.com"
-        kind: "GpuDevicePlugin"
-        jsonPointers:
-          - /spec/resourceManager
-  jenkins:
-    deploy: false
-    autoSync: true
-  kepler:
-    deploy: false
-    autoSync: true
-  keycloakx:
-    deploy: true
-    autoSync: false
-  loki:
-    deploy: true
-    autoSync: true
-  longhorn:
-    deploy: true
-    autoSync: false
-    namespace: longhorn-system
-  metricsServer:
-    deploy: true
-    autoSync: true
-  minio:
-    deploy: true
-    autoSync: true
-  nextcloud:
-    deploy: false
-    autoSync: true
-  nodeFeatureDiscovery:
-    deploy: true
-    autoSync: true
-  oauth2Proxy:
-    deploy: true
-    autoSync: true
-  postgresql:
-    deploy: true
-    autoSync: true
-  prometheus:
-    deploy: true
-    autoSync: true
-  prometheusCrd:
-    deploy: true
-    autoSync: true
-    namespace: defaults
-    serverSideApply: true
-  promtail:
-    deploy: true
-    autoSync: true
-  victoriaMetrics:
-    deploy: false
-    autoSync: true
-    serverSideApply: true
-  vpa:
-    deploy: true
-    autoSync: true
+    vpa:
+      deploy: true
+      autoSync: true
+  devices:
+    intel-device-plugins-gpu:
+      deploy: true
+      ignoreDifferences:
+        - group: "deviceplugin.intel.com"
+          kind: "GpuDevicePlugin"
+          jsonPointers:
+            - /spec/resourceManager
+    node-feature-discovery:
+      deploy: true
+      autoSync: true
+  home:
+    home-assistant:
+      deploy: false
+      autoSync: true
+    nextcloud:
+      deploy: false
+      autoSync: true
+  media:
+
+  monitoring:
+    grafana:
+      deploy: true
+      autoSync: true
+    grafana-dashboards:
+      deploy: true
+      autoSync: true
+      namespace: grafana
+      serverSideApply: true
+    kepler:
+      deploy: false
+      autoSync: true
+    loki:
+      deploy: true
+      autoSync: true
+    metrics-server:
+      deploy: true
+      autoSync: true
+    prometheus:
+      deploy: true
+      autoSync: true
+    prometheus-crd:
+      deploy: true
+      autoSync: true
+      namespace: defaults
+      serverSideApply: true
+    promtail:
+      deploy: true
+      autoSync: true
+  storage:
+    longhorn:
+      deploy: true
+      autoSync: false
+      namespace: longhorn-system
+    minio:
+      deploy: true
+      autoSync: true
+    postgresql:
+      deploy: true
+      autoSync: true
+  other:
+    authentik:
+      deploy: false
+      autoSync: true
+    keycloakx:
+      deploy: true
+      autoSync: false
+    oauth2-proxy:
+      deploy: true
+      autoSync: true
+    victoria-metrics:
+      deploy: false
+      autoSync: true
+      serverSideApply: true
