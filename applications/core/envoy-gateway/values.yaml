@@ -17,6 +17,7 @@ gateway-helm:
 
 gateway-addons-helm:
   dashboard:
+    enabled: false
     labels:
       grafana_dashboard: "1"
   grafana:
