@@ -18,7 +18,7 @@ applications:
       deploy: true
       autoSync: true
     metallb:
-      deploy: true
+      deploy: false
       autoSync: true
       ignoreDifferences:
         - group: "apiextensions.k8s.io"
