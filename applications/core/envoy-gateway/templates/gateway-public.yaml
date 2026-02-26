@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway
+spec:
+  addresses:
+    - value: 192.168.1.55
+      type: IPAddress
+  gatewayClassName: envoy-gateway
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: envoy-gateway
+  listeners:
+   - name: web-https
+     protocol: HTTPS
+     port: 443
+     hostname: '*.davydehaas.dev'
+     allowedRoutes:
+       namespaces:
+         from: All
+     tls:
+       mode: Terminate
+       certificateRefs:
+       - group: ''
+         kind: Secret
+         name: default-tls-certificate

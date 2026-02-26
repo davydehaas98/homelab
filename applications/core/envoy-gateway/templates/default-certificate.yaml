@@ -1,0 +1,17 @@
+kind: Certificate
+apiVersion: cert-manager.io/v1
+metadata:
+  name: default-tls-certificate
+spec:
+  secretName: default-tls-certificate
+  dnsNames:
+    - "*.davydehaas.dev"
+    - "davydehaas.dev"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-dns
+  revisionHistoryLimit: 1
+  usages:
+    - digital signature
+    - key encipherment

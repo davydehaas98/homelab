@@ -1,0 +1,27 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-gateway
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              revisionHistoryLimit: 0
+        replicas: 3
+        container:
+          resources:
+            requests:
+              cpu: 150m
+              memory: 300Mi
+            limits:
+              memory: 600Mi
+      envoyService:
+        annotations:
+          'io.cilium/lb-ipam-ips': 192.168.1.55
+        externalTrafficPolicy: Local
+        allocateLoadBalancerNodePorts: false
