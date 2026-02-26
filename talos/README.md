@@ -4,6 +4,11 @@
 
 ```shell
 curl https://sh.rustup.rs -sSf | sh
+```
+
+You might need to reboot.
+
+```shell
 cargo install tpi
 ```
 
@@ -23,17 +28,19 @@ sh image.sh jotunheim_3
 | root | turing   |
 
 ```shell
-tpi flash -i jotunheim_0.metal-arm64.raw -n 1
-tpi power on -n 1
+export TPI_HOST=turingpi
 
-tpi flash -i jotunheim_1.metal-arm64.raw -n 2
-tpi power on -n 2
+tpi --host ${TPI_HOST} flash -i jotunheim_0.metal-arm64.raw -n 1
+tpi --host ${TPI_HOST} power on -n 1
 
-tpi flash -i jotunheim_2.metal-arm64.raw -n 3
-tpi power on -n 3
+tpi --host ${TPI_HOST} flash -i jotunheim_1.metal-arm64.raw -n 2
+tpi --host ${TPI_HOST} power on -n 2
 
-tpi flash -i jotunheim_3.metal-arm64.raw -n 4
-tpi power on -n 4
+tpi --host ${TPI_HOST} flash -i jotunheim_2.metal-arm64.raw -n 3
+tpi --host ${TPI_HOST} power on -n 3
+
+tpi --host ${TPI_HOST} flash -i jotunheim_3.metal-arm64.raw -n 4
+tpi --host ${TPI_HOST} power on -n 4
 ```
 
 ## Talosctl
@@ -48,14 +55,19 @@ curl -sL 'https://www.talos.dev/install' | bash
 
 Generate talosconfig with secrets:
 
+This should only be done once.
+You can use these generated secrets to generate a config for different systems if desired.
+
+```shell
+# Generate secrets
+touch gen
+talosctl gen secrets -o gen/secrets.yaml
+```
+
 ```shell
 export CLUSTER_IP="192.168.1.55"
 export CLUSTER_ENDPOINT="https://${CLUSTER_IP}:6443"
 export CLUSTER_NAME="test"
-
-# Generate secrets
-touch gen
-talosctl gen secrets -o gen/secrets.yaml
 
 # Generate config
 talosctl gen config \
@@ -171,6 +183,9 @@ helm install argocd argo/argo-cd \
     --version ${ARGOCD_HELM_VERSION} \
     -n argocd --create-namespace
 ```
+
+Connect to ArgoCD UI by port forwarding the service port
+(http://127.0.0.1:8080)
 
 ```shell
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo

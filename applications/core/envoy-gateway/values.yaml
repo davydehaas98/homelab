@@ -1,0 +1,31 @@
+gateway-helm:
+  deployment:
+    envoyGateway:
+      resources:
+        limits:
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
+    replicas: 2
+
+  config:
+    envoyGateway:
+      logging:
+        level:
+          default: info
+
+gateway-addons-helm:
+  dashboard:
+    labels:
+      grafana_dashboard: "1"
+  grafana:
+    enabled: false
+  prometheus:
+    enabled: false
+  fluent-bit:
+    enabled: false
+  loki:
+    enabled: false
+  tempo:
+    enabled: false
