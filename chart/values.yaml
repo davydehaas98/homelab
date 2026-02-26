@@ -11,10 +11,10 @@ applications:
       deploy: true
       autoSync: false
       namespace: kube-system
-    external-dns:
+    envoy-gateway:
       deploy: true
       autoSync: true
-    ingress-nginx:
+    external-dns:
       deploy: true
       autoSync: true
     metallb:
