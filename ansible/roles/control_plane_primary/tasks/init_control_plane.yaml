@@ -2,7 +2,7 @@
 - name: Check if control plane is initialized
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
-  register: kubeadm_init
+  register: control_plane_primary_kubeadm_init
 
 - name: Copy 'kubeadm-config.yaml'
   when: not kubeadm_init.stat.exists
