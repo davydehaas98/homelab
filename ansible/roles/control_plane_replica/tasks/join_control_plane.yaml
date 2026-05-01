@@ -2,7 +2,7 @@
 - name: Check if control plane is initialized
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
-  register: kubeadm_init
+  register: control_plane_replica_kubeadm_init
 
 - name: Create '/kubernetes' directory
   become: true
