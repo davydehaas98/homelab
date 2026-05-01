@@ -8,7 +8,7 @@
     mode: '644'
 
 - name: Install containerd
-  register: containerd
+  register: containerd_containerd
   ansible.builtin.unarchive:
     src: /opt/containerd/containerd-{{ CONTAINERD_VERSION }}-linux-{{ ARCHITECTURE }}.tar.gz
     dest: /usr/local
