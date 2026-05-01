@@ -2,12 +2,12 @@
 - name: Check if control plane is initialized
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
-  register: kubeadm_init
+  register: worker_node_kubeadm_init
 
 - name: Get join command
   when: not kubeadm_init.stat.exists
   ansible.builtin.command: kubeadm token create --print-join-command
-  register: join_command
+  register: worker_node_join_command
   delegate_to: '{{ groups["control_plane_primary"][0] }}'
   changed_when: true
 
