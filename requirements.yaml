@@ -5,7 +5,7 @@ collections:
     version: 12.6.2
     source: https://galaxy.ansible.com
   - name: ansible.posix
-    version: 2.1.0
+    version: 2.2.1
     source: https://galaxy.ansible.com
   - name: kubernetes.core
     version: 6.3.0
