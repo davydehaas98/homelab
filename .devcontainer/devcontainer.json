@@ -1,5 +1,5 @@
 {
-	"name": "Ansible",
+	"name": "Homelab",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
