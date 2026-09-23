@@ -1,11 +1,12 @@
 #!/bin/sh
+set -e
 
-KUBERNETES_VERSION=1.31.7
+KUBERNETES_VERSION=1.34.11
 
-while getopts ac:n:t: flag;
+while getopts b:c:n:t: flag;
 do
     case ${flag} in
-        a) APPLY="true" ;;
+        b) BOARD=${OPTARG} ;;
         c) CLUSTER_NAME=${OPTARG} ;;
         n) NODE_NAME=${OPTARG} ;;
         t) NODE_TYPE=${OPTARG} ;;
@@ -17,23 +18,19 @@ CLUSTER_ENDPOINT="https://${NODE_NAME}:6443"
 
 echo "Generating Talos config for '${NODE_NAME}'.."
 
+CONFIG_PATCHES="--config-patch @${BOARD}/nodes/${NODE_NAME}.yaml --config-patch @patches/cluster.yaml"
+if [ "${NODE_TYPE}" = "controlplane" ]; then
+    CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @patches/controlplane.yaml"
+fi
+
 talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
     --output gen/${NODE_NAME}.yaml \
     --output-types ${NODE_TYPE} \
     --with-cluster-discovery \
     --with-secrets gen/secrets.yaml \
-    --config-patch @nodes/${NODE_NAME}.yaml \
-    --config-patch @patches/cluster.yaml \
+    ${CONFIG_PATCHES} \
     --kubernetes-version ${KUBERNETES_VERSION} \
     --force
 
-if [ ${APPLY} ]; then
-    echo "Applying config for '${NODE_NAME}'"
-    talosctl apply-config \
-        --nodes ${NODE_NAME} \
-        --file gen/${NODE_NAME}.yaml \
-        --mode reboot
-else
-    echo "Skipped talosctl apply-config."
-fi
+echo "Generated config for '${NODE_NAME}' at gen/${NODE_NAME}.yaml"

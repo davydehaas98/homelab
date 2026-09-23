@@ -2,7 +2,7 @@ machine:
   type: controlplane
 
   network:
-    # hostname: jotunheim_0
+    # hostname: jotunheim_2
     interfaces:
       - deviceSelector:
           physical: true
@@ -10,10 +10,13 @@ machine:
         vip:
           ip: 192.168.1.55
 
-  install:
-    disk: /dev/mmcblk0
-
   disks:
     - device: /dev/nvme0n1
       partitions:
         - mountpoint: /var/mnt/nvme1
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/mmcblk0"

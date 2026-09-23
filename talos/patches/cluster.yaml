@@ -1,22 +1,14 @@
-cluster:
-  controlPlane:
-    endpoint: https://cloud.davydehaas.dev:6443
-  clusterName: test
-  allowSchedulingOnControlPlanes: true
-
-  network:
-    cni:
-      # Disables the default CNI
-      name: none
-
-  proxy:
-    # Disables kube-proxy
-    disabled: true
-
-  controllerManager:
-    extraArgs:
-      bind-address: 0.0.0.0
-
-  scheduler:
-    extraArgs:
-      bind-address: 0.0.0.0
+apiVersion: v1alpha1
+kind: KubeClusterConfig
+clusterName: test
+endpoint: https://192.168.1.55:6443
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+taints:
+  $patch: delete
+---
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+# Disables the default CNI
+$patch: delete
