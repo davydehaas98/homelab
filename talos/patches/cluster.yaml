@@ -12,3 +12,10 @@ apiVersion: v1alpha1
 kind: KubeFlannelCNIConfig
 # Disables the default CNI
 $patch: delete
+---
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+# talosctl gen config defaults this to true, which requires the sandboxd service to run the
+# container plane inside an isolated sandbox namespace. That service isn't present on this
+# installer image, so cri hangs forever waiting for a sandbox namespace that never appears.
+workloadIsolation: false

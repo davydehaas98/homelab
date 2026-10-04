@@ -25,7 +25,7 @@ if OUTPUT=$(talosctl apply-config \
 fi
 echo "${OUTPUT}"
 
-if echo "${OUTPUT}" | grep -q "tls: certificate required"; then
+if echo "${OUTPUT}" | grep -qE "tls: certificate required|certificate signed by unknown authority"; then
     echo "'${NODE_NAME}' is still in maintenance mode, retrying with --insecure"
     if talosctl apply-config \
         --nodes ${NODE_NAME} \

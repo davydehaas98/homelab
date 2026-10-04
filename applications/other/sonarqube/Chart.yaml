@@ -5,4 +5,4 @@ version: 1.0.0
 dependencies:
   - name: sonarqube
     version: 4.1.6
-    repository: registry-1.docker.io/bitnamicharts
+    repository: oci://registry-1.docker.io/bitnamicharts

@@ -143,7 +143,7 @@ helm install cilium cilium/cilium \
 
 ```shell
 SEALED_SECRETS_VERSION=2.18.6
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm repo add sealed-secrets https://bitnami.github.io/sealed-secrets
 helm repo update
 helm install sealed-secrets sealed-secrets/sealed-secrets \
   --version ${SEALED_SECRETS_VERSION} \
@@ -181,8 +181,7 @@ argocd app create argocd \
     --directory-recurse
 
 argocd app sync argocd
-argocd app sync metallb \
-  ingress-nginx \
+argocd app sync envoy-gateway \
   sealed-secrets \
   external-dns \
   cert-manager

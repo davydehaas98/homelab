@@ -1,4 +1,4 @@
-{{- $files := .Files.Glob "files/dashboards/**.json" }}
+{{- $files := .Files.Glob "dashboards/**.json" }}
 {{- range $path, $fileContents := $files }}
 {{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.json$" $path "${2}" }}
 ---
