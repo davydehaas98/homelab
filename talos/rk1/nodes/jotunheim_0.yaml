@@ -1,22 +1,13 @@
 machine:
   type: controlplane
-
-  network:
-    # hostname: jotunheim_0
-    interfaces:
-      - deviceSelector:
-          physical: true
-        dhcp: true
-        vip:
-          ip: 192.168.1.55
-
-  disks:
-    - device: /dev/nvme0n1
-      partitions:
-        - mountpoint: /var/mnt/nvme1
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: end0
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
 provisioning:
   diskSelector:
     match: disk.dev_path == "/dev/mmcblk0"
+  wipe: false

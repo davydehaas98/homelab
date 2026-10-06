@@ -1,6 +1,6 @@
 apiVersion: v1alpha1
 kind: KubeClusterConfig
-clusterName: test
+clusterName: yggdrasil
 endpoint: https://192.168.1.55:6443
 ---
 apiVersion: v1alpha1

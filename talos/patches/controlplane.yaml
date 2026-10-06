@@ -1,4 +1,10 @@
 apiVersion: v1alpha1
+kind: Layer2VIPConfig
+# gen-config.sh fills in the control plane VIP from patches/cluster.yaml
+name: __CLUSTER_IP__
+link: end0
+---
+apiVersion: v1alpha1
 kind: KubeProxyConfig
 # Disables kube-proxy
 enabled: false

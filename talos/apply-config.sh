@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+cd "$(dirname "$0")"
+
 while getopts b:c:n:t: flag;
 do
     case ${flag} in

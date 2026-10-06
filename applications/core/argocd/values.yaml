@@ -53,7 +53,7 @@ argo-cd:
   server:
     replicas: 1
 
-    httproutes:
+    httproute:
       enabled: true
       hostnames:
         - argocd.cloud.davydehaas.dev

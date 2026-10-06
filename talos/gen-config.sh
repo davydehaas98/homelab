@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-KUBERNETES_VERSION=1.34.11
+cd "$(dirname "$0")"
 
 while getopts b:c:n:t: flag;
 do
@@ -14,13 +14,18 @@ do
     esac
 done
 
-CLUSTER_ENDPOINT="https://${NODE_NAME}:6443"
+# patches/cluster.yaml is the single source of the control plane endpoint (and so of the VIP)
+CLUSTER_ENDPOINT=$(sed -n 's/^endpoint: //p' patches/cluster.yaml)
+CLUSTER_IP=${CLUSTER_ENDPOINT#https://}
+CLUSTER_IP=${CLUSTER_IP%:*}
 
 echo "Generating Talos config for '${NODE_NAME}'.."
 
 CONFIG_PATCHES="--config-patch @${BOARD}/nodes/${NODE_NAME}.yaml --config-patch @patches/cluster.yaml"
 if [ "${NODE_TYPE}" = "controlplane" ]; then
-    CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @patches/controlplane.yaml"
+    mkdir -p gen
+    sed "s/__CLUSTER_IP__/${CLUSTER_IP}/" patches/controlplane.yaml > gen/${NODE_NAME}.controlplane.yaml
+    CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @gen/${NODE_NAME}.controlplane.yaml"
 fi
 
 talosctl gen config \
@@ -30,7 +35,6 @@ talosctl gen config \
     --with-cluster-discovery \
     --with-secrets gen/secrets.yaml \
     ${CONFIG_PATCHES} \
-    --kubernetes-version ${KUBERNETES_VERSION} \
     --force
 
 echo "Generated config for '${NODE_NAME}' at gen/${NODE_NAME}.yaml"

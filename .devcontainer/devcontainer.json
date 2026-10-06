@@ -1,7 +1,13 @@
 {
-	"name": "Homelab",
+  "name": "Homelab",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.kube,target=/root/.kube,type=bind"
+  ],
+  "remoteEnv": {
+    "TALOSCONFIG": "${containerWorkspaceFolder}/talos/talosconfig"
   }
 }

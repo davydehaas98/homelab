@@ -7,8 +7,8 @@ curl -s https://factory.talos.dev/schematics \
     --header 'Content-Type: application/json' \
     --data '
     overlay:
-        image: siderolabs/sbc-rockchip
-        name: turingrk1
+        image: siderolabs/sbc-raspberrypi
+        name: rpi_generic
     customization:
         extraKernelArgs:
             - talos.hostname='${NODE_NAME}'

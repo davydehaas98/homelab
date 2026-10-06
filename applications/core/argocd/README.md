@@ -1,4 +1,7 @@
 # Sealed secret
+Secrets here only decrypt with the sealed-secrets controller key. See "Sealed-secrets keys (back up and
+restore)" in `talos/README.md` before rebuilding the cluster.
+
 ## homelab-repo-ssh
 ```
 cat <<EOF> secret.yaml
