@@ -32,3 +32,21 @@ PY
 ## First login
 
 Open <https://auth.davydehaas.dev/if/flow/initial-setup/> to set the `akadmin` password.
+
+## OIDC clients
+
+`templates/blueprints.yaml` renders one Authentik blueprint per client (a key of the `authentik-blueprints` ConfigMap)
+that creates an OAuth2 provider, an application and an `authentik Admins` group binding for each entry in
+`oidcClients` in `values.yaml`. The slug must match the issuer URL (`/application/o/<slug>/`) in the
+app's `SecurityPolicy`.
+
+The client ID and secret of each client are read from the SealedSecret `authentik-oidc-clients`
+(`<SLUG>_CLIENT_ID` and `<SLUG>_CLIENT_SECRET`, with `-` as `_`) and must equal the `client-id` and
+`client-secret` of the `oidc-credentials` SealedSecret in the app's namespace. Generate and seal all of
+them in one go, generating the random values inside the script and piping them straight to `kubeseal`
+(controller in `kube-system`), so they stay equal and are never printed. Re-sealing rotates every client.
+
+To add a client, add an entry to `oidcClients` and seal a new pair into both secrets. Argo CD
+(`argocd-authentik-oidc`, keys `clientID`/`clientSecret`) and Prometheus were first created by hand in
+the UI. The blueprint adopts their applications by slug and points them at a new provider, so delete
+the old, now unused provider in the UI.

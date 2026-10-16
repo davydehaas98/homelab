@@ -1,3 +1,22 @@
+# OIDC applications created by `templates/blueprints.yaml`. The slug must match the issuer URL in the
+# app's SecurityPolicy. Credentials: `<SLUG>_CLIENT_ID` / `<SLUG>_CLIENT_SECRET` in `authentik-oidc-clients`.
+oidcClients:
+  - name: Argo CD
+    slug: argocd
+    redirectURL: https://argocd.davydehaas.dev/auth/callback
+  - name: Hubble
+    slug: hubble
+    redirectURL: https://hubble.davydehaas.dev/oauth2/callback
+  - name: Longhorn
+    slug: longhorn
+    redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
+  - name: Prometheus
+    slug: prometheus
+    redirectURL: https://prometheus.davydehaas.dev/oauth2/callback
+  - name: Policy Reporter
+    slug: policy-reporter
+    redirectURL: https://policy.davydehaas.dev/oauth2/callback
+
 authentik:
   global:
     # Non-secret connection settings. The secret values come from `authentik-credentials` (see README.md)
@@ -8,6 +27,14 @@ authentik:
         value: authentik
       - name: AUTHENTIK_POSTGRESQL__USER
         value: authentik
+    # Client IDs and secrets read by the blueprints (see README.md)
+    envFrom:
+      - secretRef:
+          name: authentik-oidc-clients
+
+  blueprints:
+    configMaps:
+      - authentik-blueprints
 
   authentik:
     existingSecret:
