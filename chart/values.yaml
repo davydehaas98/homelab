@@ -59,6 +59,9 @@ applications:
       autoSync: true
       namespace: media
   monitoring:
+    fluent-bit:
+      deploy: true
+      autoSync: true
     grafana:
       deploy: true
       autoSync: true
@@ -82,9 +85,6 @@ applications:
       autoSync: true
       namespace: defaults
       serverSideApply: true
-    promtail:
-      deploy: true
-      autoSync: true
     victoria-metrics:
       deploy: false
       autoSync: true

@@ -1,0 +1,106 @@
+# Ships the container logs to Loki, replacing promtail (end-of-life). Talos service logs need a logging
+# destination in the machine config (UDP) and an input here, they are not set up.
+fluent-bit:
+  rbac:
+    create: true
+    nodeAccess: false
+    eventsAccess: false
+
+  hostNetwork: false
+
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  serviceMonitor:
+    enabled: true
+
+  env:
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 60m
+      memory: 64Mi
+
+  # Do not ship the logs of this agent itself
+  podAnnotations:
+    fluentbit.io/exclude: 'true'
+
+  config:
+    service: |
+      [SERVICE]
+        Daemon Off
+        Flush {{ .Values.flush }}
+        Log_Level {{ .Values.logLevel }}
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port {{ .Values.metricsPort }}
+        Health_Check On
+    inputs: |
+      [INPUT]
+        Name tail
+        Alias kubernetes
+        Path /var/log/containers/*.log
+        Parser containerd
+        Tag kubernetes.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+        Buffer_Chunk_Size 64KB
+        Buffer_Max_Size 128KB
+    filters: |
+      [FILTER]
+        Name kubernetes
+        Alias kubernetes
+        Match kubernetes.*
+        Kube_Tag_Prefix kubernetes.var.log.containers.
+        Use_Kubelet Off
+        Merge_Log Off
+        Keep_Log On
+        K8S-Logging.Parser Off
+        K8S-Logging.Exclude On
+        Annotations Off
+        Labels Off
+        Buffer_Size 256KB
+    customParsers: |
+      [PARSER]
+        Name containerd
+        Format regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+    outputs: |
+      [OUTPUT]
+        Name loki
+        Match kubernetes.*
+        Host loki-gateway.loki.svc.cluster.local
+        Port 80
+        Labels job=kubernetes,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],stream=$stream,node=${NODE_NAME}
+        # Send only the log text, the pod metadata is in the labels
+        Remove_Keys kubernetes,stream,logtag
+        Drop_Single_Key On
+
+  daemonSetVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+  daemonSetVolumeMounts:
+    - name: varlog
+      mountPath: /var/log
+
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+
+  logLevel: warn
