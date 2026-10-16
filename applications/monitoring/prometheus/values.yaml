@@ -1,20 +1,7 @@
 prometheus:
   server:
     ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-dns
-        external-dns.alpha.kubernetes.io/hostname: prometheus.davydehaas.dev
-        external-dns.alpha.kubernetes.io/ttl: "120"
-        nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-        nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      hosts:
-        - prometheus.davydehaas.dev
-      tls:
-        - secretName: prometheus-tls
-          hosts:
-            - prometheus.davydehaas.dev
+      enabled: false
 
     resources:
       limits:
