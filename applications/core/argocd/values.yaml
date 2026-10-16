@@ -8,6 +8,25 @@ argo-cd:
   configs:
     cm:
       exec.enabled: true
+      url: https://argocd.davydehaas.dev
+      # Single sign-on with Authentik. Client ID and secret live in the `argocd-authentik-oidc` Secret
+      oidc.config: |
+        name: Authentik
+        issuer: https://auth.davydehaas.dev/application/o/argocd/
+        clientID: $argocd-authentik-oidc:clientID
+        clientSecret: $argocd-authentik-oidc:clientSecret
+        requestedScopes:
+          - openid
+          - profile
+          - email
+        requestedIDTokenClaims:
+          groups:
+            essential: true
+    rbac:
+      policy.default: ""
+      policy.csv: |
+        g, authentik Admins, role:admin
+      scopes: "[groups]"
     secret:
       createSecret: true
     params:
