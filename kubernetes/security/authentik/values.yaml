@@ -21,12 +21,18 @@ oidcClients:
   - name: Open WebUI
     slug: open-webui
     redirectURL: https://open-webui.davydehaas.dev/oauth/oidc/callback
+  - name: Prowlarr
+    slug: prowlarr
+    redirectURL: https://prowlarr.davydehaas.dev/oauth2/callback
   - name: Prometheus
     slug: prometheus
     redirectURL: https://prometheus.davydehaas.dev/oauth2/callback
   - name: Policy Reporter
     slug: policy-reporter
     redirectURL: https://policy.davydehaas.dev/oauth2/callback
+  - name: Sonarr
+    slug: sonarr
+    redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
 
 authentik:
   global:

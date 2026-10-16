@@ -43,8 +43,13 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
-            - mountPath: /media
+            # Mounted at the paths of the home-server containers, so a restored configuration keeps working
+            - mountPath: /downloads
               name: media
+              subPath: downloads
+            - mountPath: /series
+              name: media
+              subPath: media/series
       volumes:
         - name: media
           persistentVolumeClaim:

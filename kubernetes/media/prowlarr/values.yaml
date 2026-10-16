@@ -1,0 +1,30 @@
+podSecurityContext:
+  fsGroup: 5000
+
+securityContext: {}
+
+resources:
+  limits:
+    memory: 300Mi
+  requests:
+    cpu: 20m
+    memory: 150Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/prowlarr
+  tag: 2.6.5
+
+persistence:
+  size: 1Gi
+  labels:
+    backup.velero.io/include: "true"
+
+route:
+  enabled: true
+  hostnames:
+    - prowlarr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

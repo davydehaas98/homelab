@@ -1,0 +1,24 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: sonarr
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: sonarr
+  # Sign in with Authentik (application `sonarr`), restrict who may log in with policy bindings there.
+  # The client credentials are in the `sonarr-oidc-credentials` Secret of this namespace, see the Authentik README.md
+  oidc:
+    provider:
+      issuer: https://auth.davydehaas.dev/application/o/sonarr/
+    clientIDRef:
+      name: sonarr-oidc-credentials
+    clientSecret:
+      name: sonarr-oidc-credentials
+    redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
+    logoutPath: /oauth2/logout
+    scopes:
+      - openid
+      - email
+      - profile

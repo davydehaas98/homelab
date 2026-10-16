@@ -44,6 +44,9 @@ applications:
   media:
     media-server:
       deploy: true
+    prowlarr:
+      deploy: true
+      namespace: media-server
     sonarr:
       deploy: true
       namespace: media-server
