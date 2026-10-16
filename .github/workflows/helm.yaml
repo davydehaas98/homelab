@@ -1,0 +1,33 @@
+name: Helm lint
+on:
+  pull_request:
+jobs:
+  helm:
+    name: Helm Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install Helm
+        uses: azure/setup-helm@v5.0.1
+        with:
+          version: v4.3.1
+      - name: Render Argo CD Applications
+        run: helm template chart > /dev/null
+      - name: Lint and render changed applications
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          dirs=$(git diff --name-only "$BASE_SHA" HEAD -- applications \
+            | cut -d/ -f1-3 | sort -u)
+          for dir in $dirs; do
+            [ -f "$dir/Chart.yaml" ] || continue
+            echo "::group::$dir"
+            helm dependency update "$dir"
+            helm lint "$dir"
+            helm template "$dir" > /dev/null
+            echo "::endgroup::"
+          done

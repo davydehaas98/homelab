@@ -5,6 +5,9 @@
   "baseBranchPatterns": [
     "main"
   ],
+  "separateMinorPatch": true,
+  "commitMessagePrefix": "[{{parentDir}}]",
+  "additionalBranchPrefix": "{{parentDir}}-",
   "automergeSchedule": [
     "* 0-6 * * *"
   ],
