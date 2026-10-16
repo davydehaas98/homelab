@@ -32,6 +32,14 @@ spec:
               type: ReplaceFullPath
               replaceFullPath: /remote.php/dav
             statusCode: 301
-    - backendRefs:
+    - filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            remove:
+              - X-Powered-By
+      # Large uploads and syncs outlast the default route timeout
+      timeouts:
+        request: 0s
+      backendRefs:
         - name: nextcloud
           port: 8080

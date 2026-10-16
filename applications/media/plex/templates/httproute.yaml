@@ -10,6 +10,9 @@ spec:
   hostnames:
     - plex.davydehaas.dev
   rules:
-    - backendRefs:
+    # Streams are one long response, so no route timeout
+    - timeouts:
+        request: 0s
+      backendRefs:
         - name: plex-plex-media-server
           port: 32400

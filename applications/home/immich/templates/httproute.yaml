@@ -10,6 +10,9 @@ spec:
   hostnames:
     - immich.davydehaas.dev
   rules:
-    - backendRefs:
+    # Large uploads outlast the default route timeout
+    - timeouts:
+        request: 0s
+      backendRefs:
         - name: immich
           port: 2283
