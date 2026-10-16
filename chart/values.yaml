@@ -86,9 +86,6 @@ applications:
     nfs-subdir-external-provisioner:
       deploy: true
       autoSync: true
-    postgresql:
-      deploy: true
-      autoSync: true
   other:
     authentik:
       deploy: true
