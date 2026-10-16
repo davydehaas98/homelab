@@ -11,6 +11,7 @@ applications:
       deploy: true
       autoSync: false
       namespace: kube-system
+      serverSideApply: true
     envoy-gateway:
       deploy: true
       autoSync: true
