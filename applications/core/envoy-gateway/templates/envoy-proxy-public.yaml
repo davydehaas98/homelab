@@ -23,5 +23,5 @@ spec:
       envoyService:
         annotations:
           'io.cilium/lb-ipam-ips': 192.168.1.56
-        externalTrafficPolicy: Local
+        externalTrafficPolicy: Cluster
         allocateLoadBalancerNodePorts: false
