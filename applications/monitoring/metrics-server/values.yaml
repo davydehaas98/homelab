@@ -29,4 +29,4 @@ metrics-server:
     enabled: true
 
   serviceMonitor:
-  enabled: true
+    enabled: true
