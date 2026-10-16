@@ -2,13 +2,13 @@
 Secrets here only decrypt with the sealed-secrets controller key. See "Sealed-secrets keys (back up and
 restore)" in `talos/README.md` before rebuilding the cluster.
 
-## homelab-repo-ssh
+## homelab-repo-ssh-key
 ```
 cat <<EOF> secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: homelab-repo-ssh
+  name: homelab-repo-ssh-key
   namespace: argocd
   labels:
     argocd.argoproj.io/secret-type: repository

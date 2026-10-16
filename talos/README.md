@@ -212,7 +212,7 @@ helm install sealed-secrets sealed-secrets/sealed-secrets \
 
 ### Sealed-secrets keys (back up and restore)
 
-Every SealedSecret in this repo (including `homelab-repo-ssh`, the GitHub SSH key Argo CD uses) is
+Every SealedSecret in this repo (including `homelab-repo-ssh-key`, the GitHub SSH key Argo CD uses) is
 encrypted with the controller's private key. If the cluster is rebuilt and the controller generates
 a new key, none of them decrypt and everything would need re-sealing. Keep a backup of the keys and
 restore it **right after installing sealed-secrets, before Argo CD**.
@@ -239,7 +239,7 @@ fine to keep alongside the old ones, but back it up again if you seal anything w
 
 Argo CD is installed with Helm once. After that it manages itself (the `argocd` Application in
 `chart/values.yaml`) and every other app under `applications/`. Requires Cilium and sealed-secrets
-from above (the repo credentials in `applications/core/argocd/templates/gitops-repo-ssh.yaml` are a
+from above (the repo credentials in `applications/core/argocd/templates/homelab-repo-ssh-key.yaml` are a
 SealedSecret; re-seal it if the controller's key is new, see `applications/core/argocd/README.md`).
 
 ```shell
