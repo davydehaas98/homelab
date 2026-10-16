@@ -34,19 +34,7 @@ grafana:
   replicas: 1
 
   ingress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-dns
-      external-dns.alpha.kubernetes.io/hostname: grafana.davydehaas.dev
-      external-dns.alpha.kubernetes.io/ttl: "120"
-      ingress.kubernetes.io/rewrite-target: /
-    path: /
-    hosts:
-      - grafana.davydehaas.dev
-    tls:
-      - secretName: grafana-tls
-        hosts:
-          - grafana.davydehaas.dev
+    enabled: false
 
   extraSecretMounts:
     - name: auth-generic-oauth-secret-mount

@@ -15,19 +15,7 @@ minio:
     enabled: false
 
   consoleIngress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-dns
-      external-dns.alpha.kubernetes.io/hostname: minio.davydehaas.dev
-      external-dns.alpha.kubernetes.io/ttl: "120"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    path: /
-    hosts:
-      - minio.davydehaas.dev
-    tls:
-      - secretName: minio-tls
-        hosts:
-          - minio.davydehaas.dev
+    enabled: false
 
   resources:
     limits:

@@ -1,6 +1,11 @@
+# Editor and OS files
+.DS_Store
 .vscode
 
+# Dependencies and build output
+*.raw
 ansible/ansible_collections
+
+# Secrets and generated Talos configs
 talos/gen
 talos/talosconfig
-*.raw
