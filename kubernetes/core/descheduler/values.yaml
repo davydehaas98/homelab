@@ -1,0 +1,78 @@
+descheduler:
+  kind: Deployment
+  deschedulingInterval: 5m
+
+  resources:
+    requests:
+      cpu: 20m
+      memory: 50Mi
+    limits:
+      cpu: null
+      memory: 100Mi
+
+  service:
+    enabled: true
+
+  serviceMonitor:
+    enabled: true
+
+  # Small cluster with mostly single-replica apps on a volume: only clean up and fix misplaced pods, no
+  # load based rebalancing
+  deschedulerPolicyAPIVersion: descheduler/v1alpha2
+  deschedulerPolicy:
+    maxNoOfPodsToEvictPerNode: 2
+    maxNoOfPodsToEvictPerNamespace: 2
+    maxNoOfPodsToEvictTotal: 5
+    evictionFailureEventNotification: true
+    profiles:
+      - name: default
+        pluginConfig:
+          # Keep pods with a volume and pods without a PodDisruptionBudget where they are
+          - name: DefaultEvictor
+            args:
+              nodeFit: true
+              minPodAge: 10m
+              podProtections:
+                extraEnabled:
+                  - PodsWithPVC
+                  - PodsWithoutPDB
+          - name: RemovePodsHavingTooManyRestarts
+            args:
+              podRestartThreshold: 10
+              includingInitContainers: true
+          - name: RemoveFailedPods
+            args:
+              reasons:
+                - Evicted
+              excludeOwnerKinds:
+                - Job
+              minPodLifetimeSeconds: 3600
+              includingInitContainers: true
+          - name: RemovePodsViolatingNodeAffinity
+            args:
+              nodeAffinityType:
+                - requiredDuringSchedulingIgnoredDuringExecution
+                - preferredDuringSchedulingIgnoredDuringExecution
+          - name: RemovePodsViolatingInterPodAntiAffinity
+          - name: RemovePodsViolatingTopologySpreadConstraint
+            args:
+              topologyBalanceNodeFit: true
+              constraints:
+                - DoNotSchedule
+                - ScheduleAnyway
+          - name: RemovePodsViolatingNodeTaints
+            args:
+              includePreferNoSchedule: true
+              excludedTaints:
+                - node.kubernetes.io/unschedulable
+        plugins:
+          deschedule:
+            enabled:
+              - RemovePodsHavingTooManyRestarts
+              - RemoveFailedPods
+              - RemovePodsViolatingInterPodAntiAffinity
+              - RemovePodsViolatingNodeAffinity
+              - RemovePodsViolatingNodeTaints
+          balance:
+            enabled:
+              - RemovePodsViolatingTopologySpreadConstraint
