@@ -48,18 +48,21 @@ grafana:
       oauth_allow_insecure_email_lookup: true
     auth.generic_oauth:
       enabled: true
-      name: Keycloak
+      name: Authentik
       allow_sign_up: true
+      use_pkce: true
       client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
       client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
-      scopes: "openid email profile offline_access roles"
+      scopes: "openid email profile offline_access"
       email_attribute_path: email
-      login_attribute_path: username
-      name_attribute_path: full_name
-      auth_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/auth"
-      token_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/token"
-      api_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
-      role_attribute_path: contains(realm_access.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
+      login_attribute_path: preferred_username
+      name_attribute_path: name
+      auth_url: "https://auth.davydehaas.dev/application/o/authorize/"
+      token_url: "https://auth.davydehaas.dev/application/o/token/"
+      api_url: "https://auth.davydehaas.dev/application/o/userinfo/"
+      signout_redirect_url: "https://auth.davydehaas.dev/application/o/grafana/end-session/"
+      # Authentik group names: members of `authentik Admins` get GrafanaAdmin, `grafana-editors` get Editor
+      role_attribute_path: contains(groups[*], 'authentik Admins') && 'GrafanaAdmin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
       # disable_login_form: true
       disable_signout_menu: false
