@@ -37,16 +37,16 @@ grafana:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-dns
-      external-dns.alpha.kubernetes.io/hostname: grafana.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/hostname: grafana.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
       ingress.kubernetes.io/rewrite-target: /
     path: /
     hosts:
-      - grafana.cloud.davydehaas.dev
+      - grafana.davydehaas.dev
     tls:
       - secretName: grafana-tls
         hosts:
-          - grafana.cloud.davydehaas.dev
+          - grafana.davydehaas.dev
 
   extraSecretMounts:
     - name: auth-generic-oauth-secret-mount
@@ -68,9 +68,9 @@ grafana:
       email_attribute_path: email
       login_attribute_path: username
       name_attribute_path: full_name
-      auth_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/auth"
-      token_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/token"
-      api_url: "https://auth.cloud.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
+      auth_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/auth"
+      token_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/token"
+      api_url: "https://auth.davydehaas.dev/realms/master/protocol/openid-connect/userinfo"
       role_attribute_path: contains(realm_access.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(realm_access.roles[*], 'admin') && 'Admin' || contains(realm_access.roles[*], 'editor') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
       # disable_login_form: true
@@ -87,8 +87,8 @@ grafana:
     grafana_net:
       url: https://grafana.net
     server:
-      domain: "https://grafana.cloud.davydehaas.dev"
-      root_url: "https://grafana.cloud.davydehaas.dev"
+      domain: "https://grafana.davydehaas.dev"
+      root_url: "https://grafana.davydehaas.dev"
 
   serviceMonitor:
     enabled: true

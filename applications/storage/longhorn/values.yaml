@@ -47,11 +47,11 @@ longhorn:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-dns
-      external-dns.alpha.kubernetes.io/hostname: longhorn.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/hostname: longhorn.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
       nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    host: longhorn.cloud.davydehaas.dev
+    host: longhorn.davydehaas.dev
     tls: true
     tlsSecret: longhorn-tls

@@ -9,7 +9,7 @@ nextcloud:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-dns
-      external-dns.alpha.kubernetes.io/hostname: drive.cloud.davydehaas.dev
+      external-dns.alpha.kubernetes.io/hostname: drive.davydehaas.dev
       external-dns.alpha.kubernetes.io/ttl: "120"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: 4G
@@ -41,10 +41,10 @@ nextcloud:
     tls:
       - secretName: nextcloud-tls
         hosts:
-          - drive.cloud.davydehaas.dev
+          - drive.davydehaas.dev
 
   nextcloud:
-    host: drive.cloud.davydehaas.dev
+    host: drive.davydehaas.dev
 
     existingSecret:
       enabled: true

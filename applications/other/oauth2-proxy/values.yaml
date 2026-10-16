@@ -5,7 +5,7 @@ oauth2-proxy:
       email_domains = [ "*" ]
       upstreams = [ "file:///dev/null" ]
       provider = "keycloak-oidc"
-      oidc_issuer_url = "https://auth.cloud.davydehaas.dev/realms/master"
+      oidc_issuer_url = "https://auth.davydehaas.dev/realms/master"
       scope = "openid email"
 
   serviceAccount:
@@ -15,19 +15,19 @@ oauth2-proxy:
     enabled: true
     path: /oauth2
     hosts:
-      - hubble.cloud.davydehaas.dev
-      - longhorn.cloud.davydehaas.dev
-      - prometheus.cloud.davydehaas.dev
+      - hubble.davydehaas.dev
+      - longhorn.davydehaas.dev
+      - prometheus.davydehaas.dev
     tls:
       - secretName: hubble-tls
         hosts:
-          - hubble.cloud.davydehaas.dev
+          - hubble.davydehaas.dev
       - secretName: longhorn-tls
         hosts:
-          - longhorn.cloud.davydehaas.dev
+          - longhorn.davydehaas.dev
       - secretName: prometheus-tls
         hosts:
-          - prometheus.cloud.davydehaas.dev
+          - prometheus.davydehaas.dev
 
   resources:
     limits:

@@ -40,10 +40,10 @@ cat sealed-secret.yaml
 
 - 3 Login settings:
     - Valid redirect URLs:
-        - https://grafana.cloud.davydehaas.dev/oauth2/callback
-        - https://hubble.cloud.davydehaas.dev/oauth2/callback
-        - https://longhorn.cloud.davydehaas.dev/oauth2/callback
-        - https://prometheus.cloud.davydehaas.dev/oauth2/callback
+        - https://grafana.davydehaas.dev/oauth2/callback
+        - https://hubble.davydehaas.dev/oauth2/callback
+        - https://longhorn.davydehaas.dev/oauth2/callback
+        - https://prometheus.davydehaas.dev/oauth2/callback
         - Etc...
 
 ### Clients -> oauth2-proxy -> Client scopes -> oauth2-proxy-dedicated -> Mappers

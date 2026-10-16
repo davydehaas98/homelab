@@ -150,7 +150,7 @@ sudo rm helm-v${HELM_VERSION}-linux-${PROCESSOR_ARCH}.tar.gz
 ## Install Cilium as CNI plugin (Container Network Interface)
 https://github.com/cilium/cilium
 ```shell
-API_SERVER_IP=cloud.davydehaas.dev
+API_SERVER_IP=davydehaas.dev
 API_SERVER_PORT=6443
 CILIUM_HELM_VERSION=1.14.5
 
@@ -251,8 +251,7 @@ argocd app create argocd \
     --directory-recurse
 
 argocd app sync argocd
-argocd app sync metallb \
-  ingress-nginx \
+argocd app sync ingress-nginx \
   sealed-secrets \
   external-dns \
   cert-manager
