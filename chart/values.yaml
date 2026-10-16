@@ -19,14 +19,6 @@ applications:
     external-dns:
       deploy: true
       autoSync: true
-    sealed-secrets:
-      deploy: true
-      autoSync: true
-      namespace: kube-system
-    vpa:
-      deploy: true
-      autoSync: true
-  devices:
     intel-device-plugins-gpu:
       deploy: true
       ignoreDifferences:
@@ -34,7 +26,17 @@ applications:
           kind: "GpuDevicePlugin"
           jsonPointers:
             - /spec/resourceManager
+    metrics-server:
+      deploy: true
+      autoSync: true
     node-feature-discovery:
+      deploy: true
+      autoSync: true
+    sealed-secrets:
+      deploy: true
+      autoSync: true
+      namespace: kube-system
+    vpa:
       deploy: true
       autoSync: true
   home:
@@ -45,7 +47,6 @@ applications:
       deploy: false
       autoSync: true
   media:
-
   monitoring:
     grafana:
       deploy: true
@@ -61,9 +62,6 @@ applications:
     loki:
       deploy: true
       autoSync: true
-    metrics-server:
-      deploy: true
-      autoSync: true
     prometheus:
       deploy: true
       autoSync: true
@@ -75,22 +73,23 @@ applications:
     promtail:
       deploy: true
       autoSync: true
+    victoria-metrics:
+      deploy: false
+      autoSync: true
+      serverSideApply: true
+  security:
+    authentik:
+      deploy: true
+      autoSync: false
   storage:
     longhorn:
       deploy: true
       autoSync: false
       namespace: longhorn-system
-    seaweedfs:
-      deploy: true
-      autoSync: true
     nfs-subdir-external-provisioner:
       deploy: true
       autoSync: true
-  other:
-    authentik:
+    seaweedfs:
       deploy: true
-      autoSync: false
-    victoria-metrics:
-      deploy: false
       autoSync: true
-      serverSideApply: true
+  tools:

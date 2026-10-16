@@ -238,9 +238,9 @@ fine to keep alongside the old ones, but back it up again if you seal anything w
 ## Install ArgoCD
 
 Argo CD is installed with Helm once. After that it manages itself (the `argocd` Application in
-`chart/values.yaml`) and every other app under `applications/`. Requires Cilium and sealed-secrets
-from above (the repo credentials in `applications/core/argocd/templates/homelab-repo-ssh-key.yaml` are a
-SealedSecret; re-seal it if the controller's key is new, see `applications/core/argocd/README.md`).
+`chart/values.yaml`) and every other app under `kubernetes/`. Requires Cilium and sealed-secrets
+from above (the repo credentials in `kubernetes/core/argocd/templates/homelab-repo-ssh-key.yaml` are a
+SealedSecret; re-seal it if the controller's key is new, see `kubernetes/core/argocd/README.md`).
 
 ```shell
 ARGOCD_HELM_VERSION=9.7.1
@@ -255,8 +255,8 @@ helm install argocd argo/argo-cd \
 
 # Hand over to GitOps: the AppProjects and the root `applications` Application. The root app then
 # creates every Application (including `argocd`, which adopts the Helm release above).
-helm dependency update applications/core/argocd
-helm template argocd applications/core/argocd -n argocd \
+helm dependency update kubernetes/core/argocd
+helm template argocd kubernetes/core/argocd -n argocd \
     -s templates/project-always-sync.yaml \
     -s templates/project-no-sync.yaml \
     -s templates/applications.yaml | kubectl apply -f -

@@ -21,7 +21,7 @@ spec:
   source:
     repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD
-    path: applications/{{ ( kebabcase $groupKey ) }}/{{ include "base.name" (dict "key" $appKey "value" $appValue) }}
+    path: kubernetes/{{ ( kebabcase $groupKey ) }}/{{ include "base.name" (dict "key" $appKey "value" $appValue) }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ default (include "base.name" (dict "key" $appKey "value" $appValue)) $appValue.namespace }}

@@ -21,7 +21,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
-          dirs=$(git diff --name-only "$BASE_SHA" HEAD -- applications \
+          dirs=$(git diff --name-only "$BASE_SHA" HEAD -- kubernetes \
             | cut -d/ -f1-3 | sort -u)
           for dir in $dirs; do
             [ -f "$dir/Chart.yaml" ] || continue

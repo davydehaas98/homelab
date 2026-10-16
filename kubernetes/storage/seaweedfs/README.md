@@ -8,7 +8,7 @@ StorageClass. S3 endpoint inside the cluster: `http://seaweedfs-all-in-one.seawe
 
 `templates/seaweedfs-s3-config.yaml` is a SealedSecret holding the S3 identity config (key
 `seaweedfs_s3_config`, JSON with the `loki` identity). Loki reads the same access and secret key
-from `applications/monitoring/loki/templates/loki-s3-credentials.yaml`, so both secrets must be
+from `kubernetes/monitoring/loki/templates/loki-s3-credentials.yaml`, so both secrets must be
 regenerated together. Seal both against the controller in `kube-system`:
 
 ```shell
@@ -25,11 +25,11 @@ cfg = {"identities": [{"name": "loki", "credentials": [{"accessKey": access, "se
 seal({"apiVersion": "v1", "kind": "Secret", "type": "Opaque",
       "metadata": {"name": "seaweedfs-s3-config", "namespace": "seaweedfs"},
       "stringData": {"seaweedfs_s3_config": json.dumps(cfg)}},
-     "applications/storage/seaweedfs/templates/seaweedfs-s3-config.yaml")
+     "kubernetes/storage/seaweedfs/templates/seaweedfs-s3-config.yaml")
 seal({"apiVersion": "v1", "kind": "Secret", "type": "Opaque",
       "metadata": {"name": "loki-s3-credentials", "namespace": "loki"},
       "stringData": {"S3_ACCESS_KEY": access, "S3_SECRET_KEY": secret}},
-     "applications/monitoring/loki/templates/loki-s3-credentials.yaml")
+     "kubernetes/monitoring/loki/templates/loki-s3-credentials.yaml")
 PY
 ```
 
