@@ -4,5 +4,5 @@ version: 1.0.16
 
 dependencies:
   - name: kepler
-    version: 0.6.2
-    repository: https://sustainable-computing-io.github.io/kepler-helm-chart
+    version: 0.12.0
+    repository: oci://quay.io/sustainable_computing_io/charts

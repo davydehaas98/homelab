@@ -1,21 +1,18 @@
+# Kepler reads the CPU energy counters (RAPL) of the node, which Rockchip boards do not have. Check that
+# the pods find a power meter before enabling this app.
 kepler:
-  resources: {}
-
-  extraEnvVars:
-    KEPLER_LOG_LEVEL: "1"
-    ENABLE_GPU: "true"
-    ENABLE_EBPF_CGROUPID: "true"
-    EXPOSE_IRQ_COUNTER_METRICS: "true"
-    EXPOSE_KUBELET_METRICS: "true"
-    ENABLE_PROCESS_METRICS: "true"
-    CPU_ARCH_OVERRIDE: ""
-    CGROUP_METRICS: "*"
-
-  canMount:
-    usrSrc: true
+  config:
+    log:
+      level: info
 
   serviceMonitor:
     enabled: true
-    namespace: "kepler"
     interval: 30s
-    scrapeTimeout: 5s
+
+  daemonset:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 20m
+        memory: 64Mi
