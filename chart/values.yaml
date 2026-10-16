@@ -88,8 +88,8 @@ applications:
       autoSync: true
   other:
     authentik:
-      deploy: false
-      autoSync: true
+      deploy: true
+      autoSync: false
     victoria-metrics:
       deploy: false
       autoSync: true

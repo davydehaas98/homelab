@@ -1,0 +1,49 @@
+authentik:
+  global:
+    # Non-secret connection settings. The secret values come from `authentik-credentials` (see README.md)
+    env:
+      - name: AUTHENTIK_POSTGRESQL__HOST
+        value: authentik-postgresql
+      - name: AUTHENTIK_POSTGRESQL__NAME
+        value: authentik
+      - name: AUTHENTIK_POSTGRESQL__USER
+        value: authentik
+
+  authentik:
+    existingSecret:
+      secretName: authentik-credentials
+
+  server:
+    replicas: 1
+    resources:
+      limits:
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+
+  worker:
+    replicas: 1
+    resources:
+      limits:
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+
+  postgresql:
+    enabled: true
+    auth:
+      username: authentik
+      database: authentik
+      existingSecret: authentik-credentials
+      secretKeys:
+        adminPasswordKey: postgres-password
+        userPasswordKey: password
+    primary:
+      resources:
+        limits:
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 256Mi
