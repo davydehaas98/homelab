@@ -1,4 +1,8 @@
 prometheus:
+  # node-exporter needs host access, it runs in its own privileged namespace (templates/namespace-node-exporter.yaml)
+  prometheus-node-exporter:
+    namespaceOverride: prometheus-node-exporter
+
   server:
     ingress:
       enabled: false
