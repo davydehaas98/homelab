@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: open-webui
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+  hostnames:
+    - open-webui.davydehaas.dev
+  rules:
+    # Chat responses stream for a long time
+    - timeouts:
+        request: 0s
+      backendRefs:
+        - name: open-webui
+          port: 80

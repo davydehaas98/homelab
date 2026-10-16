@@ -108,3 +108,12 @@ applications:
       deploy: true
       autoSync: true
   tools:
+    it-tools:
+      deploy: false
+      autoSync: true
+    memos:
+      deploy: false
+      autoSync: true
+    open-webui:
+      deploy: false
+      autoSync: true

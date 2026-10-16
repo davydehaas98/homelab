@@ -1,0 +1,59 @@
+# Chat UI for the Ollama on the home server (GPU), nothing runs models in the cluster. The first account
+# to sign up becomes the admin.
+open-webui:
+  # Models run on the home server
+  ollama:
+    enabled: false
+  ollamaUrls:
+    - http://192.168.1.44:11434
+
+  # Not needed for one replica
+  pipelines:
+    enabled: false
+  websocket:
+    enabled: false
+
+  # Only local models
+  enableOpenaiApi: false
+
+  extraEnvVars:
+    - name: TZ
+      value: Europe/Amsterdam
+    # Sign in with Authentik (application `open-webui`), the credentials are in the `oidc-credentials`
+    # Secret of this namespace, see the Authentik README.md. The password login stays as a fallback,
+    # set ENABLE_LOGIN_FORM to "false" once the SSO login works.
+    - name: WEBUI_URL
+      value: https://open-webui.davydehaas.dev
+    - name: ENABLE_OAUTH_SIGNUP
+      value: "true"
+    - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
+      value: "true"
+    - name: OAUTH_PROVIDER_NAME
+      value: Authentik
+    - name: OPENID_PROVIDER_URL
+      value: https://auth.davydehaas.dev/application/o/open-webui/.well-known/openid-configuration
+    - name: OPENID_REDIRECT_URI
+      value: https://open-webui.davydehaas.dev/oauth/oidc/callback
+    - name: OAUTH_SCOPES
+      value: openid email profile
+    - name: OAUTH_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: oidc-credentials
+          key: client-id
+    - name: OAUTH_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: oidc-credentials
+          key: client-secret
+
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi

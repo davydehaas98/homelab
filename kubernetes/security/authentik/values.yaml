@@ -12,9 +12,15 @@ oidcClients:
   - name: Hubble
     slug: hubble
     redirectURL: https://hubble.davydehaas.dev/oauth2/callback
+  - name: IT Tools
+    slug: it-tools
+    redirectURL: https://it-tools.davydehaas.dev/oauth2/callback
   - name: Longhorn
     slug: longhorn
     redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
+  - name: Open WebUI
+    slug: open-webui
+    redirectURL: https://open-webui.davydehaas.dev/oauth/oidc/callback
   - name: Prometheus
     slug: prometheus
     redirectURL: https://prometheus.davydehaas.dev/oauth2/callback

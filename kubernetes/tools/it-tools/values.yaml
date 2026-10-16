@@ -1,0 +1,48 @@
+# Static site served by nginx, no state and no login. The image starts nginx as root on port 80 and
+# drops to its own user, so it keeps a few capabilities instead of running non-root.
+app-template:
+  defaultPodOptions:
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+  controllers:
+    it-tools:
+      containers:
+        app:
+          image:
+            repository: ghcr.io/corentinth/it-tools
+            tag: 2024.10.22-7ca5933
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - DAC_OVERRIDE
+                - NET_BIND_SERVICE
+                - SETGID
+                - SETUID
+          probes:
+            liveness: &probe
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /
+                  port: 80
+            readiness: *probe
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+
+  service:
+    app:
+      controller: it-tools
+      ports:
+        http:
+          port: 80
