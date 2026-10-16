@@ -75,6 +75,8 @@ cilium:
       enabled: true
   dashboards:
     enabled: true
+    # Grafana only reads ConfigMaps of its own namespace
+    namespace: grafana
 
   hubble:
     enabled: true
@@ -89,6 +91,7 @@ cilium:
         enabled: true
       dashboards:
         enabled: true
+        namespace: grafana
 
     relay:
       enabled: true
