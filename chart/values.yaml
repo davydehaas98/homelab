@@ -47,6 +47,17 @@ applications:
       deploy: false
       autoSync: true
   media:
+    media:
+      deploy: false
+      autoSync: true
+    radarr:
+      deploy: false
+      autoSync: true
+      namespace: media
+    sonarr:
+      deploy: false
+      autoSync: true
+      namespace: media
   monitoring:
     grafana:
       deploy: true

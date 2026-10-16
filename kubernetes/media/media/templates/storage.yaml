@@ -1,0 +1,35 @@
+# The media share on the home server (yggdrasil), mounted once and shared by the apps in this namespace.
+# Each app mounts its own subPaths from the `media` claim.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  nfs:
+    server: 192.168.1.44
+    path: /mnt/storage
+  claimRef:
+    namespace: media
+    name: media
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: media
+  resources:
+    requests:
+      storage: 1Ti
