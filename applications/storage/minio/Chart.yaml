@@ -1,8 +1,0 @@
-apiVersion: v2
-name: minio
-version: 1.0.5
-
-dependencies:
-  - name: minio
-    version: 5.4.0
-    repository: https://charts.min.io

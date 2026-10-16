@@ -80,7 +80,7 @@ applications:
       deploy: true
       autoSync: false
       namespace: longhorn-system
-    minio:
+    seaweedfs:
       deploy: true
       autoSync: true
     nfs-subdir-external-provisioner:

@@ -26,8 +26,8 @@ loki:
         admin: loki-admin
       type: s3
       s3:
-        s3: s3://minio.minio:9000
-        endpoint: http://minio.minio:9000
+        s3: s3://seaweedfs-all-in-one.seaweedfs:8333
+        endpoint: http://seaweedfs-all-in-one.seaweedfs:8333
         region: eu
         secretAccessKey: ${S3_SECRET_KEY}
         accessKeyId: ${S3_ACCESS_KEY}

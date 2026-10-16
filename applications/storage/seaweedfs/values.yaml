@@ -1,0 +1,38 @@
+seaweedfs:
+  # The all-in-one pod below replaces the separate components
+  master:
+    enabled: false
+  volume:
+    enabled: false
+  filer:
+    enabled: false
+
+  # Single pod with master, volume server, filer and S3 gateway. Plenty for a homelab.
+  allInOne:
+    enabled: true
+    replicas: 1
+
+    s3:
+      enabled: true
+      enableAuth: true
+      # Secret with key `seaweedfs_s3_config`, see README.md
+      existingConfigSecret: seaweedfs-s3-config
+      createBuckets:
+        - name: loki-chunks
+        - name: loki-ruler
+        - name: loki-admin
+
+    data:
+      type: persistentVolumeClaim
+      size: 20Gi
+      storageClass: nfs
+
+    # One replica, no need for anti-affinity
+    affinity: ""
+
+    resources:
+      limits:
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
