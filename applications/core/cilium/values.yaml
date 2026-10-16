@@ -32,11 +32,6 @@ cilium:
       enabled: false
     hostRoot: /sys/fs/cgroup
 
-  gatewayAPI:
-    enabled: true
-    enableAlpn: true
-    enableAppProtocol: true
-
   bgpControlPlane:
     enabled: false
 

@@ -4,7 +4,7 @@ metadata:
   name: envoy-gateway
 spec:
   addresses:
-    - value: 192.168.1.55
+    - value: 192.168.1.56
       type: IPAddress
   gatewayClassName: envoy-gateway
   infrastructure:
@@ -13,6 +13,12 @@ spec:
       kind: EnvoyProxy
       name: envoy-gateway
   listeners:
+   - name: web-http
+     protocol: HTTP
+     port: 80
+     allowedRoutes:
+       namespaces:
+         from: Same
    - name: web-https
      protocol: HTTPS
      port: 443
