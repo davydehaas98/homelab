@@ -7,8 +7,9 @@ longhorn:
     defaultDataLocality: best-effort
     defaultReplicaAutoBalance: best-effort
 
-  helmPreUpgradeCheckerJob:
-    enabled: false
+  # The pre-upgrade check Job runs before Argo CD has created its service account, so every sync fails
+  preUpgradeChecker:
+    jobEnabled: false
 
   csi:
     attacherReplicaCount: 1

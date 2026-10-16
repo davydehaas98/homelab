@@ -18,7 +18,7 @@ spec:
     server: 192.168.1.44
     path: /mnt/storage
   claimRef:
-    namespace: media
+    namespace: media-server
     name: media
 ---
 apiVersion: v1

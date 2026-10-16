@@ -42,11 +42,11 @@ applications:
     zigbee2mqtt:
       deploy: false
   media:
-    media:
-      deploy: false
+    media-server:
+      deploy: true
     sonarr:
-      deploy: false
-      namespace: media
+      deploy: true
+      namespace: media-server
   monitoring:
     fluent-bit:
       deploy: true
@@ -76,7 +76,7 @@ applications:
       namespace: cnpg-system
       serverSideApply: true
     longhorn:
-      deploy: true
+      deploy: false
       autoSync: false
       namespace: longhorn-system
     nfs-subdir-external-provisioner:
