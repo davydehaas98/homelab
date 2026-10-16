@@ -90,12 +90,6 @@ applications:
     authentik:
       deploy: false
       autoSync: true
-    keycloakx:
-      deploy: true
-      autoSync: false
-    oauth2-proxy:
-      deploy: true
-      autoSync: true
     victoria-metrics:
       deploy: false
       autoSync: true
