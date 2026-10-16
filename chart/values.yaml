@@ -2,11 +2,9 @@ applications:
   core:
     argocd:
       deploy: true
-      autoSync: false
       namespace: argocd
     cert-manager:
       deploy: true
-      autoSync: true
     cilium:
       deploy: true
       autoSync: false
@@ -14,16 +12,13 @@ applications:
       serverSideApply: true
     descheduler:
       deploy: false
-      autoSync: true
     envoy-gateway:
       deploy: true
-      autoSync: true
       serverSideApply: true
     external-dns:
       deploy: true
-      autoSync: true
     intel-device-plugins-gpu:
-      deploy: true
+      deploy: false
       ignoreDifferences:
         - group: "deviceplugin.intel.com"
           kind: "GpuDevicePlugin"
@@ -31,71 +26,53 @@ applications:
             - /spec/resourceManager
     metrics-server:
       deploy: true
-      autoSync: true
     node-feature-discovery:
       deploy: true
-      autoSync: true
     sealed-secrets:
       deploy: true
-      autoSync: true
       namespace: kube-system
     vpa:
       deploy: true
-      autoSync: true
   home:
     home-assistant:
       deploy: false
-      autoSync: true
     nextcloud:
       deploy: false
-      autoSync: true
   media:
     media:
       deploy: false
-      autoSync: true
     radarr:
       deploy: false
-      autoSync: true
       namespace: media
     sonarr:
       deploy: false
-      autoSync: true
       namespace: media
   monitoring:
     fluent-bit:
       deploy: true
-      autoSync: true
     grafana:
       deploy: true
-      autoSync: true
     grafana-dashboards:
       deploy: true
-      autoSync: true
       namespace: grafana
       serverSideApply: true
     kepler:
       deploy: false
-      autoSync: true
     loki:
       deploy: true
-      autoSync: true
     prometheus:
       deploy: true
-      autoSync: true
       serverSideApply: true
     prometheus-crd:
       deploy: true
-      autoSync: true
       namespace: defaults
       serverSideApply: true
     victoria-metrics:
       deploy: false
-      autoSync: true
       serverSideApply: true
   security:
     authentik:
       deploy: true
-      autoSync: false
   storage:
     longhorn:
       deploy: true
@@ -103,17 +80,12 @@ applications:
       namespace: longhorn-system
     nfs-subdir-external-provisioner:
       deploy: true
-      autoSync: true
     seaweedfs:
       deploy: true
-      autoSync: true
   tools:
     it-tools:
       deploy: false
-      autoSync: true
     memos:
       deploy: false
-      autoSync: true
     open-webui:
       deploy: false
-      autoSync: true

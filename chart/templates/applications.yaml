@@ -18,11 +18,11 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  {{ if $appValue.autoSync }}
+  {{- if or (not (hasKey $appValue "autoSync")) $appValue.autoSync }}
   project: always-sync
-  {{ else }}
+  {{- else }}
   project: no-sync
-  {{ end }}
+  {{- end }}
   source:
     repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD

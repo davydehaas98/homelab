@@ -16,7 +16,7 @@ Consequences:
 - **A directory under `kubernetes/` does nothing on its own.** It must also be listed in `chart/values.yaml` with `deploy: true`. Several app directories (e.g. `media/*`, `home/immich`, `security/kyverno`) are not listed and therefore not deployed.
 - The directory name must equal the kebab-cased key in `chart/values.yaml` (or its `nameOverride`), and the group directory must equal the group key.
 - Namespace defaults to the app name; override with `namespace:` in `chart/values.yaml`.
-- `autoSync: true` → AppProject `always-sync`; `autoSync: false` → AppProject `no-sync`, whose deny sync window blocks automatic syncs (manual sync still allowed). Core pieces like `argocd`, `cilium`, and `longhorn` are deliberately `no-sync`.
+- Apps auto-sync (AppProject `always-sync`) unless they set `autoSync: false`, which puts them in AppProject `no-sync`, whose deny sync window blocks automatic syncs (manual sync still allowed). Core pieces like `argocd`, `cilium`, and `longhorn` are deliberately `no-sync`.
 - Per-app knobs (`ignoreDifferences`, `serverSideApply`) are documented in `chart/README.md`.
 
 To add an app: copy `kubernetes/_base/` (an empty scaffold with `Chart.yaml` + `templates/namespace.yaml`) into `kubernetes/<group>/<app>/`, fill in the dependency, then add the entry to `chart/values.yaml`.
