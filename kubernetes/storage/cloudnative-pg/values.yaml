@@ -1,0 +1,10 @@
+cloudnative-pg:
+  crds:
+    create: true
+
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi

@@ -1,0 +1,54 @@
+velero:
+  initContainers:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.14.4
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /target
+          name: plugins
+
+  configuration:
+    # SeaweedFS S3 gateway, bucket `velero`, see README.md
+    backupStorageLocation:
+      - name: default
+        provider: aws
+        bucket: velero
+        default: true
+        config:
+          region: us-east-1
+          s3ForcePathStyle: "true"
+          s3Url: http://seaweedfs-all-in-one.seaweedfs:8333
+    # The nfs StorageClass has no snapshots, volumes are backed up from the node agent instead
+    volumeSnapshotLocation: []
+    uploaderType: kopia
+
+  credentials:
+    useSecret: true
+    # SealedSecret with key `cloud`, see README.md
+    existingSecret: velero-credentials
+
+  snapshotsEnabled: false
+  deployNodeAgent: true
+
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+  nodeAgent:
+    resources:
+      limits:
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+
+  # Cluster resources are backed up daily, volumes only when a pod opts in with the annotation
+  # backup.velero.io/backup-volumes: <volume name>
+  schedules:
+    daily:
+      schedule: "0 3 * * *"
+      template:
+        ttl: 720h
