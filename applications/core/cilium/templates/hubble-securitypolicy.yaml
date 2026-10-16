@@ -1,0 +1,24 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: hubble
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: hubble
+  # Sign in with Authentik (application `hubble`), restrict who may log in with policy bindings there.
+  # The client credentials are in the `oidc-credentials` Secret of this namespace, see README.md
+  oidc:
+    provider:
+      issuer: https://auth.davydehaas.dev/application/o/hubble/
+    clientIDRef:
+      name: oidc-credentials
+    clientSecret:
+      name: oidc-credentials
+    redirectURL: https://hubble.davydehaas.dev/oauth2/callback
+    logoutPath: /oauth2/logout
+    scopes:
+      - openid
+      - email
+      - profile

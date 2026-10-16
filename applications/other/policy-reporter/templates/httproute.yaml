@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: policy-reporter
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+  hostnames:
+    - policy.davydehaas.dev
+  rules:
+    - backendRefs:
+        - name: policy-reporter-ui
+          port: 8080

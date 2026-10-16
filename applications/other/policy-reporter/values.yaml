@@ -25,23 +25,7 @@ policy-reporter:
         cpu: 5m
 
     ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-dns
-        external-dns.alpha.kubernetes.io/hostname: policy.davydehaas.dev
-        external-dns.alpha.kubernetes.io/ttl: "120"
-        nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-        nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      hosts:
-        - host: policy.davydehaas.dev
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
-      tls:
-        - secretName: policy-tls
-          hosts:
-            - policy.davydehaas.dev
+      enabled: false
 
   kyvernoPlugin:
     enabled: true

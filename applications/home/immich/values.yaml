@@ -14,15 +14,7 @@ immich:
     accessMode: ReadWriteMany
 
   ingress:
-    enabled: true
-    domain: immich.davydehaas.dev
-    annotations:
-      # proxy-body-size is set to 0 to remove the body limit on file uploads
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      cert-manager.io/cluster-issuer: letsencrypt-dns
-    tls:
-      enabled: true
-      secretName: immich-tls
+    enabled: false
 
   database:
     clusterName: immich-postgresql
