@@ -22,6 +22,6 @@ spec:
               memory: 600Mi
       envoyService:
         annotations:
-          'io.cilium/lb-ipam-ips': 192.168.1.55
+          'io.cilium/lb-ipam-ips': 192.168.1.56
         externalTrafficPolicy: Local
         allocateLoadBalancerNodePorts: false

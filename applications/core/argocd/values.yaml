@@ -56,7 +56,7 @@ argo-cd:
     httproute:
       enabled: true
       hostnames:
-        - argocd.cloud.davydehaas.dev
+        - argocd.davydehaas.dev
       parentRefs:
         - name: envoy-gateway
           namespace: envoy-gateway

@@ -7,6 +7,13 @@ cilium:
   bgpControlPlane:
     enabled: false
 
+  l2announcements:
+    enabled: true
+
+  k8sClientRateLimit:
+    qps: 20
+    burst: 40
+
   certgen:
     ttlSecondsAfterFinished: null
 

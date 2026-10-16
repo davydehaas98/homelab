@@ -1,0 +1,15 @@
+machine:
+  type: worker
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+# Check the interface name with `talosctl get links` once the Pi has booted (end0 or eth0)
+name: end0
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    # SD card; use e.g. /dev/sda to install onto a USB SSD instead
+    match: disk.dev_path == "/dev/mmcblk0"
+  wipe: false
