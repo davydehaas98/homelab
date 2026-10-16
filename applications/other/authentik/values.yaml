@@ -1,9 +1,14 @@
 # OIDC applications created by `templates/blueprints.yaml`. The slug must match the issuer URL in the
-# app's SecurityPolicy. Credentials: `<SLUG>_CLIENT_ID` / `<SLUG>_CLIENT_SECRET` in `authentik-oidc-clients`.
+# app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` / `<SLUG>_CLIENT_SECRET` in `authentik-oidc-clients`.
 oidcClients:
   - name: Argo CD
     slug: argocd
     redirectURL: https://argocd.davydehaas.dev/auth/callback
+  - name: Grafana
+    slug: grafana
+    # Grafana maps roles from group claims, so every Authentik user may sign in
+    openAccess: true
+    redirectURL: https://grafana.davydehaas.dev/login/generic_oauth
   - name: Hubble
     slug: hubble
     redirectURL: https://hubble.davydehaas.dev/oauth2/callback

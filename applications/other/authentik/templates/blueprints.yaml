@@ -13,8 +13,9 @@ data:
       - model: authentik_providers_oauth2.oauth2provider
         id: provider
         identifiers:
-          name: {{ .name }}
+          client_id: !Env {{ $env }}_CLIENT_ID
         attrs:
+          name: Provider for {{ .name }}
           authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
           invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
           client_type: confidential
@@ -38,6 +39,7 @@ data:
         attrs:
           name: {{ .name }}
           provider: !KeyOf provider
+      {{- if not .openAccess }}
       # Only members of `authentik Admins` may sign in
       - model: authentik_policies.policybinding
         identifiers:
@@ -48,4 +50,5 @@ data:
           enabled: true
           negate: false
           timeout: 30
+      {{- end }}
   {{- end }}
