@@ -188,7 +188,7 @@ helm repo add cilium https://helm.cilium.io/
 helm repo update
 
 helm install cilium cilium/cilium \
-    --version 1.19.8 \
+    --version 1.19.9 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -197,10 +197,7 @@ helm install cilium cilium/cilium \
     --set cgroup.autoMount.enabled=false \
     --set cgroup.hostRoot=/sys/fs/cgroup \
     --set k8sServiceHost=localhost \
-    --set k8sServicePort=7445 \
-    --set gatewayAPI.enabled=true \
-    --set gatewayAPI.enableAlpn=true \
-    --set gatewayAPI.enableAppProtocol=true
+    --set k8sServicePort=7445
 ```
 
 ```shell

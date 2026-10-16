@@ -70,6 +70,10 @@ cilium:
   hubble:
     enabled: true
 
+    tls:
+      auto:
+        method: cronJob
+
     metrics:
       enableOpenMetrics: true
       serviceMonitor:
