@@ -28,6 +28,6 @@ jobs:
             echo "::group::$dir"
             helm dependency update "$dir"
             helm lint "$dir"
-            helm template "$dir" > /dev/null
+            helm template "$dir" --api-versions monitoring.coreos.com/v1 > /dev/null
             echo "::endgroup::"
           done
