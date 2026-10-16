@@ -10,6 +10,11 @@ metadata:
   labels:
     davydehaas.nl/group: {{ $groupKey }}
     davydehaas.nl/app: {{ $appKey }}
+  {{- if $appValue.serverSideApply }}
+  annotations:
+    # The API server fills in defaults (for example on HTTPRoutes), compare against its result instead
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+  {{- end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

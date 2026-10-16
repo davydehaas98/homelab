@@ -89,7 +89,7 @@ fluent-bit:
         Labels job=kubernetes,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],stream=$stream,node=${NODE_NAME}
         # Send only the log text, the pod metadata is in the labels
         Remove_Keys kubernetes,stream,logtag
-        Drop_Single_Key On
+        Drop_Single_Key raw
 
   daemonSetVolumes:
     - name: varlog
