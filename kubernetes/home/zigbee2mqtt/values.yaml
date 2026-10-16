@@ -1,0 +1,39 @@
+# Official chart. It merges the `zigbee2mqtt:` block below OVER the configuration.yaml on the data volume,
+# so every value here replaces the one of your running network. Before enabling this app, copy the
+# settings from the configuration.yaml on the home server (serial port, channel, transmit power, ...):
+# a different channel or coordinator setting splits the Zigbee network and the devices have to be paired again.
+# The network key and the device list stay in the volume (copy ~/home-server/zigbee2mqtt/data into it first).
+# The frontend has no login of its own and there is no route yet, add one together with an Authentik policy.
+zigbee2mqtt:
+  statefulset:
+    storage:
+      enabled: true
+      size: 1Gi
+      storageClassName: nfs
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+    # The chart defaults to privileged with SYS_ADMIN for a USB adapter, not needed for a network coordinator
+    securityContext:
+      privileged: false
+      allowPrivilegeEscalation: false
+      capabilities:
+        add: []
+        drop:
+          - ALL
+
+  service:
+    type: ClusterIP
+
+  zigbee2mqtt:
+    timezone: Europe/Amsterdam
+    mqtt:
+      server: mqtt://192.168.1.44:1883
+    serial:
+      # Replace with the coordinator of the home server, in the form tcp://<host>:<port>
+      port: tcp://CHANGE-ME:6638
