@@ -11,3 +11,10 @@ ansible/ansible_collections
 # Secrets and generated Talos configs
 talos/gen
 talos/talosconfig
+
+# Terraform local state and variables (the lock file is committed)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.auto.tfvars

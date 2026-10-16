@@ -37,6 +37,10 @@ grafana:
 
   replicas: 1
 
+  # The dashboards come from this namespace only, so no cluster role that reads Secrets everywhere
+  rbac:
+    namespaced: true
+
   ingress:
     enabled: false
 
