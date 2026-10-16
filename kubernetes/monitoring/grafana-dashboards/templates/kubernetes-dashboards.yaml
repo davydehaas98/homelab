@@ -1,0 +1,26 @@
+# Kubernetes dashboards from https://github.com/dotdc/grafana-dashboards-kubernetes (Kustomize), they
+# land as labeled ConfigMaps in the grafana namespace and carry the `Kubernetes` folder annotation.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-dashboards-kubernetes
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: always-sync
+  revisionHistoryLimit: 1
+  source:
+    repoURL: https://github.com/dotdc/grafana-dashboards-kubernetes
+    targetRevision: v3.0.8
+    path: ./
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: grafana
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # The dashboards are larger than the annotation limit of client-side apply
+      - ServerSideApply=true

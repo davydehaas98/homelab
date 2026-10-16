@@ -11,5 +11,5 @@ spec:
     - prometheus.davydehaas.dev
   rules:
     - backendRefs:
-        - name: prometheus-server
-          port: 80
+        - name: prometheus-kube-prometheus-prometheus
+          port: 9090

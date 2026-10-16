@@ -2,6 +2,10 @@ grafana:
   sidecar:
     dashboards:
       enabled: true
+      # Sort dashboards into the folder named by their `grafana_folder` annotation
+      folderAnnotation: grafana_folder
+      provider:
+        foldersFromFilesStructure: true
 
   datasources:
     datasource.yaml:
@@ -16,7 +20,7 @@ grafana:
         - name: Prometheus
           type: prometheus
           uid: prometheus
-          url: http://prometheus-server.prometheus.svc.cluster.local:80
+          url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
           access: proxy
           isDefault: true
           jsonData:
@@ -25,7 +29,7 @@ grafana:
         - name: Alertmanager
           type: alertmanager
           uid: alertmanager
-          url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
+          url: http://prometheus-kube-prometheus-alertmanager.prometheus.svc.cluster.local:9093
           access: proxy
           jsonData:
             handleGrafanaManagedAlerts: false
@@ -86,10 +90,10 @@ grafana:
 
   resources:
     limits:
-      memory: 128Mi
+      memory: 512Mi
     requests:
       cpu: 50m
-      memory: 64Mi
+      memory: 256Mi
 
   persistence:
     type: StatefulSet

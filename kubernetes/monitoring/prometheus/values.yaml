@@ -1,15 +1,90 @@
-prometheus:
+kube-prometheus-stack:
+  # The CRDs come from the prometheus-crd app, its version has to match the operator of this chart
+  crds:
+    enabled: false
+
+  # Grafana runs as its own app
+  grafana:
+    enabled: false
+
+  # Talos does not expose these components, the monitors and rules would only produce alerts
+  kubeControllerManager:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  defaultRules:
+    rules:
+      etcd: false
+      kubeControllerManager: false
+      kubeProxy: false
+      kubeSchedulerAlerting: false
+      kubeSchedulerRecording: false
+
+  prometheusOperator:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 20m
+        memory: 128Mi
+
+  prometheus:
+    prometheusSpec:
+      externalUrl: https://prometheus.davydehaas.dev
+      retention: 15d
+      # Pick up every ServiceMonitor, PodMonitor, rule and probe in the cluster, not only the ones
+      # labeled with this release
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+      scrapeConfigSelectorNilUsesHelmValues: false
+      resources:
+        limits:
+          memory: 4096Mi
+        requests:
+          cpu: 100m
+          memory: 2048Mi
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 8Gi
+
+  alertmanager:
+    alertmanagerSpec:
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+
+  kube-state-metrics:
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+
   # node-exporter needs host access, it runs in its own privileged namespace (templates/namespace-node-exporter.yaml)
   prometheus-node-exporter:
     namespaceOverride: prometheus-node-exporter
-
-  server:
-    ingress:
-      enabled: false
-
-    resources:
-      limits:
-        memory: 4096Mi
-      requests:
-        cpu: 100m
-        memory: 2048Mi

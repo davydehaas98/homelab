@@ -1,0 +1,25 @@
+# Envoy Gateway does not create monitors itself, both the proxies and the controller serve metrics on 19001
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: envoy-proxy
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      app.kubernetes.io/component: proxy
+  podMetricsEndpoints:
+    - portNumber: 19001
+      path: /stats/prometheus
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: envoy-gateway
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gateway-helm
+  podMetricsEndpoints:
+    - portNumber: 19001
+      path: /metrics
