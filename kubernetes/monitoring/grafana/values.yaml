@@ -72,7 +72,8 @@ grafana:
       # Authentik group names: members of `authentik Admins` get GrafanaAdmin, `grafana-editors` get Editor
       role_attribute_path: contains(groups[*], 'authentik Admins') && 'GrafanaAdmin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
-      # disable_login_form: true
+      # Only sign in through Authentik
+      disable_login_form: true
       disable_signout_menu: false
     paths:
       data: /var/lib/grafana

@@ -1,8 +1,12 @@
+# Only the recommender runs: every VerticalPodAutoscaler here uses `updateMode: "Off"`, so VPA only
+# recommends requests (`kubectl get vpa -A`) and never evicts or mutates pods. Enable the updater and
+# admission controller again before switching a VPA to another mode.
 vpa:
   recommender:
     enabled: true
     extraArgs:
-      v: "4"
+      # The chart defaults to debug logging (4)
+      v: "1"
       pod-recommendation-min-cpu-millicores: 5
       pod-recommendation-min-memory-mb: 10
       prometheus-address: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
@@ -16,22 +20,7 @@ vpa:
         memory: 128Mi
 
   updater:
-    enabled: true
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
+    enabled: false
 
   admissionController:
-    enabled: true
-    generateCertificate: true
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
+    enabled: false
