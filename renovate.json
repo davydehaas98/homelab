@@ -6,8 +6,8 @@
     "main"
   ],
   "separateMinorPatch": true,
-  "commitMessagePrefix": "[{{parentDir}}]",
-  "additionalBranchPrefix": "{{parentDir}}-",
+  "commitMessagePrefix": "[{{#if parentDir}}{{parentDir}}{{else}}{{manager}}{{/if}}]",
+  "additionalBranchPrefix": "{{#if parentDir}}{{parentDir}}{{else}}{{manager}}{{/if}}-",
   "automergeSchedule": [
     "* 0-6 * * *"
   ],
