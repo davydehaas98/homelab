@@ -88,7 +88,6 @@ Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative
 ## Other directories
 
 - `terraform/`: Terraform stacks outside the cluster, for now the Cloudflare DNS of `davydehaas.dev` (`terraform/README.md`). State is in S3, `.github/workflows/terraform-cloudflare.yaml` plans on push and applies only when run by hand. Never commit `*.tfvars` or state files.
-- `disabled/`: manifests intentionally kept out of the sync path.
 
 ## Dependency updates
 

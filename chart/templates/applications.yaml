@@ -27,6 +27,10 @@ spec:
     repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD
     path: kubernetes/{{ ( kebabcase $groupKey ) }}/{{ include "base.name" (dict "key" $appKey "value" $appValue) }}
+    {{- with $appValue.valueFiles }}
+    helm:
+      valueFiles: {{ toYaml . | nindent 8 }}
+    {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ default (include "base.name" (dict "key" $appKey "value" $appValue)) $appValue.namespace }}
