@@ -15,4 +15,5 @@ curl -s https://factory.talos.dev/schematics \
         systemExtensions:
             officialExtensions:
                 - siderolabs/iscsi-tools
+                - siderolabs/util-linux-tools
     ' | jq --raw-output '.id'

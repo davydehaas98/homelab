@@ -22,18 +22,16 @@ The infrastructure is organized into three primary layers:
 
 ## Deployment
 
-Argo CD syncs everything under `kubernetes/` from `main`, so a merge to `main` is a deployment. An app directory is only deployed once it is listed in `chart/values.yaml`. Secrets are committed only as Bitnami SealedSecrets; see [`kubernetes/core/argocd/README.md`](kubernetes/core/argocd/README.md). Contributor and agent guidance lives in [`AGENTS.md`](AGENTS.md).
+- Argo CD syncs everything under `kubernetes/` from `main`, so a merge to `main` is a deployment.
+- An app directory is only deployed once it is listed in `chart/values.yaml` with `deploy: true`.
+- Secrets are committed only as Bitnami SealedSecrets, see [`kubernetes/core/argocd/README.md`](kubernetes/core/argocd/README.md).
+- Contributor and agent guidance lives in [`AGENTS.md`](AGENTS.md).
 
 ## Hardware Specification
 
-- **Yggdrasil**
-  - **CPU:** Intel i5 10600K (6 cores, AMD64)
-  - **RAM:** 2x 16GB DDR4 @ 3.200MT/s
-  - **Storage:** 3x Seagate IronWolf 4TB HDD
-  - **OS:** Ubuntu Server 26.10
-
-- **4x Turing RK1 CM (Turing Pi 2.0)**
-  - **CPU:** Rockchip RK3588 SoC (8 cores, ARM)
-  - **RAM:** 16GB LPDDR4
-  - **Storage:** WD Blue SN580 1TB M.2 SSD
-  - **OS:** Talos OS v1.14.2
+|             | Yggdrasil                         | 4x Turing RK1 CM (Turing Pi 2.0)       |
+| ----------- | --------------------------------- | -------------------------------------- |
+| **CPU**     | Intel i5 10600K (6 cores, AMD64)  | Rockchip RK3588 SoC (8 cores, ARM)     |
+| **RAM**     | 2x 16GB DDR4 @ 3.200MT/s          | 16GB LPDDR4                            |
+| **Storage** | 3x Seagate IronWolf 4TB HDD       | WD Blue SN580 1TB M.2 SSD              |
+| **OS**      | Ubuntu Server 26.10               | Talos OS v1.14.2                       |
