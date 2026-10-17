@@ -17,14 +17,14 @@ Consequences:
 - **A directory under `kubernetes/` does nothing on its own.** It must also be listed in `chart/values.yaml` with `deploy: true`. Some app directories (e.g. `media/plex`, `home/immich`, `security/kyverno`) are not listed and therefore not deployed; listed apps with `deploy: false` are scaffolds that are switched off.
 - The directory name must equal the kebab-cased key in `chart/values.yaml` (or its `nameOverride`), and the group directory must equal the group key.
 - Namespace defaults to the app name; override with `namespace:` in `chart/values.yaml`.
-- Apps auto-sync (AppProject `always-sync`) unless they set `autoSync: false`, which puts them in AppProject `no-sync`, whose deny sync window blocks automatic syncs (manual sync still allowed). Core pieces like `argocd`, `cilium`, and `longhorn` are deliberately `no-sync`.
+- Apps auto-sync (AppProject `always-sync`) unless they set `autoSync: false`, which puts them in AppProject `no-sync`, whose deny sync window blocks automatic syncs (manual sync still allowed). Core pieces like `cilium` and `longhorn` are deliberately `no-sync`.
 - Per-app knobs (`ignoreDifferences`, `serverSideApply`) are documented in `chart/README.md`.
 
-To add an app: copy `kubernetes/_base/` (an empty scaffold with `Chart.yaml` + `templates/namespace.yaml`) into `kubernetes/<group>/<app>/`, fill in the dependency, then add the entry to `chart/values.yaml`.
+To add an app: copy `kubernetes/_base/` (an empty scaffold with `Chart.yaml`, `values.yaml` and `templates/namespace.yaml`) into `kubernetes/<group>/<app>/`, fill in the dependency, then add the entry to `chart/values.yaml`.
 
 ## Secrets
 
-Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-controller`, namespace `kube-system`). See `kubernetes/core/argocd/README.md` for the `kubeseal` workflow. Never commit plaintext `Secret` manifests. SealedSecrets are bound to their name and namespace; to add keys without rotating existing credentials, read the live Secret with `kubectl`, merge, and re-seal. Never print secret values. `talos/gen/` (cluster secrets and generated machine configs) and `talos/talosconfig` are gitignored and must stay that way.
+Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-controller`, namespace `kube-system`). See `kubernetes/core/argocd/README.md` for the `kubeseal` workflow. Never commit plaintext `Secret` manifests. SealedSecrets are bound to their name and namespace; to add keys without rotating existing credentials, read the live Secret with `kubectl`, merge, and re-seal. Never print secret values. `talos/gen/` (cluster secrets, generated machine configs and talosconfig) and `talos/talosconfig` are gitignored and must stay that way. The client configs live outside the repo, in `~/.talos/config` and `~/.kube/config`, backed up to 1Password with `talos/backup-configs.sh` (run on the host, `op` needs the desktop app); never point `TALOSCONFIG` at a file in the repo.
 
 ## How the pieces connect
 
@@ -36,13 +36,13 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
   3. Restart `authentik-worker` after the secret changes: blueprints read their credentials from the environment at start.
 
   Ship the sealed secrets in the same commit as the policy, because a `SecurityPolicy` that points at a missing secret blocks its route. See `kubernetes/security/authentik/README.md`.
-- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed (see `talos/NVME-INVESTIGATION.md`). Images must publish arm64.
+- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. SQLite apps (Sonarr, Radarr, Prowlarr) keep their config on iSCSI LUNs from the home server instead, because SQLite corrupts on NFS (see `kubernetes/media/media-server/README.md`). Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
 - **Monitoring.** Prometheus runs with every `*SelectorNilUsesHelmValues: false`, so ServiceMonitors and PodMonitors are picked up from all namespaces. Its CRDs come from the separate `prometheus-crd` app, whose version must match the operator in the Prometheus chart. Grafana's sidecar only reads ConfigMaps from its own namespace, so charts that ship dashboards must create them there.
-- **App styles.** Simple apps either use the `bjw-s` `app-template` chart as their dependency, or hand-written templates (`_helpers.tpl`, `statefulset.yaml`, `service.yaml`, `route.yaml`) with no chart dependency, for example `kubernetes/media/sonarr`.
+- **App styles.** Simple apps use the `bjw-s` `app-template` chart as their dependency. linuxserver.io apps (Sonarr, Radarr, Prowlarr) use the local library chart `kubernetes/_library/linuxserver` (a `file://` dependency) and only set values; see its README to add one.
 
 ## Commands
 
-CI checks live in `.github/workflows/`: `helm.yaml` (pull requests) and `terraform-cloudflare.yaml`.
+CLI versions (helm, kubectl, talosctl, kubeseal, argocd, terraform, ...) are pinned in `mise.toml`; the dev container (`.devcontainer/README.md`) installs them with mise. CI checks live in `.github/workflows/`: `helm.yaml` (pull requests) and `terraform-cloudflare.yaml`.
 
 ### Helm
 
@@ -62,7 +62,7 @@ helm template chart
 
 ### Validating a change
 
-- Validate a change the way CI does (`helm.yaml` runs this on pull requests): render `chart/`, then for each changed app run `helm dependency update`, `helm lint` and `helm template --api-versions monitoring.coreos.com/v1`. The flag is needed because some charts refuse to render without the Prometheus Operator API.
+- Validate a change the way CI does (`helm.yaml` runs this on pull requests): render `chart/`, then for each changed app run `helm dependency update`, `helm lint` and `helm template --api-versions monitoring.coreos.com/v1`. The flag is needed because some charts refuse to render without the Prometheus Operator API. Library charts under `kubernetes/_library/` can't be rendered on their own; render an app that uses them.
 - To check a render against the live cluster, pipe it into `kubectl apply --dry-run=server -f -`. Kinds whose CRDs are not installed yet fail by design, and very large objects trip client-side apply's annotation limit (see `serverSideApply`).
 
 ### Terraform (`terraform/`)
@@ -79,11 +79,11 @@ The state is in S3, and CI assumes an AWS role whose trust policy is defined out
 
 ## Talos (`talos/`)
 
-Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative). `talos/README.md` is the full bootstrap runbook (image build, flashing via `tpi`, config generation, bootstrap, then manual Cilium/sealed-secrets/Argo CD install before GitOps takes over).
+Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative). `talos/README.md` is the full bootstrap runbook (image build, flashing via `tpi`, config generation, bootstrap, then manual Cilium/sealed-secrets/Argo CD install before GitOps takes over). `talosctl` in `mise.toml` must equal the Talos version on the nodes, since its default Kubernetes version follows its own.
 
 - Machine config = `talosctl gen config` + patches: `<board>/nodes/<node>.yaml` → `patches/cluster.yaml` → `patches/controlplane.yaml` (control plane only). Board-specific scripts (image/schematic generation, flashing) live in `talos/rk1/`.
 - `apply-config.sh -b rk1 -c <cluster> -n <node> -t controlplane|worker` regenerates and applies a node config.
-- `upgrade-talos.sh -b rk1 -c <talosconfig> -n <node> -v <version>` upgrades a node using its factory schematic image.
+- `upgrade-talos.sh -b rk1 -n <node> -v <version>` upgrades a node using its factory schematic image.
 
 ## Other directories
 
@@ -92,4 +92,4 @@ Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative
 
 ## Dependency updates
 
-Helm chart and image versions are bumped by Renovate (`.github/renovate.json`); patch and digest updates automerge.
+Helm chart, image and `mise.toml` tool versions are bumped by Renovate (`.github/renovate.json`); patch and digest updates automerge.

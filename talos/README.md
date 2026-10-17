@@ -1,30 +1,25 @@
 # Homelab
 
-## Install TPI
+Run these steps from the [dev container](../.devcontainer/README.md), which has `talosctl`, `kubectl`
+and `tpi`. Keep `talosctl` in `mise.toml` equal to the Talos version on the nodes: its default
+Kubernetes version follows its own version. Renovate bumps it, so upgrade the nodes along with it.
+
+## Client configs and backups
+
+`talosctl` and `kubectl` use their default configs, `~/.talos/config` and `~/.kube/config`, which
+stay outside the repo. Do not set `TALOSCONFIG` to a file in the repo.
+
+`backup-configs.sh` uploads the talosconfig, the kubeconfig, `gen/secrets.yaml` (the cluster
+secrets, needed to regenerate any node or client config) and the sealed-secrets keys to 1Password
+as the `yggdrasil *` documents. Its header has the restore commands. `op` needs the 1Password
+desktop app, so run it on the host, not in the dev container (which only mounts the configs):
 
 ```shell
-curl https://sh.rustup.rs -sSf | sh
+sh backup-configs.sh -c yggdrasil
 ```
 
-You might need to reboot.
-
-```shell
-cargo install tpi
-```
-
-## Dev container
-
-`.devcontainer/Dockerfile` pins `talosctl`, `kubectl` and `kubeseal` to the versions the cluster runs.
-Run the Talos scripts from it so the generated configs match the nodes (`talosctl` defaults the
-Kubernetes version to its own release, so a mismatched local `talosctl` silently changes it):
-
-```shell
-podman build -t homelab-dev -f .devcontainer/Dockerfile .
-podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -w /workspace/talos \
-  -e TALOSCONFIG=/workspace/talos/talosconfig localhost/homelab-dev sh
-```
-
-Keep `TALOSCTL_VERSION` in the Dockerfile equal to the Talos version on the nodes.
+Run it again after the client certificates are renewed, after the sealed-secrets controller adds a
+key (by default every 30 days), and after regenerating the cluster secrets.
 
 ## Create Talos images
 
@@ -81,7 +76,8 @@ curl -sL 'https://www.talos.dev/install' | bash
 ```
 
 Generate talosconfig with secrets (`gen-talosconfig.sh` generates cluster secrets, if not already
-present, then the talosconfig, merges it into your local talosctl config, and points the endpoint
+present, then the talosconfig (`gen/talosconfig`), merges it into your local talosctl config
+(`~/.talos/config`), and points the endpoint
 at a real node since the control plane VIP only comes alive after bootstrap succeeds).
 
 Secrets generation should only happen once — you can reuse them to generate configs for different
@@ -217,16 +213,13 @@ encrypted with the controller's private key. If the cluster is rebuilt and the c
 a new key, none of them decrypt and everything would need re-sealing. Keep a backup of the keys and
 restore it **right after installing sealed-secrets, before Argo CD**.
 
-Back up (store outside this repo, e.g. in a password manager; it is a plaintext private key):
-
-```shell
-kubectl -n kube-system get secret -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-keys.yaml
-```
+`backup-configs.sh` backs them up to the `yggdrasil sealed-secrets keys` document in 1Password, see
+[Client configs and backups](#client-configs-and-backups).
 
 Restore (the controller keeps every key it finds and tries each one when decrypting):
 
 ```shell
-kubectl apply -f sealed-secrets-keys.yaml
+op document get "yggdrasil sealed-secrets keys" | kubectl apply -f -
 kubectl -n kube-system rollout restart deploy/sealed-secrets-controller
 kubectl -n kube-system logs deploy/sealed-secrets-controller | grep "registered private key"
 ```

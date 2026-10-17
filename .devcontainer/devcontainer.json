@@ -1,13 +1,28 @@
 {
-  "name": "Homelab",
+  "name": "homelab-devcontainer",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  // kubectl and talosctl read their default configs (~/.kube/config, ~/.talos/config) from the host.
+  // HOME is set on Linux/macOS and USERPROFILE on Windows, so exactly one of them expands.
+  // Claude Code keeps its login and settings in a named volume, so they survive rebuilds.
   "mounts": [
-    "source=${localEnv:HOME}/.kube,target=/root/.kube,type=bind"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.kube,target=/root/.kube,type=bind",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.talos,target=/root/.talos,type=bind",
+    "source=homelab-claude-config,target=/root/.claude,type=volume"
   ],
-  "remoteEnv": {
-    "TALOSCONFIG": "${containerWorkspaceFolder}/talos/talosconfig"
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "github.vscode-github-actions",
+        "hashicorp.terraform",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "timonwong.shellcheck"
+      ]
+    }
   }
 }

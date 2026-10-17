@@ -1,0 +1,30 @@
+# Cluster CLIs for the devcontainer and host (`mise install`).
+[tools]
+# Syncs and diffs apps, e.g. the no-sync ones (`argocd login --core` uses the kubeconfig).
+# Keep it equal to the Argo CD version in kubernetes/core/argocd.
+argocd = "3.4.4"
+
+# Checks Cilium health and connectivity (`cilium status`, `cilium connectivity test`).
+cilium-cli = "0.20.1"
+
+# Renders and lints the wrapper charts under kubernetes/ and chart/.
+helm = "4.3.1"
+
+# Talks to the cluster. Keep it in step with the cluster's Kubernetes version.
+kubectl = "1.37.1"
+
+# Seals secrets with the cluster's sealed-secrets controller.
+kubeseal = "0.40.0"
+
+# Generates and applies Talos machine configs. Keep it equal to the Talos version on the nodes:
+# its default Kubernetes version follows its own version.
+talosctl = "1.14.2"
+
+# Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
+terraform = "1.16.6"
+
+# Edits YAML in the talos/ scripts.
+yq = "4.54.1"
+
+# Drives the Turing Pi BMC (flashing, power, UART). Its release archive keeps the binary in usr/bin.
+"github:turing-machines/tpi" = { version = "1.0.7", bin_path = "usr/bin" }
