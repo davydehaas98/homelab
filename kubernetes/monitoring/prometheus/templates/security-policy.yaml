@@ -11,7 +11,11 @@ spec:
   # The client credentials are in the `oidc-credentials` Secret of this namespace, see README.md
   oidc:
     provider:
+      # Set explicitly, so Envoy Gateway does not fetch the discovery document: a fetch while Authentik restarts marks the policy Invalid
       issuer: https://auth.davydehaas.dev/application/o/prometheus/
+      authorizationEndpoint: https://auth.davydehaas.dev/application/o/authorize/
+      tokenEndpoint: https://auth.davydehaas.dev/application/o/token/
+      endSessionEndpoint: https://auth.davydehaas.dev/application/o/prometheus/end-session/
     clientIDRef:
       name: oidc-credentials
     clientSecret:

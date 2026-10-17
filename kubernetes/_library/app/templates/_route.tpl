@@ -1,4 +1,4 @@
-{{- if .Values.route.enabled -}}
+{{- define "app.route" -}}
 apiVersion: {{ .Values.route.apiVersion | default "gateway.networking.k8s.io/v1" }}
 kind: {{ .Values.route.kind | default "HTTPRoute" }}
 metadata:
@@ -6,9 +6,9 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname" . }}
+  name: {{ template "app.fullname" . }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "app.labels" . | nindent 4 }}
     {{- with .Values.route.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -26,8 +26,8 @@ spec:
     {{- tpl (toYaml .Values.route.additionalRules) $ | nindent 4 }}
     {{- end }}
     - backendRefs:
-        - name: {{ template "common.fullname" . }}
-          port: 9696
+        - name: {{ template "app.fullname" . }}
+          port: {{ .Values.port }}
       {{- with .Values.route.filters }}
       filters:
         {{- toYaml . | nindent 8 }}
@@ -36,4 +36,4 @@ spec:
       matches:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- end }}
+{{- end -}}

@@ -23,11 +23,22 @@ jobs:
           set -euo pipefail
           dirs=$(git diff --name-only "$BASE_SHA" HEAD -- kubernetes \
             | cut -d/ -f1-3 | sort -u)
+          # A changed library chart also checks every app that depends on it (file://../../_library/<name>)
           for dir in $dirs; do
+            case "$dir" in
+              kubernetes/_library/*)
+                dirs="$dirs $(grep -l "file://\.\./\.\./_library/${dir##*/}\$" kubernetes/*/*/Chart.yaml | xargs -r -n1 dirname)"
+                ;;
+            esac
+          done
+          for dir in $(echo $dirs | tr ' ' '\n' | sort -u); do
             [ -f "$dir/Chart.yaml" ] || continue
             echo "::group::$dir"
             helm dependency update "$dir"
             helm lint "$dir"
-            helm template "$dir" --api-versions monitoring.coreos.com/v1 > /dev/null
+            # Library charts only provide templates and cannot be rendered on their own
+            if ! grep -q '^type: library' "$dir/Chart.yaml"; then
+              helm template "$dir" --api-versions monitoring.coreos.com/v1 > /dev/null
+            fi
             echo "::endgroup::"
           done

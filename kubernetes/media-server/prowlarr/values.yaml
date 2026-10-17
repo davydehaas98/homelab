@@ -3,6 +3,13 @@ podSecurityContext:
 
 securityContext: {}
 
+# linuxserver.io images run as this user and group
+env:
+  PUID: 1000
+  PGID: 5000
+
+port: 9696
+
 resources:
   limits:
     memory: 300Mi
@@ -15,10 +22,14 @@ image:
   repository: linuxserver/prowlarr
   tag: 2.6.5
 
+replicas: 1
+
 persistence:
   size: 1Gi
   labels:
     backup.velero.io/include: "true"
+  # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
+  # iSCSI LUN 1 on yggdrasil, add `iscsi` (see kubernetes/media-server/media-server/README.md)
 
 route:
   enabled: true
@@ -28,3 +39,6 @@ route:
     - name: envoy-gateway
       namespace: envoy-gateway
       sectionName: web-https
+
+oidc:
+  enabled: true

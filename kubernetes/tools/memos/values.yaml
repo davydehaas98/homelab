@@ -1,56 +1,47 @@
 # Notes app with its own login and a SQLite database on the volume
-app-template:
-  defaultPodOptions:
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: OnRootMismatch
-      seccompProfile:
-        type: RuntimeDefault
+image:
+  registry: ghcr.io
+  repository: usememos/memos
+  tag: 0.31.0
 
-  controllers:
-    memos:
-      strategy: Recreate
-      containers:
-        app:
-          image:
-            repository: ghcr.io/usememos/memos
-            tag: 0.31.0
-          env:
-            TZ: Europe/Amsterdam
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          probes:
-            liveness: &probe
-              enabled: true
-              custom: true
-              spec:
-                tcpSocket:
-                  port: 5230
-            readiness: *probe
-          resources:
-            limits:
-              memory: 256Mi
-            requests:
-              cpu: 10m
-              memory: 64Mi
+port: 5230
 
-  service:
-    app:
-      controller: memos
-      ports:
-        http:
-          port: 5230
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
 
-  persistence:
-    data:
-      type: persistentVolumeClaim
-      accessMode: ReadWriteOnce
-      size: 1Gi
-      globalMounts:
-        - path: /var/opt/memos
+probe:
+  tcpSocket:
+    port: http
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+persistence:
+  size: 1Gi
+  mountPath: /var/opt/memos
+  # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
+  # iSCSI LUN 3 on yggdrasil, add `iscsi` (see kubernetes/media-server/media-server/README.md)
+
+route:
+  enabled: true
+  hostnames:
+    - memos.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

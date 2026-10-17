@@ -1,0 +1,52 @@
+podSecurityContext:
+  fsGroup: 5000
+securityContext: {}
+
+# linuxserver.io images run as this user and group
+env:
+  PUID: 1000
+  PGID: 5000
+
+port: 7878
+
+media:
+  claimName: media
+  mounts:
+    - mountPath: /downloads
+      subPath: downloads
+    - mountPath: /movies
+      subPath: media/movies
+
+resources:
+  limits:
+    memory: 300Mi
+  requests:
+    cpu: 20m
+    memory: 150Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/radarr
+  tag: 6.3.0
+
+replicas: 1
+
+persistence:
+  size: 5Gi
+  labels:
+    backup.velero.io/include: "true"
+  # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
+  # iSCSI LUN 2 on yggdrasil, add `iscsi` (see kubernetes/media-server/media-server/README.md)
+
+route:
+  enabled: true
+  hostnames:
+    - radarr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `radarr`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

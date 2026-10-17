@@ -1,0 +1,51 @@
+podSecurityContext:
+  fsGroup: 5000
+securityContext: {}
+
+# linuxserver.io images run as this user and group
+env:
+  PUID: 1000
+  PGID: 5000
+
+port: 8989
+
+media:
+  claimName: media
+  mounts:
+    - mountPath: /downloads
+      subPath: downloads
+    - mountPath: /series
+      subPath: media/series
+
+resources:
+  limits:
+    memory: 300Mi
+  requests:
+    cpu: 20m
+    memory: 150Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/sonarr
+  tag: 4.0.20
+
+replicas: 1
+
+persistence:
+  size: 5Gi
+  labels:
+    backup.velero.io/include: "true"
+  # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
+  # iSCSI LUN 0 on yggdrasil, add `iscsi` (see kubernetes/media-server/media-server/README.md)
+
+route:
+  enabled: true
+  hostnames:
+    - sonarr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+oidc:
+  enabled: true

@@ -14,7 +14,7 @@ The infrastructure is organized into three primary layers:
 
 - `.devcontainer/`: Dev container with the CLI tools from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
 - `talos/`: Talos OS bootstrap runbook ([`talos/README.md`](talos/README.md)), config generation scripts, and per-board node patches (`rk1/`, `rpi4/`).
-- `kubernetes/`: One wrapper Helm chart per service, organized by group (`core`, `home`, `media`, `monitoring`, `security`, `storage`, `tools`). `_base/` is the scaffold for new apps.
+- `kubernetes/`: One wrapper Helm chart per service, organized by group (`core`, `home`, `media-server`, `monitoring`, `security`, `storage`, `tools`). `_base/` is the scaffold for new apps.
 - `terraform/`: Terraform for the Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
 - `chart/`: The app-of-apps Helm chart that renders an Argo CD `Application` for every entry in `chart/values.yaml` with `deploy: true`.
 - `scripts/`: Utility scripts for manual operations, such as node preparation and status checks.

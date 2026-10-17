@@ -28,7 +28,7 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
 
 ## How the pieces connect
 
-- **Traffic.** External traffic reaches the cluster through the home server's reverse proxy (TLS passthrough, defined in the separate `home-server` repo) and then the Envoy Gateway LoadBalancer. An app is published with an `HTTPRoute` attached to the shared `envoy-gateway` Gateway (`sectionName: web-https`), and external-dns creates the DNS record from the route. Do not add Ingress objects.
+- **Traffic.** External traffic reaches the cluster through the home server's reverse proxy (TLS passthrough, defined in the separate `home-server` repo) and then the Envoy Gateway LoadBalancer. An app is published with an `HTTPRoute` attached to the shared `envoy-gateway` Gateway (`sectionName: web-https`). The gateway has a wildcard certificate, but there is no wildcard DNS record: add each new subdomain to `kubernetes_apps` in `terraform/cloudflare/davydehaas.dev/dns_record.tf` (applied by hand). Do not add Ingress objects.
 - **Sync flags.** `chart/templates/applications.yaml` adds the Argo CD `ServerSideDiff` annotation to every app with `serverSideApply: true`; without it, defaults added by the API server (for example on HTTPRoutes) show up as a permanent `OutOfSync`.
 - **Logins.** Authentik is the identity provider: a gateway `SecurityPolicy` (OIDC) on the route, native OIDC in the app, or the app's own login. To add a client:
   1. Add it to `oidcClients` in `kubernetes/security/authentik/values.yaml` (one blueprint is generated per entry).
@@ -36,9 +36,9 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
   3. Restart `authentik-worker` after the secret changes: blueprints read their credentials from the environment at start.
 
   Ship the sealed secrets in the same commit as the policy, because a `SecurityPolicy` that points at a missing secret blocks its route. See `kubernetes/security/authentik/README.md`.
-- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. SQLite apps (Sonarr, Radarr, Prowlarr) keep their config on iSCSI LUNs from the home server instead, because SQLite corrupts on NFS (see `kubernetes/media/media-server/README.md`). Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
+- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. SQLite apps (Sonarr, Radarr, Prowlarr) keep their config on iSCSI LUNs from the home server instead, because SQLite corrupts on NFS (see `kubernetes/media-server/media-server/README.md`). Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
 - **Monitoring.** Prometheus runs with every `*SelectorNilUsesHelmValues: false`, so ServiceMonitors and PodMonitors are picked up from all namespaces. Its CRDs come from the separate `prometheus-crd` app, whose version must match the operator in the Prometheus chart. Grafana's sidecar only reads ConfigMaps from its own namespace, so charts that ship dashboards must create them there.
-- **App styles.** Simple apps use the `bjw-s` `app-template` chart as their dependency. linuxserver.io apps (Sonarr, Radarr, Prowlarr) use the local library chart `kubernetes/_library/linuxserver` (a `file://` dependency) and only set values; see its README to add one.
+- **App styles.** Single-container apps (Sonarr, Radarr, Prowlarr, memos, it-tools) use the local library chart `kubernetes/_library/app` (a `file://` dependency) and only set values; see its README to add one. Apps with an upstream chart wrap that chart instead.
 
 ## Commands
 
@@ -91,4 +91,4 @@ Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative
 
 ## Dependency updates
 
-Helm chart, image and `mise.toml` tool versions are bumped by Renovate (`.github/renovate.json`); patch and digest updates automerge.
+Helm chart, image and `mise.toml` tool versions are bumped by Renovate (`renovate.json`); patch and digest updates automerge.
