@@ -102,17 +102,53 @@ resource "cloudflare_dns_record" "dkim1" {
   content = "\"v=DKIM1; p=\""
 }
 
-# Everything under *.davydehaas.dev is passed through (TLS passthrough) by Traefik to the Kubernetes cluster.
-# This must not be proxied: Cloudflare would terminate TLS.
-resource "cloudflare_dns_record" "wildcard" {
-  provider = cloudflare.dev
+locals {
+  # Apps behind the Kubernetes gateway, one line per HTTPRoute hostname. They share the gateway's
+  # wildcard certificate.
+  kubernetes_apps = [
+    "argocd",
+    "auth",
+    "grafana",
+    "hubble",
+    "prometheus",
+    "prowlarr",
+    "radarr",
+    "sonarr",
+  ]
 
-  name    = "*"
+  # Game servers on the home server, the targets of the SRV records above.
+  game_servers = [
+    "factorio",
+    "minecraft",
+  ]
+}
+
+# Traefik on the home server passes TLS through to the Kubernetes gateway.
+# This must not be proxied: Cloudflare would terminate TLS.
+resource "cloudflare_dns_record" "kubernetes_app" {
+  provider = cloudflare.dev
+  for_each = toset(local.kubernetes_apps)
+
+  name    = each.value
   ttl     = 1
   type    = "A"
   zone_id = var.zone_id
 
-  comment = "Wildcard to home server, TLS passthrough to Kubernetes"
+  comment = "Home server, TLS passthrough to Kubernetes"
+  content = var.ipv4_address
+  proxied = false
+}
+
+resource "cloudflare_dns_record" "game_server" {
+  provider = cloudflare.dev
+  for_each = toset(local.game_servers)
+
+  name    = each.value
+  ttl     = 1
+  type    = "A"
+  zone_id = var.zone_id
+
+  comment = "Game server on the home server"
   content = var.ipv4_address
   proxied = false
 }

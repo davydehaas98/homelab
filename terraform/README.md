@@ -2,13 +2,11 @@
 
 ## cloudflare/davydehaas.dev
 
-DNS records of the `davydehaas.dev` zone: the root A/AAAA/CAA records, `www`, `wireguard`, the SRV
-records, the mail spoofing protection (SPF, DMARC, DKIM) and the wildcard `*` that points every
-subdomain at the home server, which passes TLS through to the Kubernetes gateway.
-
-Records of the services themselves (`grafana`, `argocd`, ...) are not managed here, external-dns
-creates and removes them from the HTTPRoutes in `kubernetes/`. It only touches records it owns (its
-TXT registry), so the records in this stack are left alone.
+All DNS records of the `davydehaas.dev` zone: the root A/AAAA/CAA records, `www`, `wireguard`, the SRV
+records and their game server targets, the mail spoofing protection (SPF, DMARC, DKIM) and one record
+per Kubernetes app (`kubernetes_apps` in `dns_record.tf`). The apps point at the home server, which
+passes TLS through to the Kubernetes gateway; they share its wildcard certificate. There is no wildcard
+DNS record, so to publish a new app, add its subdomain to `kubernetes_apps` and apply this stack.
 
 ### State
 
