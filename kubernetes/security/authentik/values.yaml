@@ -1,5 +1,6 @@
 # OIDC applications created by `templates/blueprints.yaml`. The slug must match the issuer URL in the
-# app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` / `<SLUG>_CLIENT_SECRET` in `authentik-oidc-clients`.
+# app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` /
+# `<SLUG>_CLIENT_SECRET` in the SealedSecret `templates/oidc-client-<slug>.yaml`, listed in `envFrom` below.
 oidcClients:
   - name: Argo CD
     slug: argocd
@@ -27,6 +28,9 @@ oidcClients:
   - name: Prometheus
     slug: prometheus
     redirectURL: https://prometheus.davydehaas.dev/oauth2/callback
+  - name: Radarr
+    slug: radarr
+    redirectURL: https://radarr.davydehaas.dev/oauth2/callback
   - name: Policy Reporter
     slug: policy-reporter
     redirectURL: https://policy.davydehaas.dev/oauth2/callback
@@ -44,10 +48,31 @@ authentik:
         value: authentik
       - name: AUTHENTIK_POSTGRESQL__USER
         value: authentik
-    # Client IDs and secrets read by the blueprints (see README.md)
+    # Client IDs and secrets read by the blueprints, one Secret per entry in `oidcClients`. The chart does not
+    # template this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
     envFrom:
       - secretRef:
-          name: authentik-oidc-clients
+          name: authentik-oidc-argocd
+      - secretRef:
+          name: authentik-oidc-grafana
+      - secretRef:
+          name: authentik-oidc-hubble
+      - secretRef:
+          name: authentik-oidc-it-tools
+      - secretRef:
+          name: authentik-oidc-longhorn
+      - secretRef:
+          name: authentik-oidc-open-webui
+      - secretRef:
+          name: authentik-oidc-policy-reporter
+      - secretRef:
+          name: authentik-oidc-prometheus
+      - secretRef:
+          name: authentik-oidc-prowlarr
+      - secretRef:
+          name: authentik-oidc-radarr
+      - secretRef:
+          name: authentik-oidc-sonarr
 
   blueprints:
     configMaps:

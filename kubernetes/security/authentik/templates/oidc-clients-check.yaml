@@ -1,0 +1,11 @@
+{{- /* Every OIDC client needs its Secret in authentik.global.envFrom, or its blueprint finds no credentials */ -}}
+{{- $refs := list -}}
+{{- range .Values.authentik.global.envFrom -}}
+{{- $refs = append $refs (.secretRef | default dict).name -}}
+{{- end -}}
+{{- range .Values.oidcClients -}}
+{{- $name := printf "authentik-oidc-%s" .slug -}}
+{{- if not (has $name $refs) -}}
+{{- fail (printf "oidcClients: add `- secretRef: {name: %s}` to authentik.global.envFrom in values.yaml" $name) -}}
+{{- end -}}
+{{- end -}}

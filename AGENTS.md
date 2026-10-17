@@ -32,7 +32,7 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
 - **Sync flags.** `chart/templates/applications.yaml` adds the Argo CD `ServerSideDiff` annotation to every app with `serverSideApply: true`; without it, defaults added by the API server (for example on HTTPRoutes) show up as a permanent `OutOfSync`.
 - **Logins.** Authentik is the identity provider: a gateway `SecurityPolicy` (OIDC) on the route, native OIDC in the app, or the app's own login. To add a client:
   1. Add it to `oidcClients` in `kubernetes/security/authentik/values.yaml` (one blueprint is generated per entry).
-  2. Seal the same credentials into `authentik-oidc-clients` (`<SLUG>_CLIENT_ID` / `_CLIENT_SECRET`) and into the app's own secret.
+  2. Seal the same credentials into `templates/oidc-client-<slug>.yaml` (Secret `authentik-oidc-<slug>`, keys `<SLUG>_CLIENT_ID` / `_CLIENT_SECRET`), add that Secret to `envFrom` in the Authentik values, and seal them into the app's own secret.
   3. Restart `authentik-worker` after the secret changes: blueprints read their credentials from the environment at start.
 
   Ship the sealed secrets in the same commit as the policy, because a `SecurityPolicy` that points at a missing secret blocks its route. See `kubernetes/security/authentik/README.md`.

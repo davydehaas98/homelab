@@ -40,13 +40,15 @@ that creates an OAuth2 provider, an application and an `authentik Admins` group 
 `oidcClients` in `values.yaml`. The slug must match the issuer URL (`/application/o/<slug>/`) in the
 app's `SecurityPolicy`.
 
-The client ID and secret of each client are read from the SealedSecret `authentik-oidc-clients`
-(`<SLUG>_CLIENT_ID` and `<SLUG>_CLIENT_SECRET`, with `-` as `_`) and must equal the `client-id` and
-`client-secret` of the `oidc-credentials` SealedSecret in the app's namespace. Generate and seal all of
-them in one go, generating the random values inside the script and piping them straight to `kubeseal`
-(controller in `kube-system`), so they stay equal and are never printed. Re-sealing rotates every client.
+Each client's ID and secret are in its own SealedSecret `authentik-oidc-<slug>`
+(`templates/oidc-client-<slug>.yaml`, keys `<SLUG>_CLIENT_ID` and `<SLUG>_CLIENT_SECRET`, with `-` as `_`),
+which the server and worker load through `authentik.global.envFrom`. They must equal the `client-id` and
+`client-secret` of the app's own SealedSecret in its namespace. Generate the random values inside a script
+and pipe them straight to `kubeseal` (controller in `kube-system`), so both stay equal and are never printed.
 
-To add a client, add an entry to `oidcClients` and seal a new pair into both secrets. Argo CD
+To add a client, add an entry to `oidcClients`, seal its pair into `templates/oidc-client-<slug>.yaml` and the
+app's secret, and add `authentik-oidc-<slug>` to `envFrom` in `values.yaml` (the render fails if that line is
+missing). Then restart `authentik-worker`: blueprints read the credentials from the environment at start. Argo CD
 (`argocd-authentik-oidc`, keys `clientID`/`clientSecret`) and Prometheus were first created by hand in
 the UI. The blueprint adopts their applications by slug and points them at a new provider, so delete
 the old, now unused provider in the UI.
