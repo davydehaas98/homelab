@@ -1,5 +1,7 @@
 #!/bin/sh
 set -e
+# Machine configs contain the cluster secrets, keep them private to your user
+umask 077
 
 cd "$(dirname "$0")"
 

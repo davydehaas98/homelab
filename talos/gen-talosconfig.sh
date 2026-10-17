@@ -7,6 +7,9 @@ set -e
 #
 # Usage: sh gen-talosconfig.sh -c <cluster-name> -n <node-name>
 
+# The talosconfig holds admin credentials, keep it private to your user
+umask 077
+
 cd "$(dirname "$0")"
 
 while getopts c:n: flag;
