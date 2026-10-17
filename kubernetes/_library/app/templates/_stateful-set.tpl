@@ -32,6 +32,9 @@ spec:
           resources: {{ toYaml (.Values.resources | default dict) | nindent 12 }}
           securityContext: {{ toYaml (.Values.securityContext | default dict) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
+          # The first start of an app with a new database runs its migrations, which takes minutes on NFS.
+          # The liveness probe only starts once this one succeeds (up to 15 minutes), instead of killing the app halfway.
+          startupProbe: {{ toYaml (merge (deepCopy $probe) (dict "periodSeconds" 10 "failureThreshold" 90)) | nindent 12 }}
           livenessProbe: {{ toYaml $probe | nindent 12 }}
           readinessProbe: {{ toYaml $probe | nindent 12 }}
           volumeMounts:
