@@ -1,0 +1,56 @@
+podSecurityContext:
+  fsGroup: 5000
+securityContext: {}
+
+# linuxserver.io images run as this user and group
+env:
+  PUID: 1000
+  PGID: 5000
+
+port: 8080
+
+# SABnzbd rejects requests whose Host header is not in its `host_whitelist`, also from kubelet probes by
+# name, so probe the port only. Add sabnzbd.davydehaas.dev to host_whitelist in Config > Special.
+probe:
+  tcpSocket:
+    port: http
+
+media:
+  claimName: media
+  mounts:
+    - mountPath: /downloads/usenet/complete
+      subPath: downloads/usenet/complete
+    - mountPath: /downloads/usenet/incomplete
+      subPath: downloads/usenet/incomplete
+
+resources:
+  limits:
+    memory: 2Gi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/sabnzbd
+  tag: 5.1.3
+
+replicas: 1
+
+persistence:
+  size: 1Gi
+  labels:
+    backup.velero.io/include: "true"
+
+route:
+  enabled: true
+  hostnames:
+    - sabnzbd.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `sabnzbd`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

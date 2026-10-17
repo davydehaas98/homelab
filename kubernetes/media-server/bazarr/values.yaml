@@ -1,0 +1,55 @@
+podSecurityContext:
+  fsGroup: 5000
+securityContext: {}
+
+# linuxserver.io images run as this user and group
+env:
+  PUID: 1000
+  PGID: 5000
+
+port: 6767
+
+probe:
+  httpGet:
+    path: /ping
+    port: http
+
+media:
+  claimName: media
+  mounts:
+    - mountPath: /movies
+      subPath: media/movies
+    - mountPath: /series
+      subPath: media/series
+
+resources:
+  limits:
+    memory: 1Gi
+  requests:
+    cpu: 20m
+    memory: 256Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/bazarr
+  tag: 1.6.2
+
+replicas: 1
+
+persistence:
+  size: 1Gi
+  labels:
+    backup.velero.io/include: "true"
+
+route:
+  enabled: true
+  hostnames:
+    - bazarr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `bazarr`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

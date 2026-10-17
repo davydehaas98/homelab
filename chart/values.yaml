@@ -42,12 +42,18 @@ applications:
     zigbee2mqtt:
       deploy: false
   media-server:
+    bazarr:
+      deploy: true
+      namespace: media-server
     media-server:
       deploy: true
     prowlarr:
       deploy: true
       namespace: media-server
     radarr:
+      deploy: true
+      namespace: media-server
+    sabnzbd:
       deploy: true
       namespace: media-server
     sonarr:

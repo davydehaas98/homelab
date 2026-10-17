@@ -5,6 +5,9 @@ oidcClients:
   - name: Argo CD
     slug: argocd
     redirectURL: https://argocd.davydehaas.dev/auth/callback
+  - name: Bazarr
+    slug: bazarr
+    redirectURL: https://bazarr.davydehaas.dev/oauth2/callback
   - name: Grafana
     slug: grafana
     # Grafana maps roles from group claims, so every Authentik user may sign in
@@ -34,6 +37,9 @@ oidcClients:
   - name: Policy Reporter
     slug: policy-reporter
     redirectURL: https://policy.davydehaas.dev/oauth2/callback
+  - name: SABnzbd
+    slug: sabnzbd
+    redirectURL: https://sabnzbd.davydehaas.dev/oauth2/callback
   - name: Sonarr
     slug: sonarr
     redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
@@ -54,6 +60,8 @@ authentik:
       - secretRef:
           name: authentik-oidc-argocd
       - secretRef:
+          name: authentik-oidc-bazarr
+      - secretRef:
           name: authentik-oidc-grafana
       - secretRef:
           name: authentik-oidc-hubble
@@ -71,6 +79,8 @@ authentik:
           name: authentik-oidc-prowlarr
       - secretRef:
           name: authentik-oidc-radarr
+      - secretRef:
+          name: authentik-oidc-sabnzbd
       - secretRef:
           name: authentik-oidc-sonarr
 

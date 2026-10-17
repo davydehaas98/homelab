@@ -108,11 +108,13 @@ locals {
   kubernetes_apps = [
     "argocd",
     "auth",
+    "bazarr",
     "grafana",
     "hubble",
     "prometheus",
     "prowlarr",
     "radarr",
+    "sabnzbd",
     "sonarr",
   ]
 
