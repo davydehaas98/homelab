@@ -27,7 +27,7 @@ resources:
 image:
   registry: ghcr.io
   repository: linuxserver/radarr
-  tag: 6.3.0
+  tag: 6.4.4
 
 replicas: 1
 
