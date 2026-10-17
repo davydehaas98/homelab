@@ -59,13 +59,6 @@ ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk3
 ssh-copy-id -i ~/.ssh/id_ed25519 ubuntu@node-rk4
 ```
 
-# WSL
-```shell
-export ANSIBLE_CONFIG=./ansible.cfg
-ansible -m ping all
-ansible-playbook playbook.yaml
-```
-
 # Create partition
 ```shell
 lsblk -f

@@ -42,7 +42,7 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
 
 ## Commands
 
-CI checks live in `.github/workflows/`: `helm.yaml` (pull requests), `ansible.yaml` and `terraform-cloudflare.yaml`.
+CI checks live in `.github/workflows/`: `helm.yaml` (pull requests) and `terraform-cloudflare.yaml`.
 
 ### Helm
 
@@ -64,14 +64,6 @@ helm template chart
 
 - Validate a change the way CI does (`helm.yaml` runs this on pull requests): render `chart/`, then for each changed app run `helm dependency update`, `helm lint` and `helm template --api-versions monitoring.coreos.com/v1`. The flag is needed because some charts refuse to render without the Prometheus Operator API.
 - To check a render against the live cluster, pipe it into `kubectl apply --dry-run=server -f -`. Kinds whose CRDs are not installed yet fail by design, and very large objects trip client-side apply's annotation limit (see `serverSideApply`).
-
-### Ansible
-
-```sh
-pip install -r requirements.txt && ansible-galaxy install -r requirements.yaml
-cd ansible && ansible-playbook playbook.yaml --syntax-check
-ansible-lint ./ansible/playbook.yaml --profile moderate
-```
 
 ### Terraform (`terraform/`)
 
@@ -95,7 +87,6 @@ Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative
 
 ## Other directories
 
-- `ansible/`: kubeadm-on-Ubuntu provisioning (roles for kernel, containerd, Kubernetes, control plane/worker join). Predates the Talos setup; `SETUP.md` and `scripts/commands.md` are the manual equivalents.
 - `terraform/`: Terraform stacks outside the cluster, for now the Cloudflare DNS of `davydehaas.dev` (`terraform/README.md`). State is in S3, `.github/workflows/terraform-cloudflare.yaml` plans on push and applies only when run by hand. Never commit `*.tfvars` or state files.
 - `disabled/`: manifests intentionally kept out of the sync path.
 

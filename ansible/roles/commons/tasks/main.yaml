@@ -1,6 +1,0 @@
----
-- name: Create user
-  ansible.builtin.include_tasks: user.yaml
-
-- name: Update
-  ansible.builtin.include_tasks: update.yaml

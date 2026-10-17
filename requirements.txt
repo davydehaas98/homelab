@@ -1,3 +1,0 @@
-# ansible==9.4.0
-ansible-core==2.20.10
-ansible-lint==26.4.0

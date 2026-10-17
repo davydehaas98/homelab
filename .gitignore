@@ -4,7 +4,6 @@
 
 # Dependencies and build output
 *.raw
-ansible/ansible_collections
 **/charts/*.tgz
 **/Chart.lock
 
