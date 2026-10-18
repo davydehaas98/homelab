@@ -1,19 +1,3 @@
-# The config is on an iSCSI disk on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md. Seerr has no backup folder of its own.
-persistence:
-  size: 1Gi
-  labels:
-    backup.velero.io/include: "true"
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:seerr
-    lun: 0
-
-# Redirect to the hostname of the route below
-aliases:
-  - request.davydehaas.dev
-  - requests.davydehaas.dev
-
 seerr-chart:
   fullnameOverride: seerr
 
@@ -33,9 +17,12 @@ seerr-chart:
   service:
     port: 5055
 
+  # The volume is in templates/config-volume.yaml. "-" is no storage class, so the claim binds to it by name
   config:
     persistence:
-      existingClaim: seerr-config
+      size: 1Gi
+      storageClass: "-"
+      volumeName: media-server-seerr-config
 
   resources:
     limits:
@@ -55,3 +42,20 @@ seerr-chart:
           sectionName: web-https
       hostnames:
         - seerr.davydehaas.dev
+    # Redirect to the hostname above. The chart adds its own rule after this one, which is never reached
+    aliases:
+      enabled: true
+      parentRefs:
+        - name: envoy-gateway
+          namespace: envoy-gateway
+          sectionName: web-https
+      hostnames:
+        - request.davydehaas.dev
+        - requests.davydehaas.dev
+      additionalRules:
+        - filters:
+            - type: RequestRedirect
+              requestRedirect:
+                scheme: https
+                hostname: seerr.davydehaas.dev
+                statusCode: 301

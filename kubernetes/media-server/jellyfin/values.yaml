@@ -1,12 +1,3 @@
-# The config (database and metadata) is on an iSCSI disk on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md. Jellyfin has its own backup feature in the dashboard.
-persistence:
-  size: 10Gi
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:jellyfin
-    lun: 0
-
 jellyfin:
   # No hardware transcoding: the GPU is in yggdrasil, so video that has to be transcoded runs on the CPU of the node.
   image:

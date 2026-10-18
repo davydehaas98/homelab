@@ -1,1 +1,42 @@
-{{ include "app.volume" . }}
+# The config (database and metadata) is on an iSCSI disk on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md. Jellyfin has its own backup feature in the dashboard.
+# The driver `node-manual` (kubernetes/storage/democratic-csi) mounts it. The chart cannot bind a claim to a
+# volume by name, so the claim is made here and the chart uses it (`persistence.config.existingClaim`).
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-server-jellyfin-config
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: org.democratic-csi.node-manual
+    fsType: ext4
+    readOnly: false
+    volumeHandle: media-server-jellyfin-config
+    volumeAttributes:
+      portal: "192.168.1.44:3260"
+      iqn: "iqn.2026-10.nl.davydehaas:jellyfin"
+      lun: "0"
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
+  claimRef:
+    namespace: media-server
+    name: jellyfin-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  volumeName: media-server-jellyfin-config
+  resources:
+    requests:
+      storage: 10Gi
