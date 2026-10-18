@@ -1,6 +1,10 @@
 name: Helm lint
 on:
   pull_request:
+  # Most changes go straight to main, check those too
+  push:
+    branches:
+      - main
 jobs:
   helm:
     name: Helm Lint
@@ -18,9 +22,13 @@ jobs:
         run: helm template chart > /dev/null
       - name: Lint and render changed applications
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           set -euo pipefail
+          # A push that creates the branch has no previous commit, compare with the parent instead
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA=$(git rev-parse HEAD~1)
+          fi
           dirs=$(git diff --name-only "$BASE_SHA" HEAD -- kubernetes \
             | cut -d/ -f1-3 | sort -u)
           # A changed library chart also checks every app that depends on it (file://../../_library/<name>)

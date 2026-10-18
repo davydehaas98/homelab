@@ -9,14 +9,16 @@ use, without a rebuild.
 In VS Code with Podman, set `dev.containers.dockerPath` to `podman` and
 `dev.containers.mountWaylandSocket` to `false`. Don't let VS Code install Docker in WSL.
 
-On Windows, VS Code can't find the Podman connection (`Cannot connect to Podman`). Set it as user
-environment variables, restart VS Code, and repeat after recreating the Podman machine:
+On Windows, VS Code can't find the Podman connection (`Cannot connect to Podman`). Name it in a user
+environment variable and restart VS Code:
 
 ```powershell
-$conn = podman system connection list --format json | ConvertFrom-Json | Where-Object Default
-[Environment]::SetEnvironmentVariable('CONTAINER_HOST', $conn.URI, 'User')
-[Environment]::SetEnvironmentVariable('CONTAINER_SSHKEY', $conn.Identity, 'User')
+[Environment]::SetEnvironmentVariable('CONTAINER_CONNECTION', 'podman-machine-default', 'User')
 ```
+
+Use the name, not the URI in `CONTAINER_HOST`: `podman machine init` picks a random SSH port, so a
+URI goes stale when the machine is recreated, while the name is looked up in
+`podman system connection list` every time.
 
 Without VS Code:
 

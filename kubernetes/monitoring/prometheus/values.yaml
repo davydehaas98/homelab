@@ -60,6 +60,25 @@ kube-prometheus-stack:
                 storage: 8Gi
 
   alertmanager:
+    # Nothing is notified yet: every alert goes to the `null` receiver. Add a receiver and point
+    # `route.receiver` at it to get notifications.
+    config:
+      route:
+        receiver: "null"
+        group_by:
+          - namespace
+          - alertname
+        routes:
+          # Always fires to prove the pipeline works, never worth a notification
+          - receiver: "null"
+            matchers:
+              - alertname = "Watchdog"
+          # Only says that another alert is suppressed
+          - receiver: "null"
+            matchers:
+              - alertname = "InfoInhibitor"
+      receivers:
+        - name: "null"
     alertmanagerSpec:
       resources:
         limits:

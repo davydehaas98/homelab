@@ -28,7 +28,7 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
 
 ## How the pieces connect
 
-- **Traffic.** External traffic reaches the cluster through the home server's reverse proxy (TLS passthrough, defined in the separate `home-server` repo) and then the Envoy Gateway LoadBalancer. An app is published with an `HTTPRoute` attached to the shared `envoy-gateway` Gateway (`sectionName: web-https`). The gateway has a wildcard certificate, but there is no wildcard DNS record: add each new subdomain to `kubernetes_apps` in `terraform/cloudflare/davydehaas.dev/dns_record.tf` (applied by hand), and extra names that redirect to an app (`route.aliases` in its values, like `usenet` for SABnzbd) to `kubernetes_aliases` there. Do not add Ingress objects.
+- **Traffic.** External traffic reaches the cluster through the home server's reverse proxy (TLS passthrough, defined in the separate `home-server` repo) and then the Envoy Gateway LoadBalancer. An app is published with an `HTTPRoute` attached to the shared `envoy-gateway` Gateway (`sectionName: web-https`). The gateway has a wildcard certificate, but there is no wildcard DNS record: add each new subdomain to `kubernetes_apps` in `terraform/cloudflare/davydehaas.dev/dns_record.tf` (applied by CI after approval), and extra names that redirect to an app (`route.aliases` in its values, like `usenet` for SABnzbd) to `kubernetes_aliases` there. Do not add Ingress objects.
 - **Sync flags.** `chart/templates/applications.yaml` adds the Argo CD `ServerSideDiff` annotation to every app with `serverSideApply: true`; without it, defaults added by the API server (for example on HTTPRoutes) show up as a permanent `OutOfSync`.
 - **Logins.** Authentik is the identity provider: a gateway `SecurityPolicy` (OIDC) on the route, native OIDC in the app, or the app's own login. To add a client:
   1. Add it to `oidcClients` in `kubernetes/security/authentik/values.yaml` (one blueprint is generated per entry).
@@ -36,13 +36,13 @@ Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-
   3. Restart `authentik-worker` after the secret changes: blueprints read their credentials from the environment at start.
 
   Ship the sealed secrets in the same commit as the policy, because a `SecurityPolicy` that points at a missing secret blocks its route. See `kubernetes/security/authentik/README.md`.
-- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. The config of the SQLite apps (Sonarr, Radarr, Prowlarr, Lidarr, Bazarr, SABnzbd) is on one iSCSI disk per app on the home server (a target of its own per app, because the node logs out of a whole target when one pod stops), because SQLite corrupts on NFS. The disks are made with `kubernetes/media-server/media-server/lun.sh` (steps in its README) and mounted by the democratic-csi driver `node-manual` (`kubernetes/storage/democratic-csi`), as the kubelet of Talos cannot run `iscsiadm` itself. The apps' own backups are on the RAID of the home server, mounted through the `backups` claim. Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
+- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. The config of the SQLite apps (Sonarr, Radarr, Prowlarr, Lidarr, Bazarr, SABnzbd) is on one iSCSI disk per app on the home server (a target of its own per app, because the node logs out of a whole target when one pod stops), because SQLite corrupts on NFS. The Prometheus TSDB and Authentik's Postgres have an iSCSI disk too, written as a static PV in their own charts. The disks are made with `kubernetes/media-server/media-server/lun.sh` (steps in its README) and mounted by the democratic-csi driver `node-manual` (`kubernetes/storage/democratic-csi`), as the kubelet of Talos cannot run `iscsiadm` itself. The apps' own backups are on the RAID of the home server, mounted through the `backups` claim. Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
 - **Monitoring.** Prometheus runs with every `*SelectorNilUsesHelmValues: false`, so ServiceMonitors and PodMonitors are picked up from all namespaces. Its CRDs come from the separate `prometheus-crd` app, whose version must match the operator in the Prometheus chart. Grafana's sidecar only reads ConfigMaps from its own namespace, so charts that ship dashboards must create them there.
 - **App styles.** Single-container apps (Sonarr, Radarr, Prowlarr, memos, it-tools) use the local library chart `kubernetes/_library/app` (a `file://` dependency) and only set values; see its README to add one. Apps with an upstream chart wrap that chart instead.
 
 ## Commands
 
-CLI versions (helm, kubectl, talosctl, kubeseal, argocd, terraform, ...) are pinned in `mise.toml`; the dev container (`.devcontainer/README.md`) installs them with mise. CI checks live in `.github/workflows/`: `helm.yaml` (pull requests) and `terraform-cloudflare.yaml`.
+CLI versions (helm, kubectl, talosctl, kubeseal, argocd, terraform, ...) are pinned in `mise.toml`; the dev container (`.devcontainer/README.md`) installs them with mise. CI checks live in `.github/workflows/`: `helm.yaml` (pull requests and pushes to `main`) and `terraform-cloudflare.yaml`.
 
 ### Helm
 
@@ -87,7 +87,7 @@ Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative
 
 ## Other directories
 
-- `terraform/`: Terraform stacks outside the cluster, for now the Cloudflare DNS of `davydehaas.dev` (`terraform/README.md`). State is in S3, `.github/workflows/terraform-cloudflare.yaml` plans on push and applies only when run by hand. Never commit `*.tfvars` or state files.
+- `terraform/`: Terraform stacks outside the cluster, for now the Cloudflare DNS of `davydehaas.dev` (`terraform/README.md`). State is in S3, `.github/workflows/terraform-cloudflare.yaml` plans on every push to `main` that touches the stack and applies once the run is approved (environment `cloudflare`). Never commit `*.tfvars` or state files.
 
 ## Dependency updates
 

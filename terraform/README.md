@@ -17,8 +17,10 @@ from `home-server` and kept this key, so there is nothing to import.
 
 ### Workflow
 
-`.github/workflows/terraform-cloudflare.yaml` plans on every push to `main` that touches this
-directory. It never applies on a push: run the workflow by hand with `apply` ticked.
+`.github/workflows/terraform-cloudflare.yaml` plans on every push to `main` that touches this directory,
+and on a manual run. When the plan has changes, its `Apply` job waits for approval (Review deployments in
+the run), then plans again and applies. The approval comes from the required reviewers of the environment
+`cloudflare` (Settings > Environments). Without that rule the job applies without waiting.
 
 It needs these repository secrets:
 

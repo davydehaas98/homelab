@@ -1,4 +1,4 @@
-name: Terraform Cloudflare davydehaas.dev
+name: Terraform Cloudflare
 
 on:
   push:
@@ -8,18 +8,74 @@ on:
       - "terraform/cloudflare/davydehaas.dev/**"
       - ".github/workflows/terraform-cloudflare.yaml"
   workflow_dispatch:
-    inputs:
-      apply:
-        description: "terraform apply"
-        required: false
-        type: boolean
-        default: false
+
+env:
+  TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  TF_VAR_ipv4_address: ${{ secrets.SERVER_IPV4_ADDRESS }}
+  TF_VAR_ipv6_address: ${{ secrets.SERVER_IPV6_ADDRESS }}
 
 jobs:
-  terraform-cloudflare-davydehaas-dev:
-    name: Terraform Cloudflare davydehaas.dev
+  plan:
+    name: Plan
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: terraform/cloudflare/davydehaas.dev
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      changes: ${{ steps.plan.outputs.changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-state-cloudflare-dev
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: "v1.16.6"
+          terraform_wrapper: false
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Format
+        run: terraform fmt -check -diff
+
+      - name: Validate
+        run: terraform validate
+
+      # Exit code 2 means the plan has changes, which the apply job waits on
+      - name: Plan
+        id: plan
+        run: |
+          set +e
+          terraform plan -input=false -detailed-exitcode
+          code=$?
+          set -e
+          [ "$code" -ne 1 ] || exit 1
+          if [ "$code" -eq 2 ]; then echo "changes=true"; else echo "changes=false"; fi >> "$GITHUB_OUTPUT"
+
+  # Waits for approval in the environment `cloudflare` (Settings > Environments, required reviewers). It plans
+  # again instead of reusing the plan file, which would carry the secrets in an artifact.
+  apply:
+    name: Apply
+    needs: plan
+    if: needs.plan.outputs.changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: cloudflare
+    # Applies run one at a time; a newer waiting apply replaces an older one, as it plans a newer commit
+    concurrency:
+      group: terraform-cloudflare-davydehaas-dev
+      cancel-in-progress: false
     defaults:
       run:
         working-directory: terraform/cloudflare/davydehaas.dev
@@ -40,28 +96,10 @@ jobs:
         uses: hashicorp/setup-terraform@v4.0.1
         with:
           terraform_version: "v1.16.6"
+          terraform_wrapper: false
 
       - name: Init
-        run: terraform init
+        run: terraform init -input=false
 
-      - name: Format
-        run: terraform fmt -check -diff
-
-      - name: Validate
-        run: terraform validate
-
-      - name: Plan
-        run: terraform plan -out=tfplan
-        env:
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_ipv4_address: ${{ secrets.SERVER_IPV4_ADDRESS }}
-          TF_VAR_ipv6_address: ${{ secrets.SERVER_IPV6_ADDRESS }}
-
-      # A push to main only plans. Run the workflow by hand with `apply` ticked to change DNS.
       - name: Apply
-        if: github.event_name == 'workflow_dispatch' && inputs.apply == true
-        run: terraform apply -auto-approve tfplan
-        env:
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_ipv4_address: ${{ secrets.SERVER_IPV4_ADDRESS }}
-          TF_VAR_ipv6_address: ${{ secrets.SERVER_IPV6_ADDRESS }}
+        run: terraform apply -input=false -auto-approve

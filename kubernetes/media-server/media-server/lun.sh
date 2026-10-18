@@ -12,7 +12,7 @@
 #   sudo sh lun.sh status                       targets, LUNs and sessions
 #
 # Example: sudo sh lun.sh create radarr 5G && sudo sh lun.sh copy radarr
-# DRY_RUN=1 prints the commands instead of running them.
+# DRY_RUN=1 prints the commands instead of running them. OWNER=<uid>:<gid> sets the owner of the disk (default 1400:1400).
 set -eu
 
 IQN_PREFIX=iqn.2026-10.nl.davydehaas
@@ -20,7 +20,8 @@ OLD_IQN=$IQN_PREFIX:yggdrasil     # the shared target of the first setup
 IMG_DIR=/mnt/md0/iscsi            # the image files, one per app
 NFS_DIR=/mnt/md0/kubernetes       # where nfs-subdir-external-provisioner keeps the old volumes
 BACKUP_DIR=/mnt/md0/kubernetes/backups   # the apps' own backups, on the RAID, mounted at /config/Backups
-OWNER=1400:1400                   # owner of the media on the share, the user the apps run as
+# Owner of the media on the share, the user the apps run as. Disks of apps that run as another user set OWNER
+OWNER=${OWNER:-1400:1400}
 
 die() { echo "error: $*" >&2; exit 1; }
 

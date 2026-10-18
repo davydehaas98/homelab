@@ -13,8 +13,6 @@ applications:
       serverSideApply: true
     descheduler:
       deploy: true
-      valueFiles:
-        - values.yaml
     envoy-gateway:
       deploy: true
       serverSideApply: true
@@ -81,14 +79,12 @@ applications:
       deploy: false
     loki:
       deploy: true
-      valueFiles:
-        - values.yaml
     prometheus:
       deploy: true
       serverSideApply: true
     prometheus-crd:
       deploy: true
-      namespace: defaults
+      namespace: prometheus
       serverSideApply: true
   security:
     authentik:

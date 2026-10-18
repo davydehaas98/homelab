@@ -33,8 +33,13 @@ and the pod can still move to any node.
 | Jellyfin | `jellyfin`                               | 10G  | iSCSI              |
 | Bazarr   | `bazarr`                                 | 1G   | iSCSI              |
 | memos    | `memos`                                  | 1G   | NFS (not deployed) |
+| Prometheus TSDB (`prometheus`) | `prometheus`               | 10G  | iSCSI              |
+| Authentik Postgres (`authentik`) | `authentik-postgresql`   | 2G   | iSCSI              |
 
-Keep this table up to date when an app moves.
+Keep this table up to date when an app moves. The last two are not media apps, but their databases do not
+belong on NFS either: they write their volume by hand (`templates/prometheus-volume.yaml`,
+`templates/postgresql-volume.yaml` in their charts) instead of using the `app` library chart. See
+[Moving Prometheus and Authentik](#moving-prometheus-and-authentik).
 
 ## Making the disk of an app
 
@@ -121,6 +126,48 @@ Move one app at a time. The app is down for a few minutes. The example is Radarr
    `df` has to show a `/dev/...` device (ext4), not `192.168.1.44:...`.
 
 7. Remove the old NFS folder of the app on yggdrasil by hand once it has run fine for a while.
+
+### Moving Prometheus and Authentik
+
+These run from upstream charts, so the steps differ. `lun.sh copy` needs the old NFS folder as the second
+argument (`/mnt/md0/kubernetes/<namespace>-<claim>-<pv>`, find it with
+`kubectl get pvc -n <namespace>`), and `OWNER` set to the user of the database.
+
+**Prometheus** (the metrics stay; Prometheus is down for the copy):
+
+1. On yggdrasil: `sudo sh lun.sh create prometheus 10G`.
+2. Push `prometheusSpec.replicas: 0` in `kubernetes/monitoring/prometheus/values.yaml`, without the volume
+   changes, and wait until `prometheus-prometheus-kube-prometheus-prometheus-0` is gone.
+3. On yggdrasil: `sudo OWNER=1000:2000 sh lun.sh copy prometheus /mnt/md0/kubernetes/prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0-<pv>`.
+4. Delete the old claim, so the new one can take its name:
+   `kubectl -n prometheus delete pvc prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0`.
+5. Push the volume changes and drop `replicas: 0`. The operator recreates the StatefulSet (its claim template
+   changed), and the new claim binds to the PV `prometheus-db`.
+6. Check `kubectl -n prometheus exec prometheus-prometheus-kube-prometheus-prometheus-0 -c prometheus -- df -h /prometheus`
+   shows a `/dev/...` device.
+
+**Authentik** (all logins are down for the copy). The Postgres chart cannot scale to 0 and its StatefulSet must
+be recreated for the new claim, so Argo CD is paused for the app:
+
+1. On yggdrasil: `sudo sh lun.sh create authentik-postgresql 2G`.
+2. Push `autoSync: false` for `authentik` in `chart/values.yaml`, and wait until Argo CD shows the app in the
+   project `no-sync`.
+3. Push the volume changes. Argo CD shows `OutOfSync` and does nothing yet.
+4. Stop Authentik. Deleting the StatefulSet stops Postgres cleanly and keeps its old claim:
+
+   ```shell
+   kubectl -n authentik scale deploy authentik-server authentik-worker --replicas=0
+   kubectl -n authentik delete statefulset authentik-postgresql
+   kubectl -n authentik get pods
+   ```
+
+5. On yggdrasil, once the pod is gone:
+   `sudo OWNER=1001:1001 sh lun.sh copy authentik-postgresql /mnt/md0/kubernetes/authentik-data-authentik-postgresql-0-<pv>`.
+   The disk must hold `data/` (Postgres 17, owned by 1001) and `conf/`, like the old folder.
+6. `argocd app sync authentik`. It creates the PV and claim `authentik-postgresql-data`, the StatefulSet and
+   scales the server and worker back up. Check that you can sign in, and `df -h /bitnami/postgresql` in
+   `authentik-postgresql-0` shows a `/dev/...` device.
+7. Push `autoSync` back (remove the line), then delete the old claim `data-authentik-postgresql-0`.
 
 ### Adding a new app
 
