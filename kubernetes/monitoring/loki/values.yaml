@@ -58,6 +58,8 @@ loki:
     dashboards:
       enabled: true
       namespace: grafana
+      annotations:
+        grafana_folder: Loki
       labels:
         grafana_dashboard: "1"
     serviceMonitor:
