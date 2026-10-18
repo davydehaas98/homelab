@@ -40,7 +40,8 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.storageClass` | default class | StorageClass of the claim. |
 | `persistence.iscsi.targetPortal`, `.iqn`, `.lun` | | Use a static iSCSI volume instead of a StorageClass, mounted by the democratic-csi driver (`kubernetes/storage/democratic-csi`). Give every app a target of its own (`iqn.2026-10.nl.davydehaas:<app>`, `lun: 0`), as a node logs out of a whole target when one pod stops. Only one pod may mount it. |
 | `persistence.labels` | | Extra labels of the claim. |
-| `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath`. |
+| `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath` (+ `readOnly: true`). |
+| `emptyDirs` | none | Scratch volumes, a list of `name`, `mountPath` and optionally `medium: Memory` and `sizeLimit`. Gone when the pod restarts. |
 | `backups.claimName`, `backups.subPath`, `backups.mountPath` | none, none, `/config/Backups` | Mount a `subPath` of an existing claim for the app's own backups, outside the `/config` volume. |
 | `route.enabled`, `route.hostnames`, `route.parentRefs` | off | `HTTPRoute` to the app. Also takes `annotations`, `labels`, `filters`, `matches` and `additionalRules`. |
 | `route.aliases` | none | Extra hostnames that redirect (301) to the first hostname. A separate route, so the login keeps working. They need a DNS record too. |

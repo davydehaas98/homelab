@@ -30,6 +30,7 @@ and the pod can still move to any node.
 | Radarr   | `radarr`                                 | 5G   | iSCSI              |
 | Lidarr   | `lidarr`                                 | 2G   | iSCSI              |
 | Seerr    | `seerr`                                  | 1G   | iSCSI              |
+| Jellyfin | `jellyfin`                               | 10G  | iSCSI              |
 | Bazarr   | `bazarr`                                 | 1G   | iSCSI              |
 | memos    | `memos`                                  | 1G   | NFS (not deployed) |
 

@@ -48,7 +48,14 @@ spec:
             - mountPath: {{ .mountPath }}
               name: media
               subPath: {{ .subPath }}
+              {{- if .readOnly }}
+              readOnly: true
+              {{- end }}
             {{- end }}
+            {{- end }}
+            {{- range .Values.emptyDirs }}
+            - mountPath: {{ .mountPath }}
+              name: {{ .name }}
             {{- end }}
             {{- with .Values.backups }}
             # After the volume of /config, so the backups of the app stay outside its database volume
@@ -71,5 +78,9 @@ spec:
         - name: backups
           persistentVolumeClaim:
             claimName: {{ .claimName }}
+        {{- end }}
+        {{- range .Values.emptyDirs }}
+        - name: {{ .name }}
+          emptyDir: {{ toYaml (omit . "name" "mountPath") | nindent 12 }}
         {{- end }}
 {{- end -}}

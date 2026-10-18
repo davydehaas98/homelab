@@ -111,6 +111,7 @@ locals {
     "bazarr",
     "grafana",
     "hubble",
+    "jellyfin",
     "lidarr",
     "prometheus",
     "prowlarr",
