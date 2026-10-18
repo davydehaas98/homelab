@@ -69,7 +69,12 @@ loki:
 
   write:
     replicas: 1
-    resources: {}
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
     persistence:
       size: 5Gi
     affinity: null
@@ -82,7 +87,12 @@ loki:
   read:
     replicas: 1
     legacyReadTarget: false
-    resources: {}
+    resources:
+      requests:
+        cpu: 20m
+        memory: 192Mi
+      limits:
+        memory: 1Gi
     persistence:
       size: 5Gi
     affinity: null
@@ -94,7 +104,12 @@ loki:
 
   backend:
     replicas: 1
-    resources: {}
+    resources:
+      requests:
+        cpu: 20m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
     persistence:
       size: 5Gi
       enableStatefulSetAutoDeletePVC: false
@@ -109,10 +124,10 @@ loki:
     enabled: true
     verboseLogging: false
     replicas: 1
-    resources: {}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
     affinity: null
-    extraArgs:
-      - '-config.expand-env=true'
-    extraEnvFrom:
-      - secretRef:
-          name: loki-s3-credentials

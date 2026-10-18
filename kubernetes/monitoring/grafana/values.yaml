@@ -87,7 +87,7 @@ grafana:
     grafana_net:
       url: https://grafana.net
     server:
-      domain: "https://grafana.davydehaas.dev"
+      domain: "grafana.davydehaas.dev"
       root_url: "https://grafana.davydehaas.dev"
 
   serviceMonitor:

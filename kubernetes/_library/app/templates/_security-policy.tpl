@@ -30,4 +30,5 @@ spec:
       - openid
       - email
       - profile
+      - offline_access
 {{- end -}}

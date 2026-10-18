@@ -30,8 +30,7 @@ podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -v ~/.talos:/roo
 
 ## Claude Code
 
-Run `claude`; its login is kept in the `homelab-claude-config` volume. `.claude/settings.json`
-blocks `git commit` and `git push`, so changes stay uncommitted for review.
+Run `claude`; its login is kept in the `homelab-claude-config` volume.
 
 ### Grafana MCP server
 
