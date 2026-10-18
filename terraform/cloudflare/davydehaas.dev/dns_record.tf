@@ -64,6 +64,7 @@ locals {
     "bazarr",
     "grafana",
     "hubble",
+    "immich",
     "jellyfin",
     "lidarr",
     "prometheus",

@@ -1,0 +1,79 @@
+# PostgreSQL with VectorChord for Immich, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which must be
+# deployed first. The extension comes from an image volume. The database is on an iSCSI disk on yggdrasil, a target
+# of its own, see kubernetes/media-server/media-server/README.md; one instance, as each instance needs a disk of
+# its own. The disk is owned by the postgres user: `OWNER=26:26 sh lun.sh copy immich-database <empty folder>`.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-database
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
+  storage:
+    size: 32Gi
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ""
+      volumeName: immich-database-1
+      resources:
+        requests:
+          storage: 32Gi
+  postgresql:
+    shared_preload_libraries:
+      - vchord.so
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+        dynamic_library_path:
+          - /usr/lib/postgresql/18/lib
+        extension_control_path:
+          - /usr/share/postgresql/18/
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: immich-database
+spec:
+  # CloudNativePG creates this database and user, and the Secret `immich-database-app` for them
+  name: app
+  owner: app
+  cluster:
+    name: immich-database
+  extensions:
+    - name: vector
+      ensure: present
+    - name: vchord
+      ensure: present
+    - name: earthdistance
+      ensure: present
+    - name: cube
+      ensure: present
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-database-1
+spec:
+  capacity:
+    storage: 32Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
+  csi:
+    driver: org.democratic-csi.node-manual
+    fsType: ext4
+    readOnly: false
+    volumeHandle: immich-database-1
+    volumeAttributes:
+      portal: "192.168.1.44:3260"
+      iqn: "iqn.2026-10.nl.davydehaas:immich-database"
+      lun: "0"
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
+  claimRef:
+    namespace: immich
+    name: immich-database-1

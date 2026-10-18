@@ -40,6 +40,8 @@ applications:
   home:
     home-assistant:
       deploy: false
+    immich:
+      deploy: true
     nextcloud:
       deploy: false
     zigbee2mqtt:
@@ -100,7 +102,7 @@ applications:
 
   storage:
     cloudnative-pg:
-      deploy: false
+      deploy: true
       namespace: cnpg-system
       serverSideApply: true
     democratic-csi:

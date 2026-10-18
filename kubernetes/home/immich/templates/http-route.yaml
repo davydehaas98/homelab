@@ -14,5 +14,5 @@ spec:
     - timeouts:
         request: 0s
       backendRefs:
-        - name: immich
+        - name: immich-server
           port: 2283
