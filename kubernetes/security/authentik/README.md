@@ -1,54 +1,51 @@
 # Authentik
 
-Identity provider for the `davydehaas.dev` services, served at <https://auth.davydehaas.dev>. It is
-separate from the Authentik on the home server (`davydehaas.nl`).
+Identity provider at <https://auth.davydehaas.dev>, separate from the home server's Authentik (`davydehaas.nl`). On
+a new install, set the `akadmin` password at <https://auth.davydehaas.dev/if/flow/initial-setup/>.
 
 ## Secrets
 
-`templates/authentik-credentials.yaml` is a SealedSecret named `authentik-credentials` (namespace
-`authentik`). The server, worker and the bundled PostgreSQL read it. Keys:
+`templates/authentik-credentials.yaml` is Secret `authentik-credentials`, read by the server, worker and Postgres:
 
-- `AUTHENTIK_SECRET_KEY`: cookie signing and unique user IDs. Do not change it after the first install.
-- `AUTHENTIK_POSTGRESQL__PASSWORD` and `password`: the `authentik` database user. Both must be equal.
-- `postgres-password`: PostgreSQL admin user.
+- `AUTHENTIK_SECRET_KEY`: signs cookies and user IDs; never change it after the first install.
+- `AUTHENTIK_POSTGRESQL__PASSWORD` and `password`: the `authentik` database user, equal.
+- `postgres-password`: the Postgres admin.
 
-To regenerate (this rotates the database passwords, so only before the first install), seal fresh
-random values against the controller in `kube-system`:
+Regenerating rotates the database passwords, so do it only before the first install, from this folder:
 
 ```shell
-python3 - <<'PY' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > templates/authentik-credentials.yaml
-import secrets, base64, json
-pw = secrets.token_hex(32)
-d = {
-  "AUTHENTIK_SECRET_KEY": base64.b64encode(secrets.token_bytes(60)).decode(),
-  "AUTHENTIK_POSTGRESQL__PASSWORD": pw,
-  "password": pw,
-  "postgres-password": secrets.token_hex(32),
-}
-print(json.dumps({"apiVersion": "v1", "kind": "Secret", "metadata": {"name": "authentik-credentials", "namespace": "authentik"}, "type": "Opaque", "stringData": d}))
-PY
+pw=$(openssl rand -hex 32)
+jq -n --arg key "$(openssl rand -base64 60 | tr -d '\n')" --arg pw "$pw" --arg admin "$(openssl rand -hex 32)" '{
+  apiVersion: "v1", kind: "Secret", type: "Opaque",
+  metadata: {name: "authentik-credentials", namespace: "authentik"},
+  stringData: {AUTHENTIK_SECRET_KEY: $key, AUTHENTIK_POSTGRESQL__PASSWORD: $pw, password: $pw, "postgres-password": $admin}
+}' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > templates/authentik-credentials.yaml
+unset pw
 ```
-
-## First login
-
-Open <https://auth.davydehaas.dev/if/flow/initial-setup/> to set the `akadmin` password.
 
 ## OIDC clients
 
-`templates/blueprints.yaml` renders one Authentik blueprint per client (a key of the `authentik-blueprints` ConfigMap)
-that creates an OAuth2 provider, an application and an `authentik Admins` group binding for each entry in
-`oidcClients` in `values.yaml`. The slug must match the issuer URL (`/application/o/<slug>/`) in the
-app's `SecurityPolicy`.
+Each entry in `oidcClients` gets a blueprint with a provider, an application and an `authentik Admins` binding. Its
+slug is the issuer path (`/application/o/<slug>/`) in the app's `SecurityPolicy`. To add one:
 
-Each client's ID and secret are in its own SealedSecret `authentik-oidc-<slug>`
-(`templates/oidc-client-<slug>.yaml`, keys `<SLUG>_CLIENT_ID` and `<SLUG>_CLIENT_SECRET`, with `-` as `_`),
-which the server and worker load through `authentik.global.envFrom`. They must equal the `client-id` and
-`client-secret` of the app's own SealedSecret in its namespace. Generate the random values inside a script
-and pipe them straight to `kubeseal` (controller in `kube-system`), so both stay equal and are never printed.
+1. Add the entry to `oidcClients`, and `authentik-oidc-<slug>` to `envFrom` (the render fails without it).
+2. Seal one random pair into both Secrets, from this folder:
 
-To add a client, add an entry to `oidcClients`, seal its pair into `templates/oidc-client-<slug>.yaml` and the
-app's secret, and add `authentik-oidc-<slug>` to `envFrom` in `values.yaml` (the render fails if that line is
-missing). Then restart `authentik-worker`: blueprints read the credentials from the environment at start. Argo CD
-(`argocd-authentik-oidc`, keys `clientID`/`clientSecret`) and Prometheus were first created by hand in
-the UI. The blueprint adopts their applications by slug and points them at a new provider, so delete
-the old, now unused provider in the UI.
+   ```shell
+   slug=<slug> ns=<namespace> app=<group>/<app>
+   env=$(echo "$slug" | tr 'a-z-' 'A-Z_')
+   id=$(openssl rand -hex 20) secret=$(openssl rand -hex 32)
+   seal() { kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml; }
+   secret() {
+     jq -n --arg name "$1" --arg ns "$2" --arg idKey "$3" --arg secretKey "$4" --arg id "$id" --arg secret "$secret" \
+       '{apiVersion: "v1", kind: "Secret", type: "Opaque", metadata: {name: $name, namespace: $ns}, stringData: {($idKey): $id, ($secretKey): $secret}}'
+   }
+   secret "authentik-oidc-$slug" authentik "${env}_CLIENT_ID" "${env}_CLIENT_SECRET" | seal > "templates/oidc-client-$slug.yaml"
+   secret "$slug-oidc-credentials" "$ns" client-id client-secret | seal > "../../$app/templates/oidc-credentials.yaml"
+   unset id secret
+   ```
+
+3. After the sync, restart `authentik-worker`: blueprints read the credentials at start.
+
+The Argo CD (`argocd-authentik-oidc`, keys `clientID`/`clientSecret`) and Prometheus applications were made by hand
+first; their blueprints adopted them, so remove their old, unused providers in the UI.

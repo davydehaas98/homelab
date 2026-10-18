@@ -2,43 +2,19 @@
 
 ## cloudflare/davydehaas.dev
 
-All DNS records of the `davydehaas.dev` zone: the root A/AAAA/CAA records, `www`, `wireguard`, the SRV
-records and their game server targets, the mail spoofing protection (SPF, DMARC, DKIM) and one record
-per Kubernetes app (`kubernetes_apps` in `dns_record.tf`). The apps point at the home server, which
-passes TLS through to the Kubernetes gateway; they share its wildcard certificate. There is no wildcard
-DNS record, so to publish a new app, add its subdomain to `kubernetes_apps` and apply this stack. Extra
-names that redirect to an app (`route.aliases`, for example `usenet` for SABnzbd) go in `kubernetes_aliases`.
+All DNS records of `davydehaas.dev`. App hostnames (`kubernetes_apps`) and their redirect names
+(`kubernetes_aliases`, the `route.aliases` of an app) point at the home server, which passes TLS through to the
+Kubernetes gateway. There is no wildcard record, so every new hostname goes in one of those lists.
 
-### State
+**State** is in S3 bucket `davydehaas-terraform-state` (`eu-central-1`), key `cloudflare/davydehaas.dev/terraform.tfstate`,
+kept from when this lived in `home-server`.
 
-The state is in the S3 bucket `davydehaas-terraform-state` under `cloudflare/davydehaas.dev/terraform.tfstate`
-(`eu-central-1`, locked with a lockfile). The key is independent of the repository, the code was moved
-from `home-server` and kept this key, so there is nothing to import.
+**CI** (`.github/workflows/terraform-cloudflare.yaml`) plans on pushes to `main` that touch this stack and on manual
+runs. A plan with changes waits for approval by the required reviewers of environment `cloudflare`, then plans again
+and applies. It needs the repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (DNS edit on the zone),
+`SERVER_IPV4_ADDRESS` and `SERVER_IPV6_ADDRESS`. The IAM role `github-state-cloudflare-dev` comes from the
+`bootstrap` stack of `home-server`, and its trust policy must allow `repo:davydehaas98/homelab:*`.
 
-### Workflow
-
-`.github/workflows/terraform-cloudflare.yaml` plans on every push to `main` that touches this directory,
-and on a manual run. When the plan has changes, its `Apply` job waits for approval (Review deployments in
-the run), then plans again and applies. The approval comes from the required reviewers of the environment
-`cloudflare` (Settings > Environments). Without that rule the job applies without waiting.
-
-It needs these repository secrets:
-
-- `AWS_ACCOUNT_ID`: account of the IAM role `github-state-cloudflare-dev`
-- `CLOUDFLARE_API_TOKEN`: token with DNS edit rights on the zone
-- `SERVER_IPV4_ADDRESS` and `SERVER_IPV6_ADDRESS`: public addresses of the home server
-
-The role is created by the `bootstrap` stack of `home-server`. Its trust policy has to allow
-`repo:davydehaas98/homelab:*` as well, otherwise the workflow cannot assume the role.
-
-### Locally
-
-```sh
-cd terraform/cloudflare/davydehaas.dev
-terraform init
-terraform plan   # TF_VAR_cloudflare_api_token, TF_VAR_ipv4_address and TF_VAR_ipv6_address have to be set
-```
-
-`*.tfvars` and the state files are ignored. Commit `.terraform.lock.hcl`, and refresh it with
-`terraform providers lock -platform=linux_amd64 -platform=linux_arm64 -platform=darwin_arm64` after a
-provider bump.
+**Locally**, set `TF_VAR_cloudflare_api_token`, `TF_VAR_ipv4_address` and `TF_VAR_ipv6_address`, then
+`terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with
+`terraform providers lock -platform=linux_amd64 -platform=linux_arm64 -platform=darwin_arm64`.

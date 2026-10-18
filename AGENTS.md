@@ -1,94 +1,71 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents (e.g. Claude Code) when working with code in this repository.
+Guidance for AI coding agents in this repository.
 
-## Overview
+GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim_0`–`3`, arm64), Cilium,
+and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment.
 
-GitOps repo for a homelab Kubernetes cluster: Talos OS on 4x Turing RK1 nodes (`jotunheim_0`–`3`, cluster `yggdrasil`), Cilium CNI, and Argo CD syncing everything under `kubernetes/` from `main` of `github.com/davydehaas98/homelab`. Anything merged to `main` is what the cluster converges to, so changes here are deployments.
+## Apps
 
-## How applications get deployed (app-of-apps)
-
-1. `kubernetes/core/argocd/templates/applications.yaml` defines the root Argo CD `Application`, which renders the Helm chart in `chart/`.
-2. `chart/templates/applications.yaml` loops over `chart/values.yaml` (`applications.<group>.<app>`) and emits one Argo CD `Application` per entry with `deploy: true`, pointing at `kubernetes/<group>/<app>`.
-3. Each `kubernetes/<group>/<app>/` is a small wrapper Helm chart: `Chart.yaml` pulls the upstream chart as a dependency, `values.yaml` holds overrides nested under the dependency name, and `templates/` holds extra manifests (namespace, SealedSecrets, VPAs, routes, etc.).
-
-Consequences:
-
-- **A directory under `kubernetes/` does nothing on its own.** It must also be listed in `chart/values.yaml` with `deploy: true`. Some app directories (e.g. `media/plex`, `home/immich`, `security/kyverno`) are not listed and therefore not deployed; listed apps with `deploy: false` are scaffolds that are switched off.
-- The directory name must equal the kebab-cased key in `chart/values.yaml` (or its `nameOverride`), and the group directory must equal the group key.
-- Namespace defaults to the app name; override with `namespace:` in `chart/values.yaml`.
-- Apps auto-sync (AppProject `always-sync`) unless they set `autoSync: false`, which puts them in AppProject `no-sync`, whose deny sync window blocks automatic syncs (manual sync still allowed). Core pieces like `cilium` and `longhorn` are deliberately `no-sync`.
-- Per-app knobs (`ignoreDifferences`, `serverSideApply`) are documented in `chart/README.md`.
-
-To add an app: copy `kubernetes/_base/` (an empty scaffold with `Chart.yaml`, `values.yaml` and `templates/namespace.yaml`) into `kubernetes/<group>/<app>/`, fill in the dependency, then add the entry to `chart/values.yaml`.
+- The root Application (`kubernetes/core/argocd/templates/applications.yaml`) renders `chart/`, which emits one
+  Application per `applications.<group>.<app>` in `chart/values.yaml` with `deploy: true`, pointing at
+  `kubernetes/<group>/<app>`. A directory that is not listed there is not deployed.
+- Directory names equal the kebab-cased keys. The namespace is the app name unless `namespace:` is set. Other
+  per-app keys are in `chart/README.md`.
+- `autoSync: false` moves an app to the AppProject `no-sync` (manual sync only), as for `cilium`.
+- Each app is a wrapper chart: the upstream chart as a dependency, its overrides in `values.yaml`, and extra
+  manifests in `templates/`. Single-container apps use the library chart `kubernetes/_library/app` instead and
+  only set values (see its README). New apps start from a copy of `kubernetes/_base/`.
+- Images must publish arm64.
 
 ## Secrets
 
-Secrets are committed only as Bitnami SealedSecrets (controller `sealed-secrets-controller`, namespace `kube-system`). See `kubernetes/core/argocd/README.md` for the `kubeseal` workflow. Never commit plaintext `Secret` manifests. SealedSecrets are bound to their name and namespace; to add keys without rotating existing credentials, read the live Secret with `kubectl`, merge, and re-seal. Never print secret values. `talos/gen/` (cluster secrets, generated machine configs and talosconfig) and `talos/talosconfig` are gitignored and must stay that way. The client configs live outside the repo, in `~/.talos/config` and `~/.kube/config`, backed up to 1Password with `talos/backup-configs.sh` (run on the host, `op` needs the desktop app); never point `TALOSCONFIG` at a file in the repo.
+- Commit secrets only as SealedSecrets (controller `sealed-secrets-controller` in `kube-system`), never plaintext.
+  Seal from stdin and never print values. To add keys, merge them into the live Secret and re-seal, as a
+  SealedSecret is bound to its name and namespace.
+- `talos/gen/` and `talos/talosconfig` hold cluster secrets and stay gitignored; don't search them. Client configs
+  are `~/.talos/config` and `~/.kube/config`, outside the repo.
 
 ## How the pieces connect
 
-- **Traffic.** External traffic reaches the cluster through the home server's reverse proxy (TLS passthrough, defined in the separate `home-server` repo) and then the Envoy Gateway LoadBalancer. An app is published with an `HTTPRoute` attached to the shared `envoy-gateway` Gateway (`sectionName: web-https`). The gateway has a wildcard certificate, but there is no wildcard DNS record: add each new subdomain to `kubernetes_apps` in `terraform/cloudflare/davydehaas.dev/dns_record.tf` (applied by CI after approval), and extra names that redirect to an app (`route.aliases` in its values, like `usenet` for SABnzbd) to `kubernetes_aliases` there. Do not add Ingress objects.
-- **Sync flags.** `chart/templates/applications.yaml` adds the Argo CD `ServerSideDiff` annotation to every app with `serverSideApply: true`; without it, defaults added by the API server (for example on HTTPRoutes) show up as a permanent `OutOfSync`.
-- **Logins.** Authentik is the identity provider: a gateway `SecurityPolicy` (OIDC) on the route, native OIDC in the app, or the app's own login. To add a client:
-  1. Add it to `oidcClients` in `kubernetes/security/authentik/values.yaml` (one blueprint is generated per entry).
-  2. Seal the same credentials into `templates/oidc-client-<slug>.yaml` (Secret `authentik-oidc-<slug>`, keys `<SLUG>_CLIENT_ID` / `_CLIENT_SECRET`), add that Secret to `envFrom` in the Authentik values, and seal them into the app's own secret.
-  3. Restart `authentik-worker` after the secret changes: blueprints read their credentials from the environment at start.
+- **Traffic.** The home server's Traefik (repo `home-server`) passes TLS for `*.davydehaas.dev` through to the
+  Envoy Gateway. Publish an app with an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`), no
+  Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
+  `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`.
+- **Logins.** Authentik, through a gateway `SecurityPolicy`, the app's native OIDC, or the app's own login. Adding
+  a client is in `kubernetes/security/authentik/README.md`. Ship the sealed credentials in the same commit as the
+  policy: a policy without its Secret breaks the route.
+- **Storage.** The default StorageClass is NFS from the home server. SQLite apps and databases get an iSCSI disk
+  of their own instead, see `kubernetes/media-server/media-server/README.md`. The nodes have no usable data disk,
+  so node-local storage (Longhorn) is not an option.
+- **Monitoring.** Prometheus picks up ServiceMonitors and PodMonitors from all namespaces. Its CRDs come from the
+  `prometheus-crd` app, which must match the operator version. Grafana only reads dashboard ConfigMaps from its
+  own namespace.
+- **Sync.** Apps with `serverSideApply: true` also get the `ServerSideDiff` annotation, so defaults the API server
+  adds don't show as `OutOfSync`.
 
-  Ship the sealed secrets in the same commit as the policy, because a `SecurityPolicy` that points at a missing secret blocks its route. See `kubernetes/security/authentik/README.md`.
-- **Storage and hardware.** The default StorageClass is NFS, served by the home server; the exports are managed there, not in this repo. The config of the SQLite apps (Sonarr, Radarr, Prowlarr, Lidarr, Bazarr, SABnzbd, Seerr, Jellyfin) is on one iSCSI disk per app on the home server (a target of its own per app, because the node logs out of a whole target when one pod stops), because SQLite corrupts on NFS. The Prometheus TSDB and Authentik's Postgres have an iSCSI disk too, written as a static PV in their own charts. The disks are made with `kubernetes/media-server/media-server/lun.sh` (steps in its README) and mounted by the democratic-csi driver `node-manual` (`kubernetes/storage/democratic-csi`), as the kubelet of Talos cannot run `iscsiadm` itself. The apps' own backups are on the RAID of the home server, mounted through the `backups` claim. Nodes are arm64 and boot from small eMMC disks. Their NVMe drives sit on the PCI bus but expose no block device to Talos, so there is currently no data disk and node-local storage systems (such as Longhorn) are not an option until that is fixed. Images must publish arm64.
-- **Monitoring.** Prometheus runs with every `*SelectorNilUsesHelmValues: false`, so ServiceMonitors and PodMonitors are picked up from all namespaces. Its CRDs come from the separate `prometheus-crd` app, whose version must match the operator in the Prometheus chart. Grafana's sidecar only reads ConfigMaps from its own namespace, so charts that ship dashboards must create them there.
-- **App styles.** Single-container apps (Sonarr, Radarr, Prowlarr, memos, it-tools) use the local library chart `kubernetes/_library/app` (a `file://` dependency) and only set values; see its README to add one. Apps with an upstream chart wrap that chart instead.
+## Validating
 
-## Commands
-
-CLI versions (helm, kubectl, talosctl, kubeseal, argocd, terraform, ...) are pinned in `mise.toml`; the dev container (`.devcontainer/README.md`) installs them with mise. CI checks live in `.github/workflows/`: `helm.yaml` (pull requests and pushes to `main`) and `terraform-cloudflare.yaml`.
-
-### Helm
-
-Render and lint a wrapper chart:
-
-```sh
-helm dependency update kubernetes/<group>/<app>
-helm lint kubernetes/<group>/<app>
-helm template kubernetes/<group>/<app>
-```
-
-Render the generated Argo CD Applications to check `chart/values.yaml` edits:
+CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Validate as CI does
+(`.github/workflows/helm.yaml`):
 
 ```sh
 helm template chart
+helm dependency update kubernetes/<group>/<app>
+helm lint kubernetes/<group>/<app>
+helm template kubernetes/<group>/<app> --api-versions monitoring.coreos.com/v1
 ```
 
-### Validating a change
+Library charts only render through an app that uses them. `kubectl apply --dry-run=server -f -` checks a render
+against the cluster.
 
-- Validate a change the way CI does (`helm.yaml` runs this on pull requests): render `chart/`, then for each changed app run `helm dependency update`, `helm lint` and `helm template --api-versions monitoring.coreos.com/v1`. The flag is needed because some charts refuse to render without the Prometheus Operator API. Library charts under `kubernetes/_library/` can't be rendered on their own; render an app that uses them.
-- To check a render against the live cluster, pipe it into `kubectl apply --dry-run=server -f -`. Kinds whose CRDs are not installed yet fail by design, and very large objects trip client-side apply's annotation limit (see `serverSideApply`).
+Terraform without credentials: `terraform init -backend=false && terraform validate && terraform fmt -check`. CI
+applies after approval, see `terraform/README.md`. Never commit `*.tfvars` or state.
 
-### Terraform (`terraform/`)
+## Talos
 
-These need no credentials:
+Run the scripts from `talos/`; `talos/README.md` is the runbook. A node config is `talosctl gen config` plus
+`<board>/nodes/<node>.yaml`, `patches/cluster.yaml` and, for the control plane, `patches/controlplane.yaml`.
+`talosctl` in `mise.toml` must equal the Talos version on the nodes.
 
-```sh
-terraform init -backend=false
-terraform validate
-terraform fmt -check
-```
-
-The state is in S3, and CI assumes an AWS role whose trust policy is defined outside this repo (see `terraform/README.md`).
-
-## Talos (`talos/`)
-
-Scripts are run from inside `talos/` (paths like `gen/`, `patches/` are relative). `talos/README.md` is the full bootstrap runbook (image build, flashing via `tpi`, config generation, bootstrap, then manual Cilium/sealed-secrets/Argo CD install before GitOps takes over). `talosctl` in `mise.toml` must equal the Talos version on the nodes, since its default Kubernetes version follows its own.
-
-- Machine config = `talosctl gen config` + patches: `<board>/nodes/<node>.yaml` → `patches/cluster.yaml` → `patches/controlplane.yaml` (control plane only). Board-specific scripts (image/schematic generation, flashing) live in `talos/rk1/`.
-- `apply-config.sh -b rk1 -c <cluster> -n <node> -t controlplane|worker` regenerates and applies a node config.
-- `upgrade-talos.sh -b rk1 -n <node> -v <version>` upgrades a node using its factory schematic image.
-
-## Other directories
-
-- `terraform/`: Terraform stacks outside the cluster, for now the Cloudflare DNS of `davydehaas.dev` (`terraform/README.md`). State is in S3, `.github/workflows/terraform-cloudflare.yaml` plans on every push to `main` that touches the stack and applies once the run is approved (environment `cloudflare`). Never commit `*.tfvars` or state files.
-
-## Dependency updates
-
-Helm chart, image and `mise.toml` tool versions are bumped by Renovate (`renovate.json`); patch and digest updates automerge.
+Renovate bumps chart, image and tool versions, and automerges patch and digest updates.

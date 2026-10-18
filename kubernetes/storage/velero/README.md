@@ -1,15 +1,8 @@
 # Velero
 
-Backups of cluster resources and, for pods that opt in, their volumes. Everything goes to the `velero`
-bucket on SeaweedFS (`http://seaweedfs-all-in-one.seaweedfs:8333`) using the AWS plugin.
+Not deployed. Backs up cluster resources daily at 03:00 (kept 30 days) to the `velero` bucket on SeaweedFS. The
+`nfs` StorageClass has no snapshots, so the node agent copies the volumes of pods annotated with
+`backup.velero.io/backup-volumes`.
 
-The `nfs` StorageClass has no snapshots, so volumes are copied from the node agent (kopia). Back up a
-volume by annotating its pod, for example `backup.velero.io/backup-volumes: config`. The schedule
-`daily` backs up the cluster resources at 03:00 and keeps them for 30 days.
-
-## Credentials
-
-`templates/velero-credentials.yaml` is a SealedSecret named `velero-credentials` (namespace `velero`)
-with key `cloud`, an AWS credentials file for the `velero` identity of SeaweedFS. That identity lives
-in `kubernetes/storage/seaweedfs/templates/seaweedfs-s3-config.yaml`, so both secrets must be
-regenerated together, see the SeaweedFS README.
+`templates/velero-credentials.yaml` holds the `velero` identity of SeaweedFS and is sealed together with SeaweedFS's
+config, see the [SeaweedFS README](../seaweedfs/README.md#credentials).

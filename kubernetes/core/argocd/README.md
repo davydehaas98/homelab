@@ -1,49 +1,11 @@
-# Sealed secret
-Secrets here only decrypt with the sealed-secrets controller key. See "Sealed-secrets keys (back up and
-restore)" in `talos/README.md` before rebuilding the cluster.
+# Argo CD
 
-## homelab-repo-ssh-key
-```
-cat <<EOF> secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: homelab-repo-ssh-key
-  namespace: argocd
-  labels:
-    argocd.argoproj.io/secret-type: repository
-stringData:
-  type: git
-  url: git@github.com:davydehaas98/homelab.git
-  sshPrivateKey: |
-    -----BEGIN OPENSSH PRIVATE KEY-----
-    ...
-    -----END OPENSSH PRIVATE KEY-----
-EOF
-```
-## argocd-secret
-```
-cat <<EOF> secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: argocd-secret
-  namespace: argocd
-spec:
-  stringData:
-    admin.password:
-    admin.passwordMtime:
-    server.secretkey:
-EOF
-```
+Sealed with the command in the [root README](../../../README.md#secrets):
 
----
+- `templates/homelab-repo-ssh-key.yaml`: Secret `homelab-repo-ssh-key`, label `argocd.argoproj.io/secret-type: repository`,
+  keys `type` (`git`), `url` (`git@github.com:davydehaas98/homelab.git`) and `sshPrivateKey` (a deploy key of the repo).
+- `templates/argocd-authentik-oidc.yaml`: Secret `argocd-authentik-oidc`, keys `clientID` and `clientSecret`, see the
+  [Authentik README](../../security/authentik/README.md#oidc-clients).
 
-```
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
-
-cat sealed-secret.yaml
-```
+These only decrypt with the controller's key; restore it before rebuilding the cluster, see
+[`talos/README.md`](../../../talos/README.md#sealed-secrets-keys).

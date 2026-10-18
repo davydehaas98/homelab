@@ -1,21 +1,4 @@
-# Sealed secret
-```
-cat <<EOF> secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: loki-s3-credentials
-  namespace: loki
-stringData:
-  S3_ACCESS_KEY:
-  S3_SECRET_KEY:
-EOF
-```
-```
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
+# Loki
 
-cat sealed-secret.yaml
-```
+`templates/loki-s3-credentials.yaml` holds the `loki` identity of SeaweedFS. It is sealed together with SeaweedFS's
+config, see the [SeaweedFS README](../../storage/seaweedfs/README.md#credentials).

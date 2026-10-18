@@ -1,37 +1,35 @@
-# Homelab Infrastructure
+# Homelab
 
-This repository manages a homelab infrastructure using a multi-layered approach to provide a robust and scalable environment for various services.
+Kubernetes cluster `yggdrasil` on Talos, with Cilium and Argo CD. Argo CD deploys `kubernetes/` from `main`.
+Agent guidance is in [`AGENTS.md`](AGENTS.md).
 
-## Project Overview
+## Layout
 
-The infrastructure is organized into three primary layers:
+- `kubernetes/`: one Helm chart per app, by group. An app is deployed once `chart/values.yaml` lists it with
+  `deploy: true`.
+- `chart/`: the app-of-apps chart, see [`chart/README.md`](chart/README.md).
+- `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
+- `terraform/`: Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
+- `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
+- `docs/`: manuals of the smart meter and water meter gateways.
 
-- **Infrastructure Layer**: Provides the base OS and networking. It utilizes **Talos OS** for ARM-based nodes and **Ubuntu** for x86 nodes.
-- **Orchestration Layer**: Manages the container lifecycle using a **Kubernetes** cluster with **Cilium** as the CNI and **Argo CD** for declarative deployments.
-- **Application Layer**: A suite of managed services (media, storage, monitoring, etc.) packaged as **Helm** charts and managed via the `kubernetes/` directory.
+## Secrets
 
-## Directory Structure
+Commit secrets only as SealedSecrets. Seal from stdin, so no plaintext file is written:
 
-- `.devcontainer/`: Dev container with the CLI tools from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
-- `talos/`: Talos OS bootstrap runbook ([`talos/README.md`](talos/README.md)), config generation scripts, and per-board node patches (`rk1/`, `rpi4/`).
-- `kubernetes/`: One wrapper Helm chart per service, organized by group (`core`, `home`, `media-server`, `monitoring`, `security`, `storage`, `tools`). `_base/` is the scaffold for new apps.
-- `terraform/`: Terraform for the Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
-- `chart/`: The app-of-apps Helm chart that renders an Argo CD `Application` for every entry in `chart/values.yaml` with `deploy: true`.
-- `scripts/`: Utility scripts for manual operations, such as node preparation and status checks.
-- `docs/`: Reference manuals for home hardware (smart meter and water meter gateways).
+```shell
+kubectl create secret generic <name> -n <namespace> --from-literal=<key>="$value" --dry-run=client -o yaml \
+  | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml \
+  > kubernetes/<group>/<app>/templates/<name>.yaml
+```
 
-## Deployment
+Read `value` with `read -rs value`, so it stays out of the shell history.
 
-- Argo CD syncs everything under `kubernetes/` from `main`, so a merge to `main` is a deployment.
-- An app directory is only deployed once it is listed in `chart/values.yaml` with `deploy: true`.
-- Secrets are committed only as Bitnami SealedSecrets, see [`kubernetes/core/argocd/README.md`](kubernetes/core/argocd/README.md).
-- Contributor and agent guidance lives in [`AGENTS.md`](AGENTS.md).
+## Hardware
 
-## Hardware Specification
-
-|             | Yggdrasil                         | 4x Turing RK1 CM (Turing Pi 2.0)       |
-| ----------- | --------------------------------- | -------------------------------------- |
-| **CPU**     | Intel i5 10600K (6 cores, AMD64)  | Rockchip RK3588 SoC (8 cores, ARM)     |
-| **RAM**     | 2x 16GB DDR4 @ 3.200MT/s          | 16GB LPDDR4                            |
-| **Storage** | 3x Seagate IronWolf 4TB HDD       | WD Blue SN580 1TB M.2 SSD              |
-| **OS**      | Ubuntu Server 26.10               | Talos OS v1.14.2                       |
+|         | Home server (`yggdrasil`)        | 4x Turing RK1 (Turing Pi 2)         |
+|---------|----------------------------------|-------------------------------------|
+| CPU     | Intel i5 10600K (6 cores, amd64) | Rockchip RK3588 (8 cores, arm64)    |
+| RAM     | 2x 16 GB DDR4                    | 16 GB LPDDR4                        |
+| Storage | 3x 4 TB HDD (RAID), 16 TB HDD    | eMMC; the NVMe SSD is not usable yet |
+| OS      | Ubuntu Server                    | Talos                               |

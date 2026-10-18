@@ -1,20 +1,5 @@
-# Sealed secret
-```
-cat <<EOF > secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudflare-api-token
-  namespace: cert-manager
-type: Opaque
-stringData:
-  api-token:
-EOF
+# cert-manager
 
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
-
-cat sealed-secret.yaml
-```
+`templates/secret-cloudflare-api-token.yaml` is Secret `cloudflare-api-token`, key `api-token`: a Cloudflare token
+with DNS edit rights on the zone, for the DNS-01 challenge. Seal it with the command in the
+[root README](../../../README.md#secrets).

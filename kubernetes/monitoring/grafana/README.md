@@ -1,35 +1,7 @@
-# Sealed secret
-```
-cat <<EOF > secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana-credentials
-  namespace: grafana
-type: Opaque
-stringData:
-  admin-password:
-  admin-user:
-EOF
-```
-```
-cat <<EOF > secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana-oauth-credentials
-  namespace: grafana
-type: Opaque
-stringData:
-  client-id:
-  client-secret:
-EOF
-```
-```
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
+# Grafana
 
-cat sealed-secret.yaml
-```
+Sealed with the command in the [root README](../../../README.md#secrets):
+
+- `templates/grafana-credentials.yaml`: Secret `grafana-credentials`, keys `admin-user` and `admin-password`.
+- `templates/grafana-oauth-credentials.yaml`: Secret `grafana-oauth-credentials`, keys `client_id` and `client_secret`
+  of the Authentik client `grafana`, see the [Authentik README](../../security/authentik/README.md#oidc-clients).

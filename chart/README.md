@@ -1,9 +1,12 @@
-### values.yaml
-|Name|Type|Description|
+# Applications chart
+
+Keys of an app in `values.yaml` (`applications.<group>.<app>`):
+
+| Key | Type | Description |
 |---|---|---|
-|***deploy***|boolean|If the application should be deployed.|
-|***autoSync***|boolean|Defaults to `true`, the application syncs automatically. Set `false` to move it to the `no-sync` project, which is only synced by hand.|
-|***ignoreDifferences***|array|What differences should be ignored.|
-|***namespace***|string|If the namespace should be overwritten, otherwise it will be application name in kebab case.|
-|***serverSideApply***|boolean|If the configuration should be applied with the flag `--server-side` (`kubectl apply --server-side`)|
-|***valueFiles***|array|Value files Argo CD passes to Helm as user values. Set `[values.yaml]` when the app's `values.yaml` removes a subchart default with `null`: Helm 4 ignores such `null`s in a chart's own values.|
+| `deploy` | boolean | Deploy the app. |
+| `autoSync` | boolean | Default `true`. `false` moves the app to AppProject `no-sync`, synced by hand only. |
+| `namespace` | string | Default: the app name. |
+| `ignoreDifferences` | array | Passed to the Application. |
+| `serverSideApply` | boolean | Apply server-side, with the `ServerSideDiff` annotation. |
+| `valueFiles` | array | Value files passed to Helm as user values. Set `[values.yaml]` when the app's values remove a subchart default with `null`, which Helm 4 ignores in a chart's own values. |

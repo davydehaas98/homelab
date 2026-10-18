@@ -1,22 +1,9 @@
-# Sealed secret
-```
-cat <<EOF > secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: s3-credentials
-  namespace: longhorn-system
-type: Opaque
-stringData:
-  AWS_ACCESS_KEY_ID:
-  AWS_ENDPOINTS:
-  AWS_SECRET_ACCESS_KEY:
-EOF
+# Longhorn
 
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
+Not deployed: the nodes have no usable data disk. Sealed with the command in the
+[root README](../../../README.md#secrets):
 
-cat sealed-secret.yaml
-```
+- `templates/s3-credentials.yaml`: Secret `s3-credentials`, keys `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
+  `AWS_ENDPOINTS`, for the backup target.
+- `templates/oidc-credentials.yaml`: Secret `oidc-credentials`, keys `client-id` and `client-secret` of the Authentik
+  client `longhorn`.

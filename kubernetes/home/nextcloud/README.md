@@ -1,37 +1,14 @@
-# Create user and database
-```
-echo $(kubectl get secret --namespace postgresql postgresql-credentials -o jsonpath="{.data.postgres-password}" | base64 -d)
+# Nextcloud
 
-kubectl exec -it postgresql-0 -n postgresql -- psql -U postgres
-```
+Not deployed. It expects a database `nextcloud` owned by user `nextcloud` on `postgresql.postgresql.svc.cluster.local`,
+which does not exist in the cluster yet:
 
-```
+```sql
 CREATE DATABASE nextcloud;
-CREATE USER nextcloud WITH ENCRYPTED PASSWORD '<PASSWORD>';
-GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+CREATE USER nextcloud WITH ENCRYPTED PASSWORD '<password>';
 ALTER DATABASE nextcloud OWNER TO nextcloud;
 ```
 
-# Sealed secret
-```
-cat <<EOF > secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: nextcloud-credentials
-  namespace: nextcloud
-type: Opaque
-stringData:
-  username:
-  password:
-  postgres-username:
-  postgres-password:
-EOF
-
-cat secret.yaml | kubeseal \
---controller-namespace sealed-secrets \
---controller-name sealed-secrets-controller \
---format yaml > sealed-secret.yaml
-
-cat sealed-secret.yaml
-```
+`templates/nextcloud-credentials.yaml` is Secret `nextcloud-credentials`, keys `username` and `password` (the
+Nextcloud admin) and `postgres-username` and `postgres-password`. Seal it with the command in the
+[root README](../../../README.md#secrets).
