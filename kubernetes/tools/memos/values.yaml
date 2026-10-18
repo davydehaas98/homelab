@@ -31,11 +31,14 @@ resources:
     cpu: 10m
     memory: 64Mi
 
+# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see kubernetes/media-server/media-server/README.md
 persistence:
   size: 1Gi
   mountPath: /var/opt/memos
-  # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
-  # an iSCSI disk of its own on yggdrasil (`lun.sh create memos 1G`), add `iscsi` (see kubernetes/media-server/media-server/README.md)
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:memos
+    lun: 0
 
 route:
   enabled: true

@@ -1,6 +1,4 @@
 resource "cloudflare_dns_record" "root_a" {
-  provider = cloudflare.dev
-
   name    = "davydehaas.dev"
   ttl     = 1
   type    = "A"
@@ -11,8 +9,6 @@ resource "cloudflare_dns_record" "root_a" {
 }
 
 resource "cloudflare_dns_record" "root_aaaa" {
-  provider = cloudflare.dev
-
   name    = "davydehaas.dev"
   ttl     = 1
   type    = "AAAA"
@@ -23,8 +19,6 @@ resource "cloudflare_dns_record" "root_aaaa" {
 }
 
 resource "cloudflare_dns_record" "root_caa_issue" {
-  provider = cloudflare.dev
-
   name    = "davydehaas.dev"
   ttl     = 1
   type    = "CAA"
@@ -39,8 +33,6 @@ resource "cloudflare_dns_record" "root_caa_issue" {
 }
 
 resource "cloudflare_dns_record" "root_caa_issuewild" {
-  provider = cloudflare.dev
-
   name    = "davydehaas.dev"
   ttl     = 1
   type    = "CAA"

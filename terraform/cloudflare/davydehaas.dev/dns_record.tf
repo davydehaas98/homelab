@@ -1,6 +1,4 @@
 resource "cloudflare_dns_record" "www" {
-  provider = cloudflare.dev
-
   name    = "www"
   ttl     = 1
   type    = "CNAME"
@@ -11,8 +9,6 @@ resource "cloudflare_dns_record" "www" {
 }
 
 resource "cloudflare_dns_record" "wireguard" {
-  provider = cloudflare.dev
-
   name    = "wireguard"
   ttl     = 1
   type    = "CNAME"
@@ -22,49 +18,11 @@ resource "cloudflare_dns_record" "wireguard" {
   proxied = false
 }
 
-resource "cloudflare_dns_record" "factorio" {
-  provider = cloudflare.dev
-
-  name     = "_factorio._tcp.factorio"
-  ttl      = 1
-  type     = "SRV"
-  zone_id  = var.zone_id
-  priority = 0
-
-  comment = "Factorio server"
-  data = {
-    port     = 34197
-    priority = 0
-    weight   = 0
-    target   = "factorio.davydehaas.dev"
-  }
-}
-
-resource "cloudflare_dns_record" "minecraft" {
-  provider = cloudflare.dev
-
-  name     = "_minecraft._tcp.minecraft"
-  ttl      = 1
-  type     = "SRV"
-  zone_id  = var.zone_id
-  priority = 0
-
-  comment = "Minecraft Vanilla server"
-  data = {
-    port     = 25565
-    priority = 0
-    weight   = 0
-    target   = "minecraft.davydehaas.dev"
-  }
-}
-
 # Prevent email spoofing
 
 # Sender Policy Framework (SPF)
 # https://en.wikipedia.org/wiki/Sender_Policy_Framework
 resource "cloudflare_dns_record" "spf1" {
-  provider = cloudflare.dev
-
   name    = "davydehaas.dev"
   ttl     = 1
   type    = "TXT"
@@ -77,8 +35,6 @@ resource "cloudflare_dns_record" "spf1" {
 # Domain-based Message Authentication, Reporting and Conformance (DMARC)
 # https://en.wikipedia.org/wiki/DMARC
 resource "cloudflare_dns_record" "dmarc" {
-  provider = cloudflare.dev
-
   name    = "_dmarc"
   ttl     = 1
   type    = "TXT"
@@ -91,8 +47,6 @@ resource "cloudflare_dns_record" "dmarc" {
 # DomainKeys Identified Mail (DKIM)
 # https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail
 resource "cloudflare_dns_record" "dkim1" {
-  provider = cloudflare.dev
-
   name    = "*._domainkey"
   ttl     = 1
   type    = "TXT"
@@ -103,8 +57,7 @@ resource "cloudflare_dns_record" "dkim1" {
 }
 
 locals {
-  # Apps behind the Kubernetes gateway, one line per HTTPRoute hostname. They share the gateway's
-  # wildcard certificate.
+  # HTTPRoute hostnames.
   kubernetes_apps = [
     "argocd",
     "auth",
@@ -121,8 +74,7 @@ locals {
     "sonarr",
   ]
 
-  # Extra names of those apps, the `route.aliases` in kubernetes/media-server/*/values.yaml (they redirect
-  # to the main name).
+  # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
     "movies",
     "music",
@@ -133,17 +85,23 @@ locals {
     "usenet",
   ]
 
-  # Game servers on the home server, the targets of the SRV records above.
+  # Game servers, on their default ports.
   game_servers = [
     "factorio",
-    "minecraft",
   ]
+
+  # Minecraft servers and their public ports. Off the default port 25565 a server also gets an SRV record, so
+  # players connect without typing the port.
+  minecraft_servers = {
+    minecraft  = 25565
+    ftb        = 25566
+    arachne    = 25567
+    skyfactory = 25568
+  }
 }
 
-# Traefik on the home server passes TLS through to the Kubernetes gateway.
-# This must not be proxied: Cloudflare would terminate TLS.
+# Not proxied: the home server passes TLS through to the gateway.
 resource "cloudflare_dns_record" "kubernetes_app" {
-  provider = cloudflare.dev
   for_each = toset(concat(local.kubernetes_apps, local.kubernetes_aliases))
 
   name    = each.value
@@ -157,15 +115,32 @@ resource "cloudflare_dns_record" "kubernetes_app" {
 }
 
 resource "cloudflare_dns_record" "game_server" {
-  provider = cloudflare.dev
-  for_each = toset(local.game_servers)
+  for_each = toset(concat(local.game_servers, keys(local.minecraft_servers)))
 
   name    = each.value
   ttl     = 1
   type    = "A"
   zone_id = var.zone_id
 
-  comment = "Game server on the home server"
+  comment = "Game server"
   content = var.ipv4_address
   proxied = false
+}
+
+resource "cloudflare_dns_record" "minecraft_srv" {
+  for_each = { for name, port in local.minecraft_servers : name => port if port != 25565 }
+
+  name     = "_minecraft._tcp.${each.key}"
+  ttl      = 1
+  type     = "SRV"
+  zone_id  = var.zone_id
+  priority = 0
+
+  comment = "Minecraft server"
+  data = {
+    port     = each.value
+    priority = 0
+    weight   = 0
+    target   = "${each.key}.davydehaas.dev"
+  }
 }

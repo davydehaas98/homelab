@@ -1,0 +1,47 @@
+# Static site served by nginx, no state. The image starts nginx as root on port 80 and drops to its
+# own user, so it keeps a few capabilities instead of running non-root.
+image:
+  registry: docker.io
+  repository: iib0011/omni-tools
+  tag: 0.6.0
+
+port: 80
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - SETGID
+      - SETUID
+
+resources:
+  limits:
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 32Mi
+
+route:
+  enabled: true
+  hostnames:
+    - omni-tools.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+probe:
+  httpGet:
+    path: /healthz
+    port: http
+
+oidc:
+  enabled: true

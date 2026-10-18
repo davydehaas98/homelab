@@ -118,9 +118,15 @@ applications:
       serverSideApply: true
 
   tools:
+    homepage:
+      deploy: false
     it-tools:
       deploy: false
     memos:
       deploy: false
+    omni-tools:
+      deploy: false
     open-webui:
+      deploy: false
+    uptime-kuma:
       deploy: false

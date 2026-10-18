@@ -1,0 +1,50 @@
+# Start page. Its YAML config is on the volume (plain files, so NFS is fine); there is no Docker socket
+# in the cluster, so Docker widgets and labels do not work. The image starts as root and drops to PUID/PGID.
+image:
+  registry: ghcr.io
+  repository: gethomepage/homepage
+  tag: v2.5.0
+
+port: 3000
+
+env:
+  PUID: 1400
+  PGID: 1400
+  # Requests for other hosts are refused
+  HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+
+probe:
+  tcpSocket:
+    port: http
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 128Mi
+
+persistence:
+  size: 1Gi
+  mountPath: /app/config
+
+route:
+  enabled: true
+  hostnames:
+    - homepage.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - home.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+oidc:
+  enabled: true
