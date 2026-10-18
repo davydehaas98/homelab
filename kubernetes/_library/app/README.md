@@ -50,3 +50,4 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `oidc.enabled` | off | OIDC login on the route with an Envoy Gateway `SecurityPolicy`. Needs `route.enabled`. |
 | `oidc.slug` | chart name | Application slug at the identity provider. |
 | `oidc.secretName` | `<app>-oidc-credentials` | Secret with the `client-id` and `client-secret`. |
+| `oidc.bypassPaths` | none | Paths that skip the login, as a second route without the policy (`<app>-bypass`). For an API that clients call with the app's own API key. |

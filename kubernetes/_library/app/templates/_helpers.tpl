@@ -45,6 +45,10 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{- if (.Values.oidc | default dict).enabled }}
 ---
 {{ include "app.securityPolicy" . }}
+{{- if .Values.oidc.bypassPaths }}
+---
+{{ include "app.bypassRoute" . }}
+{{- end }}
 {{- end }}
 {{- if .Values.route.aliases }}
 ---

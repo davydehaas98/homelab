@@ -63,10 +63,13 @@ locals {
     "auth",
     "bazarr",
     "grafana",
+    "homepage",
     "hubble",
     "immich",
+    "it-tools",
     "jellyfin",
     "lidarr",
+    "omni-tools",
     "prometheus",
     "prowlarr",
     "radarr",
@@ -77,6 +80,7 @@ locals {
 
   # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
+    "home",
     "movies",
     "music",
     "request",

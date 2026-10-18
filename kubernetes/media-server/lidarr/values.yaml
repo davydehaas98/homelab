@@ -62,3 +62,6 @@ route:
 # Sign in with Authentik (client `lidarr`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
+  # The API is protected by the API key of the app, not by the login
+  bypassPaths:
+    - /api

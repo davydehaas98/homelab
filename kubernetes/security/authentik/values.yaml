@@ -13,6 +13,9 @@ oidcClients:
     # Grafana maps roles from group claims, so every Authentik user may sign in
     openAccess: true
     redirectURL: https://grafana.davydehaas.dev/login/generic_oauth
+  - name: Homepage
+    slug: homepage
+    redirectURL: https://homepage.davydehaas.dev/oauth2/callback
   - name: Hubble
     slug: hubble
     redirectURL: https://hubble.davydehaas.dev/oauth2/callback
@@ -25,6 +28,9 @@ oidcClients:
   - name: Longhorn
     slug: longhorn
     redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
+  - name: Omni Tools
+    slug: omni-tools
+    redirectURL: https://omni-tools.davydehaas.dev/oauth2/callback
   - name: Open WebUI
     slug: open-webui
     redirectURL: https://open-webui.davydehaas.dev/oauth/oidc/callback
@@ -67,6 +73,8 @@ authentik:
       - secretRef:
           name: authentik-oidc-grafana
       - secretRef:
+          name: authentik-oidc-homepage
+      - secretRef:
           name: authentik-oidc-hubble
       - secretRef:
           name: authentik-oidc-it-tools
@@ -74,6 +82,8 @@ authentik:
           name: authentik-oidc-lidarr
       - secretRef:
           name: authentik-oidc-longhorn
+      - secretRef:
+          name: authentik-oidc-omni-tools
       - secretRef:
           name: authentik-oidc-open-webui
       - secretRef:

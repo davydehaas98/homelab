@@ -121,13 +121,13 @@ applications:
 
   tools:
     homepage:
-      deploy: false
+      deploy: true
     it-tools:
-      deploy: false
+      deploy: true
     memos:
       deploy: false
     omni-tools:
-      deploy: false
+      deploy: true
     open-webui:
       deploy: false
     uptime-kuma:
