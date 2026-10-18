@@ -1,0 +1,64 @@
+podSecurityContext:
+  fsGroup: 1400
+securityContext: {}
+
+# linuxserver.io images run as this user and group: the owner of the media on the NFS share
+env:
+  PUID: 1400
+  PGID: 1400
+
+port: 8686
+
+media:
+  claimName: media
+  mounts:
+    - mountPath: /downloads
+      subPath: downloads
+    - mountPath: /music
+      subPath: media/music
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 20m
+    memory: 256Mi
+
+image:
+  registry: ghcr.io
+  repository: linuxserver/lidarr
+  tag: 3.1.0
+
+replicas: 1
+
+# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+backups:
+  claimName: backups
+  subPath: lidarr
+
+# The config is on iSCSI LUN 4 on yggdrasil, see kubernetes/media-server/media-server/README.md
+persistence:
+  size: 2Gi
+  labels:
+    backup.velero.io/include: "true"
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:yggdrasil
+    lun: 4
+
+route:
+  enabled: true
+  hostnames:
+    - lidarr.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - music.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `lidarr`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

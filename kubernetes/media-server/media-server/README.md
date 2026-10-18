@@ -25,7 +25,7 @@ the LUNs are made per app with `lun.sh`. The number of a LUN is chosen when it i
 | SABnzbd  | 1   | 1G   | iSCSI      |
 | Sonarr   | 2   | 5G   | iSCSI      |
 | Radarr   | 3   | 5G   | iSCSI      |
-| Lidarr   | 4   | 2G   | NFS        |
+| Lidarr   | 4   | 2G   | iSCSI      |
 | Bazarr   | 5   | 1G   | iSCSI      |
 | memos    | 100 | 1G   | NFS (not deployed) |
 

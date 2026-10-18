@@ -111,6 +111,7 @@ locals {
     "bazarr",
     "grafana",
     "hubble",
+    "lidarr",
     "prometheus",
     "prowlarr",
     "radarr",
@@ -122,6 +123,7 @@ locals {
   # to the main name).
   kubernetes_aliases = [
     "movies",
+    "music",
     "series",
     "subtitles",
     "usenet",

@@ -45,6 +45,9 @@ applications:
     bazarr:
       deploy: true
       namespace: media-server
+    lidarr:
+      deploy: true
+      namespace: media-server
     media-server:
       deploy: true
     prowlarr:
