@@ -25,11 +25,10 @@ image:
 
 replicas: 1
 
-media:
-  mounts:
-    # The backups of the app stay on NFS, next to the database on the LUN
-    - mountPath: /config/Backups
-      subPath: backups/prowlarr
+# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+backups:
+  claimName: backups
+  subPath: prowlarr
 
 # The config is on iSCSI LUN 0 on yggdrasil, see kubernetes/media-server/media-server/README.md
 persistence:

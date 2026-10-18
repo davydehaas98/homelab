@@ -41,6 +41,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.iscsi.targetPortal`, `.iqn`, `.lun` | | Use a static iSCSI volume instead of a StorageClass. Only one pod may mount it. |
 | `persistence.labels` | | Extra labels of the claim. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath`. |
+| `backups.claimName`, `backups.subPath`, `backups.mountPath` | none, none, `/config/Backups` | Mount a `subPath` of an existing claim for the app's own backups, outside the `/config` volume. |
 | `route.enabled`, `route.hostnames`, `route.parentRefs` | off | `HTTPRoute` to the app. Also takes `annotations`, `labels`, `filters`, `matches` and `additionalRules`. |
 | `route.aliases` | none | Extra hostnames that redirect (301) to the first hostname. A separate route, so the login keeps working. They need a DNS record too. |
 | `oidc.enabled` | off | OIDC login on the route with an Envoy Gateway `SecurityPolicy`. Needs `route.enabled`. |

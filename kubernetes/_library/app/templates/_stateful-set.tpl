@@ -50,6 +50,12 @@ spec:
               subPath: {{ .subPath }}
             {{- end }}
             {{- end }}
+            {{- with .Values.backups }}
+            # After the volume of /config, so the backups of the app stay outside its database volume
+            - mountPath: {{ .mountPath | default "/config/Backups" }}
+              name: backups
+              subPath: {{ .subPath }}
+            {{- end }}
       volumes:
         {{- if .Values.persistence }}
         - name: config
@@ -60,5 +66,10 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: {{ .Values.media.claimName }}
+        {{- end }}
+        {{- with .Values.backups }}
+        - name: backups
+          persistentVolumeClaim:
+            claimName: {{ .claimName }}
         {{- end }}
 {{- end -}}

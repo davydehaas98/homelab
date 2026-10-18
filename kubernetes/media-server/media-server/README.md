@@ -61,7 +61,7 @@ example is Radarr, LUN 3.
 3. On yggdrasil, create the LUN and copy the configuration of the old NFS volume
    (`nfs-subdir-external-provisioner` names it `media-server-<app>-config-pvc-<uid>`) into it. The
    `Backups` folder of the app does not go into the image: it is copied to
-   `/mnt/storage/backups/<app>`, so the zips of the app survive a lost LUN:
+   `/mnt/md0/kubernetes/backups/<app>` (the RAID, `backups` claim), so the zips of the app survive a lost LUN:
 
    ```shell
    sudo sh lun.sh create radarr 3 5G
@@ -69,19 +69,21 @@ example is Radarr, LUN 3.
    sudo sh lun.sh status
    ```
 
-4. Push the `iscsi` block, still with `replicas: 0`, and mount the backup folder of the app. The
-   `/config/Backups` mount has to come after the volume of `/config`, which the library does:
+4. Push the `iscsi` block, still with `replicas: 0`, and the backup folder of the app (the library mounts it
+   at `/config/Backups`, after the volume of `/config`):
 
    ```yaml
    media:
+     claimName: media
      mounts:
        - mountPath: /downloads
          subPath: downloads
        - mountPath: /movies
          subPath: media/movies
-       # The backups of the app stay on NFS, next to the database on the LUN
-       - mountPath: /config/Backups
-         subPath: backups/radarr
+
+   backups:
+     claimName: backups
+     subPath: radarr
 
    persistence:
      size: 5Gi
@@ -151,6 +153,6 @@ Do not forward port 3260 on the router.
 ### Backups
 
 The image files are plain files on the `/mnt/md0` RAID. Copy them while the app is stopped
-(`replicas: 0`). The apps' own backups (Servarr: System > Backup) are zips on NFS in
-`/mnt/storage/backups/<app>`, so they survive a lost LUN. Velero (not deployed yet) cannot snapshot a
+(`replicas: 0`). The apps' own backups (Servarr: System > Backup) are zips on the same RAID in
+`/mnt/md0/kubernetes/backups/<app>` (the `backups` claim), so they survive a lost LUN. Velero (not deployed yet) cannot snapshot a
 static LUN.

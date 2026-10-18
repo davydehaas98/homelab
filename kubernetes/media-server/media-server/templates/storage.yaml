@@ -33,3 +33,39 @@ spec:
   resources:
     requests:
       storage: 1Ti
+---
+# The backups of the apps (Servarr: System > Backup), on the RAID next to the images of the LUNs. One
+# folder per app, mounted at /config/Backups. The folders are made by `lun.sh create`.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backups
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  nfs:
+    server: 192.168.1.44
+    path: /mnt/md0/kubernetes/backups
+  claimRef:
+    namespace: media-server
+    name: backups
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backups
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: backups
+  resources:
+    requests:
+      storage: 10Gi
