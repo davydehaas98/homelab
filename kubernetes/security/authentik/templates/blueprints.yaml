@@ -30,7 +30,7 @@ data:
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
           # Set explicitly, so every provider gets the same lifetimes whatever default it was created with
           access_token_validity: hours=1
-          refresh_token_validity: days=30
+          refresh_token_validity: days=1
           property_mappings:
             - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
             - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]

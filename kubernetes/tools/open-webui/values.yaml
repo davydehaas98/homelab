@@ -35,7 +35,7 @@ open-webui:
     - name: OPENID_REDIRECT_URI
       value: https://open-webui.davydehaas.dev/oauth/oidc/callback
     - name: OAUTH_SCOPES
-      value: openid email profile
+      value: openid email profile offline_access
     - name: OAUTH_CLIENT_ID
       valueFrom:
         secretKeyRef:

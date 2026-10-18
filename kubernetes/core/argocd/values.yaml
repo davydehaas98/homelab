@@ -19,6 +19,7 @@ argo-cd:
           - openid
           - profile
           - email
+          - offline_access
         requestedIDTokenClaims:
           groups:
             essential: true
