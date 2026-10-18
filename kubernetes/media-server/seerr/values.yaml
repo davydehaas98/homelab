@@ -1,0 +1,57 @@
+# Runs as this user and group, the same as the container on the home server
+podSecurityContext:
+  runAsUser: 1400
+  runAsGroup: 1400
+  fsGroup: 1400
+securityContext: {}
+
+env:
+  LOG_LEVEL: info
+
+port: 5055
+
+probe:
+  httpGet:
+    path: /api/v1/status
+    port: http
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 20m
+    memory: 256Mi
+
+image:
+  registry: ghcr.io
+  repository: seerr-team/seerr
+  tag: v3.4.1
+
+replicas: 1
+
+# The config is on an iSCSI disk on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md. Seerr has no backup folder of its own.
+persistence:
+  size: 1Gi
+  mountPath: /app/config
+  labels:
+    backup.velero.io/include: "true"
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:seerr
+    lun: 0
+
+# Requests come from outside, so there is no login at the gateway: Seerr has its own
+route:
+  enabled: true
+  hostnames:
+    - seerr.davydehaas.dev
+  # Redirect to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - request.davydehaas.dev
+    - requests.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

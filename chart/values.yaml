@@ -59,6 +59,9 @@ applications:
     sabnzbd:
       deploy: true
       namespace: media-server
+    seerr:
+      deploy: true
+      namespace: media-server
     sonarr:
       deploy: true
       namespace: media-server

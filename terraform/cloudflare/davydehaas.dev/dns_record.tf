@@ -116,6 +116,7 @@ locals {
     "prowlarr",
     "radarr",
     "sabnzbd",
+    "seerr",
     "sonarr",
   ]
 
@@ -124,6 +125,8 @@ locals {
   kubernetes_aliases = [
     "movies",
     "music",
+    "request",
+    "requests",
     "series",
     "subtitles",
     "usenet",

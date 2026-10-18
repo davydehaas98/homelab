@@ -35,7 +35,7 @@ persistence:
   size: 1Gi
   mountPath: /var/opt/memos
   # On the default StorageClass (NFS) for now, although SQLite can corrupt on NFS. To move it to
-  # iSCSI LUN 3 on yggdrasil, add `iscsi` (see kubernetes/media-server/media-server/README.md)
+  # an iSCSI disk of its own on yggdrasil (`lun.sh create memos 1G`), add `iscsi` (see kubernetes/media-server/media-server/README.md)
 
 route:
   enabled: true
