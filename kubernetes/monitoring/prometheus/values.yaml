@@ -107,6 +107,99 @@ kube-prometheus-stack:
       requests:
         cpu: 10m
         memory: 64Mi
+    # Exports the recommendations of the VerticalPodAutoscalers (kubernetes/core/vpa) as
+    # kube_customresource_vpa_containerrecommendations_*, for the VPA dashboard in grafana-dashboards
+    rbac:
+      extraRules:
+        - apiGroups:
+            - autoscaling.k8s.io
+          resources:
+            - verticalpodautoscalers
+          verbs:
+            - list
+            - watch
+    customResourceState:
+      enabled: true
+      config:
+        kind: CustomResourceStateMetrics
+        spec:
+          resources:
+            - groupVersionKind:
+                group: autoscaling.k8s.io
+                kind: VerticalPodAutoscaler
+                version: v1
+              labelsFromPath:
+                verticalpodautoscaler: [metadata, name]
+                namespace: [metadata, namespace]
+                target_kind: [spec, targetRef, kind]
+                target_name: [spec, targetRef, name]
+              metrics:
+                - name: vpa_containerrecommendations_target
+                  help: VPA container recommendation (target)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [target, memory]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: memory
+                - name: vpa_containerrecommendations_target
+                  help: VPA container recommendation (target)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [target, cpu]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: cpu
+                - name: vpa_containerrecommendations_lowerbound
+                  help: VPA container recommendation (lowerBound)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [lowerBound, memory]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: memory
+                - name: vpa_containerrecommendations_lowerbound
+                  help: VPA container recommendation (lowerBound)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [lowerBound, cpu]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: cpu
+                - name: vpa_containerrecommendations_upperbound
+                  help: VPA container recommendation (upperBound)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [upperBound, memory]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: memory
+                - name: vpa_containerrecommendations_upperbound
+                  help: VPA container recommendation (upperBound)
+                  each:
+                    type: Gauge
+                    gauge:
+                      path: [status, recommendation, containerRecommendations]
+                      valueFrom: [upperBound, cpu]
+                      labelsFromPath:
+                        container: [containerName]
+                  commonLabels:
+                    resource: cpu
 
   # node-exporter needs host access, it runs in its own privileged namespace (templates/namespace-node-exporter.yaml)
   prometheus-node-exporter:

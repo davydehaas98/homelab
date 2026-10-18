@@ -1,0 +1,457 @@
+{
+  "title": "VPA Recommendations",
+  "uid": "vpa-recommendations",
+  "description": "Recommendations of the VerticalPodAutoscalers (kubernetes/core/vpa) next to actual usage and configured requests",
+  "tags": [
+    "VPA",
+    "Kubernetes"
+  ],
+  "editable": false,
+  "schemaVersion": 39,
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "refresh": "5m",
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "refresh": 2,
+        "sort": 1,
+        "query": {
+          "query": "label_values(kube_customresource_vpa_containerrecommendations_target, namespace)",
+          "refId": "ns"
+        }
+      },
+      {
+        "name": "workload",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "refresh": 2,
+        "sort": 1,
+        "query": {
+          "query": "label_values(kube_customresource_vpa_containerrecommendations_target{namespace=\"$namespace\"}, target_name)",
+          "refId": "wl"
+        }
+      },
+      {
+        "name": "container",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "refresh": 2,
+        "sort": 1,
+        "query": {
+          "query": "label_values(kube_customresource_vpa_containerrecommendations_target{namespace=\"$namespace\", target_name=\"$workload\"}, container)",
+          "refId": "c"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "table",
+      "title": "All recommendations",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (namespace, target_name, container) (kube_customresource_vpa_containerrecommendations_target{resource=\"memory\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (namespace, target_name, container) (label_replace(kube_pod_container_resource_requests{resource=\"memory\"}, \"target_name\", \"$1\", \"pod\", \"(.+?)(-[0-9]+|-[a-z0-9]{8,10}-[a-z0-9]{5}|-[a-z0-9]{5})\")) and on (namespace, target_name, container) kube_customresource_vpa_containerrecommendations_target{resource=\"memory\"}",
+          "legendFormat": "",
+          "refId": "B",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (namespace, target_name, container) (kube_customresource_vpa_containerrecommendations_target{resource=\"cpu\"})",
+          "legendFormat": "",
+          "refId": "C",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max by (namespace, target_name, container) (label_replace(kube_pod_container_resource_requests{resource=\"cpu\"}, \"target_name\", \"$1\", \"pod\", \"(.+?)(-[0-9]+|-[a-z0-9]{8,10}-[a-z0-9]{5}|-[a-z0-9]{5})\")) and on (namespace, target_name, container) kube_customresource_vpa_containerrecommendations_target{resource=\"cpu\"}",
+          "legendFormat": "",
+          "refId": "D",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "target_name": "Workload",
+              "container": "Container",
+              "namespace": "Namespace",
+              "Value #A": "Memory target",
+              "Value #B": "Memory request",
+              "Value #C": "CPU target",
+              "Value #D": "CPU request"
+            },
+            "indexByName": {
+              "namespace": 0,
+              "target_name": 1,
+              "container": 2,
+              "Value #B": 3,
+              "Value #A": 4,
+              "Value #D": 5,
+              "Value #C": 6
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Memory.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "CPU.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "cores"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Namespace"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Memory: $workload / $container",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 24,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Lower bound"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Upper bound"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\"})",
+          "legendFormat": "Usage",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\", resource=\"memory\"})",
+          "legendFormat": "Request",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\", resource=\"memory\"})",
+          "legendFormat": "Limit",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_target{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"memory\"})",
+          "legendFormat": "Target",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_lowerbound{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"memory\"})",
+          "legendFormat": "Lower bound",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_upperbound{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"memory\"})",
+          "legendFormat": "Upper bound",
+          "refId": "F"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "CPU: $workload / $container",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 24,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "cores",
+          "custom": {
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Lower bound"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Upper bound"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    6,
+                    4
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\"}[5m]))",
+          "legendFormat": "Usage",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_pod_container_resource_requests{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\", resource=\"cpu\"})",
+          "legendFormat": "Request",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_pod_container_resource_limits{namespace=\"$namespace\", pod=~\"$workload-.+\", container=\"$container\", resource=\"cpu\"})",
+          "legendFormat": "Limit",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_target{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"cpu\"})",
+          "legendFormat": "Target",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_lowerbound{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"cpu\"})",
+          "legendFormat": "Lower bound",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_customresource_vpa_containerrecommendations_upperbound{namespace=\"$namespace\", target_name=\"$workload\", container=\"$container\", resource=\"cpu\"})",
+          "legendFormat": "Upper bound",
+          "refId": "F"
+        }
+      ]
+    }
+  ]
+}

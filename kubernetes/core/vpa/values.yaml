@@ -24,3 +24,75 @@ vpa:
 
   admissionController:
     enabled: false
+
+# Workloads that get a VerticalPodAutoscaler (templates/vertical-pod-autoscalers.yaml), as `<Kind>/<name>` per
+# namespace. Their recommendations are on the VPA dashboard in Grafana.
+workloads:
+  argocd:
+    - Deployment/argocd-applicationset-controller
+    - Deployment/argocd-dex-server
+    - Deployment/argocd-notifications-controller
+    - Deployment/argocd-redis
+    - Deployment/argocd-repo-server
+    - Deployment/argocd-server
+    - StatefulSet/argocd-application-controller
+  authentik:
+    - Deployment/authentik-server
+    - Deployment/authentik-worker
+    - StatefulSet/authentik-postgresql
+  cert-manager:
+    - Deployment/cert-manager
+    - Deployment/cert-manager-cainjector
+    - Deployment/cert-manager-webhook
+  democratic-csi:
+    - DaemonSet/democratic-csi-node
+    - Deployment/democratic-csi-controller
+  descheduler:
+    - Deployment/descheduler
+  envoy-gateway:
+    - Deployment/envoy-gateway
+    - Deployment/envoy-envoy-gateway-envoy-gateway-9dbc5803
+  fluent-bit:
+    - DaemonSet/fluent-bit
+  grafana:
+    - StatefulSet/grafana
+  kube-system:
+    - DaemonSet/cilium
+    - Deployment/cilium-operator
+    - Deployment/hubble-relay
+    - Deployment/hubble-ui
+  loki:
+    - Deployment/loki-gateway
+    - Deployment/loki-read
+    - StatefulSet/loki-backend
+    - StatefulSet/loki-chunks-cache
+    - StatefulSet/loki-results-cache
+    - StatefulSet/loki-write
+  media-server:
+    - StatefulSet/bazarr
+    - StatefulSet/jellyfin
+    - StatefulSet/lidarr
+    - StatefulSet/prowlarr
+    - StatefulSet/radarr
+    - StatefulSet/sabnzbd
+    - StatefulSet/seerr
+    - StatefulSet/sonarr
+  metrics-server:
+    - Deployment/metrics-server
+  nfs-subdir-external-provisioner:
+    - Deployment/nfs-subdir-external-provisioner
+  node-feature-discovery:
+    - DaemonSet/node-feature-discovery-worker
+    - Deployment/node-feature-discovery-gc
+    - Deployment/node-feature-discovery-master
+  prometheus:
+    - Deployment/prometheus-kube-prometheus-operator
+    - Deployment/prometheus-kube-state-metrics
+    - StatefulSet/alertmanager-prometheus-kube-prometheus-alertmanager
+    - StatefulSet/prometheus-prometheus-kube-prometheus-prometheus
+  prometheus-node-exporter:
+    - DaemonSet/prometheus-prometheus-node-exporter
+  seaweedfs:
+    - Deployment/seaweedfs-all-in-one
+  vpa:
+    - Deployment/vpa-recommender

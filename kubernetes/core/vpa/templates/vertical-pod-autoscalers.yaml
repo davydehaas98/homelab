@@ -1,0 +1,19 @@
+{{- range $namespace, $workloads := .Values.workloads }}
+{{- range $workloads }}
+{{- $kind := first (splitList "/" .) }}
+{{- $name := last (splitList "/" .) }}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ $name }}
+  namespace: {{ $namespace }}
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: {{ $kind }}
+    name: {{ $name }}
+  updatePolicy:
+    updateMode: "Off"
+{{- end }}
+{{- end }}
