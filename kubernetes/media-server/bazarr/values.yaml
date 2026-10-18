@@ -37,10 +37,21 @@ image:
 
 replicas: 1
 
+# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+backups:
+  claimName: backups
+  subPath: bazarr
+  mountPath: /config/backup
+
+# The config is on iSCSI LUN 5 on yggdrasil, see kubernetes/media-server/media-server/README.md
 persistence:
   size: 1Gi
   labels:
     backup.velero.io/include: "true"
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:yggdrasil
+    lun: 5
 
 route:
   enabled: true

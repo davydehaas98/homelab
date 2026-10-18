@@ -16,17 +16,17 @@ cannot run `iscsiadm` for a plain `iscsi` volume, so the LUNs are mounted by the
 volumes the `app` library chart writes, it creates no LUNs.
 
 The target `iqn.2026-10.nl.davydehaas:yggdrasil` exists (see [Target setup](#target-setup-yggdrasil)),
-the LUNs do not yet. The number of a LUN is chosen when it is created and has to equal
+the LUNs are made per app with `lun.sh`. The number of a LUN is chosen when it is created and has to equal
 `persistence.iscsi.lun` in the app's `values.yaml`:
 
 | App      | LUN | Size | Volume now |
 |----------|-----|------|------------|
 | Prowlarr | 0   | 1G   | iSCSI      |
-| SABnzbd  | 1   | 1G   | NFS        |
-| Sonarr   | 2   | 5G   | NFS        |
-| Radarr   | 3   | 5G   | NFS        |
+| SABnzbd  | 1   | 1G   | iSCSI      |
+| Sonarr   | 2   | 5G   | iSCSI      |
+| Radarr   | 3   | 5G   | iSCSI      |
 | Lidarr   | 4   | 2G   | NFS        |
-| Bazarr   | 5   | 1G   | NFS        |
+| Bazarr   | 5   | 1G   | iSCSI      |
 | memos    | 100 | 1G   | NFS (not deployed) |
 
 The apps of this namespace use 0 to 9, in the order of the media pipeline: indexers, downloads, the
