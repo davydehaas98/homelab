@@ -13,6 +13,10 @@ spec:
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with (include "app.configChecksums" . | trim) }}
+      annotations:
+        {{- . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
@@ -25,6 +29,10 @@ spec:
             - name: {{ $name }}
               value: {{ $value | toString | quote }}
             {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.port }}
@@ -57,6 +65,14 @@ spec:
             - mountPath: {{ .mountPath }}
               name: {{ .name }}
             {{- end }}
+            {{- range $f := .Values.configFiles }}
+            {{- range $key := ($f.keys | default (keys ($f.files | default dict) | sortAlpha)) }}
+            - mountPath: {{ $f.mountPath }}/{{ $key }}
+              name: files-{{ $f.name }}
+              subPath: {{ $key }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
             {{- with .Values.backups }}
             # After the volume of /config, so the backups of the app stay outside its database volume
             - mountPath: {{ .mountPath | default "/config/Backups" }}
@@ -82,5 +98,15 @@ spec:
         {{- range .Values.emptyDirs }}
         - name: {{ .name }}
           emptyDir: {{ toYaml (omit . "name" "mountPath") | nindent 12 }}
+        {{- end }}
+        {{- range .Values.configFiles }}
+        - name: files-{{ .name }}
+          {{- if .secret }}
+          secret:
+            secretName: {{ .secret }}
+          {{- else }}
+          configMap:
+            name: {{ template "app.fullname" $ }}-{{ .name }}
+          {{- end }}
         {{- end }}
 {{- end -}}

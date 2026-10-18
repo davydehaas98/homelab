@@ -1,5 +1,6 @@
-# Start page. Its YAML config is on the volume (plain files, so NFS is fine); there is no Docker socket
-# in the cluster, so Docker widgets and labels do not work. The image starts as root and drops to PUID/PGID.
+# Start page. Its config is in this file and the API keys of the widgets in the Secret `homepage-keys`
+# (templates/keys.yaml), which Homepage fills in for `{{HOMEPAGE_VAR_...}}`. There is no Docker socket in the cluster,
+# so the services are listed here. The files are mounted into an empty folder, as Homepage writes its logs there.
 image:
   registry: ghcr.io
   repository: gethomepage/homepage
@@ -8,16 +9,25 @@ image:
 port: 3000
 
 env:
-  PUID: 1400
-  PGID: 1400
   # Requests for other hosts are refused
   HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev
 
+envFrom:
+  - secretRef:
+      name: homepage-keys
+
 podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1400
+  runAsGroup: 1400
+  fsGroup: 1400
   seccompProfile:
     type: RuntimeDefault
 securityContext:
   allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
 
 probe:
   tcpSocket:
@@ -30,9 +40,164 @@ resources:
     cpu: 10m
     memory: 128Mi
 
-persistence:
-  size: 1Gi
-  mountPath: /app/config
+emptyDirs:
+  - name: config
+    mountPath: /app/config
+
+configFiles:
+  - name: config
+    mountPath: /app/config
+    files:
+      settings.yaml: |
+        title: homepage.davydehaas.dev
+        description: My homepage
+        theme: dark
+        color: slate
+
+        layout:
+          Media:
+            style: row
+            columns: 4
+
+        headerStyle: boxedWidgets
+        showStats: true
+
+      widgets.yaml: |
+        - resources:
+            cpu: true
+            memory: true
+            disk: /
+            cputemp: true
+            uptime: true
+            units: metric
+            network: true
+
+        - search:
+            provider: duckduckgo
+            target: _blank
+
+        - openmeteo:
+            label: Eindhoven
+            latitude: 51.44
+            longitude: 5.48
+            units: metric
+
+      # Empty, so Homepage does not add its examples
+      bookmarks.yaml: |
+        ---
+      docker.yaml: |
+        ---
+
+      # Apps on the cluster use their address in the cluster for the widget, apps on the home server their public one
+      services.yaml: |
+        - Media:
+            - Plex:
+                icon: plex.png
+                href: https://plex.davydehaas.nl
+                description: Media server
+                widget:
+                  type: plex
+                  url: https://plex.davydehaas.nl
+                  key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
+
+            - Jellyfin:
+                icon: jellyfin.png
+                href: https://jellyfin.davydehaas.dev
+                description: Media server
+                widget:
+                  type: jellyfin
+                  url: http://jellyfin.media-server.svc.cluster.local:8096
+                  key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+                  version: 2
+                  enableBlocks: true
+                  enableNowPlaying: true
+                  enableUser: true
+                  enableMediaControl: false
+                  showEpisodeNumber: true
+                  expandOneStreamToTwoRows: false
+
+            - Seerr:
+                icon: seerr.png
+                href: https://seerr.davydehaas.dev
+                description: Media request manager
+                widget:
+                  type: seerr
+                  url: http://seerr.media-server.svc.cluster.local:5055
+                  key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
+
+            - Sonarr:
+                icon: sonarr.png
+                href: https://sonarr.davydehaas.dev
+                description: Series management
+                widget:
+                  type: sonarr
+                  url: http://sonarr.media-server.svc.cluster.local:8989
+                  key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+
+            - Radarr:
+                icon: radarr.png
+                href: https://radarr.davydehaas.dev
+                description: Movie management
+                widget:
+                  type: radarr
+                  url: http://radarr.media-server.svc.cluster.local:7878
+                  key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+
+            - Lidarr:
+                icon: lidarr.png
+                href: https://lidarr.davydehaas.dev
+                description: Music management
+                widget:
+                  type: lidarr
+                  url: http://lidarr.media-server.svc.cluster.local:8686
+                  key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+
+            - Bazarr:
+                icon: bazarr.png
+                href: https://bazarr.davydehaas.dev
+                description: Subtitle management
+                widget:
+                  type: bazarr
+                  url: http://bazarr.media-server.svc.cluster.local:6767
+                  key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+
+            - Prowlarr:
+                icon: prowlarr.png
+                href: https://prowlarr.davydehaas.dev
+                description: Indexer proxy
+                widget:
+                  type: prowlarr
+                  url: http://prowlarr.media-server.svc.cluster.local:9696
+                  key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+
+            # SABnzbd rejects other hostnames, so its widget uses the public address (the /api path skips the login)
+            - SABnzbd:
+                icon: sabnzbd.png
+                href: https://sabnzbd.davydehaas.dev
+                description: Usenet downloader
+                widget:
+                  type: sabnzbd
+                  url: https://sabnzbd.davydehaas.dev
+                  key: "{{HOMEPAGE_VAR_SABNZBD_KEY}}"
+
+            - Tautulli:
+                icon: tautulli.png
+                href: https://tautulli.davydehaas.nl
+                description: Plex monitoring
+                widget:
+                  type: tautulli
+                  url: https://tautulli.davydehaas.nl
+                  key: "{{HOMEPAGE_VAR_TAUTULLI_KEY}}"
+
+            - Threadfin:
+                icon: threadfin.png
+                href: https://threadfin.davydehaas.nl
+                description: IPTV M3U proxy
+
+            - Tracearr:
+                icon: tracearr.png
+                href: https://tracearr.davydehaas.nl
+                description: Torrent tracker manager
 
 route:
   enabled: true

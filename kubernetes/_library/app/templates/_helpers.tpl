@@ -39,6 +39,10 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{ include "app.statefulset" . }}
 ---
 {{ include "app.service" . }}
+{{- if (include "app.configFiles" . | trim) }}
+---
+{{ include "app.configFiles" . }}
+{{- end }}
 {{- if (.Values.route | default dict).enabled }}
 ---
 {{ include "app.route" . }}
