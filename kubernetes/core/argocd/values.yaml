@@ -98,8 +98,9 @@ argo-cd:
       serviceMonitor:
         enabled: true
 
+  # The chart always deploys the controller; no ApplicationSets are used
   applicationSet:
-    enabled: false
+    replicas: 0
 
   notifications:
     enabled: false

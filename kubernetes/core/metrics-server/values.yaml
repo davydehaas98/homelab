@@ -4,7 +4,6 @@ metrics-server:
 
   rbac:
     create: true
-    pspEnabled: false
 
   apiService:
     create: true
