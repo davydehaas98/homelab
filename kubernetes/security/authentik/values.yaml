@@ -125,6 +125,9 @@ authentik:
         adminPasswordKey: postgres-password
         userPasswordKey: password
     primary:
+      # The iSCSI disk of templates/postgresql-volume.yaml
+      persistence:
+        existingClaim: authentik-postgresql-data
       startupProbe:
         enabled: true
         initialDelaySeconds: 30
