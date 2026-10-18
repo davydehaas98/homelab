@@ -43,7 +43,7 @@ applications:
     immich:
       deploy: true
     nextcloud:
-      deploy: false
+      deploy: true
     zigbee2mqtt:
       deploy: false
 

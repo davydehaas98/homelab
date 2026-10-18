@@ -7,6 +7,9 @@ image:
 
 port: 80
 
+# No volume, so it updates without a gap
+kind: Deployment
+
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault

@@ -32,6 +32,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `port` | | Port the app listens on, used by the container, Service and route. |
 | `protocol` | `TCP` | Protocol of `port`. |
 | `service.type`, `service.annotations` | `ClusterIP`, none | Type and annotations of the Service. A `LoadBalancer` gets a LAN address from the Cilium pool (`kubernetes/core/cilium`); `lbipam.cilium.io/ips` fixes it. |
+| `kind` | `StatefulSet` | `StatefulSet` stops the old pod before it starts the new one, which a volume that only one pod may mount needs. `Deployment` updates without a gap, for an app without `persistence` (the render fails otherwise). |
 | `replicas` | `1` | `0` stops the app. |
 | `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). |
 | `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. |

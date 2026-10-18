@@ -69,6 +69,7 @@ locals {
     "it-tools",
     "jellyfin",
     "lidarr",
+    "nextcloud",
     "omni-tools",
     "prometheus",
     "prowlarr",
@@ -80,6 +81,7 @@ locals {
 
   # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
+    "drive",
     "home",
     "movies",
     "music",

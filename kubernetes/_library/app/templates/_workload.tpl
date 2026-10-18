@@ -1,6 +1,14 @@
-{{- define "app.statefulset" -}}
+{{/*
+A StatefulSet by default: it stops the old pod before it starts the new one, so a disk that only one pod may mount is
+never mounted twice. An app without a volume can set `kind: Deployment` for rolling updates.
+*/}}
+{{- define "app.workload" -}}
+{{- $kind := .Values.kind | default "StatefulSet" -}}
+{{- if and (eq $kind "Deployment") .Values.persistence }}
+{{- fail "kind: Deployment needs an app without persistence, as a new pod would start before the old one stops" }}
+{{- end -}}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: {{ $kind }}
 metadata:
   name: {{ template "app.fullname" . }}
   labels:

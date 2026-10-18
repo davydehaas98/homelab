@@ -8,7 +8,7 @@ spec:
       namespace: envoy-gateway
       sectionName: web-https
   hostnames:
-    - drive.davydehaas.dev
+    - nextcloud.davydehaas.dev
   rules:
     - matches:
         - path:

@@ -8,6 +8,9 @@ image:
 
 port: 3000
 
+# No volume, so it updates without a gap
+kind: Deployment
+
 env:
   # Requests for other hosts are refused
   HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev

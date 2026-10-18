@@ -9,7 +9,7 @@ nextcloud:
     enabled: false
 
   nextcloud:
-    host: drive.davydehaas.dev
+    host: nextcloud.davydehaas.dev
 
     existingSecret:
       enabled: true
@@ -20,55 +20,48 @@ nextcloud:
     mail:
       enabled: false
 
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # The Envoy proxies are in the pod network, and Nextcloud only trusts forwarded addresses from them
+    extraEnv:
+      - name: TRUSTED_PROXIES
+        value: 10.244.0.0/16
 
+  # The database and Valkey are in templates/, as the chart's own use images that are no longer public
   internalDatabase:
     enabled: false
 
   externalDatabase:
     enabled: true
     type: postgresql
-    host: postgresql.postgresql.svc.cluster.local
-    database: nextcloud
-
     existingSecret:
       enabled: true
-      secretName: nextcloud-credentials
-      usernameKey: postgres-username
-      passwordKey: postgres-password
+      secretName: nextcloud-database-app
+      usernameKey: username
+      passwordKey: password
+      hostKey: host
+      databaseKey: dbname
 
+  externalRedis:
+    enabled: true
+    host: nextcloud-valkey
+    port: "6379"
 
-
-  redis:
-    enabled: false
-
+  # Runs `cron.sh` in a sidecar
   cronjob:
     enabled: true
 
+  # The code and config, and apart from it the files of the users
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
     size: 16Gi
+    nextcloudData:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 200Gi
 
   resources:
     limits:
-      memory: 512Mi
+      memory: 2Gi
     requests:
       cpu: 100m
-      memory: 128Mi
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-
-  rbac:
-    enabled: true
-    serviceaccount:
-      create: true
-      name: nextcloud-serviceaccount
+      memory: 512Mi

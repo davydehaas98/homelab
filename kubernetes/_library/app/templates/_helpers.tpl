@@ -36,7 +36,7 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{ include "app.volume" . }}
 ---
 {{- end }}
-{{ include "app.statefulset" . }}
+{{ include "app.workload" . }}
 ---
 {{ include "app.service" . }}
 {{- if (include "app.configFiles" . | trim) }}
