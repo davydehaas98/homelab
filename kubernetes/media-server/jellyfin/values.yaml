@@ -1,59 +1,3 @@
-# No hardware transcoding: the GPU is in yggdrasil, so video that has to be transcoded runs on the CPU of the node.
-
-# Runs as this user and group, the same as the container on the home server
-podSecurityContext:
-  runAsUser: 1400
-  runAsGroup: 1400
-  fsGroup: 1400
-securityContext: {}
-
-port: 8096
-
-probe:
-  httpGet:
-    path: /health
-    port: http
-
-# The library is read-only, as on the home server
-media:
-  claimName: media
-  mounts:
-    - mountPath: /movies
-      subPath: media/movies
-      readOnly: true
-    - mountPath: /music
-      subPath: media/music
-      readOnly: true
-    - mountPath: /series
-      subPath: media/series
-      readOnly: true
-
-# Set the transcode path of Jellyfin (Dashboard > Playback > Transcoding) to /data/transcode. It lives in memory,
-# which counts against the memory limit of the pod. The cache of images is rebuilt when it is lost.
-emptyDirs:
-  - name: transcode
-    mountPath: /data/transcode
-    medium: Memory
-    sizeLimit: 1Gi
-  - name: cache
-    mountPath: /cache
-    sizeLimit: 2Gi
-
-resources:
-  limits:
-    cpu: 4000m
-    memory: 4Gi
-  requests:
-    cpu: 100m
-    memory: 512Mi
-
-image:
-  registry: docker.io
-  repository: jellyfin/jellyfin
-  tag: "12.2"
-
-replicas: 1
-
 # The config (database and metadata) is on an iSCSI disk on yggdrasil, a target of its own for this app, see
 # kubernetes/media-server/media-server/README.md. Jellyfin has its own backup feature in the dashboard.
 persistence:
@@ -63,12 +7,75 @@ persistence:
     iqn: iqn.2026-10.nl.davydehaas:jellyfin
     lun: 0
 
-# Jellyfin has its own login, so no login at the gateway
-route:
-  enabled: true
-  hostnames:
-    - jellyfin.davydehaas.dev
-  parentRefs:
-    - name: envoy-gateway
-      namespace: envoy-gateway
-      sectionName: web-https
+jellyfin:
+  # No hardware transcoding: the GPU is in yggdrasil, so video that has to be transcoded runs on the CPU of the node.
+  image:
+    tag: "12.2"
+
+  # The disk can be mounted by one pod only
+  deploymentStrategy:
+    type: Recreate
+
+  # Runs as this user and group, the same as the container on the home server
+  podSecurityContext:
+    runAsUser: 1400
+    runAsGroup: 1400
+    fsGroup: 1400
+
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 4Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+  jellyfin:
+    env:
+      - name: TZ
+        value: Europe/Amsterdam
+
+  persistence:
+    config:
+      existingClaim: jellyfin-config
+    # The library is mounted at the paths of the home server below, not at /media
+    media:
+      enabled: false
+
+  volumes:
+    - name: library
+      persistentVolumeClaim:
+        claimName: media
+    # Set the transcode path of Jellyfin (Dashboard > Playback > Transcoding) to /data/transcode. It lives in memory,
+    # which counts against the memory limit of the pod.
+    - name: transcode
+      emptyDir:
+        medium: Memory
+        sizeLimit: 1Gi
+
+  # The library is read-only, as on the home server
+  volumeMounts:
+    - name: library
+      mountPath: /movies
+      subPath: media/movies
+      readOnly: true
+    - name: library
+      mountPath: /music
+      subPath: media/music
+      readOnly: true
+    - name: library
+      mountPath: /series
+      subPath: media/series
+      readOnly: true
+    - name: transcode
+      mountPath: /data/transcode
+
+  # Jellyfin has its own login, so no login at the gateway
+  httpRoute:
+    enabled: true
+    parentRefs:
+      - name: envoy-gateway
+        namespace: envoy-gateway
+        sectionName: web-https
+    hostnames:
+      - jellyfin.davydehaas.dev
