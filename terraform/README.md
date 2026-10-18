@@ -6,7 +6,8 @@ All DNS records of the `davydehaas.dev` zone: the root A/AAAA/CAA records, `www`
 records and their game server targets, the mail spoofing protection (SPF, DMARC, DKIM) and one record
 per Kubernetes app (`kubernetes_apps` in `dns_record.tf`). The apps point at the home server, which
 passes TLS through to the Kubernetes gateway; they share its wildcard certificate. There is no wildcard
-DNS record, so to publish a new app, add its subdomain to `kubernetes_apps` and apply this stack.
+DNS record, so to publish a new app, add its subdomain to `kubernetes_apps` and apply this stack. Extra
+names that redirect to an app (`route.aliases`, for example `usenet` for SABnzbd) go in `kubernetes_aliases`.
 
 ### State
 

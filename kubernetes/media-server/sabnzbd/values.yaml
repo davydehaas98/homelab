@@ -1,11 +1,11 @@
 podSecurityContext:
-  fsGroup: 5000
+  fsGroup: 1400
 securityContext: {}
 
-# linuxserver.io images run as this user and group
+# linuxserver.io images run as this user and group: the owner of the media on the NFS share
 env:
-  PUID: 1000
-  PGID: 5000
+  PUID: 1400
+  PGID: 1400
 
 port: 8080
 
@@ -25,6 +25,7 @@ media:
 
 resources:
   limits:
+    cpu: 1000m
     memory: 2Gi
   requests:
     cpu: 50m
@@ -46,6 +47,9 @@ route:
   enabled: true
   hostnames:
     - sabnzbd.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - usenet.davydehaas.dev
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway

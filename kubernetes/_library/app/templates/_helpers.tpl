@@ -46,5 +46,9 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 ---
 {{ include "app.securityPolicy" . }}
 {{- end }}
+{{- if .Values.route.aliases }}
+---
+{{ include "app.aliasRoute" . }}
+{{- end }}
 {{- end }}
 {{- end -}}

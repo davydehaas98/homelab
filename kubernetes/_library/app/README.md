@@ -42,6 +42,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.labels` | | Extra labels of the claim. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath`. |
 | `route.enabled`, `route.hostnames`, `route.parentRefs` | off | `HTTPRoute` to the app. Also takes `annotations`, `labels`, `filters`, `matches` and `additionalRules`. |
+| `route.aliases` | none | Extra hostnames that redirect (301) to the first hostname. A separate route, so the login keeps working. They need a DNS record too. |
 | `oidc.enabled` | off | OIDC login on the route with an Envoy Gateway `SecurityPolicy`. Needs `route.enabled`. |
 | `oidc.slug` | chart name | Application slug at the identity provider. |
 | `oidc.secretName` | `<app>-oidc-credentials` | Secret with the `client-id` and `client-secret`. |

@@ -118,6 +118,15 @@ locals {
     "sonarr",
   ]
 
+  # Extra names of those apps, the `route.aliases` in kubernetes/media-server/*/values.yaml (they redirect
+  # to the main name).
+  kubernetes_aliases = [
+    "movies",
+    "series",
+    "subtitles",
+    "usenet",
+  ]
+
   # Game servers on the home server, the targets of the SRV records above.
   game_servers = [
     "factorio",
@@ -129,7 +138,7 @@ locals {
 # This must not be proxied: Cloudflare would terminate TLS.
 resource "cloudflare_dns_record" "kubernetes_app" {
   provider = cloudflare.dev
-  for_each = toset(local.kubernetes_apps)
+  for_each = toset(concat(local.kubernetes_apps, local.kubernetes_aliases))
 
   name    = each.value
   ttl     = 1
