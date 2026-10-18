@@ -28,3 +28,6 @@ yq = "4.54.1"
 
 # Drives the Turing Pi BMC (flashing, power, UART). Its release archive keeps the binary in usr/bin.
 "github:turing-machines/tpi" = { version = "1.0.7", bin_path = "usr/bin" }
+
+# MCP server that lets Claude Code read Grafana (dashboards, Prometheus, Loki), see .mcp.json.
+"github:grafana/mcp-grafana" = "2.0.2"

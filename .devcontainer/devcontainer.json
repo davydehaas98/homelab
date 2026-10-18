@@ -12,6 +12,10 @@
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.talos,target=/root/.talos,type=bind",
     "source=homelab-claude-config,target=/root/.claude,type=volume"
   ],
+  // Token of the Grafana MCP server (.mcp.json), set on the host
+  "remoteEnv": {
+    "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${localEnv:GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+  },
   "customizations": {
     "vscode": {
       "extensions": [

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "grafana": {
+      "command": "mcp-grafana",
+      "args": ["--disable-write"],
+      "env": {
+        "GRAFANA_URL": "https://grafana.davydehaas.dev",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+      }
+    }
+  }
+}

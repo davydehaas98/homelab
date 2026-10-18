@@ -25,13 +25,30 @@ Without VS Code:
 ```shell
 podman build -t homelab-dev -f .devcontainer/Dockerfile .
 podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -v ~/.talos:/root/.talos \
-  -v homelab-claude-config:/root/.claude -w /workspace localhost/homelab-dev sh
+  -v homelab-claude-config:/root/.claude -e GRAFANA_SERVICE_ACCOUNT_TOKEN -w /workspace localhost/homelab-dev sh
 ```
 
 ## Claude Code
 
 Run `claude`; its login is kept in the `homelab-claude-config` volume. `.claude/settings.json`
 blocks `git commit` and `git push`, so changes stay uncommitted for review.
+
+### Grafana MCP server
+
+`.mcp.json` gives Claude Code the Grafana MCP server (`mcp-grafana`, installed by mise), read-only
+(`--disable-write`). It signs in with a Grafana service account token from the host:
+
+1. In Grafana, Administration > Users and access > Service accounts: add one with the Viewer role and create a
+   token.
+2. Set it as a user environment variable on the host and restart VS Code:
+
+   ```powershell
+   [Environment]::SetEnvironmentVariable('GRAFANA_SERVICE_ACCOUNT_TOKEN', '<token>', 'User')
+   ```
+
+3. Approve the server when `claude` asks on first start; `/mcp` shows its state.
+
+Without the token, the server starts but every call fails.
 
 ## Git signing
 

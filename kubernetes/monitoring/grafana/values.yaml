@@ -15,7 +15,7 @@ grafana:
           type: loki
           access: proxy
           uid: loki
-          url: http://loki-gateway.loki.svc.cluster.local:3100
+          url: http://loki-gateway.loki.svc.cluster.local
           editable: false
         - name: Prometheus
           type: prometheus
