@@ -36,6 +36,8 @@ kube-prometheus-stack:
     prometheusSpec:
       externalUrl: https://prometheus.davydehaas.dev
       retention: 15d
+      # Deletes the oldest blocks before the disk of templates/prometheus-volume.yaml (10Gi) is full
+      retentionSize: 8GB
       # Pick up every ServiceMonitor, PodMonitor, rule and probe in the cluster, not only the ones
       # labeled with this release
       serviceMonitorSelectorNilUsesHelmValues: false
@@ -49,15 +51,17 @@ kube-prometheus-stack:
         requests:
           cpu: 100m
           memory: 2048Mi
+      # The iSCSI disk of templates/prometheus-volume.yaml
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs
+            storageClassName: ""
+            volumeName: prometheus-db
             accessModes:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 8Gi
+                storage: 10Gi
 
   alertmanager:
     # Nothing is notified yet: every alert goes to the `null` receiver. Add a receiver and point

@@ -130,30 +130,43 @@ Move one app at a time. The app is down for a few minutes. The example is Radarr
 ### Moving Prometheus and Authentik
 
 These run from upstream charts, so the steps differ. `lun.sh copy` needs the old NFS folder as the second
-argument (`/mnt/md0/kubernetes/<namespace>-<claim>-<pv>`, find it with
-`kubectl get pvc -n <namespace>`), and `OWNER` set to the user of the database.
+argument (`<old folder>`, the `spec.nfs.path` of the volume of the old claim), and `OWNER` set to the user
+of the database.
+
+Argo CD is paused for the app during the move, without a commit: the annotation
+`argocd.argoproj.io/skip-reconcile` stops it from syncing and self-healing the app, and the parent app
+`applications` keeps an annotation it did not set. Turning auto-sync off in Argo CD itself does not hold, the
+parent restores it from git.
+
+```shell
+kubectl -n argocd annotate application <app> argocd.argoproj.io/skip-reconcile=true   # pause
+kubectl -n argocd annotate application <app> argocd.argoproj.io/skip-reconcile-       # resume
+```
 
 **Prometheus** (the metrics stay; Prometheus is down for the copy):
 
 1. On yggdrasil: `sudo sh lun.sh create prometheus 10G`.
-2. Push `prometheusSpec.replicas: 0` in `kubernetes/monitoring/prometheus/values.yaml`, without the volume
-   changes, and wait until `prometheus-prometheus-kube-prometheus-prometheus-0` is gone.
-3. On yggdrasil: `sudo OWNER=1000:2000 sh lun.sh copy prometheus /mnt/md0/kubernetes/prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0-<pv>`.
+2. Pause the app `prometheus` and stop Prometheus, then wait until its pod is gone:
+
+   ```shell
+   kubectl -n prometheus patch prometheus prometheus-kube-prometheus-prometheus --type merge -p '{"spec":{"replicas":0}}'
+   kubectl -n prometheus get pods
+   ```
+
+3. On yggdrasil: `sudo OWNER=1000:2000 sh lun.sh copy prometheus <old folder>`.
 4. Delete the old claim, so the new one can take its name:
    `kubectl -n prometheus delete pvc prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0`.
-5. Push the volume changes and drop `replicas: 0`. The operator recreates the StatefulSet (its claim template
-   changed), and the new claim binds to the PV `prometheus-db`.
+5. Push the volume changes and resume the app. Its sync sets the replicas back, the operator recreates the
+   StatefulSet (its claim template changed), and the new claim binds to the PV `prometheus-db`.
 6. Check `kubectl -n prometheus exec prometheus-prometheus-kube-prometheus-prometheus-0 -c prometheus -- df -h /prometheus`
    shows a `/dev/...` device.
 
 **Authentik** (all logins are down for the copy). The Postgres chart cannot scale to 0 and its StatefulSet must
-be recreated for the new claim, so Argo CD is paused for the app:
+be recreated for the new claim:
 
 1. On yggdrasil: `sudo sh lun.sh create authentik-postgresql 2G`.
-2. Push `autoSync: false` for `authentik` in `chart/values.yaml`, and wait until Argo CD shows the app in the
-   project `no-sync`.
-3. Push the volume changes. Argo CD shows `OutOfSync` and does nothing yet.
-4. Stop Authentik. Deleting the StatefulSet stops Postgres cleanly and keeps its old claim:
+2. Pause the app `authentik` and stop Authentik. Deleting the StatefulSet stops Postgres cleanly and keeps its
+   old claim:
 
    ```shell
    kubectl -n authentik scale deploy authentik-server authentik-worker --replicas=0
@@ -161,13 +174,13 @@ be recreated for the new claim, so Argo CD is paused for the app:
    kubectl -n authentik get pods
    ```
 
-5. On yggdrasil, once the pod is gone:
-   `sudo OWNER=1001:1001 sh lun.sh copy authentik-postgresql /mnt/md0/kubernetes/authentik-data-authentik-postgresql-0-<pv>`.
+3. On yggdrasil, once the pod is gone:
+   `sudo OWNER=1001:1001 sh lun.sh copy authentik-postgresql <old folder>`.
    The disk must hold `data/` (Postgres 17, owned by 1001) and `conf/`, like the old folder.
-6. `argocd app sync authentik`. It creates the PV and claim `authentik-postgresql-data`, the StatefulSet and
-   scales the server and worker back up. Check that you can sign in, and `df -h /bitnami/postgresql` in
-   `authentik-postgresql-0` shows a `/dev/...` device.
-7. Push `autoSync` back (remove the line), then delete the old claim `data-authentik-postgresql-0`.
+4. Push the volume changes and resume the app. Its sync creates the PV and claim `authentik-postgresql-data` and
+   the StatefulSet, and scales the server and worker back up.
+5. Check that you can sign in, and `df -h /bitnami/postgresql` in `authentik-postgresql-0` shows a `/dev/...`
+   device. Then delete the old claim `data-authentik-postgresql-0`.
 
 ### Adding a new app
 
