@@ -1,0 +1,50 @@
+flowchart TB
+    browser([Browser])
+    dns(["Cloudflare DNS<br/>one A record per app"])
+    github(["GitHub<br/>davydehaas98/homelab"])
+
+    subgraph edge["Home server (yggdrasil, 192.168.1.44): edge"]
+        traefik["Traefik<br/>TLS passthrough :443"]
+        docker["Docker services<br/>Plex, Ollama, Home Assistant,<br/>AdGuard Home, WireGuard, ..."]
+    end
+
+    subgraph k8s["Cluster yggdrasil, 4x Turing RK1, Talos, arm64"]
+        envoy["Envoy Gateway<br/>192.168.1.56"]
+        authentik["Authentik<br/>OIDC login"]
+        apps["Media apps<br/>Sonarr, Radarr, Lidarr, Prowlarr,<br/>Bazarr, SABnzbd, Seerr, Jellyfin"]
+        immich["Immich<br/>CloudNativePG database"]
+        factorio["Factorio<br/>LoadBalancer 192.168.1.58"]
+        monitoring["Prometheus, Grafana, Loki"]
+        argo["Argo CD"]
+    end
+
+    subgraph storage["Home server (yggdrasil, 192.168.1.44): storage"]
+        media[("NFS /mnt/storage<br/>media + downloads")]
+        nfs[("NFS /mnt/md0/kubernetes<br/>volumes + app backups")]
+        iscsi[("iSCSI :3260<br/>one target per SQLite app<br/>or database")]
+    end
+
+    browser -->|resolves| dns
+    dns -.->|A record| traefik
+    browser -->|HTTPS| traefik
+    traefik -->|TLS passthrough| envoy
+    envoy -->|OIDC| authentik
+    envoy -->|HTTPRoute| apps
+    envoy -->|HTTPRoute| immich
+    browser -.->|UDP 34197| factorio
+
+    apps -->|NFS, media claim| media
+    apps -->|NFS, nfs class and backups| nfs
+    apps -->|iSCSI, democratic-csi| iscsi
+    immich -->|NFS, photo library| nfs
+    immich -->|iSCSI, database| iscsi
+
+    github -->|syncs main| argo
+    argo -->|deploys| apps
+    argo -->|deploys| monitoring
+    monitoring -.->|scrapes| apps
+
+    classDef server fill:#e8eef7,stroke:#5b7bb0,color:#000
+    classDef cluster fill:#eaf5ea,stroke:#4f9a4f,color:#000
+    class edge,storage server
+    class k8s cluster

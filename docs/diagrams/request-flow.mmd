@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    participant Seerr
+    participant Arr as Sonarr / Radarr
+    participant Prowlarr
+    participant Indexer as NZBGeek
+    participant SABnzbd
+    participant Usenet as newsdemon.com
+    participant Bazarr
+    participant Provider as Subtitle provider
+    participant Streamer as Jellyfin / Plex
+
+    Seerr->>Arr: Request
+    Arr->>Prowlarr: Search
+    Prowlarr->>Indexer: Search indexer
+    Indexer-->>Prowlarr: Releases
+    Prowlarr-->>Arr: Releases
+    Arr->>SABnzbd: Send grab
+
+    SABnzbd->>Usenet: Download request
+    Usenet-->>SABnzbd: Articles, written to /downloads/usenet/incomplete/
+    SABnzbd-->>Arr: Done, in /downloads/usenet/complete/
+
+    Note over Arr: Imports into /series/#lt;title#gt;/#lt;episode#gt;<br/>or /movies/#lt;title#gt;
+
+    Arr->>Bazarr: New file
+    Bazarr->>Provider: Request subtitles
+    Provider-->>Bazarr: Subtitle file
+    Bazarr->>Arr: Subtitle next to the file
+
+    Arr->>Streamer: Library update
+    Arr->>Seerr: Status update

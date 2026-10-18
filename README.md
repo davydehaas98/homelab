@@ -11,7 +11,7 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 - `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
 - `terraform/`: Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
-- `docs/`: manuals of the smart meter and water meter gateways.
+- `docs/`: Mermaid diagrams ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter gateways.
 
 ## Secrets
 

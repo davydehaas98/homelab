@@ -1,0 +1,52 @@
+flowchart TB
+    prowlarr["Prowlarr<br/>:9696"]
+    bazarr["Bazarr<br/>:6767"]
+    seerr["Seerr<br/>:5055"]
+
+    lidarr["Lidarr<br/>:8686"]
+    sonarr["Sonarr<br/>:8989"]
+    radarr["Radarr<br/>:7878"]
+
+    sab["SABnzbd<br/>:8080"]
+
+    subgraph storage["/mnt/storage on the home server (NFS)"]
+        downloads["downloads/usenet<br/>imported by Sonarr, Radarr, Lidarr"]
+        subgraph media["media"]
+            music[music]
+            series[series]
+            movies[movies]
+        end
+    end
+
+    jellyfin["Jellyfin<br/>:8096"]
+    plex["Plex<br/>:32400<br/>on the home server"]
+
+    seerr -->|requests| sonarr
+    seerr -->|requests| radarr
+    prowlarr -->|indexers| sonarr
+    prowlarr -->|indexers| radarr
+    prowlarr -->|indexers| lidarr
+    bazarr -->|subtitles| sonarr
+    bazarr -->|subtitles| radarr
+
+    sonarr -->|grabs| sab
+    radarr -->|grabs| sab
+    lidarr -->|grabs| sab
+    sab --> downloads
+
+    sonarr --> series
+    radarr --> movies
+    lidarr --> music
+
+    media --> jellyfin
+    media --> plex
+
+    classDef manager fill:#add8e6,stroke:#4a90a4,color:#000
+    classDef downloader fill:#ffa500,stroke:#b36b00,color:#000
+    classDef streamer fill:#90ee90,stroke:#3c9a3c,color:#000
+    classDef request fill:#dda0dd,stroke:#8e5a8e,color:#000
+    class prowlarr,bazarr,sonarr,radarr,lidarr manager
+    class sab downloader
+    class jellyfin,plex streamer
+    class seerr request
+
