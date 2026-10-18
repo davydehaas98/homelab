@@ -10,7 +10,10 @@ Every app keeps its configuration and SQLite database in `/config`. For now that
 default StorageClass (NFS). SQLite does not belong on NFS: killed pods leave locks behind, and one
 restart ended in a `disk I/O error` for Radarr. The fix is an iSCSI LUN per app on yggdrasil. A node
 logs in to the target and mounts the LUN as a local ext4 disk, so file locking works, and the pod can
-still move to any node. The Talos images already contain the `siderolabs/iscsi-tools` extension.
+still move to any node. The Talos images contain the `siderolabs/iscsi-tools` extension. The kubelet of Talos
+cannot run `iscsiadm` for a plain `iscsi` volume, so the LUNs are mounted by the democratic-csi driver
+`node-manual` (`kubernetes/storage/democratic-csi`), which runs `iscsiadm` on the host. It only attaches the
+volumes the `app` library chart writes, it creates no LUNs.
 
 The target `iqn.2026-10.nl.davydehaas:yggdrasil` exists (see [Target setup](#target-setup-yggdrasil)),
 the LUNs do not yet. The number of a LUN is chosen when it is created and has to equal
@@ -97,7 +100,8 @@ example is Radarr, LUN 3.
 
 5. Delete the old claim and sync by hand (Argo CD does not retry a failed sync). It creates the static
    PV `media-server-<app>-config` and a new claim bound to it. The data of the old volume stays on
-   yggdrasil:
+   yggdrasil. (If the PV `media-server-<app>-config` exists already from an earlier try with another volume
+   type, delete it too: `kubectl delete pv media-server-<app>-config`.)
 
    ```shell
    kubectl -n media-server delete pvc radarr-config

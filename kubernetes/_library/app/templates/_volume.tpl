@@ -18,12 +18,19 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
-  iscsi:
-    targetPortal: {{ .targetPortal }}
-    iqn: {{ .iqn }}
-    lun: {{ .lun }}
+  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi), as the kubelet
+  # of Talos cannot run iscsiadm for a plain `iscsi` volume
+  csi:
+    driver: org.democratic-csi.node-manual
     fsType: ext4
     readOnly: false
+    volumeHandle: {{ $.Release.Namespace }}-{{ $name }}-config
+    volumeAttributes:
+      portal: {{ .targetPortal | quote }}
+      iqn: {{ .iqn | quote }}
+      lun: {{ .lun | quote }}
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
   claimRef:
     namespace: {{ $.Release.Namespace }}
     name: {{ $name }}-config

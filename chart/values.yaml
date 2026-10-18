@@ -89,6 +89,8 @@ applications:
       deploy: false
       namespace: cnpg-system
       serverSideApply: true
+    democratic-csi:
+      deploy: true
     longhorn:
       deploy: false
       autoSync: false
