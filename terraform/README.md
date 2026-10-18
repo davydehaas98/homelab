@@ -13,7 +13,7 @@ kept from when this lived in `home-server`.
 runs. A plan with changes waits for approval by the required reviewers of environment `cloudflare`, then plans again
 and applies. It needs the repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (DNS edit on the zone),
 `SERVER_IPV4_ADDRESS` and `SERVER_IPV6_ADDRESS`. The IAM role `github-state-cloudflare-dev` comes from the
-`bootstrap` stack of `home-server`, and its trust policy must allow `repo:davydehaas98/homelab:*`.
+`bootstrap` stack of `home-server`, and its trust policy must allow the subjects `repo:davydehaas98/homelab:ref:refs/heads/main` (plan) and `repo:davydehaas98/homelab:environment:cloudflare` (apply).
 
 **Locally**, set `TF_VAR_cloudflare_api_token`, `TF_VAR_ipv4_address` and `TF_VAR_ipv6_address`, then
 `terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with

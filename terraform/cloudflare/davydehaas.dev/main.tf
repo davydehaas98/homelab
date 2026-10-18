@@ -20,10 +20,3 @@ terraform {
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
-
-# Only for destroying the removed SRV records, which the state still binds to this alias. Remove it after the
-# next apply.
-provider "cloudflare" {
-  alias     = "dev"
-  api_token = var.cloudflare_api_token
-}
