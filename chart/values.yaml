@@ -32,6 +32,11 @@ applications:
       namespace: kube-system
     vpa:
       deploy: true
+
+  games:
+    factorio:
+      deploy: true
+
   home:
     home-assistant:
       deploy: false
@@ -39,6 +44,7 @@ applications:
       deploy: false
     zigbee2mqtt:
       deploy: false
+
   media-server:
     bazarr:
       deploy: true
@@ -66,6 +72,7 @@ applications:
     sonarr:
       deploy: true
       namespace: media-server
+
   monitoring:
     fluent-bit:
       deploy: true
@@ -86,9 +93,11 @@ applications:
       deploy: true
       namespace: prometheus
       serverSideApply: true
+
   security:
     authentik:
       deploy: true
+
   storage:
     cloudnative-pg:
       deploy: false
@@ -107,6 +116,7 @@ applications:
     velero:
       deploy: false
       serverSideApply: true
+
   tools:
     it-tools:
       deploy: false

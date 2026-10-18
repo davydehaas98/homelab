@@ -1,0 +1,35 @@
+image:
+  registry: docker.io
+  repository: factoriotools/factorio
+  tag: 2.0.77-rootless
+
+replicas: 1
+
+port: 34197
+protocol: UDP
+
+# The image runs as the user factorio (845)
+podSecurityContext:
+  fsGroup: 845
+
+# The game port is UDP, so the probe checks RCON
+probe:
+  tcpSocket:
+    port: 27015
+
+resources:
+  limits:
+    memory: 2Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+persistence:
+  size: 5Gi
+  mountPath: /factorio
+
+# Reachable on the LAN at this address, outside the HTTP gateway
+service:
+  type: LoadBalancer
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.58

@@ -52,6 +52,8 @@ workloads:
   envoy-gateway:
     - Deployment/envoy-gateway
     - Deployment/envoy-envoy-gateway-envoy-gateway-9dbc5803
+  factorio:
+    - StatefulSet/factorio
   fluent-bit:
     - DaemonSet/fluent-bit
   grafana:

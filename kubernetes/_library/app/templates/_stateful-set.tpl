@@ -28,7 +28,7 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.port }}
-              protocol: TCP
+              protocol: {{ .Values.protocol | default "TCP" }}
           resources: {{ toYaml (.Values.resources | default dict) | nindent 12 }}
           securityContext: {{ toYaml (.Values.securityContext | default dict) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
