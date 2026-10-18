@@ -140,8 +140,13 @@ parent restores it from git.
 
 ```shell
 kubectl -n argocd annotate application <app> argocd.argoproj.io/skip-reconcile=true   # pause
-kubectl -n argocd annotate application <app> argocd.argoproj.io/skip-reconcile-       # resume
+kubectl -n argocd annotate application <app> argocd.argoproj.io/skip-reconcile- argocd.argoproj.io/refresh=hard   # resume
 ```
+
+Resume only after the pushed commit shows in `kubectl -n argocd get application <app> -o jsonpath='{.status.sync.revision}'`.
+An app resumed on the commit it knew before the push syncs the old manifests: the old StatefulSet comes back
+with its NFS claim, and the database starts on NFS again. Auto-sync does not retry a commit whose sync failed
+before; sync that commit by hand (Sync in Argo CD).
 
 **Prometheus** (the metrics stay; Prometheus is down for the copy):
 
