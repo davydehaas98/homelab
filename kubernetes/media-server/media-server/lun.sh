@@ -1,16 +1,22 @@
 #!/bin/sh
-# Creates the iSCSI LUN of a media-server app on yggdrasil, and copies the app's old NFS config into it.
+# Creates the iSCSI disk of a media-server app on yggdrasil, and copies the app's old NFS config into it.
 # Run it on yggdrasil with sudo, see README.md for the whole procedure.
 #
-#   sudo sh lun.sh create <app> <lun> <size>   image file, ext4, exported as LUN <lun>, backup folder on NFS
-#   sudo sh lun.sh copy <app> [source-dir]      config from the app's old NFS folder into the image
-#   sudo sh lun.sh status                       LUNs and sessions of the target
+# Every app gets its own iSCSI target (iqn.2026-10.nl.davydehaas:<app>) with the disk as LUN 0. The nodes
+# log out of a whole target when one pod stops, so apps that share a target would cut each other's disk.
 #
-# Example: sudo sh lun.sh create radarr 3 5G && sudo sh lun.sh copy radarr
+#   sudo sh lun.sh create <app> <size>         image file, ext4, own target with LUN 0, backup folder on the RAID
+#   sudo sh lun.sh copy <app> [source-dir]      config from the app's old NFS folder into the image
+#   sudo sh lun.sh migrate <app>                give an existing image its own target (from the shared one)
+#   sudo sh lun.sh retire                       remove the old shared target, after every app has moved
+#   sudo sh lun.sh status                       targets, LUNs and sessions
+#
+# Example: sudo sh lun.sh create radarr 5G && sudo sh lun.sh copy radarr
 # DRY_RUN=1 prints the commands instead of running them.
 set -eu
 
-IQN=iqn.2026-10.nl.davydehaas:yggdrasil
+IQN_PREFIX=iqn.2026-10.nl.davydehaas
+OLD_IQN=$IQN_PREFIX:yggdrasil     # the shared target of the first setup
 IMG_DIR=/mnt/md0/iscsi            # the image files, one per app
 NFS_DIR=/mnt/md0/kubernetes       # where nfs-subdir-external-provisioner keeps the old volumes
 BACKUP_DIR=/mnt/md0/kubernetes/backups   # the apps' own backups, on the RAID, mounted at /config/Backups
@@ -23,7 +29,7 @@ run() {
 }
 
 usage() {
-  sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'
   exit 1
 }
 
@@ -37,24 +43,40 @@ need_root() {
   [ -n "${DRY_RUN:-}" ] || [ "$(id -u)" = 0 ] || die "run with sudo"
 }
 
+need_targetcli() {
+  [ -n "${DRY_RUN:-}" ] || command -v targetcli >/dev/null || die "targetcli is not installed (apt install targetcli-fb)"
+}
+
+target_exists() {
+  targetcli ls /iscsi | grep -q "o- $1 "
+}
+
+# A target of its own for the backstore <app>-config, with the disk as LUN 0. Any initiator may log in
+# without CHAP, access is limited by the firewall instead (see README.md)
+add_target() {
+  app=$1
+  iqn="$IQN_PREFIX:$app"
+  run targetcli /iscsi create "$iqn"
+  run targetcli "/iscsi/$iqn/tpg1" set attribute authentication=0 generate_node_acls=1 cache_dynamic_acls=1 demo_mode_write_protect=0
+  run targetcli "/iscsi/$iqn/tpg1/luns" create "/backstores/fileio/$app-config" lun=0
+}
+
 cmd_create() {
-  [ $# -eq 3 ] || usage
-  app=$1; lun=$2; size=$3
+  [ $# -eq 2 ] || usage
+  app=$1; size=$2
   check_app "$app"
-  case "$lun" in ''|*[!0-9]*) die "lun must be a number, got '$lun'" ;; esac
   case "$size" in [1-9]*[MG]) ;; *) die "size must look like 512M or 5G, got '$size'" ;; esac
   case "${size%[MG]}" in ''|*[!0-9]*) die "size must look like 512M or 5G, got '$size'" ;; esac
   need_root
+  need_targetcli
 
   img="$IMG_DIR/$app-config.img"
   name="$app-config"
 
   if [ -z "${DRY_RUN:-}" ]; then
-    command -v targetcli >/dev/null || die "targetcli is not installed, see 'Target setup' in README.md"
-    targetcli ls /iscsi | grep -q "$IQN" || die "target $IQN does not exist, see 'Target setup' in README.md"
     [ ! -e "$img" ] || die "$img exists already, refusing to overwrite it"
     ! targetcli ls /backstores/fileio | grep -q "o- $name " || die "backstore $name exists already"
-    ! targetcli ls "/iscsi/$IQN/tpg1/luns" | grep -q "o- lun$lun " || die "LUN $lun is in use, see 'status'"
+    ! target_exists "$IQN_PREFIX:$app" || die "target $IQN_PREFIX:$app exists already"
   else
     echo "(dry run: checks skipped)"
   fi
@@ -63,11 +85,46 @@ cmd_create() {
   run truncate -s "$size" "$img"
   run mkfs.ext4 -q -F -m 0 -L "$name" "$img"
   run targetcli /backstores/fileio create "name=$name" "file_or_dev=$img"
-  run targetcli "/iscsi/$IQN/tpg1/luns" create "/backstores/fileio/$name" "lun=$lun"
+  add_target "$app"
   run targetcli saveconfig
   run install -d -o "${OWNER%:*}" -g "${OWNER#*:}" "$BACKUP_DIR/$app"
-  echo "LUN $lun created for $app: $img ($size), backups in $BACKUP_DIR/$app"
-  echo "Set persistence.iscsi.lun: $lun in kubernetes/media-server/$app/values.yaml"
+  echo "Disk created for $app: $img ($size), target $IQN_PREFIX:$app LUN 0, backups in $BACKUP_DIR/$app"
+  echo "Set persistence.iscsi.iqn: $IQN_PREFIX:$app and lun: 0 in kubernetes/media-server/$app/values.yaml"
+}
+
+cmd_migrate() {
+  [ $# -eq 1 ] || usage
+  app=$1
+  check_app "$app"
+  need_root
+  need_targetcli
+
+  if [ -z "${DRY_RUN:-}" ]; then
+    targetcli ls /backstores/fileio | grep -q "o- $app-config " || die "backstore $app-config does not exist, use 'create'"
+    ! target_exists "$IQN_PREFIX:$app" || die "target $IQN_PREFIX:$app exists already"
+    echo "Sessions of the targets (the app must be stopped, replicas: 0):"
+    targetcli sessions || true
+  else
+    echo "(dry run: checks skipped)"
+  fi
+
+  add_target "$app"
+  run targetcli saveconfig
+  echo "Target $IQN_PREFIX:$app with the disk of $app as LUN 0"
+  echo "Set persistence.iscsi.iqn: $IQN_PREFIX:$app and lun: 0 in kubernetes/media-server/$app/values.yaml"
+}
+
+cmd_retire() {
+  need_root
+  need_targetcli
+  if [ -z "${DRY_RUN:-}" ]; then
+    target_exists "$OLD_IQN" || die "target $OLD_IQN does not exist"
+    echo "Sessions of the targets (none may use $OLD_IQN):"
+    targetcli sessions || true
+  fi
+  run targetcli /iscsi delete "$OLD_IQN"
+  run targetcli saveconfig
+  echo "Removed $OLD_IQN, the images and the per-app targets stay"
 }
 
 cmd_copy() {
@@ -93,7 +150,7 @@ cmd_copy() {
     [ -f "$img" ] || die "$img does not exist, run 'create' first"
     [ -d "$src" ] || die "$src is not a folder"
     grep -q " $img " /proc/mounts 2>/dev/null && die "$img is mounted already"
-    echo "Sessions of the target (the app must be stopped, replicas: 0):"
+    echo "Sessions of the targets (the app must be stopped, replicas: 0):"
     targetcli sessions || true
   else
     echo "(dry run: checks skipped)"
@@ -122,7 +179,7 @@ cmd_copy() {
 
 cmd_status() {
   need_root
-  run targetcli ls "/iscsi/$IQN/tpg1/luns"
+  run targetcli ls /iscsi
   run targetcli sessions
 }
 
@@ -131,6 +188,8 @@ cmd=$1; shift
 case "$cmd" in
   create) cmd_create "$@" ;;
   copy) cmd_copy "$@" ;;
+  migrate) cmd_migrate "$@" ;;
+  retire) cmd_retire ;;
   status) cmd_status ;;
   *) usage ;;
 esac

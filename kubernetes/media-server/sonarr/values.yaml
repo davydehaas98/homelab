@@ -37,15 +37,15 @@ backups:
   claimName: backups
   subPath: sonarr
 
-# The config is on iSCSI LUN 2 on yggdrasil, see kubernetes/media-server/media-server/README.md
+# The config is on an iSCSI disk on yggdrasil, a target of its own for this app, see kubernetes/media-server/media-server/README.md
 persistence:
   size: 5Gi
   labels:
     backup.velero.io/include: "true"
   iscsi:
     targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:yggdrasil
-    lun: 2
+    iqn: iqn.2026-10.nl.davydehaas:sonarr
+    lun: 0
 
 route:
   enabled: true

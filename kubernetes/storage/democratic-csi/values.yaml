@@ -1,6 +1,7 @@
 # Mounts the iSCSI LUNs that lun.sh makes on the home server (yggdrasil) on the node of the pod. The
 # driver `node-manual` only attaches volumes whose PersistentVolume is written by hand, here by the `app`
-# library chart (persistence.iscsi), it provisions nothing. See kubernetes/media-server/media-server/README.md.
+# library chart (persistence.iscsi), it provisions nothing. Every volume needs a target of its own: on unstage
+# the driver logs the node out of the whole target, which would cut the other volumes of that target. See kubernetes/media-server/media-server/README.md.
 democratic-csi:
   csiDriver:
     # Has to equal the `driver` in the PersistentVolumes of the library chart
