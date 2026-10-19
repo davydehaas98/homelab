@@ -10,6 +10,9 @@ cilium-cli = "0.20.1"
 # Renders and lints the wrapper charts under kubernetes/ and chart/.
 helm = "4.3.1"
 
+# Terminal UI for the cluster: nodes, the pods on each, logs and shells.
+k9s = "0.51.0"
+
 # Talks to the cluster. Keep it in step with the cluster's Kubernetes version.
 kubectl = "1.37.1"
 

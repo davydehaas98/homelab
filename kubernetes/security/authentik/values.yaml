@@ -13,6 +13,9 @@ oidcClients:
     # Grafana maps roles from group claims, so every Authentik user may sign in
     openAccess: true
     redirectURL: https://grafana.davydehaas.dev/login/generic_oauth
+  - name: Headlamp
+    slug: headlamp
+    redirectURL: https://headlamp.davydehaas.dev/oauth2/callback
   - name: Homepage
     slug: homepage
     redirectURL: https://homepage.davydehaas.dev/oauth2/callback
@@ -79,6 +82,8 @@ authentik:
           name: authentik-oidc-bazarr
       - secretRef:
           name: authentik-oidc-grafana
+      - secretRef:
+          name: authentik-oidc-headlamp
       - secretRef:
           name: authentik-oidc-homepage
       - secretRef:

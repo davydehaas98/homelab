@@ -1,0 +1,30 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: headlamp
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: headlamp
+  # Sign in with Authentik (application `headlamp`), restrict who may log in with policy bindings there.
+  # The client credentials are in the `headlamp-oidc-credentials` Secret of this namespace, see
+  # kubernetes/security/authentik/README.md
+  oidc:
+    provider:
+      # Set explicitly, so Envoy Gateway does not fetch the discovery document: a fetch while Authentik restarts marks the policy Invalid
+      issuer: https://auth.davydehaas.dev/application/o/headlamp/
+      authorizationEndpoint: https://auth.davydehaas.dev/application/o/authorize/
+      tokenEndpoint: https://auth.davydehaas.dev/application/o/token/
+      endSessionEndpoint: https://auth.davydehaas.dev/application/o/headlamp/end-session/
+    clientIDRef:
+      name: headlamp-oidc-credentials
+    clientSecret:
+      name: headlamp-oidc-credentials
+    redirectURL: https://headlamp.davydehaas.dev/oauth2/callback
+    logoutPath: /oauth2/logout
+    scopes:
+      - openid
+      - email
+      - profile
+      - offline_access

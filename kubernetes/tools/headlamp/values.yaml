@@ -1,0 +1,40 @@
+# Web UI for the cluster, read-only. The login is Authentik at the gateway (templates/security-policy.yaml), and every
+# user who passes it acts as the service account of Headlamp, limited by templates/rbac.yaml. The chart's own
+# cluster-admin binding is off.
+headlamp:
+  config:
+    inCluster: true
+    # Safe here only because the route is behind the Authentik login. Without it, anyone could use the service account.
+    unsafeUseServiceAccountToken: true
+    # The login is at the gateway, not in Headlamp
+    oidc:
+      secret:
+        create: false
+
+  clusterRoleBinding:
+    create: false
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+  httpRoute:
+    enabled: true
+    hostnames:
+      - headlamp.davydehaas.dev
+    parentRefs:
+      - name: envoy-gateway
+        namespace: envoy-gateway
+        sectionName: web-https

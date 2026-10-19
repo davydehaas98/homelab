@@ -130,6 +130,8 @@ applications:
       serverSideApply: true
 
   tools:
+    headlamp:
+      deploy: true
     homepage:
       deploy: true
     it-tools:

@@ -53,6 +53,7 @@ locals {
     "auth",
     "bazarr",
     "grafana",
+    "headlamp",
     "home-assistant",
     "homepage",
     "hubble",
