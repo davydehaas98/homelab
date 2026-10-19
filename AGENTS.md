@@ -46,8 +46,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 ## Validating
 
 CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
-dev container, never on the host, which may lack them or have other versions. Validate as CI does
-(`.github/workflows/helm.yaml`):
+dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
+before pushing:
 
 ```sh
 helm template chart
