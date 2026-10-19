@@ -62,6 +62,7 @@ locals {
     "lidarr",
     "nextcloud",
     "omni-tools",
+    "policy",
     "prometheus",
     "prowlarr",
     "radarr",

@@ -37,8 +37,14 @@ kyverno:
     clusterAdmissionReports:
       enabled: true
 
+  # Three replicas on different nodes: while the admission controller is down, the webhooks fail. The budget keeps
+  # two up during a node drain.
   admissionController:
-    replicas: 1
+    replicas: 3
+
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 2
 
     container:
       resources:
@@ -55,6 +61,23 @@ kyverno:
     enabled: true
 
     replicas: 1
+
+    # Creates the VerticalPodAutoscalers of templates/generate-vpa-policy.yaml
+    rbac:
+      clusterRole:
+        extraResources:
+          - apiGroups:
+              - autoscaling.k8s.io
+            resources:
+              - verticalpodautoscalers
+            verbs:
+              - create
+              - delete
+              - get
+              - list
+              - patch
+              - update
+              - watch
 
     resources:
       limits:
@@ -97,5 +120,7 @@ kyverno:
 
 kyverno-policies:
   podSecurityStandard: restricted
-  podSecuritySeverity: high
-  validationFailureAction: audit
+  podSecuritySeverity: low
+  validationFailureAction: Audit
+  # The policies only audit, so a pod is admitted when Kyverno does not answer
+  failurePolicy: Ignore
