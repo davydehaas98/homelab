@@ -1,6 +1,7 @@
 # Home Assistant with its SQLite database on the volume. The image runs as root, its init system needs that.
 # The gateway passes the real client address in a header, so its pods (the pod network) are trusted proxies.
-# The configuration is this file, so Home Assistant cannot rewrite it; devices are added in the UI.
+# The configuration is in config/, so Home Assistant cannot rewrite it; devices, the location and dashboards are
+# added in the UI. Not moved yet: the TTS and the location.
 image:
   registry: ghcr.io
   repository: home-assistant/home-assistant
@@ -24,14 +25,10 @@ resources:
 configFiles:
   - name: config
     mountPath: /config
-    files:
-      configuration.yaml: |
-        default_config:
-
-        http:
-          use_x_forwarded_for: true
-          trusted_proxies:
-            - 10.244.0.0/16
+    glob: config/*.yaml
+  - name: integrations
+    mountPath: /config/integrations
+    glob: config/integrations/*.yaml
 
 # The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see kubernetes/media-server/media-server/README.md
 persistence:
@@ -48,6 +45,9 @@ route:
   enabled: true
   hostnames:
     - home-assistant.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - hass.davydehaas.dev
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway

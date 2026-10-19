@@ -1,0 +1,56 @@
+# Sensors from the DSMR and water meter gateways. The broker itself is added in the UI (mosquitto in the home namespace).
+mqtt:
+  sensor:
+    # DSMR
+    - name: "DSMR running firmware version"
+      state_topic: dsmr/smart_gateways/running_firmware_version
+    - name: "DSMR available firmware version"
+      state_topic: dsmr/smart_gateways/available_firmware_version
+    - name: "DSMR update firmware version"
+      state_topic: dsmr/smart_gateways/update_available
+    - name: "DSMR MAC address"
+      state_topic: dsmr/smart_gateways/mac_address
+    - name: "DSMR Wi-Fi signal strength (RSSI)"
+      state_topic: dsmr/smart_gateways/wifi_rssi
+      unit_of_measurement: "dBm"
+    - name: "DSMR startup time"
+      state_topic: dsmr/smart_gateways/startup_time
+      device_class: timestamp
+      icon: mdi:clock-start
+    - name: "DSMR IP address"
+      state_topic: dsmr/smart_gateways/ip_address
+
+    # Water meter
+    - name: "Current usage"
+      state_topic: watermeter/reading/current_value
+      state_class: total_increasing
+      device_class: water
+      unit_of_measurement: "L"
+      icon: mdi:water
+    - name: "Water used last minute"
+      state_topic: watermeter/reading/water_used_last_minute
+      state_class: measurement
+      device_class: water
+      unit_of_measurement: "L"
+      icon: mdi:water
+    - name: "Leak detected"
+      state_topic: watermeter/reading/leak_detect
+      device_class: water
+      icon: mdi:water
+    - name: "Running firmware version"
+      state_topic: watermeter/smart_gateways/running_firmware_version
+    - name: "Available firmware version"
+      state_topic: watermeter/smart_gateways/available_firmware_version
+    - name: "Update firmware version"
+      state_topic: watermeter/smart_gateways/update_available
+    - name: "MAC Address"
+      state_topic: watermeter/smart_gateways/mac_address
+    - name: "Wi-Fi signal strength (RSSI)"
+      state_topic: watermeter/smart_gateways/wifi_rssi
+      unit_of_measurement: "dBm"
+    - name: "Startup time"
+      state_topic: watermeter/smart_gateways/startup_time
+      device_class: timestamp
+      icon: mdi:clock-start
+    - name: "IP address"
+      state_topic: watermeter/smart_gateways/ip_address

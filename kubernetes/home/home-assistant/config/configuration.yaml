@@ -1,0 +1,17 @@
+default_config:
+
+homeassistant:
+  packages: !include_dir_named integrations
+  name: Home
+  radius: 50
+  unit_system: metric
+  temperature_unit: C
+  currency: EUR
+  external_url: https://home-assistant.davydehaas.dev
+  language: en
+  country: NL
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 10.244.0.0/16

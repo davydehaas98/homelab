@@ -1,0 +1,15 @@
+# Keeps the log to what matters.
+logger:
+  default: warning
+
+  filters:
+    homeassistant:
+      # Happens during a restart with Ingress tabs open.
+      - "Error doing job: Task exception was never retrieved"
+
+    homeassistant.loader:
+      - "We found a custom integration"
+
+    homeassistant.util.yaml.loader:
+      # YAML anchors and aliases are used on purpose, with overrides, so duplicate keys are expected.
+      - "contains duplicate key"

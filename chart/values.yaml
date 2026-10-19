@@ -39,7 +39,7 @@ applications:
 
   home:
     home-assistant:
-      deploy: false
+      deploy: true
     immich:
       deploy: true
     mosquitto:
