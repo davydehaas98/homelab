@@ -10,10 +10,10 @@ Kubernetes gateway. There is no wildcard record, so every new hostname goes in o
 kept from when this lived in `home-server`.
 
 **CI** (`.github/workflows/terraform-cloudflare.yaml`) plans on pushes to `main` that touch this stack and on manual
-runs. A plan with changes waits for approval by the required reviewers of environment `cloudflare`, then plans again
-and applies. It needs the repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (DNS edit on the zone),
-`SERVER_IPV4_ADDRESS` and `SERVER_IPV6_ADDRESS`. The IAM role `github-state-cloudflare-dev` comes from the
-`bootstrap` stack of `home-server`, and its trust policy must allow the subjects `repo:davydehaas98/homelab:ref:refs/heads/main` (plan) and `repo:davydehaas98/homelab:environment:cloudflare` (apply).
+runs. A plan with changes is applied right after, with no approval, so a merge to `main` changes DNS. It needs the
+repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (DNS edit on the zone), `SERVER_IPV4_ADDRESS` and
+`SERVER_IPV6_ADDRESS`. The IAM role `github-state-cloudflare-dev` comes from the `bootstrap` stack of `home-server`,
+and its trust policy must allow the subject `repo:davydehaas98/homelab:ref:refs/heads/main`, for both jobs.
 
 **Locally**, set `TF_VAR_cloudflare_api_token`, `TF_VAR_ipv4_address` and `TF_VAR_ipv6_address`, then
 `terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with

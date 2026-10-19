@@ -60,7 +60,7 @@ Library charts only render through an app that uses them. `kubectl apply --dry-r
 against the cluster.
 
 Terraform without credentials: `terraform init -backend=false && terraform validate && terraform fmt -check`. CI
-applies after approval, see `terraform/README.md`. Never commit `*.tfvars` or state.
+applies on a merge to `main`, see `terraform/README.md`. Never commit `*.tfvars` or state.
 
 ## Talos
 

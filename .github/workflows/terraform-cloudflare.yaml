@@ -63,15 +63,13 @@ jobs:
           [ "$code" -ne 1 ] || exit 1
           if [ "$code" -eq 2 ]; then echo "changes=true"; else echo "changes=false"; fi >> "$GITHUB_OUTPUT"
 
-  # Waits for approval in the environment `cloudflare` (Settings > Environments, required reviewers). It plans
-  # again instead of reusing the plan file, which would carry the secrets in an artifact.
+  # Plans again instead of reusing the plan file, which would carry the secrets in an artifact.
   apply:
     name: Apply
     needs: plan
     if: needs.plan.outputs.changes == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment: cloudflare
     # Applies run one at a time; a newer waiting apply replaces an older one, as it plans a newer commit
     concurrency:
       group: terraform-cloudflare-davydehaas-dev
