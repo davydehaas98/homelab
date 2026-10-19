@@ -2,17 +2,19 @@
 - Media:
     - Plex:
         icon: plex.png
-        href: https://plex.davydehaas.nl
+        href: https://plex.davydehaas.dev
         description: Media server
+        siteMonitor: https://plex.davydehaas.dev
         widget:
           type: plex
-          url: https://plex.davydehaas.nl
+          url: https://plex.davydehaas.dev
           key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
 
     - Jellyfin:
         icon: jellyfin.png
         href: https://jellyfin.davydehaas.dev
         description: Media server
+        siteMonitor: http://jellyfin.media-server.svc.cluster.local:8096
         widget:
           type: jellyfin
           url: http://jellyfin.media-server.svc.cluster.local:8096
@@ -29,6 +31,7 @@
         icon: seerr.png
         href: https://seerr.davydehaas.dev
         description: Media request manager
+        siteMonitor: http://seerr.media-server.svc.cluster.local:5055
         widget:
           type: seerr
           url: http://seerr.media-server.svc.cluster.local:5055
@@ -38,6 +41,7 @@
         icon: sonarr.png
         href: https://sonarr.davydehaas.dev
         description: Series management
+        siteMonitor: http://sonarr.media-server.svc.cluster.local:8989
         widget:
           type: sonarr
           url: http://sonarr.media-server.svc.cluster.local:8989
@@ -47,6 +51,7 @@
         icon: radarr.png
         href: https://radarr.davydehaas.dev
         description: Movie management
+        siteMonitor: http://radarr.media-server.svc.cluster.local:7878
         widget:
           type: radarr
           url: http://radarr.media-server.svc.cluster.local:7878
@@ -56,6 +61,7 @@
         icon: lidarr.png
         href: https://lidarr.davydehaas.dev
         description: Music management
+        siteMonitor: http://lidarr.media-server.svc.cluster.local:8686
         widget:
           type: lidarr
           url: http://lidarr.media-server.svc.cluster.local:8686
@@ -65,6 +71,7 @@
         icon: bazarr.png
         href: https://bazarr.davydehaas.dev
         description: Subtitle management
+        siteMonitor: http://bazarr.media-server.svc.cluster.local:6767
         widget:
           type: bazarr
           url: http://bazarr.media-server.svc.cluster.local:6767
@@ -74,6 +81,7 @@
         icon: prowlarr.png
         href: https://prowlarr.davydehaas.dev
         description: Indexer proxy
+        siteMonitor: http://prowlarr.media-server.svc.cluster.local:9696
         widget:
           type: prowlarr
           url: http://prowlarr.media-server.svc.cluster.local:9696
@@ -84,6 +92,7 @@
         icon: sabnzbd.png
         href: https://sabnzbd.davydehaas.dev
         description: Usenet downloader
+        siteMonitor: https://sabnzbd.davydehaas.dev
         widget:
           type: sabnzbd
           url: https://sabnzbd.davydehaas.dev
@@ -91,19 +100,22 @@
 
     - Tautulli:
         icon: tautulli.png
-        href: https://tautulli.davydehaas.nl
+        href: https://tautulli.davydehaas.dev
         description: Plex monitoring
+        siteMonitor: https://tautulli.davydehaas.dev
         widget:
           type: tautulli
-          url: https://tautulli.davydehaas.nl
+          url: https://tautulli.davydehaas.dev
           key: "{{HOMEPAGE_VAR_TAUTULLI_KEY}}"
 
     - Threadfin:
         icon: threadfin.png
-        href: https://threadfin.davydehaas.nl
+        href: https://threadfin.davydehaas.dev
         description: IPTV M3U proxy
+        siteMonitor: https://threadfin.davydehaas.dev
 
     - Tracearr:
         icon: tracearr.png
-        href: https://tracearr.davydehaas.nl
+        href: https://tracearr.davydehaas.dev
         description: Torrent tracker manager
+        siteMonitor: https://tracearr.davydehaas.dev
