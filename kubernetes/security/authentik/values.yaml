@@ -28,6 +28,10 @@ oidcClients:
   - name: Longhorn
     slug: longhorn
     redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
+  - name: Nextcloud
+    slug: nextcloud
+    # Native OIDC through the user_oidc app of Nextcloud, next to its local login
+    redirectURL: https://nextcloud.davydehaas.dev/apps/user_oidc/code
   - name: Omni Tools
     slug: omni-tools
     redirectURL: https://omni-tools.davydehaas.dev/oauth2/callback
@@ -85,6 +89,8 @@ authentik:
           name: authentik-oidc-lidarr
       - secretRef:
           name: authentik-oidc-longhorn
+      - secretRef:
+          name: authentik-oidc-nextcloud
       - secretRef:
           name: authentik-oidc-omni-tools
       - secretRef:

@@ -24,6 +24,31 @@ nextcloud:
     extraEnv:
       - name: TRUSTED_PROXIES
         value: 10.244.0.0/16
+      - name: OIDC_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: nextcloud-oidc-credentials
+            key: client-id
+      - name: OIDC_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: nextcloud-oidc-credentials
+            key: client-secret
+
+    # Sign in with Authentik (client `nextcloud`) through the user_oidc app, next to the local login. The credentials
+    # are in templates/oidc-credentials.yaml. `occ user_oidc:provider` creates or updates, so it can run on every start.
+    hooks:
+      before-starting: |
+        php /var/www/html/occ app:install user_oidc || true
+        php /var/www/html/occ user_oidc:provider authentik \
+          --clientid="$OIDC_CLIENT_ID" \
+          --clientsecret="$OIDC_CLIENT_SECRET" \
+          --discoveryuri=https://auth.davydehaas.dev/application/o/nextcloud/.well-known/openid-configuration \
+          --scope="openid email profile" \
+          --unique-uid=0 \
+          --mapping-uid=preferred_username \
+          --mapping-display-name=name \
+          --mapping-email=email
 
   # The database and Valkey are in templates/, as the chart's own use images that are no longer public
   internalDatabase:
