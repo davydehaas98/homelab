@@ -22,8 +22,7 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 - Commit secrets only as SealedSecrets (controller `sealed-secrets-controller` in `kube-system`), never plaintext.
   Seal from stdin and never print values. To add keys, merge them into the live Secret and re-seal, as a
-  SealedSecret is bound to its name and namespace.
-- `talos/gen/` and `talos/talosconfig` hold cluster secrets and stay gitignored; don't search them. Client configs
+  SealedSecret is bound to its name and namespace.- `talos/gen/` and `talos/talosconfig` hold cluster secrets and stay gitignored; don't search them. Client configs
   are `~/.talos/config` and `~/.kube/config`, outside the repo.
 
 ## How the pieces connect
@@ -46,7 +45,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 ## Validating
 
-CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Validate as CI does
+CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
+dev container, never on the host, which may lack them or have other versions. Validate as CI does
 (`.github/workflows/helm.yaml`):
 
 ```sh

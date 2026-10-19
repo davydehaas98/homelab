@@ -23,7 +23,8 @@ Three things must land in **one change**, as a policy without its Secret breaks 
 2. **The sealed credentials**, one random pair into both Secrets:
    `kubernetes/security/authentik/templates/oidc-client-<slug>.yaml` and
    `kubernetes/<group>/<app>/templates/oidc-credentials.yaml`. Use the README's shell. It has the secret in the
-   shell only, so give the user the command to run with `! `, as in the `seal-secret` skill.
+   shell only, so give the user the command to run with `! `, as in the `seal-secret` skill. Always run it
+   in the dev container, see `seal-secret`.
 3. **The route policy.** For a library app, `oidc.enabled: true` (and `oidc.slug` if it differs from the chart name).
    For an upstream chart, a `SecurityPolicy` in `templates/` with the issuer, authorization, token and end-session
    endpoints set explicitly (so the gateway does not fetch the discovery document), as in `zigbee2mqtt`.

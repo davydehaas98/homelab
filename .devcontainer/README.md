@@ -21,6 +21,21 @@ podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -v ~/.talos:/roo
   -v homelab-claude-config:/root/.claude -e GRAFANA_SERVICE_ACCOUNT_TOKEN -w /workspace localhost/homelab-dev sh
 ```
 
+## Cluster CLIs
+
+`kubectl`, `helm` and `kubeseal` use `~/.kube/config` as it is. `argocd --core` talks to the cluster through the
+kubeconfig and looks for its config in the context's namespace, so it fails with `configmap "argocd-cm" not found`
+until that is `argocd`. `~/.kube/config` is a bind mount of the host's, so to leave it alone, set the namespace on a
+copy:
+
+```shell
+cp ~/.kube/config /tmp/kubeconfig && export KUBECONFIG=/tmp/kubeconfig
+kubectl config set-context --current --namespace=argocd
+argocd app list --core
+```
+
+`talosctl` needs `~/.talos`, which the command above mounts.
+
 ## Claude Code
 
 Run `claude`; its login is kept in the `homelab-claude-config` volume. `.mcp.json` adds the read-only Grafana MCP

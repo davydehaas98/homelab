@@ -39,4 +39,5 @@ The disk is made on yggdrasil. You cannot do that from here, so **give the user 
    next deploy starts it again.
 6. **Order matters.** The disk must exist before the app's first sync, or the pod waits in `ContainerCreating`.
 7. **Add the app to the table** in the README with its target and size.
-8. **I/O errors** afterwards: `talosctl -n <node> dmesg | grep -i iscsi`, then delete the pod.
+8. **I/O errors** afterwards: `talosctl -n <node> dmesg | grep -i iscsi`, then delete the pod. Always run CLIs in
+   the dev container.

@@ -12,6 +12,8 @@ Never commit plaintext, never print a value, never write it to a file. The flow 
    `talos/gen/`, `talos/talosconfig`, a `.env` or the live cluster to put it in the output. Give the user the exact
    command with `read -rs value` and tell them to run it with `! <command>`, so the output lands in the repo and not
    in the conversation.
+
+   Always run the command in the dev container (`.devcontainer/README.md`), from the repo root, as in `AGENTS.md`.
 2. **Name and namespace are part of the seal.** A SealedSecret only decrypts under the name and namespace it was made
    for. Use the namespace of the app (`namespace:` in `chart/values.yaml`, else the app name).
 3. **Write to `kubernetes/<group>/<app>/templates/<name>.yaml`**, next to the manifests that use it.
