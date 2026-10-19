@@ -28,9 +28,14 @@ cert-manager:
     servicemonitor:
       enabled: true
 
+  # Its webhooks fail closed, so while it is down no Certificate or Issuer can be created
   webhook:
-    replicaCount: 1
+    replicaCount: 2
     timeoutSeconds: 10
+
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
 
     securityContext:
       runAsNonRoot: true

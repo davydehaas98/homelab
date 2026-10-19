@@ -71,7 +71,11 @@ argo-cd:
         enabled: true
 
   server:
-    replicas: 1
+    replicas: 2
+
+    pdb:
+      enabled: true
+      minAvailable: 1
 
     httproute:
       enabled: true
@@ -86,8 +90,12 @@ argo-cd:
 
     rbacConfigCreate: false
 
+  # Renders the manifests of every sync, so while it is down nothing syncs
   repoServer:
-    replicas: 1
+    replicas: 2
+    pdb:
+      enabled: true
+      minAvailable: 1
     resources:
       limits:
         memory: 512Mi

@@ -118,8 +118,12 @@ authentik:
     existingSecret:
       secretName: authentik-credentials
 
+  # The login of most apps
   server:
-    replicas: 1
+    replicas: 2
+    pdb:
+      enabled: true
+      minAvailable: 1
     resources:
       limits:
         memory: 1Gi
