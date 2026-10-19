@@ -44,6 +44,8 @@ applications:
       deploy: true
     nextcloud:
       deploy: true
+    personal-website:
+      deploy: true
     zigbee2mqtt:
       deploy: false
 

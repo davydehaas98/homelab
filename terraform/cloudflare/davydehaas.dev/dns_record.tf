@@ -1,13 +1,3 @@
-resource "cloudflare_dns_record" "www" {
-  name    = "www"
-  ttl     = 1
-  type    = "CNAME"
-  zone_id = var.zone_id
-
-  content = "davydehaas.dev"
-  proxied = true
-}
-
 resource "cloudflare_dns_record" "wireguard" {
   name    = "wireguard"
   ttl     = 1
@@ -77,6 +67,7 @@ locals {
     "sabnzbd",
     "seerr",
     "sonarr",
+    "www",
   ]
 
   # Their `route.aliases`, which redirect to the main name.

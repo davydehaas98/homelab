@@ -5,7 +5,7 @@ resource "cloudflare_dns_record" "root_a" {
   zone_id = var.zone_id
 
   content = var.ipv4_address
-  proxied = true
+  proxied = false
 }
 
 resource "cloudflare_dns_record" "root_aaaa" {
@@ -15,7 +15,7 @@ resource "cloudflare_dns_record" "root_aaaa" {
   zone_id = var.zone_id
 
   content = var.ipv6_address
-  proxied = true
+  proxied = false
 }
 
 resource "cloudflare_dns_record" "root_caa_issue" {

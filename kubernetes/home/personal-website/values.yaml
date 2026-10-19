@@ -1,0 +1,49 @@
+# Placeholder nginx page to test the apex and `www` domains, until the website has an arm64 image
+# (ghcr.io/davydehaas98/personal-website is amd64 only). Unprivileged image, so it runs non-root on 8080.
+image:
+  registry: docker.io
+  repository: nginxinc/nginx-unprivileged
+  tag: 1.29-alpine
+
+port: 8080
+
+# No volume, so it updates without a gap
+kind: Deployment
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# nginx writes its cache and pid under /tmp
+emptyDirs:
+  - name: tmp
+    mountPath: /tmp
+
+resources:
+  limits:
+    memory: 64Mi
+  requests:
+    cpu: 10m
+    memory: 16Mi
+
+# The apex has a listener of its own, as the wildcard one doesn't match it. Its record is in
+# `terraform/cloudflare/davydehaas.dev/root.tf`, `www` is in `dns_record.tf`
+route:
+  enabled: true
+  hostnames:
+    - davydehaas.dev
+    - www.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https-apex
