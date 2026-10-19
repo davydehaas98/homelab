@@ -1,0 +1,12 @@
+title: homepage.davydehaas.dev
+description: My homepage
+theme: dark
+color: slate
+
+layout:
+  Media:
+    style: row
+    columns: 4
+
+headerStyle: boxedWidgets
+showStats: true

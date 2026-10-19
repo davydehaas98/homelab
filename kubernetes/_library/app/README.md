@@ -45,7 +45,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.labels` | | Extra labels of the claim. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath` (+ `readOnly: true`). |
 | `envFrom` | none | Environment variables from Secrets or ConfigMaps, a list of `secretRef` or `configMapRef` entries. |
-| `configFiles` | none | Files mounted into the app, a list of `name`, `mountPath` and either `files` (a map of file name to content, rendered into a ConfigMap, and the pod restarts when it changes) or `secret` (the name of an existing Secret, with `keys` to mount). Each file is mounted on its own with a `subPath`, so it can sit in an `emptyDirs` folder that stays writable. |
+| `configFiles` | none | Files mounted into the app, a list of `name`, `mountPath` and either `files` (a map of file name to content) and/or `glob` (files of the app chart, such as `config/*.yaml`, not recursive), rendered into a ConfigMap, and the pod restarts when it changes, or `secret` (the name of an existing Secret, with `keys` to mount). Each file is mounted on its own with a `subPath`, so it can sit in an `emptyDirs` folder that stays writable. |
 | `emptyDirs` | none | Scratch volumes, a list of `name`, `mountPath` and optionally `medium: Memory` and `sizeLimit`. Gone when the pod restarts. |
 | `backups.claimName`, `backups.subPath`, `backups.mountPath` | none, none, `/config/Backups` | Mount a `subPath` of an existing claim for the app's own backups, outside the `/config` volume. |
 | `route.enabled`, `route.hostnames`, `route.parentRefs` | off | `HTTPRoute` to the app. Also takes `annotations`, `labels`, `filters`, `matches` and `additionalRules`. |

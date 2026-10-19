@@ -74,7 +74,7 @@ spec:
               name: {{ .name }}
             {{- end }}
             {{- range $f := .Values.configFiles }}
-            {{- range $key := ($f.keys | default (keys ($f.files | default dict) | sortAlpha)) }}
+            {{- range $key := ($f.keys | default (keys (include "app.configData" (dict "root" $ "entry" $f) | fromJson) | sortAlpha)) }}
             - mountPath: {{ $f.mountPath }}/{{ $key }}
               name: files-{{ $f.name }}
               subPath: {{ $key }}
