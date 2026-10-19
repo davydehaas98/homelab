@@ -37,6 +37,15 @@ resources:
 # `terraform/cloudflare/davydehaas.dev/root.tf`, `www` is in `dns_record.tf`
 route:
   enabled: true
+  # Only this route sets a CSP and X-Frame-Options: apps that embed pages or need inline scripts would break on them
+  filters:
+    - type: ResponseHeaderModifier
+      responseHeaderModifier:
+        set:
+          - name: x-frame-options
+            value: DENY
+          - name: content-security-policy
+            value: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
   hostnames:
     - davydehaas.dev
     - www.davydehaas.dev

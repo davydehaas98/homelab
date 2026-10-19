@@ -15,7 +15,7 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 - `autoSync: false` moves an app to the AppProject `no-sync` (manual sync only), as for `cilium`.
 - Each app is a wrapper chart: the upstream chart as a dependency, its overrides in `values.yaml`, and extra
   manifests in `templates/`. Single-container apps use the library chart `kubernetes/_library/app` instead and
-  only set values (see its README). New apps start from a copy of `kubernetes/_base/`.
+  only set values (see its README). New apps start from a copy of `kubernetes/_base/`, following the `add-app` skill.
 - Images must publish arm64.
 
 ## Secrets

@@ -10,6 +10,10 @@ spec:
   tls:
     minVersion: '1.2'
     maxVersion: '1.3'
+    ecdhCurves:
+      - X25519MLKEM768
+      - X25519
+      - P-256
     ciphers:
       - ECDHE-ECDSA-AES128-GCM-SHA256
       - ECDHE-RSA-AES128-GCM-SHA256
@@ -27,13 +31,3 @@ spec:
           value: "no-referrer"
         - name: "x-content-type-options"
           value: "nosniff"
-        - name: "x-frame-options"
-          value: "DENY"
-        - name: "xss-protection"
-          value: "1; mode=block"
-        - name: "content-security-policy"
-          value: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://auth.davydehaas.dev/csp-report"
-        - name: "cache-control"
-          value: "private, no-store, no-cache, must-revalidate"
-        - name: "reporting-endpoints"
-          value: "csp https://auth.davydehaas.dev/csp-report; pki-oversupply https://auth.davydehaas.dev/pki-report"
