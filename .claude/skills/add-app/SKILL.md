@@ -6,7 +6,8 @@ description: Use when adding a new app to the cluster (a new directory under kub
 # Add an app
 
 Read `AGENTS.md` and, for single-container apps, `kubernetes/_library/app/README.md` first. Work through every step and
-tick each off before reporting the app as done.
+tick each off before reporting the app as done. Moving an app from the home server? Start with the
+`migrate-from-home-server` skill.
 
 1. **Start from `kubernetes/_base/`.** Copy the whole directory, including `templates/namespace.yaml`; Argo CD does not
    create namespaces, so an app without one fails to sync. Fill in every blank in the copy (chart name, namespace
@@ -18,10 +19,10 @@ tick each off before reporting the app as done.
 4. **Image**: it must publish `linux/arm64`; check the manifest, not the name. Pin a version tag Renovate can follow.
 5. **Exposure**: an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`) and a DNS record in
    `terraform/cloudflare/davydehaas.dev/dns_record.tf` (`kubernetes_apps`, or `kubernetes_aliases` for aliases).
-6. **Login**: Authentik OIDC, or the app's own; see `kubernetes/security/authentik/README.md`. Commit the sealed
-   credentials in the same change as the policy.
-7. **Storage and monitoring**: a volume as in the library README (iSCSI for SQLite and databases), and a
-   ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
+6. **Login**: Authentik OIDC (the `add-oidc-client` skill), or the app's own. Commit the sealed credentials in the
+   same change as the policy. Other secrets: the `seal-secret` skill.
+7. **Storage and monitoring**: a volume as in the library README (iSCSI for SQLite and databases, the
+   `add-iscsi-disk` skill), and a ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
 8. **Validate** as in `AGENTS.md`. When `helm` is missing locally, run it in the devcontainer (`podman exec`).
    Render the app and the root `chart/`, and confirm the render contains a Namespace.
 9. **Stage only this app's files** (never commit); other uncommitted changes stay out.
