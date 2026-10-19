@@ -52,6 +52,9 @@ oidcClients:
   - name: Sonarr
     slug: sonarr
     redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
+  - name: Zigbee2MQTT
+    slug: zigbee2mqtt
+    redirectURL: https://zigbee.davydehaas.dev/oauth2/callback
 
 authentik:
   global:
@@ -98,6 +101,8 @@ authentik:
           name: authentik-oidc-sabnzbd
       - secretRef:
           name: authentik-oidc-sonarr
+      - secretRef:
+          name: authentik-oidc-zigbee2mqtt
 
   blueprints:
     configMaps:

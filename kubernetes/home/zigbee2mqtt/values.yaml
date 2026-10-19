@@ -1,9 +1,6 @@
-# Official chart. It merges the `zigbee2mqtt:` block below OVER the configuration.yaml on the data volume,
-# so every value here replaces the one of your running network. Before enabling this app, copy the
-# settings from the configuration.yaml on the home server (serial port, channel, transmit power, ...):
-# a different channel or coordinator setting splits the Zigbee network and the devices have to be paired again.
-# The network key and the device list stay in the volume (copy ~/home-server/zigbee2mqtt/data into it first).
-# The frontend has no login of its own and there is no route yet, add one together with an Authentik policy.
+# Official chart. It merges the `zigbee2mqtt:` block below over the configuration.yaml on the data volume, so only
+# set what must differ. The network key, devices and groups stay in the volume, copy ~/home-server/zigbee2mqtt/data
+# into it before the first start: a new volume makes Zigbee2MQTT form a new network on the coordinator.
 zigbee2mqtt:
   statefulset:
     storage:
@@ -30,10 +27,21 @@ zigbee2mqtt:
   service:
     type: ClusterIP
 
+  httproute:
+    enabled: true
+    parentRefs:
+      - name: envoy-gateway
+        namespace: envoy-gateway
+        sectionName: web-https
+    hostnames:
+      - zigbee.davydehaas.dev
+
   zigbee2mqtt:
     timezone: Europe/Amsterdam
+    # The chart sets the Home Assistant status topic of Zigbee2MQTT 1.x
+    homeassistant:
+      status_topic: homeassistant/status
     mqtt:
-      server: mqtt://192.168.1.44:1883
+      server: mqtt://mosquitto.mosquitto.svc.cluster.local:1883
     serial:
-      # Replace with the coordinator of the home server, in the form tcp://<host>:<port>
-      port: tcp://CHANGE-ME:6638
+      port: tcp://192.168.1.30:6638

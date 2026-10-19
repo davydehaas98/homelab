@@ -1,0 +1,29 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: zigbee2mqtt
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: zigbee2mqtt
+  # Sign in with Authentik (application `zigbee2mqtt`), restrict who may log in with policy bindings there.
+  # The client credentials are in the `zigbee2mqtt-oidc-credentials` Secret of this namespace, see the Authentik README
+  oidc:
+    provider:
+      # Set explicitly, so Envoy Gateway does not fetch the discovery document: a fetch while Authentik restarts marks the policy Invalid
+      issuer: https://auth.davydehaas.dev/application/o/zigbee2mqtt/
+      authorizationEndpoint: https://auth.davydehaas.dev/application/o/authorize/
+      tokenEndpoint: https://auth.davydehaas.dev/application/o/token/
+      endSessionEndpoint: https://auth.davydehaas.dev/application/o/zigbee2mqtt/end-session/
+    clientIDRef:
+      name: zigbee2mqtt-oidc-credentials
+    clientSecret:
+      name: zigbee2mqtt-oidc-credentials
+    redirectURL: https://zigbee.davydehaas.dev/oauth2/callback
+    logoutPath: /oauth2/logout
+    scopes:
+      - openid
+      - email
+      - profile
+      - offline_access

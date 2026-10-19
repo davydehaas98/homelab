@@ -1,0 +1,64 @@
+# MQTT broker for Zigbee2MQTT, Home Assistant and the meter gateways. The config is in this file, the password file
+# in the Secret `mosquitto-passwd` (templates/passwd.yaml, sealed from the file of the home server) and only the
+# persistence database in the volume. Websockets (9001) are not exposed.
+image:
+  registry: docker.io
+  repository: library/eclipse-mosquitto
+  tag: 2.0.22
+
+port: 1883
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1883
+  runAsGroup: 1883
+  fsGroup: 1883
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+probe:
+  tcpSocket:
+    port: http
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+persistence:
+  size: 1Gi
+  mountPath: /mosquitto/data
+
+configFiles:
+  - name: config
+    mountPath: /mosquitto/config
+    files:
+      mosquitto.conf: |
+        persistence true
+        persistence_location /mosquitto/data/
+        log_dest stdout
+
+        allow_anonymous false
+        password_file /mosquitto/config/passwd_file
+
+        listener 1883 0.0.0.0
+  # Readable by the group of the pod only
+  - name: passwd
+    mountPath: /mosquitto/config
+    secret: mosquitto-passwd
+    keys:
+      - passwd_file
+    defaultMode: 0440
+
+# Reachable on the LAN at this address, outside the HTTP gateway
+service:
+  type: LoadBalancer
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.57

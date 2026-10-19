@@ -53,6 +53,7 @@ locals {
     "auth",
     "bazarr",
     "grafana",
+    "home-assistant",
     "homepage",
     "hubble",
     "immich",
@@ -68,6 +69,7 @@ locals {
     "seerr",
     "sonarr",
     "www",
+    "zigbee",
   ]
 
   # Their `route.aliases`, which redirect to the main name.

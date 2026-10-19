@@ -1,3 +1,54 @@
-home-assistant:
-  ingress:
-    enabled: false
+# Home Assistant with its SQLite database on the volume. The image runs as root, its init system needs that.
+# The gateway passes the real client address in a header, so its pods (the pod network) are trusted proxies.
+# The configuration is this file, so Home Assistant cannot rewrite it; devices are added in the UI.
+image:
+  registry: ghcr.io
+  repository: home-assistant/home-assistant
+  tag: 2026.10.2
+
+port: 8123
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+
+resources:
+  limits:
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 384Mi
+
+configFiles:
+  - name: config
+    mountPath: /config
+    files:
+      configuration.yaml: |
+        default_config:
+
+        http:
+          use_x_forwarded_for: true
+          trusted_proxies:
+            - 10.244.0.0/16
+
+# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see kubernetes/media-server/media-server/README.md
+persistence:
+  size: 5Gi
+  labels:
+    backup.velero.io/include: "true"
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:home-assistant
+    lun: 0
+
+# Its own login, as the mobile app cannot follow a redirect to the identity provider
+route:
+  enabled: true
+  hostnames:
+    - home-assistant.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

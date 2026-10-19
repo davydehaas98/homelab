@@ -42,12 +42,15 @@ applications:
       deploy: false
     immich:
       deploy: true
+    mosquitto:
+      deploy: false
     nextcloud:
       deploy: true
     personal-website:
       deploy: true
     zigbee2mqtt:
       deploy: false
+      nameOverride: zigbee2mqtt
 
   media-server:
     bazarr:
