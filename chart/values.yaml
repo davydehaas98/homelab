@@ -138,8 +138,6 @@ applications:
       deploy: true
     it-tools:
       deploy: true
-    memos:
-      deploy: false
     omni-tools:
       deploy: true
     open-webui:
