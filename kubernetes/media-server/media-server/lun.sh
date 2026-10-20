@@ -126,6 +126,8 @@ cmd_retire() {
   run targetcli /iscsi delete "$OLD_IQN"
   run targetcli saveconfig
   echo "Removed $OLD_IQN, the images and the per-app targets stay"
+  echo "The nodes keep their session to a removed target and stack dead mounts on it. On every democratic-csi node pod run:"
+  echo "  kubectl exec -n democratic-csi <pod> -c csi-driver -- chroot /host iscsiadm -m node -T $OLD_IQN -p 192.168.1.44:3260 --logout"
 }
 
 cmd_copy() {

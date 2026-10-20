@@ -43,7 +43,7 @@ applications:
     immich:
       deploy: true
     mosquitto:
-      deploy: false
+      deploy: true
     nextcloud:
       deploy: true
     personal-website:

@@ -1,0 +1,19 @@
+# A pod that waits in ContainerCreating for ten minutes: usually an iSCSI disk that cannot attach or mount, see
+# kubernetes/media-server/media-server/README.md. The rules of the chart only fire after 15 minutes to an hour.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pod-stuck-creating
+  namespace: prometheus
+spec:
+  groups:
+    - name: pod-stuck-creating
+      rules:
+        - alert: PodStuckCreating
+          expr: max by (namespace, pod) (kube_pod_container_status_waiting_reason{reason="ContainerCreating"}) == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in ContainerCreating`}}"
+            description: "Check the events of the pod: a volume that does not attach or mount keeps it here."

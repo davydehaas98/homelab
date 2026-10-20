@@ -2,7 +2,8 @@
 set -e
 #
 # Seals a Secret into kubernetes/<group>/<app>/templates/<name>.yaml. The values are asked for without echo (or read
-# from stdin when it is not a terminal), and never printed or written in plain text. A SealedSecret only decrypts under
+# from stdin when it is not a terminal, one line per key, or the whole of stdin for a single key, which then may span
+# several lines), and never printed or written in plain text. A SealedSecret only decrypts under
 # the name and namespace it was sealed for, and cannot be edited. With -m the keys of the live Secret are kept and
 # the given keys replaced or added, so a key can be added to an existing Secret. Needs `kubeseal` and `jq`, and
 # `kubectl` for -m, with access to the cluster. Run it in the dev container (.devcontainer/README.md).
@@ -45,6 +46,8 @@ for KEY in ${KEYS}; do
         IFS= read -r VALUE
         stty echo
         printf '\n' >&2
+    elif [ "$(set -- ${KEYS}; echo $#)" -eq 1 ]; then
+        VALUE=$(cat)
     else
         # Without a trailing newline `read` fails, but still sets the value
         IFS= read -r VALUE || [ -n "${VALUE}" ]

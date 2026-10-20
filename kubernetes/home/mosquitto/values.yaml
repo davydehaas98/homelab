@@ -1,6 +1,6 @@
-# MQTT broker for Zigbee2MQTT, Home Assistant and the meter gateways. The config is in this file, the password file
-# in the Secret `mosquitto-passwd` (templates/passwd.yaml, sealed from the file of the home server) and only the
-# persistence database in the volume. Websockets (9001) are not exposed.
+# MQTT broker for Zigbee2MQTT, Home Assistant and the meter gateways. The config is in this file and only the
+# persistence database is in the volume. Like the broker on the home server it accepts anonymous clients, and only the
+# LAN can reach it. Websockets (9001) are not exposed.
 image:
   registry: docker.io
   repository: library/eclipse-mosquitto
@@ -45,17 +45,9 @@ configFiles:
         persistence_location /mosquitto/data/
         log_dest stdout
 
-        allow_anonymous false
-        password_file /mosquitto/config/passwd_file
+        allow_anonymous true
 
         listener 1883 0.0.0.0
-  # Readable by the group of the pod only
-  - name: passwd
-    mountPath: /mosquitto/config
-    secret: mosquitto-passwd
-    keys:
-      - passwd_file
-    defaultMode: 0440
 
 # Reachable on the LAN at this address, outside the HTTP gateway
 service:
