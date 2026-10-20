@@ -1,3 +1,3 @@
-{{- define "base.name"  -}}
-{{ default ( kebabcase .key ) .value.nameOverride }}
+{{- define "base.name" -}}
+{{ default (kebabcase .key) .value.nameOverride }}
 {{- end -}}

@@ -19,8 +19,8 @@ applications:
     intel-device-plugins-gpu:
       deploy: false
       ignoreDifferences:
-        - group: "deviceplugin.intel.com"
-          kind: "GpuDevicePlugin"
+        - group: deviceplugin.intel.com
+          kind: GpuDevicePlugin
           jsonPointers:
             - /spec/resourceManager
     metrics-server:
