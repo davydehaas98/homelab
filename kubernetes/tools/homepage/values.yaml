@@ -1,6 +1,7 @@
 # Start page. Its config is in this file and the API keys of the widgets in the Secret `homepage-keys`
-# (templates/keys.yaml), which Homepage fills in for `{{HOMEPAGE_VAR_...}}`. There is no Docker socket in the cluster,
-# so the services are listed here. The files are mounted into an empty folder, as Homepage writes its logs there.
+# (templates/keys.yaml), mounted as files that Homepage reads for `{{HOMEPAGE_FILE_...}}`. There is no Docker socket in
+# the cluster, so the services are listed here. The files are mounted into an empty folder, as Homepage writes its logs
+# there.
 image:
   registry: ghcr.io
   repository: gethomepage/homepage
@@ -14,10 +15,15 @@ kind: Deployment
 env:
   # Requests for other hosts are refused
   HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev
-
-envFrom:
-  - secretRef:
-      name: homepage-keys
+  # Paths of the API keys, which Homepage reads for `{{HOMEPAGE_FILE_...}}`
+  HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_BAZARR_KEY
+  HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/homepage/HOMEPAGE_VAR_JELLYFIN_KEY
+  HOMEPAGE_FILE_LIDARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_LIDARR_KEY
+  HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_PROWLARR_KEY
+  HOMEPAGE_FILE_RADARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_RADARR_KEY
+  HOMEPAGE_FILE_SABNZBD_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SABNZBD_KEY
+  HOMEPAGE_FILE_SEERR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SEERR_KEY
+  HOMEPAGE_FILE_SONARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SONARR_KEY
 
 podSecurityContext:
   runAsNonRoot: true
@@ -51,6 +57,19 @@ configFiles:
   - name: config
     mountPath: /app/config
     glob: config/*.yaml
+  - name: keys
+    mountPath: /run/secrets/homepage
+    secret: homepage-keys
+    keys:
+      - HOMEPAGE_VAR_BAZARR_KEY
+      - HOMEPAGE_VAR_JELLYFIN_KEY
+      - HOMEPAGE_VAR_LIDARR_KEY
+      - HOMEPAGE_VAR_PROWLARR_KEY
+      - HOMEPAGE_VAR_RADARR_KEY
+      - HOMEPAGE_VAR_SABNZBD_KEY
+      - HOMEPAGE_VAR_SEERR_KEY
+      - HOMEPAGE_VAR_SONARR_KEY
+    defaultMode: 0440
 
 route:
   enabled: true

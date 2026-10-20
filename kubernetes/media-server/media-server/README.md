@@ -25,8 +25,11 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Seerr              | `seerr`                | 1G   |
 | Jellyfin           | `jellyfin`             | 10G  |
 | Bazarr             | `bazarr`               | 1G   |
+| memos              | `memos`                | 1G   |
+| Uptime Kuma        | `uptime-kuma`          | 2G   |
 | Prometheus TSDB    | `prometheus`           | 10G  |
 | Authentik Postgres | `authentik-postgresql` | 2G   |
+| Immich Postgres    | `immich-database`      | 32G  |
 
 ### Adding an app
 

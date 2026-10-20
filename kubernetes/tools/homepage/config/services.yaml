@@ -18,7 +18,7 @@
         widget:
           type: jellyfin
           url: http://jellyfin.media-server.svc.cluster.local:8096
-          key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+          key: "{{HOMEPAGE_FILE_JELLYFIN_KEY}}"
           version: 2
           enableBlocks: true
           enableNowPlaying: true
@@ -35,7 +35,7 @@
         widget:
           type: seerr
           url: http://seerr.media-server.svc.cluster.local:5055
-          key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
+          key: "{{HOMEPAGE_FILE_SEERR_KEY}}"
 
     - Sonarr:
         icon: sonarr.png
@@ -45,7 +45,7 @@
         widget:
           type: sonarr
           url: http://sonarr.media-server.svc.cluster.local:8989
-          key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+          key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
 
     - Radarr:
         icon: radarr.png
@@ -55,7 +55,7 @@
         widget:
           type: radarr
           url: http://radarr.media-server.svc.cluster.local:7878
-          key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+          key: "{{HOMEPAGE_FILE_RADARR_KEY}}"
 
     - Lidarr:
         icon: lidarr.png
@@ -65,7 +65,7 @@
         widget:
           type: lidarr
           url: http://lidarr.media-server.svc.cluster.local:8686
-          key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+          key: "{{HOMEPAGE_FILE_LIDARR_KEY}}"
 
     - Bazarr:
         icon: bazarr.png
@@ -75,7 +75,7 @@
         widget:
           type: bazarr
           url: http://bazarr.media-server.svc.cluster.local:6767
-          key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+          key: "{{HOMEPAGE_FILE_BAZARR_KEY}}"
 
     - Prowlarr:
         icon: prowlarr.png
@@ -85,7 +85,7 @@
         widget:
           type: prowlarr
           url: http://prowlarr.media-server.svc.cluster.local:9696
-          key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+          key: "{{HOMEPAGE_FILE_PROWLARR_KEY}}"
 
     # SABnzbd rejects other hostnames, so its widget uses the public address (the /api path skips the login)
     - SABnzbd:
@@ -96,7 +96,7 @@
         widget:
           type: sabnzbd
           url: https://sabnzbd.davydehaas.dev
-          key: "{{HOMEPAGE_VAR_SABNZBD_KEY}}"
+          key: "{{HOMEPAGE_FILE_SABNZBD_KEY}}"
 
     - Tautulli:
         icon: tautulli.png

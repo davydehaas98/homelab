@@ -112,9 +112,15 @@ spec:
           {{- if .secret }}
           secret:
             secretName: {{ .secret }}
+            {{- with .defaultMode }}
+            defaultMode: {{ . }}
+            {{- end }}
           {{- else }}
           configMap:
             name: {{ template "app.fullname" $ }}-{{ .name }}
+            {{- with .defaultMode }}
+            defaultMode: {{ . }}
+            {{- end }}
           {{- end }}
         {{- end }}
 {{- end -}}

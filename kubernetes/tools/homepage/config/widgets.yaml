@@ -1,11 +1,15 @@
-- resources:
-    cpu: true
-    memory: true
-    disk: /
-    cputemp: true
-    uptime: true
-    units: metric
-    network: true
+- kubernetes:
+    cluster:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true
+      label: yggdrasil
+    nodes:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true
 
 - search:
     provider: duckduckgo
