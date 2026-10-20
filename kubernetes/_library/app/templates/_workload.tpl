@@ -32,6 +32,10 @@ spec:
       containers:
         - name: {{ template "app.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             {{- range $name, $value := merge (deepCopy (.Values.env | default dict)) (dict "TZ" "Europe/Amsterdam") }}
             - name: {{ $name }}

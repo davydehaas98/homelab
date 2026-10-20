@@ -49,6 +49,7 @@ resource "cloudflare_dns_record" "dkim1" {
 locals {
   # HTTPRoute hostnames.
   kubernetes_apps = [
+    "adguard",
     "argocd",
     "auth",
     "bazarr",
@@ -78,6 +79,7 @@ locals {
 
   # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
+    "adguardhome",
     "authentik",
     "drive",
     "dvr",

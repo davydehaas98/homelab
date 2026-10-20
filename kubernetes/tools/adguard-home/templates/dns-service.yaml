@@ -1,0 +1,24 @@
+# DNS for the LAN, on a fixed address outside the HTTP gateway. TCP and UDP share the address, and the client address
+# stays visible to AdGuard Home (its query log and per-client rules) because the traffic is not translated.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}-dns
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.60
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+  selector:
+    {{- include "app.selectorLabels" . | nindent 4 }}

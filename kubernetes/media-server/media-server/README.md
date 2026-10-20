@@ -29,6 +29,7 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Home Assistant     | `home-assistant`       | 5G   |
 | Nextcloud Postgres | `nextcloud-database`   | 10G  |
 | Prometheus TSDB    | `prometheus`           | 10G  |
+| AdGuard Home       | `adguard-home`         | 2G   |
 | Authentik Postgres | `authentik-postgresql` | 2G   |
 | Immich Postgres    | `immich-database`      | 32G  |
 | Nextcloud code     | `nextcloud`            | 16G  |

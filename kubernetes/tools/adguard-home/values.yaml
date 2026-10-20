@@ -1,0 +1,61 @@
+# DNS filter for the LAN. Its configuration and data are on one disk, with the configuration (AdGuardHome.yaml, users,
+# upstreams, filters, rewrites) in `conf` and the statistics and query log in `work`. Copy the folders of the home
+# server into the disk before the first start: a new disk starts the setup wizard on port 3000, which the probes do not
+# cover. Left out: the container's own mounts under /opt/adguardhome, which hold the program itself.
+image:
+  registry: docker.io
+  repository: adguard/adguardhome
+  tag: v0.107.79
+
+# The web interface; the old configuration has it on port 80
+port: 80
+
+args:
+  - --no-check-update
+  - -c
+  - /data/conf/AdGuardHome.yaml
+  - -w
+  - /data/work
+
+# Runs as a normal user and still binds the low ports 53 and 80, as the kernel may let any process do that in this pod
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1400
+  runAsGroup: 1400
+  fsGroup: 1400
+  sysctls:
+    - name: net.ipv4.ip_unprivileged_port_start
+      value: "0"
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 20m
+    memory: 128Mi
+
+# The statistics database does not work on NFS, so the disk is on yggdrasil, see kubernetes/media-server/media-server/README.md
+persistence:
+  size: 2Gi
+  mountPath: /data
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:adguard-home
+    lun: 0
+
+# Its own login, from the configuration
+route:
+  enabled: true
+  hostnames:
+    - adguard.davydehaas.dev
+  # Redirect to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - adguardhome.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

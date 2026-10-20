@@ -133,6 +133,8 @@ applications:
       serverSideApply: true
 
   tools:
+    adguard-home:
+      deploy: false
     gatus:
       deploy: true
     headlamp:
