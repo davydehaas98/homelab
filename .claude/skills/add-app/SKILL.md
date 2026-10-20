@@ -23,8 +23,8 @@ tick each off before reporting the app as done. Moving an app from the home serv
    same change as the policy. Other secrets: the `seal-secret` skill.
 7. **Storage and monitoring**: a volume as in the library README (iSCSI for SQLite and databases, the
    `add-iscsi-disk` skill), and a ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
-8. **Validate** as in `AGENTS.md`, always in the dev container (`podman exec`).
-   Render the app and the root `chart/`, and confirm the render contains a Namespace.
+8. **Validate** with `scripts/validate.sh` (`-t` when `dns_record.tf` changed), always in the dev container
+   (`podman exec`). It renders the root `chart/` and the app, and checks the render has a Namespace.
 9. **Stage only this app's files** (never commit); other uncommitted changes stay out.
 
 After it syncs, check the Application is `Synced` and `Healthy` and the HTTPRoute is `Accepted`.

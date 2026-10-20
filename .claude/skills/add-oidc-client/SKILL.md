@@ -22,9 +22,9 @@ Three things must land in **one change**, as a policy without its Secret breaks 
    - `openAccess: true` only when the app maps roles from group claims.
 2. **The sealed credentials**, one random pair into both Secrets:
    `kubernetes/security/authentik/templates/oidc-client-<slug>.yaml` and
-   `kubernetes/<group>/<app>/templates/oidc-credentials.yaml`. Use the README's shell. It has the secret in the
-   shell only, so give the user the command to run with `! `, as in the `seal-secret` skill. Always run it
-   in the dev container, see `seal-secret`.
+   `kubernetes/<group>/<app>/templates/oidc-credentials.yaml`. Run `seal-oidc-client.sh` in the dev container, with
+   `~/.kube` mounted as `kubeseal` needs the cluster. The pair is generated in the script and never printed, so you
+   may run it yourself, but never read the Secrets back.
 3. **The route policy.** For a library app, `oidc.enabled: true` (and `oidc.slug` if it differs from the chart name).
    For an upstream chart, a `SecurityPolicy` in `templates/` with the issuer, authorization, token and end-session
    endpoints set explicitly (so the gateway does not fetch the discovery document), as in `zigbee2mqtt`.
@@ -32,4 +32,4 @@ Three things must land in **one change**, as a policy without its Secret breaks 
 After the sync, restart `authentik-worker`, since blueprints read the credentials at start. Then check the
 `SecurityPolicy` is `Accepted` and the login redirects to `auth.davydehaas.dev`.
 
-Validate as in `AGENTS.md`, and render both the app and `kubernetes/security/authentik`.
+Validate with `scripts/validate.sh`, passing both the app and `security/authentik`.

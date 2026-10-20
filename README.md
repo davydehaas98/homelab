@@ -15,15 +15,12 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 
 ## Secrets
 
-Commit secrets only as SealedSecrets. Seal from stdin, so no plaintext file is written:
+Commit secrets only as SealedSecrets. `scripts/seal-secret.sh` asks for the values without echo, so no plaintext is
+written or kept in the shell history, and `-m` adds a key to an existing Secret:
 
 ```shell
-kubectl create secret generic <name> -n <namespace> --from-literal=<key>="$value" --dry-run=client -o yaml \
-  | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml \
-  > kubernetes/<group>/<app>/templates/<name>.yaml
+sh scripts/seal-secret.sh -n <name> -N <namespace> -a <group>/<app> -k <key>
 ```
-
-Read `value` with `read -rs value`, so it stays out of the shell history.
 
 ## Hardware
 

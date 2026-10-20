@@ -29,20 +29,10 @@ Each entry in `oidcClients` gets a blueprint with a provider, an application and
 slug is the issuer path (`/application/o/<slug>/`) in the app's `SecurityPolicy`. To add one:
 
 1. Add the entry to `oidcClients`, and `authentik-oidc-<slug>` to `envFrom` (the render fails without it).
-2. Seal one random pair into both Secrets, from this folder:
+2. Seal one random pair into both Secrets, from this folder in the dev container:
 
    ```shell
-   slug=<slug> ns=<namespace> app=<group>/<app>
-   env=$(echo "$slug" | tr 'a-z-' 'A-Z_')
-   id=$(openssl rand -hex 20) secret=$(openssl rand -hex 32)
-   seal() { kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml; }
-   secret() {
-     jq -n --arg name "$1" --arg ns "$2" --arg idKey "$3" --arg secretKey "$4" --arg id "$id" --arg secret "$secret" \
-       '{apiVersion: "v1", kind: "Secret", type: "Opaque", metadata: {name: $name, namespace: $ns}, stringData: {($idKey): $id, ($secretKey): $secret}}'
-   }
-   secret "authentik-oidc-$slug" authentik "${env}_CLIENT_ID" "${env}_CLIENT_SECRET" | seal > "templates/oidc-client-$slug.yaml"
-   secret "$slug-oidc-credentials" "$ns" client-id client-secret | seal > "../../$app/templates/oidc-credentials.yaml"
-   unset id secret
+   sh seal-oidc-client.sh -s <slug> -n <namespace> -a <group>/<app>
    ```
 
 3. After the sync, restart `authentik-worker`: blueprints read the credentials at start.
