@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: alertmanager-discord
+  namespace: prometheus
+spec:
+  encryptedData:
+    webhook-url: AgB8YsQCr+nX65BKHXhM0Bp3xZ81//NhXbSF/8aSdftpJYNOo5E+Bpt6NtNtzUexdV/Vq5YPMJfWYBQtRkgJuV19f7K6cLW5RFF7s8ekZIRYSvEfss3xYk+uSAxt8Rgdzp9a6X/upBrBIYj8uhp+blyPXgnuPJpK2r8hS4tYBjZxi4g2Wj14dCgyMZtmZqo1xiZz28Dr3cGz74KKFd+cuoLkJy9JxMrvbxv4rrRgabQcGv3fMJwcMTZrRN1jMM2ngKtIaH9NihkldhNXtDhXZ855HaNZ5u4+nqCQCANz5eG2BzhwtsljPoTND9naItOQrz0LLVpuJ9mt5ZgOewGyXx7xuT80UNUgllTJrXn6S3dKWlJ/r2v6m3851/UhajHCREWquDW+Tmkt8QcqFOZYo9FTGhC8mqCH1JtvHVzINTv0ch7CTdWaTyf6HVspGywhBAO7fW9iwZESEIosKMYMDT0KrGciwONn3KJkvA7Z/vqKJTJrNzQXNP16o6nIcPZ7xDtQVngL0t+6PGEEMR3JmVweOUH8ftJ2bEzMKV5OSCW7vfofgoc/Ouy2VNVpd8DU6JCCN00YUMcheUyNeDgbb8w1C8K3DGbMsKXWSKP/scSaSLrN4SoSPXNcjV0mAiqi0D5bokY0XnRSEp4ZZgntEMScUNe9gv+M5UfzQEaZ5HHBdvkXpjJO/sKpUtl4HDtqJwVxWB6REw0xi4eee3bCUoJIMMo/JPt2pIesgAzRoeF25DijZBUjvjWPqxVjL5C4uODJ3gmAI63MwsCfjv3VGJx8zhEgQqf9VpmMA+6fyhCT5fcl//IMiXO6OJ6wM/qJhzZnPazyB4DsE7oMYyMle7x+LorUjKgRsYe/9Y0+lw==
+  template:
+    metadata:
+      name: alertmanager-discord
+      namespace: prometheus
+    type: Opaque

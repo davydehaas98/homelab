@@ -64,11 +64,10 @@ kube-prometheus-stack:
                 storage: 10Gi
 
   alertmanager:
-    # Nothing is notified yet: every alert goes to the `null` receiver. Add a receiver and point
-    # `route.receiver` at it to get notifications.
+    # Everything goes to Discord, except the alerts below. The webhook is in templates/alertmanager-discord.yaml.
     config:
       route:
-        receiver: "null"
+        receiver: discord
         group_by:
           - namespace
           - alertname
@@ -83,7 +82,13 @@ kube-prometheus-stack:
               - alertname = "InfoInhibitor"
       receivers:
         - name: "null"
+        - name: discord
+          discord_configs:
+            - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord/webhook-url
+              send_resolved: true
     alertmanagerSpec:
+      secrets:
+        - alertmanager-discord
       resources:
         limits:
           memory: 128Mi

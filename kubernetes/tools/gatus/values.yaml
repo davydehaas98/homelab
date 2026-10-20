@@ -13,6 +13,11 @@ kind: Deployment
 env:
   GATUS_CONFIG_PATH: /config/config.yaml
 
+# DISCORD_WEBHOOK_URL, used in config/config.yaml
+envFrom:
+  - secretRef:
+      name: gatus-discord
+
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1400

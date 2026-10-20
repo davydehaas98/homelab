@@ -98,16 +98,6 @@
           url: http://sonarr.media-server.svc.cluster.local:8989
           key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
 
-    - Tautulli:
-        icon: tautulli.png
-        href: https://tautulli.davydehaas.dev
-        description: Plex monitoring
-        siteMonitor: https://tautulli.davydehaas.dev
-        widget:
-          type: tautulli
-          url: https://tautulli.davydehaas.dev
-          key: "{{HOMEPAGE_VAR_TAUTULLI_KEY}}"
-
     - Threadfin:
         icon: threadfin.png
         href: https://threadfin.davydehaas.dev

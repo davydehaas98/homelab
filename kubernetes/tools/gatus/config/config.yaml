@@ -5,6 +5,15 @@ metrics: true
 storage:
   type: memory
 
+# Notifies Discord after three failed checks, and when the endpoint recovers
+alerting:
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL}
+    default-alert:
+      failure-threshold: 3
+      success-threshold: 2
+      send-on-resolved: true
+
 ui:
   title: yggdrasil status
   header: yggdrasil
@@ -17,6 +26,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Seerr
     group: Media
     url: http://seerr.media-server.svc.cluster.local:5055
@@ -24,6 +35,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Sonarr
     group: Media
     url: http://sonarr.media-server.svc.cluster.local:8989
@@ -31,6 +44,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Radarr
     group: Media
     url: http://radarr.media-server.svc.cluster.local:7878
@@ -38,6 +53,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Lidarr
     group: Media
     url: http://lidarr.media-server.svc.cluster.local:8686
@@ -45,6 +62,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Bazarr
     group: Media
     url: http://bazarr.media-server.svc.cluster.local:6767
@@ -52,6 +71,8 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Prowlarr
     group: Media
     url: http://prowlarr.media-server.svc.cluster.local:9696
@@ -59,43 +80,172 @@ endpoints:
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
-  - name: Plex
-    group: Home server
-    url: https://plex.davydehaas.dev
-    interval: 1m
-    conditions:
-      - "[STATUS] < 400"
-      - "[RESPONSE_TIME] < 2000"
-      - "[CERTIFICATE_EXPIRATION] > 168h"
+    alerts:
+      - type: discord
+  # SABnzbd rejects other hostnames, so it is checked at its public address
   - name: SABnzbd
-    group: Home server
+    group: Media
     url: https://sabnzbd.davydehaas.dev
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
       - "[CERTIFICATE_EXPIRATION] > 168h"
-  - name: Tautulli
-    group: Home server
-    url: https://tautulli.davydehaas.dev
+    alerts:
+      - type: discord
+  - name: Home Assistant
+    group: Home
+    url: http://home-assistant.home-assistant.svc.cluster.local:8123
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Immich
+    group: Home
+    url: http://immich-server.immich.svc.cluster.local:2283
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Nextcloud
+    group: Home
+    url: http://nextcloud.nextcloud.svc.cluster.local:8080
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Personal website
+    group: Home
+    url: http://personal-website.personal-website.svc.cluster.local:8080
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Grafana
+    group: Monitoring
+    url: http://grafana.grafana.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Prometheus
+    group: Monitoring
+    url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Argo CD
+    group: Platform
+    url: http://argocd-server.argocd.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Authentik
+    group: Platform
+    url: http://authentik-server.authentik.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Headlamp
+    group: Platform
+    url: http://headlamp.headlamp.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Hubble
+    group: Platform
+    url: http://hubble-ui.kube-system.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Policy Reporter
+    group: Platform
+    url: http://policy-reporter-ui.policy-reporter.svc.cluster.local:8080
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Homepage
+    group: Tools
+    url: http://homepage.homepage.svc.cluster.local:3000
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: IT-Tools
+    group: Tools
+    url: http://it-tools.it-tools.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Omni Tools
+    group: Tools
+    url: http://omni-tools.omni-tools.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Plex
+    group: Media
+    url: https://plex.davydehaas.dev
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
       - "[CERTIFICATE_EXPIRATION] > 168h"
+    alerts:
+      - type: discord
   - name: Threadfin
-    group: Home server
+    group: Media
     url: https://threadfin.davydehaas.dev
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
       - "[CERTIFICATE_EXPIRATION] > 168h"
+    alerts:
+      - type: discord
   - name: Tracearr
-    group: Home server
+    group: Media
     url: https://tracearr.davydehaas.dev
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
       - "[CERTIFICATE_EXPIRATION] > 168h"
+    alerts:
+      - type: discord

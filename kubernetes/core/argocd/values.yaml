@@ -110,5 +110,53 @@ argo-cd:
   applicationSet:
     replicas: 1
 
+  # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in templates/notifications-secret.yaml.
   notifications:
-    enabled: false
+    enabled: true
+    # The webhook SealedSecret creates it, see templates/notifications-secret.yaml
+    secret:
+      create: false
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    argocdUrl: https://argocd.davydehaas.dev
+    notifiers:
+      service.webhook.discord: |
+        url: $discord-webhook-url
+        headers:
+          - name: Content-Type
+            value: application/json
+    templates:
+      template.app-sync-failed: |
+        webhook:
+          discord:
+            method: POST
+            body: |
+              {"embeds": [{"title": "Sync failed: {{.app.metadata.name}}", "url": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}", "description": {{.app.status.operationState.message | toJson}}, "color": 15158332}]}
+      template.app-health-degraded: |
+        webhook:
+          discord:
+            method: POST
+            body: |
+              {"embeds": [{"title": "Unhealthy: {{.app.metadata.name}}", "url": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}", "description": "Health is {{.app.status.health.status}}", "color": 15105570}]}
+    triggers:
+      trigger.on-sync-failed: |
+        - when: app.status.operationState != nil and app.status.operationState.phase in ['Error', 'Failed']
+          oncePer: app.status.operationState.syncResult.revision
+          send: [app-sync-failed]
+      trigger.on-health-degraded: |
+        - when: app.status.health.status == 'Degraded'
+          send: [app-health-degraded]
+    subscriptions:
+      - recipients:
+          - webhook:discord
+        triggers:
+          - on-sync-failed
+          - on-health-degraded

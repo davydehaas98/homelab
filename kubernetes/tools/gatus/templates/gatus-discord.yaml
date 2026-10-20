@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: gatus-discord
+  namespace: gatus
+spec:
+  encryptedData:
+    DISCORD_WEBHOOK_URL: AgCEEtjGt0wAKnZlweKa03ngIcuLc6JX+OlkJQjm2bU4YP9SRNp5UDraINHoQiBMXIZ91bS5kTfsDHhDrhOiR/MSRGdmBsjQi/KAtPpe5AmKjCsO6ykKiXM+o0TajkIu+S6itEJr/JjNu2K25b2zg0IqScavNraHs8vBg2pfnlCilfrjXTU/y9dz90N5Ig8xgeQh2xSGEv3cKFXTrUUYYSr8DH+03Ul3XUp5/zrXa2+naIlkRSSp4Y/wPOOJdohBsfr1//5sjCsc18Qz8cLYyJylFUswFQPhSyeMN+md0tMETW0kL8XMJMpzbB39WivajgK/E3fozAmgLFCI+omvVCigX1lPsVSAC6yXpose6TYDjnU8vjcy9iU7GZehJAJORgSi28Tgd9WMhtndMc3FU4PDoxOoxSVolpyhx8IFiV7Hldsv2+uLoQim7yHLsRr+oyIY21K01YGzaRnOUM+aoDAWY+F2HtOaCD93iZ4+YGjb72r4kacvFjntc2o/4RBM6OUc0fUcf5q5FSYXUNVPQx8/xzKma6RzTnDRbKH/6hxcPxIjqTKvJbT+819vi6O7ZU0cPX1VqnHoPvQjZlrkl+Nw3RoMGjYLZduxJZaWrEI7FFGt8konCZh/qzjyUu6/utXe2LAM5SlNgV1OPiriVXWII2ESOljPKA/mL/nb8hcmQMvSovj2PHloUwuBbJed2iHPScf4bETFWk0oXX5ZlVqklaHzk9+nWDsNJcEFYFSOrmUBbiLjxRp2H+Pcxe6H95rpMpq1wR8GzVLOfTCMYCxu44X70jtaMMBJhOMuVl/TGeO1y/Xjnp98kYJFRoW8z9/dEN69ob34BK4CDeCQSgwdjnR/9A91dPPBYcyUDg==
+  template:
+    metadata:
+      name: gatus-discord
+      namespace: gatus
+    type: Opaque
