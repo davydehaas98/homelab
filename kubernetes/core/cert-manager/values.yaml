@@ -28,6 +28,12 @@ cert-manager:
     servicemonitor:
       enabled: true
 
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 128Mi
+
   # Its webhooks fail closed, so while it is down no Certificate or Issuer can be created
   webhook:
     replicaCount: 2
@@ -53,9 +59,21 @@ cert-manager:
 
     serviceType: ClusterIP
 
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        memory: 64Mi
+
   cainjector:
     enabled: true
     replicaCount: 1
+
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 128Mi
 
     securityContext:
       runAsNonRoot: true

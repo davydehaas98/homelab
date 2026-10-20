@@ -52,16 +52,30 @@ loki:
   lokiCanary:
     enabled: false
 
+  sidecar:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        memory: 128Mi
+
+  memcachedExporter:
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        memory: 16Mi
+
   memcached:
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
 
   chunksCache:
-    allocatedMemory: 1024
+    allocatedMemory: 512
 
   resultsCache:
-    allocatedMemory: 256
+    allocatedMemory: 128
 
   monitoring:
     dashboards:
@@ -101,7 +115,7 @@ loki:
     resources:
       requests:
         cpu: 20m
-        memory: 192Mi
+        memory: 256Mi
       limits:
         memory: 1Gi
     persistence:

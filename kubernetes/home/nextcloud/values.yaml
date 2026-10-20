@@ -80,6 +80,12 @@ nextcloud:
   # Runs `cron.sh` in a sidecar
   cronjob:
     enabled: true
+    sidecar:
+      resources:
+        limits:
+          memory: 256Mi
+        requests:
+          memory: 32Mi
 
   # The code and config are on an iSCSI disk (templates/html-volume.yaml), and apart from it the files of the users
   persistence:
@@ -94,7 +100,7 @@ nextcloud:
 
   resources:
     limits:
-      memory: 2Gi
+      memory: 1Gi
     requests:
       cpu: 100m
       memory: 512Mi

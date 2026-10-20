@@ -6,6 +6,12 @@ sealed-secrets:
 
   fullnameOverride: "sealed-secrets-controller"
 
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 64Mi
+
   ingress:
     enabled: false
 

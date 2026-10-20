@@ -12,14 +12,24 @@ spec:
           value:
             spec:
               revisionHistoryLimit: 0
+              template:
+                spec:
+                  containers:
+                    - name: shutdown-manager
+                      resources:
+                        limits:
+                          memory: 128Mi
+                        requests:
+                          cpu: 10m
+                          memory: 32Mi
         replicas: 3
         container:
           resources:
             requests:
               cpu: 150m
-              memory: 300Mi
+              memory: 128Mi
             limits:
-              memory: 600Mi
+              memory: 512Mi
       envoyService:
         annotations:
           'io.cilium/lb-ipam-ips': 192.168.1.56

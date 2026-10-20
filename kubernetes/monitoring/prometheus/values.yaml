@@ -31,6 +31,12 @@ kube-prometheus-stack:
       requests:
         cpu: 20m
         memory: 128Mi
+    prometheusConfigReloader:
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          memory: 32Mi
 
   prometheus:
     prometheusSpec:
@@ -209,3 +215,8 @@ kube-prometheus-stack:
   # node-exporter needs host access, it runs in its own privileged namespace (templates/namespace-node-exporter.yaml)
   prometheus-node-exporter:
     namespaceOverride: prometheus-node-exporter
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        memory: 32Mi

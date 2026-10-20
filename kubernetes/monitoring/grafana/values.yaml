@@ -1,5 +1,10 @@
 grafana:
   sidecar:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        memory: 128Mi
     dashboards:
       enabled: true
       # Sort dashboards into the folder named by their `grafana_folder` annotation

@@ -4,9 +4,9 @@ policy-reporter:
 
   resources:
     limits:
-      memory: 100Mi
+      memory: 128Mi
     requests:
-      memory: 30Mi
+      memory: 32Mi
       cpu: 5m
 
   metrics:
@@ -19,9 +19,9 @@ policy-reporter:
 
     resources:
       limits:
-        memory: 100Mi
+        memory: 128Mi
       requests:
-        memory: 30Mi
+        memory: 32Mi
         cpu: 5m
 
     ingress:
@@ -33,9 +33,9 @@ policy-reporter:
 
     resources:
       limits:
-        memory: 100Mi
+        memory: 128Mi
       requests:
-        memory: 30Mi
+        memory: 32Mi
         cpu: 5m
 
   # database:

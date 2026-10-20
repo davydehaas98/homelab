@@ -55,7 +55,7 @@ cilium:
         memory: 512Mi
       requests:
         cpu: 15m
-        memory: 160Mi
+        memory: 256Mi
     prometheus:
       enabled: true
       serviceMonitor:
@@ -65,6 +65,19 @@ cilium:
     prometheus:
       serviceMonitor:
         enabled: true
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+
+  # The init containers run briefly, then the agent starts
+  initResources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 32Mi
 
   resources:
     limits:
@@ -80,7 +93,7 @@ cilium:
         memory: 128Mi
       requests:
         cpu: 35m
-        memory: 48Mi
+        memory: 64Mi
 
   prometheus:
     enabled: true
@@ -124,7 +137,7 @@ cilium:
           memory: 128Mi
         requests:
           cpu: 15m
-          memory: 48Mi
+          memory: 64Mi
       prometheus:
         enabled: true
         serviceMonitor:

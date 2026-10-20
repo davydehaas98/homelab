@@ -10,6 +10,11 @@ democratic-csi:
   controller:
     externalAttacher:
       enabled: true
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          memory: 32Mi
     externalProvisioner:
       enabled: false
     externalResizer:
@@ -20,6 +25,11 @@ democratic-csi:
       image:
         registry: ghcr.io/democratic-csi/democratic-csi
         tag: v1.9.5
+      resources:
+        limits:
+          memory: 256Mi
+        requests:
+          memory: 128Mi
 
   driver:
     config:
@@ -40,3 +50,27 @@ democratic-csi:
           value: /usr/local/sbin/iscsiadm
       iscsiDirHostPath: /var/iscsi
       iscsiDirHostPathType: ""
+      resources:
+        limits:
+          memory: 512Mi
+        requests:
+          memory: 128Mi
+    driverRegistrar:
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          memory: 32Mi
+    cleanup:
+      resources:
+        limits:
+          memory: 64Mi
+        requests:
+          memory: 16Mi
+
+  csiProxy:
+    resources:
+      limits:
+        memory: 64Mi
+      requests:
+        memory: 16Mi

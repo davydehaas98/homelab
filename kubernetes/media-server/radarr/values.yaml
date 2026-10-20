@@ -23,7 +23,7 @@ resources:
     memory: 1Gi
   requests:
     cpu: 20m
-    memory: 300Mi
+    memory: 512Mi
 
 image:
   registry: ghcr.io

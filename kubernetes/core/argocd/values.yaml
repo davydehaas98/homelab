@@ -92,6 +92,12 @@ argo-cd:
 
     rbacConfigCreate: false
 
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 128Mi
+
   # Renders the manifests of every sync, so while it is down nothing syncs
   repoServer:
     replicas: 2
@@ -111,6 +117,11 @@ argo-cd:
 
   applicationSet:
     replicas: 1
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        memory: 64Mi
 
   # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in templates/notifications-secret.yaml.
   notifications:

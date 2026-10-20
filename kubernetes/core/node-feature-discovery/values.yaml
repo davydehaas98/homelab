@@ -4,13 +4,31 @@ node-feature-discovery:
   master:
     replicaCount: 1
 
-    resources: {}
+    # The chart defaults are made for big clusters (limit 4Gi); here it uses ~40Mi, the VPA upper bound is ~100Mi
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        memory: 64Mi
 
-  topologyGC:
+  gc:
     enable: true
     replicaCount: 1
 
-    resources: {}
+    # The chart default is a 1Gi limit, it uses ~15Mi
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        memory: 32Mi
+
+  # The chart default is a 512Mi limit, it uses 16-34Mi
+  worker:
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        memory: 64Mi
 
   tls:
     enable: true
