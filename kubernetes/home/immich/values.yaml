@@ -11,15 +11,53 @@ immich:
       library:
         existingClaim: immich-library
 
-  # Job queues are lost when it restarts, as in a default install
+  # Job queues are lost when valkey restarts, as in a default install. It runs as the valkey user (999).
   valkey:
     enabled: true
-
-  server:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 999
+        runAsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
     controllers:
       main:
         containers:
           main:
+            securityContext:
+              allowPrivilegeEscalation: false
+
+  # The machine learning image runs as any user, its cache is an emptyDir
+  machine-learning:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      main:
+        containers:
+          main:
+            securityContext:
+              allowPrivilegeEscalation: false
+
+  # The server image runs as root, so only seccomp and no privilege escalation
+  server:
+    defaultPodOptions:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      main:
+        containers:
+          main:
+            securityContext:
+              allowPrivilegeEscalation: false
             env:
               DB_HOSTNAME:
                 valueFrom:

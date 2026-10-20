@@ -135,3 +135,24 @@ kyverno-policies:
       - nfs-subdir-external-provisioner
       - node-feature-discovery
       - prometheus-node-exporter
+
+  # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
+  # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6) and Dispatcharr (entrypoint with su, and
+  # Postgres, Redis and nginx in one container). A per-policy entry replaces the defaults above, so they are repeated.
+  vpolExcludeByPolicy:
+    require-run-as-nonroot:
+      excludeNamespaces:
+        - democratic-csi
+        - fluent-bit
+        - kube-system
+        - nfs-subdir-external-provisioner
+        - node-feature-discovery
+        - prometheus-node-exporter
+      matchConditions:
+        - name: exclude-root-init-images
+          expression: >-
+            !object.spec.containers.all(c, [
+              'ghcr.io/linuxserver/',
+              'ghcr.io/home-assistant/home-assistant:',
+              'docker.io/dispatcharr/dispatcharr:'
+            ].exists(p, c.image.startsWith(p)))

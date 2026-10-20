@@ -8,9 +8,11 @@ replicas: 1
 port: 34197
 protocol: UDP
 
-# The image runs as the user factorio (845)
+# The rootless image runs as uid 1000 in group 0, and the volume is writable through the group 845
 podSecurityContext:
   fsGroup: 845
+  runAsNonRoot: true
+  runAsUser: 1000
 
 # The game port is UDP, so the probe checks RCON
 probe:

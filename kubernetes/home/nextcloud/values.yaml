@@ -11,6 +11,13 @@ nextcloud:
   nextcloud:
     host: nextcloud.davydehaas.dev
 
+    # The apache image runs as root, so only seccomp and no privilege escalation
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+
     existingSecret:
       enabled: true
       secretName: nextcloud-credentials

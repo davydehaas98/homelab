@@ -28,6 +28,15 @@ seaweedfs:
       size: 20Gi
       storageClass: nfs
 
+    # The image runs as root, so only seccomp and no privilege escalation
+    podSecurityContext:
+      enabled: true
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      enabled: true
+      allowPrivilegeEscalation: false
+
     # One replica, no need for anti-affinity
     affinity: ""
 

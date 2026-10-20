@@ -1,16 +1,19 @@
-# Static site served by nginx, no state. The image starts nginx as root on port 80 and drops to its
-# own user, so it keeps a few capabilities instead of running non-root.
+# Static site served by nginx, no state. It runs as uid 101 on port 8080 with its own nginx.conf, as the stock
+# image starts nginx as root on port 80.
 image:
   registry: ghcr.io
   repository: corentinth/it-tools
   tag: 2024.10.22-7ca5933
 
-port: 80
+port: 8080
 
 # No volume, so it updates without a gap
 kind: Deployment
 
 podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
   seccompProfile:
     type: RuntimeDefault
 securityContext:
@@ -18,12 +21,43 @@ securityContext:
   capabilities:
     drop:
       - ALL
-    add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - NET_BIND_SERVICE
-      - SETGID
-      - SETUID
+
+# nginx writes its pid and temp files here
+emptyDirs:
+  - name: tmp
+    mountPath: /tmp
+
+configFiles:
+  - name: nginx
+    mountPath: /etc/nginx
+    files:
+      nginx.conf: |
+        worker_processes auto;
+        error_log /dev/stderr warn;
+        pid /tmp/nginx.pid;
+        events {
+            worker_connections 1024;
+        }
+        http {
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+            access_log /dev/stdout;
+            sendfile on;
+            client_body_temp_path /tmp/client_temp;
+            proxy_temp_path /tmp/proxy_temp;
+            fastcgi_temp_path /tmp/fastcgi_temp;
+            uwsgi_temp_path /tmp/uwsgi_temp;
+            scgi_temp_path /tmp/scgi_temp;
+            server {
+                listen 8080;
+                server_name localhost;
+                root /usr/share/nginx/html;
+                index index.html;
+                location / {
+                    try_files $uri $uri/ /index.html;
+                }
+            }
+        }
 
 resources:
   limits:
