@@ -10,12 +10,6 @@
           url: http://bazarr.media-server.svc.cluster.local:6767
           key: "{{HOMEPAGE_FILE_BAZARR_KEY}}"
 
-    - Immich:
-        icon: immich.png
-        href: https://immich.davydehaas.dev
-        description: Photos
-        siteMonitor: http://immich-server.immich.svc.cluster.local:2283
-
     - Jellyfin:
         icon: jellyfin.png
         href: https://jellyfin.davydehaas.dev
@@ -132,6 +126,12 @@
         href: https://home-assistant.davydehaas.dev
         description: Home automation
         siteMonitor: http://home-assistant.home-assistant.svc.cluster.local:8123
+
+    - Immich:
+        icon: immich.png
+        href: https://immich.davydehaas.dev
+        description: Photos
+        siteMonitor: http://immich-server.immich.svc.cluster.local:2283
 
     - Nextcloud:
         icon: nextcloud.png

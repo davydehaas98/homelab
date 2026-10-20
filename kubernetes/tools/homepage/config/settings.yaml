@@ -4,12 +4,9 @@ theme: dark
 color: slate
 
 layout:
-  Media:
-    style: row
-    columns: 4
   Home:
     style: row
-    columns: 2
+    columns: 4
   Monitoring:
     style: row
     columns: 4
@@ -18,7 +15,10 @@ layout:
     columns: 4
   Tools:
     style: row
-    columns: 2
+    columns: 4
+  Media:
+    style: row
+    columns: 4
 
 headerStyle: boxedWidgets
 showStats: true
