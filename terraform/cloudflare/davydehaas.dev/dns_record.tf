@@ -77,6 +77,7 @@ locals {
 
   # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
+    "authentik",
     "drive",
     "hass",
     "home",
