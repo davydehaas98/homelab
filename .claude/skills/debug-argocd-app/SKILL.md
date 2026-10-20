@@ -15,8 +15,7 @@ logs and route status, and changes nothing. The steps say what to make of it and
 1. **Is it deployed at all?** The app needs `deploy: true` under `applications.<group>.<app>` in `chart/values.yaml`
    and a directory `kubernetes/<group>/<app>`. Then `kubectl -n argocd get application <app> -o yaml` and read
    `status.conditions`, `status.sync`, `status.health` and `status.operationState.message`.
-2. **Which project?** `autoSync: false` puts it in AppProject `no-sync`: OutOfSync is expected and only a manual sync
-   moves it.
+2. **Automated sync?** `autoSync: false` turns it off: OutOfSync is expected and only a manual sync moves it.
 3. **Render fails** (`ComparisonError`, `InvalidSpecError`): reproduce with `helm dependency update` and
    `helm template kubernetes/<group>/<app> --api-versions monitoring.coreos.com/v1`. Typical causes are a values key
    that a chart bump renamed, a missing dependency, or a `null` in values that needs `valueFiles: [values.yaml]`.

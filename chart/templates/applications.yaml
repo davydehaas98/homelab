@@ -18,11 +18,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  {{- if or (not (hasKey $appValue "autoSync")) $appValue.autoSync }}
-  project: always-sync
-  {{- else }}
-  project: no-sync
-  {{- end }}
+  project: default
   source:
     repoURL: https://github.com/davydehaas98/homelab.git
     targetRevision: HEAD
@@ -48,6 +44,7 @@ spec:
       - ServerSideApply=true
       {{- end }}
     automated:
+      enabled: {{ or (not (hasKey $appValue "autoSync")) $appValue.autoSync }}
       prune: true
       selfHeal: true
     retry:

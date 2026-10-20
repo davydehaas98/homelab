@@ -1,6 +1,6 @@
 # Cluster CLIs for the devcontainer and host (`mise install`).
 [tools]
-# Syncs and diffs apps, e.g. the no-sync ones (`argocd login --core` uses the kubeconfig).
+# Syncs and diffs apps, e.g. the manual-sync ones (`argocd login --core` uses the kubeconfig).
 # Keep it equal to the Argo CD version in kubernetes/core/argocd.
 argocd = "3.5.5"
 

@@ -5,7 +5,7 @@ Keys of an app in `values.yaml` (`applications.<group>.<app>`):
 | Key | Type | Description |
 |---|---|---|
 | `deploy` | boolean | Deploy the app. |
-| `autoSync` | boolean | Default `true`. `false` moves the app to AppProject `no-sync`, synced by hand only. |
+| `autoSync` | boolean | Default `true`. `false` turns off automated sync, so the app is synced by hand only. |
 | `namespace` | string | Default: the app name. |
 | `ignoreDifferences` | array | Passed to the Application. |
 | `serverSideApply` | boolean | Apply server-side, with the `ServerSideDiff` annotation. |

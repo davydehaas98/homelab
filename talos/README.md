@@ -111,8 +111,6 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm install argocd argo/argo-cd --version 9.7.1 -n argocd --create-namespace --wait
 helm dependency update ../kubernetes/core/argocd
 helm template argocd ../kubernetes/core/argocd -n argocd \
-    -s templates/project-always-sync.yaml \
-    -s templates/project-no-sync.yaml \
     -s templates/applications.yaml | kubectl apply -f -
 ```
 
