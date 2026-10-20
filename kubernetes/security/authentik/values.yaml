@@ -8,6 +8,9 @@ oidcClients:
   - name: Bazarr
     slug: bazarr
     redirectURL: https://bazarr.davydehaas.dev/oauth2/callback
+  - name: Gatus
+    slug: gatus
+    redirectURL: https://gatus.davydehaas.dev/oauth2/callback
   - name: Grafana
     slug: grafana
     # Grafana maps roles from group claims, so every Authentik user may sign in
@@ -80,6 +83,8 @@ authentik:
           name: authentik-oidc-argocd
       - secretRef:
           name: authentik-oidc-bazarr
+      - secretRef:
+          name: authentik-oidc-gatus
       - secretRef:
           name: authentik-oidc-grafana
       - secretRef:

@@ -130,6 +130,8 @@ applications:
       serverSideApply: true
 
   tools:
+    gatus:
+      deploy: true
     headlamp:
       deploy: true
     homepage:
@@ -141,6 +143,4 @@ applications:
     omni-tools:
       deploy: true
     open-webui:
-      deploy: false
-    uptime-kuma:
       deploy: false

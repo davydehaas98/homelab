@@ -1,0 +1,12 @@
+# Gatus' own results (`gatus_results_endpoint_success` and friends), enabled by `metrics: true` in config/config.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: gatus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gatus
+  endpoints:
+    - port: http
+      path: /metrics

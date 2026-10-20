@@ -52,6 +52,7 @@ locals {
     "argocd",
     "auth",
     "bazarr",
+    "gatus",
     "grafana",
     "headlamp",
     "home-assistant",
@@ -84,6 +85,7 @@ locals {
     "request",
     "requests",
     "series",
+    "status",
     "subtitles",
     "usenet",
   ]

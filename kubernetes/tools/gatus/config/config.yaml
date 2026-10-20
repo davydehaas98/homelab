@@ -1,0 +1,101 @@
+# Apps on the cluster are checked at their address in the cluster, apps on the home server at their public one. The
+# public names also check the certificate. Gatus follows redirects, so a login page counts as up.
+metrics: true
+
+storage:
+  type: memory
+
+ui:
+  title: yggdrasil status
+  header: yggdrasil
+
+endpoints:
+  - name: Jellyfin
+    group: Media
+    url: http://jellyfin.media-server.svc.cluster.local:8096
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Seerr
+    group: Media
+    url: http://seerr.media-server.svc.cluster.local:5055
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Sonarr
+    group: Media
+    url: http://sonarr.media-server.svc.cluster.local:8989
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Radarr
+    group: Media
+    url: http://radarr.media-server.svc.cluster.local:7878
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Lidarr
+    group: Media
+    url: http://lidarr.media-server.svc.cluster.local:8686
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Bazarr
+    group: Media
+    url: http://bazarr.media-server.svc.cluster.local:6767
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Prowlarr
+    group: Media
+    url: http://prowlarr.media-server.svc.cluster.local:9696
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+  - name: Plex
+    group: Home server
+    url: https://plex.davydehaas.dev
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+      - "[CERTIFICATE_EXPIRATION] > 168h"
+  - name: SABnzbd
+    group: Home server
+    url: https://sabnzbd.davydehaas.dev
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+      - "[CERTIFICATE_EXPIRATION] > 168h"
+  - name: Tautulli
+    group: Home server
+    url: https://tautulli.davydehaas.dev
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+      - "[CERTIFICATE_EXPIRATION] > 168h"
+  - name: Threadfin
+    group: Home server
+    url: https://threadfin.davydehaas.dev
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+      - "[CERTIFICATE_EXPIRATION] > 168h"
+  - name: Tracearr
+    group: Home server
+    url: https://tracearr.davydehaas.dev
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+      - "[CERTIFICATE_EXPIRATION] > 168h"

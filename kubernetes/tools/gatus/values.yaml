@@ -1,0 +1,54 @@
+# Status monitor. The endpoints it checks are in config/config.yaml, with results kept in memory, so there is no
+# volume and a restart starts the history again.
+image:
+  registry: ghcr.io
+  repository: twin/gatus
+  tag: v5.37.0
+
+port: 8080
+
+# No volume, so it updates without a gap
+kind: Deployment
+
+env:
+  GATUS_CONFIG_PATH: /config/config.yaml
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1400
+  runAsGroup: 1400
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  limits:
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+configFiles:
+  - name: config
+    mountPath: /config
+    glob: config/*.yaml
+
+route:
+  enabled: true
+  hostnames:
+    - gatus.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - status.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+oidc:
+  enabled: true
