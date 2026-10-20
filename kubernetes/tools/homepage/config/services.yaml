@@ -10,6 +10,12 @@
           url: http://bazarr.media-server.svc.cluster.local:6767
           key: "{{HOMEPAGE_FILE_BAZARR_KEY}}"
 
+    - Dispatcharr:
+        icon: dispatcharr.png
+        href: https://dispatcharr.davydehaas.dev
+        description: IPTV stream manager
+        siteMonitor: http://dispatcharr.media-server.svc.cluster.local:9191
+
     - Jellyfin:
         icon: jellyfin.png
         href: https://jellyfin.davydehaas.dev
@@ -97,12 +103,6 @@
           type: sonarr
           url: http://sonarr.media-server.svc.cluster.local:8989
           key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
-
-    - Threadfin:
-        icon: threadfin.png
-        href: https://threadfin.davydehaas.dev
-        description: IPTV M3U proxy
-        siteMonitor: https://threadfin.davydehaas.dev
 
     - Tracearr:
         icon: tracearr.png

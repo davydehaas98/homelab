@@ -25,6 +25,7 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Seerr              | `seerr`                | 1G   |
 | Jellyfin           | `jellyfin`             | 10G  |
 | Bazarr             | `bazarr`               | 1G   |
+| Dispatcharr        | `dispatcharr`          | 5G   |
 | Home Assistant     | `home-assistant`       | 5G   |
 | Nextcloud Postgres | `nextcloud-database`   | 10G  |
 | Prometheus TSDB    | `prometheus`           | 10G  |

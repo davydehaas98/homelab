@@ -1,0 +1,61 @@
+# IPTV manager that serves Plex as an HDHomeRun tuner and provides M3U and XMLTV output. The all-in-one image runs
+# PostgreSQL, Redis, nginx, uWSGI and Celery in one container, so its /data volume is a database disk on yggdrasil.
+# Left out: GPU devices and a priority boost, which the nodes do not offer. The image needs root to start its services
+# (it drops to PUID and PGID itself), so the pod runs as root with the default capabilities.
+image:
+  registry: docker.io
+  repository: dispatcharr/dispatcharr
+  tag: 0.32.0
+
+port: 9191
+
+env:
+  DISPATCHARR_ENV: aio
+  DISPATCHARR_LOG_LEVEL: info
+  REDIS_HOST: localhost
+  CELERY_BROKER_URL: redis://localhost:6379/0
+  PUID: "1400"
+  PGID: "1400"
+
+# The first start sets up the database, which takes a few minutes
+probe:
+  httpGet:
+    path: /
+    port: http
+
+resources:
+  limits:
+    memory: 3Gi
+  requests:
+    cpu: 100m
+    memory: 768Mi
+
+# PostgreSQL does not work on NFS, so the disk is on yggdrasil, see kubernetes/media-server/media-server/README.md
+persistence:
+  size: 5Gi
+  mountPath: /data
+  labels:
+    backup.velero.io/include: "true"
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:dispatcharr
+    lun: 0
+
+# Plex on the home server reaches the tuner (http://192.168.1.59:9191) on this address, outside the HTTP gateway
+service:
+  type: LoadBalancer
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.59
+
+# Its own accounts and login, so no gateway login in front of the playlists and the guide
+route:
+  enabled: true
+  hostnames:
+    - dispatcharr.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - dvr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https

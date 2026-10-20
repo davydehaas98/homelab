@@ -19,6 +19,15 @@ ui:
   header: yggdrasil
 
 endpoints:
+  - name: Dispatcharr
+    group: Media
+    url: http://dispatcharr.media-server.svc.cluster.local:9191
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Jellyfin
     group: Media
     url: http://jellyfin.media-server.svc.cluster.local:8096
@@ -222,16 +231,6 @@ endpoints:
   - name: Plex
     group: Media
     url: https://plex.davydehaas.dev
-    interval: 1m
-    conditions:
-      - "[STATUS] < 400"
-      - "[RESPONSE_TIME] < 2000"
-      - "[CERTIFICATE_EXPIRATION] > 168h"
-    alerts:
-      - type: discord
-  - name: Threadfin
-    group: Media
-    url: https://threadfin.davydehaas.dev
     interval: 1m
     conditions:
       - "[STATUS] < 400"

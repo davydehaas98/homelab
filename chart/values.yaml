@@ -56,6 +56,9 @@ applications:
     bazarr:
       deploy: true
       namespace: media-server
+    dispatcharr:
+      deploy: true
+      namespace: media-server
     jellyfin:
       deploy: true
       namespace: media-server

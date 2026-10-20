@@ -52,6 +52,7 @@ locals {
     "argocd",
     "auth",
     "bazarr",
+    "dispatcharr",
     "gatus",
     "grafana",
     "headlamp",
@@ -79,6 +80,7 @@ locals {
   kubernetes_aliases = [
     "authentik",
     "drive",
+    "dvr",
     "hass",
     "home",
     "movies",
