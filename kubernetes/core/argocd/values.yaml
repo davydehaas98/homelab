@@ -9,6 +9,8 @@ argo-cd:
     cm:
       exec.enabled: true
       url: https://argocd.davydehaas.dev
+      timeout.reconciliation: 60s
+      timeout.reconciliation.jitter: 10s
       # Single sign-on with Authentik. Client ID and secret live in the `argocd-authentik-oidc` Secret
       oidc.config: |
         name: Authentik

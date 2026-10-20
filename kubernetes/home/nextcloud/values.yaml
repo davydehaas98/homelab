@@ -97,4 +97,4 @@ nextcloud:
     enabled: true
     initialDelaySeconds: 30
     periodSeconds: 10
-    failureThreshold: 90
+    failureThreshold: 360
