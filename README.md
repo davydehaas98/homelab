@@ -13,20 +13,96 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
 - `docs/`: Mermaid diagrams ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter gateways.
 
-## Secrets
+## Apps
 
-Commit secrets only as SealedSecrets. `scripts/seal-secret.sh` asks for the values without echo, so no plaintext is
-written or kept in the shell history, and `-m` adds a key to an existing Secret:
+The apps with `deploy: true` in [`chart/values.yaml`](chart/values.yaml), as `kubernetes/<group>/<app>`.
 
-```shell
-sh scripts/seal-secret.sh -n <name> -N <namespace> -a <group>/<app> -k <key>
-```
+### core
+
+| App                    | Description               |
+| ---------------------- | ------------------------- |
+| argocd                 | GitOps controller         |
+| cert-manager           | TLS certificates          |
+| cilium                 | CNI, Hubble               |
+| descheduler            | Evicts misplaced pods     |
+| envoy-gateway          | Gateway API ingress       |
+| metrics-server         | Resource metrics          |
+| node-feature-discovery | Node labels from hardware |
+| sealed-secrets         | Encrypted Secrets in git  |
+| vpa                    | Resource recommendations  |
+
+### games
+
+| App      | Description |
+| -------- | ----------- |
+| factorio | Game server |
+
+### home
+
+| App              | Description     |
+| ---------------- | --------------- |
+| home-assistant   | Home automation |
+| immich           | Photos          |
+| nextcloud        | Files and sync  |
+| personal-website | Website         |
+
+### media-server
+
+| App          | Description                  |
+| ------------ | ---------------------------- |
+| bazarr       | Subtitles                    |
+| jellyfin     | Media server                 |
+| lidarr       | Music                        |
+| media-server | Namespace and shared volumes |
+| prowlarr     | Indexers                     |
+| radarr       | Movies                       |
+| sabnzbd      | Usenet downloader            |
+| seerr        | Requests                     |
+| sonarr       | Series                       |
+
+### monitoring
+
+| App                | Description              |
+| ------------------ | ------------------------ |
+| fluent-bit         | Log shipper              |
+| grafana            | Dashboards               |
+| grafana-dashboards | Dashboards as ConfigMaps |
+| loki               | Log storage              |
+| prometheus         | Metrics and alerts       |
+| prometheus-crd     | Prometheus Operator CRDs |
+
+### security
+
+| App             | Description              |
+| --------------- | ------------------------ |
+| authentik       | Identity provider (OIDC) |
+| kyverno         | Policy engine            |
+| policy-reporter | Policy report UI         |
+
+### storage
+
+| App                             | Description                        |
+| ------------------------------- | ---------------------------------- |
+| cloudnative-pg                  | PostgreSQL operator                |
+| democratic-csi                  | iSCSI volumes                      |
+| nfs-subdir-external-provisioner | NFS volumes (default StorageClass) |
+| seaweedfs                       | S3 storage                         |
+
+### tools
+
+| App        | Description          |
+| ---------- | -------------------- |
+| gatus      | Status page          |
+| headlamp   | Kubernetes dashboard |
+| homepage   | Start page           |
+| it-tools   | Developer utilities  |
+| omni-tools | Everyday utilities   |
 
 ## Hardware
 
-|         | Home server (`yggdrasil`)        | 4x Turing RK1 (Turing Pi 2)         |
-|---------|----------------------------------|-------------------------------------|
-| CPU     | Intel i5 10600K (6 cores, amd64) | Rockchip RK3588 (8 cores, arm64)    |
-| RAM     | 2x 16 GB DDR4                    | 16 GB LPDDR4                        |
-| Storage | 3x 4 TB HDD (RAID), 16 TB HDD    | eMMC; the NVMe SSD is not usable yet |
-| OS      | Ubuntu Server                    | Talos                               |
+|         | Home server (`yggdrasil`)        | 4x Turing RK1 (Turing Pi 2)      |
+| ------- | -------------------------------- | -------------------------------- |
+| CPU     | Intel i5 10600K (6 cores, amd64) | Rockchip RK3588 (8 cores, arm64) |
+| RAM     | 2x 16 GB DDR4                    | 16 GB LPDDR4                     |
+| Storage | 3x 4 TB HDD (RAID), 16 TB HDD    | eMMC                             |
+| OS      | Ubuntu Server                    | Talos                            |
