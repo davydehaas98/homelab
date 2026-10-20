@@ -1,7 +1,7 @@
 image:
   registry: docker.io
   repository: factoriotools/factorio
-  tag: 2.1.22-rootless
+  tag: 2.1.23-rootless
 
 replicas: 1
 
