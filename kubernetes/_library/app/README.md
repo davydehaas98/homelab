@@ -35,7 +35,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `kind` | `StatefulSet` | `StatefulSet` stops the old pod before it starts the new one, which a volume that only one pod may mount needs. `Deployment` updates without a gap, for an app without `persistence` (the render fails otherwise). |
 | `replicas` | `1` | `0` stops the app. |
 | `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). |
-| `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. |
+| `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. The pod gets `seccompProfile: RuntimeDefault` and the container `allowPrivilegeEscalation: false` unless the values set them. |
 | `probe` | `httpGet` on `/` | Liveness and readiness probe; the port is named `http`. |
 | `persistence` | none | The app's volume, a claim named `<app>-config`. Leave it out for a stateless app. |
 | `persistence.size` | | Size of the volume. |

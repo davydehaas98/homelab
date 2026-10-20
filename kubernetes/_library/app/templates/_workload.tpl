@@ -28,7 +28,7 @@ spec:
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
-      securityContext: {{ toYaml (.Values.podSecurityContext | default dict) | nindent 8 }}
+      securityContext: {{ toYaml (merge (deepCopy (.Values.podSecurityContext | default dict)) (dict "seccompProfile" (dict "type" "RuntimeDefault"))) | nindent 8 }}
       containers:
         - name: {{ template "app.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -46,7 +46,7 @@ spec:
               containerPort: {{ .Values.port }}
               protocol: {{ .Values.protocol | default "TCP" }}
           resources: {{ toYaml (.Values.resources | default dict) | nindent 12 }}
-          securityContext: {{ toYaml (.Values.securityContext | default dict) | nindent 12 }}
+          securityContext: {{ toYaml (merge (deepCopy (.Values.securityContext | default dict)) (dict "allowPrivilegeEscalation" false)) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
           # The first start of an app with a new database runs its migrations, which takes minutes on NFS.
           # The liveness probe only starts once this one succeeds (up to 15 minutes), instead of killing the app halfway.

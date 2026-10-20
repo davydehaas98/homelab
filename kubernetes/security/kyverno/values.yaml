@@ -124,3 +124,14 @@ kyverno-policies:
   validationFailureAction: Audit
   # The policies only audit, so a pod is admitted when Kyverno does not answer
   failurePolicy: Ignore
+
+  # Infrastructure that needs the host (paths, network, namespaces) or root: node agents, the CNI, the storage driver.
+  # They cannot meet the standard, so leave them out of the reports and let the rest show what can be fixed.
+  vpolExclude:
+    excludeNamespaces:
+      - democratic-csi
+      - fluent-bit
+      - kube-system
+      - nfs-subdir-external-provisioner
+      - node-feature-discovery
+      - prometheus-node-exporter

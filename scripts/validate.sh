@@ -1,9 +1,10 @@
 #!/bin/sh
 set -e
 #
-# Validates what CI does not: the root chart, and for each given app its dependencies, lint and render, which must
-# contain a Namespace (Argo CD does not create one). With -t it also validates and format-checks the Terraform of
-# davydehaas.dev, which needs no credentials. Run it in the dev container (.devcontainer/README.md).
+# Validates what CI does not: the root chart, and for each given app its dependencies, lint and render. It warns when
+# the render has no Namespace, as Argo CD does not create one; an app in the namespace of another has none. With -t it
+# also validates and format-checks the Terraform of davydehaas.dev, which needs no credentials. Run it in the dev
+# container (.devcontainer/README.md).
 #
 # Usage: sh scripts/validate.sh [-t] [<group>/<app> ...]
 
@@ -26,8 +27,7 @@ for APP in "$@"; do
     helm dependency update "kubernetes/${APP}" > /dev/null
     helm lint "kubernetes/${APP}"
     if ! helm template "kubernetes/${APP}" --api-versions monitoring.coreos.com/v1 | grep -q '^kind: Namespace$'; then
-        echo "The render of ${APP} has no Namespace" >&2
-        exit 1
+        echo "Warning: the render of ${APP} has no Namespace, which then has to come from another app"
     fi
 done
 
