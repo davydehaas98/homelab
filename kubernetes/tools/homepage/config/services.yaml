@@ -1,14 +1,20 @@
 # Apps on the cluster use their address in the cluster for the widget, apps on the home server their public one
 - Media:
-    - Plex:
-        icon: plex.png
-        href: https://plex.davydehaas.dev
-        description: Media server
-        siteMonitor: https://plex.davydehaas.dev
+    - Bazarr:
+        icon: bazarr.png
+        href: https://bazarr.davydehaas.dev
+        description: Subtitle management
+        siteMonitor: http://bazarr.media-server.svc.cluster.local:6767
         widget:
-          type: plex
-          url: https://plex.davydehaas.dev
-          key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
+          type: bazarr
+          url: http://bazarr.media-server.svc.cluster.local:6767
+          key: "{{HOMEPAGE_FILE_BAZARR_KEY}}"
+
+    - Immich:
+        icon: immich.png
+        href: https://immich.davydehaas.dev
+        description: Photos
+        siteMonitor: http://immich-server.immich.svc.cluster.local:2283
 
     - Jellyfin:
         icon: jellyfin.png
@@ -26,6 +32,57 @@
           enableMediaControl: false
           showEpisodeNumber: true
           expandOneStreamToTwoRows: false
+
+    - Lidarr:
+        icon: lidarr.png
+        href: https://lidarr.davydehaas.dev
+        description: Music management
+        siteMonitor: http://lidarr.media-server.svc.cluster.local:8686
+        widget:
+          type: lidarr
+          url: http://lidarr.media-server.svc.cluster.local:8686
+          key: "{{HOMEPAGE_FILE_LIDARR_KEY}}"
+
+    - Plex:
+        icon: plex.png
+        href: https://plex.davydehaas.dev
+        description: Media server
+        siteMonitor: https://plex.davydehaas.dev
+        widget:
+          type: plex
+          url: https://plex.davydehaas.dev
+          key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
+
+    - Prowlarr:
+        icon: prowlarr.png
+        href: https://prowlarr.davydehaas.dev
+        description: Indexer proxy
+        siteMonitor: http://prowlarr.media-server.svc.cluster.local:9696
+        widget:
+          type: prowlarr
+          url: http://prowlarr.media-server.svc.cluster.local:9696
+          key: "{{HOMEPAGE_FILE_PROWLARR_KEY}}"
+
+    - Radarr:
+        icon: radarr.png
+        href: https://radarr.davydehaas.dev
+        description: Movie management
+        siteMonitor: http://radarr.media-server.svc.cluster.local:7878
+        widget:
+          type: radarr
+          url: http://radarr.media-server.svc.cluster.local:7878
+          key: "{{HOMEPAGE_FILE_RADARR_KEY}}"
+
+    # SABnzbd rejects other hostnames, so its widget uses the public address (the /api path skips the login)
+    - SABnzbd:
+        icon: sabnzbd.png
+        href: https://sabnzbd.davydehaas.dev
+        description: Usenet downloader
+        siteMonitor: https://sabnzbd.davydehaas.dev
+        widget:
+          type: sabnzbd
+          url: https://sabnzbd.davydehaas.dev
+          key: "{{HOMEPAGE_FILE_SABNZBD_KEY}}"
 
     - Seerr:
         icon: seerr.png
@@ -46,57 +103,6 @@
           type: sonarr
           url: http://sonarr.media-server.svc.cluster.local:8989
           key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
-
-    - Radarr:
-        icon: radarr.png
-        href: https://radarr.davydehaas.dev
-        description: Movie management
-        siteMonitor: http://radarr.media-server.svc.cluster.local:7878
-        widget:
-          type: radarr
-          url: http://radarr.media-server.svc.cluster.local:7878
-          key: "{{HOMEPAGE_FILE_RADARR_KEY}}"
-
-    - Lidarr:
-        icon: lidarr.png
-        href: https://lidarr.davydehaas.dev
-        description: Music management
-        siteMonitor: http://lidarr.media-server.svc.cluster.local:8686
-        widget:
-          type: lidarr
-          url: http://lidarr.media-server.svc.cluster.local:8686
-          key: "{{HOMEPAGE_FILE_LIDARR_KEY}}"
-
-    - Bazarr:
-        icon: bazarr.png
-        href: https://bazarr.davydehaas.dev
-        description: Subtitle management
-        siteMonitor: http://bazarr.media-server.svc.cluster.local:6767
-        widget:
-          type: bazarr
-          url: http://bazarr.media-server.svc.cluster.local:6767
-          key: "{{HOMEPAGE_FILE_BAZARR_KEY}}"
-
-    - Prowlarr:
-        icon: prowlarr.png
-        href: https://prowlarr.davydehaas.dev
-        description: Indexer proxy
-        siteMonitor: http://prowlarr.media-server.svc.cluster.local:9696
-        widget:
-          type: prowlarr
-          url: http://prowlarr.media-server.svc.cluster.local:9696
-          key: "{{HOMEPAGE_FILE_PROWLARR_KEY}}"
-
-    # SABnzbd rejects other hostnames, so its widget uses the public address (the /api path skips the login)
-    - SABnzbd:
-        icon: sabnzbd.png
-        href: https://sabnzbd.davydehaas.dev
-        description: Usenet downloader
-        siteMonitor: https://sabnzbd.davydehaas.dev
-        widget:
-          type: sabnzbd
-          url: https://sabnzbd.davydehaas.dev
-          key: "{{HOMEPAGE_FILE_SABNZBD_KEY}}"
 
     - Tautulli:
         icon: tautulli.png
@@ -119,3 +125,82 @@
         href: https://tracearr.davydehaas.dev
         description: Torrent tracker manager
         siteMonitor: https://tracearr.davydehaas.dev
+
+- Home:
+    - Home Assistant:
+        icon: home-assistant.png
+        href: https://home-assistant.davydehaas.dev
+        description: Home automation
+        siteMonitor: http://home-assistant.home-assistant.svc.cluster.local:8123
+
+    - Nextcloud:
+        icon: nextcloud.png
+        href: https://nextcloud.davydehaas.dev
+        description: Files and sync
+        siteMonitor: http://nextcloud.nextcloud.svc.cluster.local:8080
+
+- Monitoring:
+    - Gatus:
+        icon: gatus.png
+        href: https://gatus.davydehaas.dev
+        description: Status page
+        siteMonitor: http://gatus.gatus.svc.cluster.local:8080
+
+    - Grafana:
+        icon: grafana.png
+        href: https://grafana.davydehaas.dev
+        description: Dashboards
+        siteMonitor: http://grafana.grafana.svc.cluster.local:80
+
+    - Policy Reporter:
+        icon: kyverno.png
+        href: https://policy.davydehaas.dev
+        description: Kyverno policy reports
+        siteMonitor: http://policy-reporter-ui.policy-reporter.svc.cluster.local:8080
+
+    - Prometheus:
+        icon: prometheus.png
+        href: https://prometheus.davydehaas.dev
+        description: Metrics
+        siteMonitor: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+        widget:
+          type: prometheus
+          url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+
+- Platform:
+    - Argo CD:
+        icon: argocd.png
+        href: https://argocd.davydehaas.dev
+        description: GitOps
+        siteMonitor: http://argocd-server.argocd.svc.cluster.local:80
+
+    - Authentik:
+        icon: authentik.png
+        href: https://auth.davydehaas.dev
+        description: Identity provider
+        siteMonitor: http://authentik-server.authentik.svc.cluster.local:80
+
+    - Headlamp:
+        icon: headlamp.png
+        href: https://headlamp.davydehaas.dev
+        description: Kubernetes dashboard
+        siteMonitor: http://headlamp.headlamp.svc.cluster.local:80
+
+    - Hubble:
+        icon: cilium.png
+        href: https://hubble.davydehaas.dev
+        description: Network observability
+        siteMonitor: http://hubble-ui.kube-system.svc.cluster.local:80
+
+- Tools:
+    - IT-Tools:
+        icon: it-tools.png
+        href: https://it-tools.davydehaas.dev
+        description: Developer utilities
+        siteMonitor: http://it-tools.it-tools.svc.cluster.local:80
+
+    - Omni Tools:
+        icon: mdi-tools
+        href: https://omni-tools.davydehaas.dev
+        description: Everyday utilities
+        siteMonitor: http://omni-tools.omni-tools.svc.cluster.local:80
