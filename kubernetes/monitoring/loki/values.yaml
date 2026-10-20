@@ -1,6 +1,10 @@
 loki:
   loki:
     revisionHistoryLimit: 2
+    # The pod security contexts of the chart have no seccomp profile, which the restricted standard requires
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
     auth_enabled: false
     schemaConfig:
       configs:
@@ -47,6 +51,11 @@ loki:
 
   lokiCanary:
     enabled: false
+
+  memcached:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
 
   chunksCache:
     allocatedMemory: 1024
@@ -124,6 +133,9 @@ loki:
 
   gateway:
     enabled: true
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
     verboseLogging: false
     replicas: 1
     resources:

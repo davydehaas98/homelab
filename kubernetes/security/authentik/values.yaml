@@ -134,6 +134,15 @@ authentik:
     pdb:
       enabled: true
       minAvailable: 1
+    # The image already runs as this user, this lets the restricted Pod Security Standard see it
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
     resources:
       limits:
         memory: 1Gi
@@ -143,6 +152,15 @@ authentik:
 
   worker:
     replicas: 1
+    # The image already runs as this user, this lets the restricted Pod Security Standard see it
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
     resources:
       limits:
         memory: 1Gi

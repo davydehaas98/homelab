@@ -10,6 +10,10 @@ descheduler:
       cpu: null
       memory: 100Mi
 
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
   service:
     enabled: true
 

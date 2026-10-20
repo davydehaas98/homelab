@@ -100,6 +100,11 @@ grafana:
       cpu: 50m
       memory: 256Mi
 
+  # Its init container runs as root to chown the data, which the restricted standard forbids. The data is already
+  # owned by the grafana user (472).
+  initChownData:
+    enabled: false
+
   persistence:
     type: StatefulSet
     enabled: true
