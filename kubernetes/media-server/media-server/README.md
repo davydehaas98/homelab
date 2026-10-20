@@ -31,6 +31,7 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Prometheus TSDB    | `prometheus`           | 10G  |
 | Authentik Postgres | `authentik-postgresql` | 2G   |
 | Immich Postgres    | `immich-database`      | 32G  |
+| Nextcloud code     | `nextcloud`            | 16G  |
 
 ### Adding an app
 

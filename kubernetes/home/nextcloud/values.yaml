@@ -74,9 +74,10 @@ nextcloud:
   cronjob:
     enabled: true
 
-  # The code and config, and apart from it the files of the users
+  # The code and config are on an iSCSI disk (templates/html-volume.yaml), and apart from it the files of the users
   persistence:
     enabled: true
+    existingClaim: nextcloud-html
     accessMode: ReadWriteOnce
     size: 16Gi
     nextcloudData:
