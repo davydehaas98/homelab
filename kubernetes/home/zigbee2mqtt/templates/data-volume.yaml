@@ -1,0 +1,22 @@
+# The data volume (network key, devices, groups) at a fixed folder on the NFS share, so it can be filled from
+# ~/home-server/zigbee2mqtt/data before the first start. The StatefulSet's claim binds to it (existingVolume).
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zigbee2mqtt-data
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  nfs:
+    server: 192.168.1.44
+    path: /mnt/md0/kubernetes/zigbee2mqtt-data
+  claimRef:
+    namespace: zigbee2mqtt
+    name: data-volume-zigbee2mqtt-0

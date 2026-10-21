@@ -1,12 +1,22 @@
 # Official chart. It merges the `zigbee2mqtt:` block below over the configuration.yaml on the data volume, so only
-# set what must differ. The network key, devices and groups stay in the volume, copy ~/home-server/zigbee2mqtt/data
-# into it before the first start: a new volume makes Zigbee2MQTT form a new network on the coordinator.
+# set what must differ. The network key, devices and groups stay in the volume (templates/data-volume.yaml), filled
+# from ~/home-server/zigbee2mqtt/data before the first start: a new volume makes Zigbee2MQTT form a new network on the
+# coordinator.
 zigbee2mqtt:
   statefulset:
     storage:
       enabled: true
       size: 1Gi
       storageClassName: nfs
+      existingVolume: zigbee2mqtt-data
+
+    # The MQTT password of the account zigbee2mqtt, from templates/zigbee2mqtt-mqtt.yaml
+    env:
+      - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zigbee2mqtt-mqtt
+            key: password
 
     resources:
       requests:
@@ -43,6 +53,7 @@ zigbee2mqtt:
       status_topic: homeassistant/status
     mqtt:
       server: mqtt://mosquitto.mosquitto.svc.cluster.local:1883
+      user: zigbee2mqtt
       version: 5
     serial:
       port: tcp://192.168.1.30:6638
