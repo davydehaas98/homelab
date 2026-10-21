@@ -21,7 +21,10 @@ spec:
       selector:
         matchLabels:
           deploy: "true"
-  # Deleting an app directory removes its Application but leaves the workloads (deleting resources stays a manual act)
+  # The Applications have no resources-finalizer, so deleting one (an app directory removed, or deploy: false) leaves its
+  # workloads, volumes and databases; deleting those stays a manual act. preserveResourcesOnDeletion does not cover
+  # that, it only applies when the ApplicationSet itself is deleted (tested: with the finalizer, removing a generator
+  # entry deleted the workloads too).
   syncPolicy:
     preserveResourcesOnDeletion: true
   template:
@@ -31,8 +34,6 @@ spec:
       labels:
         davydehaas.nl/group: '{{index .path.segments 1}}'
         davydehaas.nl/app: '{{.path.basename}}'
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
     spec:
       project: default
       source:
