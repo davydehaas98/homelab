@@ -19,6 +19,7 @@ spec:
           - path: kubernetes/games/*/argocd.yaml
           - path: kubernetes/home/*/argocd.yaml
           - path: kubernetes/media-server/*/argocd.yaml
+          - path: kubernetes/monitoring/*/argocd.yaml
           - path: kubernetes/tools/*/argocd.yaml
       # A missing deploy key does not match, so it counts as disabled
       selector:

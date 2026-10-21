@@ -1,0 +1,3 @@
+deploy: true
+namespace: prometheus
+serverSideApply: true

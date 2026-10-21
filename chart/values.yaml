@@ -33,27 +33,6 @@ applications:
     vpa:
       deploy: true
 
-  monitoring:
-    fluent-bit:
-      deploy: true
-    grafana:
-      deploy: true
-    grafana-dashboards:
-      deploy: true
-      namespace: grafana
-      serverSideApply: true
-    kepler:
-      deploy: false
-    loki:
-      deploy: true
-    prometheus:
-      deploy: true
-      serverSideApply: true
-    prometheus-crd:
-      deploy: true
-      namespace: prometheus
-      serverSideApply: true
-
   security:
     authentik:
       deploy: true
