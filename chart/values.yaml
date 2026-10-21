@@ -33,37 +33,6 @@ applications:
     vpa:
       deploy: true
 
-  media-server:
-    bazarr:
-      deploy: true
-      namespace: media-server
-    dispatcharr:
-      deploy: true
-      namespace: media-server
-    jellyfin:
-      deploy: true
-      namespace: media-server
-    lidarr:
-      deploy: true
-      namespace: media-server
-    media-server:
-      deploy: true
-    prowlarr:
-      deploy: true
-      namespace: media-server
-    radarr:
-      deploy: true
-      namespace: media-server
-    sabnzbd:
-      deploy: true
-      namespace: media-server
-    seerr:
-      deploy: true
-      namespace: media-server
-    sonarr:
-      deploy: true
-      namespace: media-server
-
   monitoring:
     fluent-bit:
       deploy: true
