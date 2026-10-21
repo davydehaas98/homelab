@@ -59,7 +59,7 @@ configFiles:
         persistence_location /mosquitto/data/
         log_dest stdout
 
-        # One account per client, sealed by seal-passwd.sh into templates/mosquitto-passwd.yaml
+        # One account (admin) for all clients, sealed by seal-passwd.sh into templates/mosquitto-passwd.yaml
         allow_anonymous false
         password_file /mosquitto/run/passwd
 

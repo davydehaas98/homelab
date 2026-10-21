@@ -10,7 +10,7 @@ zigbee2mqtt:
       storageClassName: nfs
       existingVolume: zigbee2mqtt-data
 
-    # The MQTT password of the account zigbee2mqtt, from templates/zigbee2mqtt-mqtt.yaml
+    # The MQTT password of the broker's account admin, from templates/zigbee2mqtt-mqtt.yaml
     env:
       - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
         valueFrom:
@@ -53,7 +53,7 @@ zigbee2mqtt:
       status_topic: homeassistant/status
     mqtt:
       server: mqtt://mosquitto.mosquitto.svc.cluster.local:1883
-      user: zigbee2mqtt
+      user: admin
       version: 5
     serial:
       port: tcp://192.168.1.30:6638
