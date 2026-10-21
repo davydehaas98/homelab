@@ -1,5 +1,7 @@
 # Home Assistant with its SQLite database on the volume. The image runs as root, its init system needs that.
-# The gateway passes the real client address in a header, so its pods (the pod network) are trusted proxies.
+# The gateway passes the real client address in a header, so its pods (the pod network, 10.244.0.0/16) are trusted
+# proxies. That is set in the UI and kept in .storage/http on the volume; once migrated there, an `http:` in YAML is
+# ignored.
 # The configuration is in config/, so Home Assistant cannot rewrite it; devices and dashboards are added in the UI.
 # The volume holds what the UI writes (automations.yaml, scripts.yaml) and secrets.yaml, with the location. Not moved
 # yet: the TTS.

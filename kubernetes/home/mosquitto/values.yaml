@@ -36,6 +36,20 @@ persistence:
   size: 1Gi
   mountPath: /mosquitto/data
 
+# Mosquitto wants its password file owned by its own user, and a mounted Secret is owned by root: copy it at the start
+args:
+  - sh
+  - -c
+  - >-
+    install -m 0600 /mosquitto/secrets/passwd /mosquitto/run/passwd &&
+    exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf
+
+emptyDirs:
+  - name: run
+    mountPath: /mosquitto/run
+    medium: Memory
+    sizeLimit: 1Mi
+
 configFiles:
   - name: config
     mountPath: /mosquitto/config
@@ -47,7 +61,7 @@ configFiles:
 
         # One account per client, sealed by seal-passwd.sh into templates/mosquitto-passwd.yaml
         allow_anonymous false
-        password_file /mosquitto/secrets/passwd
+        password_file /mosquitto/run/passwd
 
         listener 1883 0.0.0.0
   - name: passwd
