@@ -1,1 +1,3 @@
 deploy: true
+# Stopped while its config moves from the home server onto its disk
+suspend: true
