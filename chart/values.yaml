@@ -33,25 +33,6 @@ applications:
     vpa:
       deploy: true
 
-  games:
-    factorio:
-      deploy: true
-
-  home:
-    home-assistant:
-      deploy: true
-    immich:
-      deploy: true
-    mosquitto:
-      deploy: true
-    nextcloud:
-      deploy: true
-    personal-website:
-      deploy: true
-    zigbee2mqtt:
-      deploy: false
-      nameOverride: zigbee2mqtt
-
   media-server:
     bazarr:
       deploy: true

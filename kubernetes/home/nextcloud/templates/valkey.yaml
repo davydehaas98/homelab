@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: nextcloud-valkey
 spec:
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 0
   selector:
     matchLabels:

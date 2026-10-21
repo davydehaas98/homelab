@@ -6,6 +6,9 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: nextcloud-database
+  annotations:
+    # Stops the database pod and keeps its volume
+    cnpg.io/hibernation: "on"
 spec:
   instances: 1
   resources:
