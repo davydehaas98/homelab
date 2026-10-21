@@ -32,4 +32,9 @@ Three things must land in **one change**, as a policy without its Secret breaks 
 After the sync, restart `authentik-worker`, since blueprints read the credentials at start. Then check the
 `SecurityPolicy` is `Accepted` and the login redirects to `auth.davydehaas.dev`.
 
+While Authentik restarts, Envoy Gateway can mark OIDC policies `Invalid` and does not retry, so their routes answer
+500. Check `kubectl get securitypolicy -A` after any Authentik restart; the fix is
+`kubectl -n envoy-gateway rollout restart deploy/envoy-gateway` (the controller only, the proxies keep serving), with
+the user's go-ahead.
+
 Validate with `scripts/validate.sh`, passing both the app and `security/authentik`.

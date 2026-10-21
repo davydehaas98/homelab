@@ -21,7 +21,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 - Commit secrets only as SealedSecrets (controller `sealed-secrets-controller` in `kube-system`), never plaintext.
   Seal from stdin and never print values. To add keys, merge them into the live Secret and re-seal, as a
-  SealedSecret is bound to its name and namespace.- `talos/gen/` and `talos/talosconfig` hold cluster secrets and stay gitignored; don't search them. Client configs
+  SealedSecret is bound to its name and namespace.
+- `talos/gen/` and `talos/talosconfig` hold cluster secrets and stay gitignored; don't search them. Client configs
   are `~/.talos/config` and `~/.kube/config`, outside the repo.
 
 ## How the pieces connect
@@ -47,8 +48,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
 dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
 before pushing with `scripts/validate.sh` (yamllint on the plain YAML, see `.yamllint`, and per app the dependencies,
-lint and a render with a Namespace; `-t` adds the Terraform). The same scripts triage an app (`scripts/debug-app.sh`)
-and seal a Secret (`scripts/seal-secret.sh`).
+lint and a render with a Namespace; `-t` adds the Terraform). `scripts/render-diff.sh` shows what a change does to an
+app's manifests. The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret (`scripts/seal-secret.sh`).
 
 Library charts only render through an app that uses them. `kubectl apply --dry-run=server -f -` checks a render
 against the cluster.

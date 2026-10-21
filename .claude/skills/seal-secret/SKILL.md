@@ -5,8 +5,8 @@ description: Use when a Secret has to be added or changed in the cluster (a pass
 
 # Seal a secret
 
-Never commit plaintext, never print a value, never write it to a file. The flow is in the "Secrets" section of
-`README.md`; follow that, not a copy of it.
+Never commit plaintext, never print a value, never write it to a file. The rules are in the "Secrets" section of
+`AGENTS.md`, the usage in the header of `scripts/seal-secret.sh`; follow those, not a copy of them.
 
 1. **Ask the user for the value, or have them run the script.** You do not have the value, and must not read it from
    `talos/gen/`, `talos/talosconfig`, a `.env` or the live cluster to put it in the output. Give the user the command

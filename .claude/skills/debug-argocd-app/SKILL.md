@@ -16,6 +16,10 @@ logs and route status, and changes nothing. The steps say what to make of it and
    group in the generator of `kubernetes/core/argocd/templates/applicationset.yaml`. Then `kubectl -n argocd get application <app> -o yaml` and read
    `status.conditions`, `status.sync`, `status.health` and `status.operationState.message`.
 2. **Automated sync?** `autoSync: false` turns it off: OutOfSync is expected and only a manual sync moves it.
+   **Health `Suspended`** is not a failure: a Deployment paused in the Argo CD UI (`spec.paused`, git never sets it,
+   so it stays until `kubectl rollout resume`), a hibernated CloudNativePG cluster, or `suspend: true` in `argocd.yaml`.
+   **No Application, but pods run**: `deploy: false` or a removed `argocd.yaml` deletes the Application and leaves its
+   workloads, as the Applications have no finalizer (skill `remove-app`).
 3. **Render fails** (`ComparisonError`, `InvalidSpecError`): reproduce with `helm dependency update` and
    `helm template kubernetes/<group>/<app> --api-versions monitoring.coreos.com/v1`. Typical causes are a values key
    that a chart bump renamed, a missing dependency, or a `null` in values that needs `valueFiles: [values.yaml]`.
@@ -38,6 +42,10 @@ logs and route status, and changes nothing. The steps say what to make of it and
 8. **Reachable?** `kubectl -n <ns> get httproute` and check it is `Accepted` and `ResolvedRefs`, with parent Gateway
    `envoy-gateway`, `sectionName: web-https`. Then the DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`.
    A `SecurityPolicy` whose Secret is missing breaks the route (skill `add-oidc-client`).
+
+Deleting an Application (also by a rename or a move) runs the chart's pre-delete and post-delete hooks, which Argo CD
+marks with `pre-delete-finalizer`/`post-delete-finalizer` on the Application: Kyverno's scale it to 0 and remove its
+webhooks, until the new Application syncs it back.
 
 Report the cause with the evidence (the message or event that shows it), the file that has to change, and what you did
 not check. Do not claim a cause that you only inferred.

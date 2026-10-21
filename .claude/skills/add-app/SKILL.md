@@ -9,13 +9,13 @@ Read `AGENTS.md` and, for single-container apps, `kubernetes/_library/app/README
 tick each off before reporting the app as done. Moving an app from the home server? Start with the
 `migrate-from-home-server` skill.
 
-1. **Start from `kubernetes/_base/`.** Copy the whole directory, including `templates/namespace.yaml`; Argo CD does not
-   create namespaces, so an app without one fails to sync. Fill in every blank in the copy (chart name, namespace
+1. **Start from `kubernetes/_base/`.** Copy the whole directory, including `templates/namespace.yaml` and `argocd.yaml`;
+   Argo CD does not create namespaces, so an app without one fails to sync. Fill in every blank in the copy (chart name, namespace
    name). The namespace equals `namespace:` in the app's `argocd.yaml`, else the app name.
 2. **Library app** (single container): `Chart.yaml` with the `app` dependency, `templates/app.yaml` with
    `{{ include "app.resources" . }}`, the rest in `values.yaml`. **Upstream chart**: the chart as a dependency.
-3. **Register it** with an `argocd.yaml` in the app's directory: `deploy: true`, plus `namespace:` and the other keys
-   from `kubernetes/README.md` where needed. A new group also needs its path in the ApplicationSet's generator.
+3. **Register it** in the copied `argocd.yaml`: `deploy: true`, plus `namespace:` and the other keys from
+   `kubernetes/README.md` where needed. A new group also needs its path in the ApplicationSet's generator.
 4. **Image**: it must publish `linux/arm64`; check the manifest, not the name. Pin a version tag Renovate can follow.
 5. **Exposure**: an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`) and a DNS record in
    `terraform/cloudflare/davydehaas.dev/dns_record.tf` (`kubernetes_apps`, or `kubernetes_aliases` for aliases).
@@ -24,7 +24,8 @@ tick each off before reporting the app as done. Moving an app from the home serv
 7. **Storage and monitoring**: a volume as in the library README (iSCSI for SQLite and databases, the
    `add-iscsi-disk` skill), and a ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
 8. **Validate** with `scripts/validate.sh` (`-t` when `dns_record.tf` changed), always in the dev container
-   (`podman exec`). It renders the app and warns when the render has no Namespace (fine only for an app in another app's namespace).
+   (`podman exec`). It lints the YAML, renders the app and warns when the render has no Namespace (fine only for an
+   app in another app's namespace).
 9. **Stage only this app's files** (never commit); other uncommitted changes stay out.
 
 After it syncs, check the Application is `Synced` and `Healthy` and the HTTPRoute is `Accepted`.
