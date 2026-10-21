@@ -1,0 +1,4 @@
+deploy: true
+autoSync: false
+namespace: kube-system
+serverSideApply: true

@@ -16,6 +16,7 @@ spec:
         repoURL: https://github.com/davydehaas98/homelab.git
         revision: HEAD
         files:
+          - path: kubernetes/core/*/argocd.yaml
           - path: kubernetes/games/*/argocd.yaml
           - path: kubernetes/home/*/argocd.yaml
           - path: kubernetes/media-server/*/argocd.yaml
