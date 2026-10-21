@@ -76,8 +76,8 @@ authentik:
         value: authentik
       - name: AUTHENTIK_POSTGRESQL__USER
         value: authentik
-    # Client IDs and secrets read by the blueprints, one Secret per entry in `oidcClients`. The chart does not
-    # template this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
+    # Client IDs and secrets read by the blueprints, one Secret per entry in `oidcClients`. The chart does not template
+    # this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
     envFrom:
       - secretRef:
           name: authentik-oidc-argocd

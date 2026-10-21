@@ -26,6 +26,9 @@ talosctl = "1.14.2"
 # Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
 terraform = "1.16.6"
 
+# Installs pipx: tools (yamllint) with a Python of its own.
+uv = "0.12.23"
+
 # Edits YAML in the talos/ scripts.
 yq = "4.54.1"
 
@@ -34,3 +37,6 @@ yq = "4.54.1"
 
 # MCP server that lets Claude Code read Grafana (dashboards, Prometheus, Loki), see .mcp.json.
 "github:grafana/mcp-grafana" = "2.0.2"
+
+# Lints the plain YAML (values, Chart.yaml, argocd.yaml), see .yamllint. Installed with uv, which brings its own Python.
+"pipx:yamllint" = "1.38.0"

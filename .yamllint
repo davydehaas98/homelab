@@ -1,0 +1,18 @@
+# Lints the plain YAML: values, Chart.yaml, argocd.yaml, config files and workflows. scripts/validate.sh runs it on the
+# files git tracks.
+extends: default
+
+# Helm templates are not YAML until rendered. talos/gen and talos/talosconfig hold cluster secrets.
+ignore: |
+  **/templates/
+  **/charts/
+  talos/gen/
+  talos/talosconfig
+  .terraform/
+
+rules:
+  line-length:
+    max: 120
+  # GitHub workflows use `on:` as a key
+  truthy:
+    check-keys: false

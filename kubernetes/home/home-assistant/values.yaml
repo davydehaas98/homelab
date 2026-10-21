@@ -30,7 +30,8 @@ configFiles:
     mountPath: /config/integrations
     glob: config/integrations/*.yaml
 
-# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see kubernetes/media-server/media-server/README.md
+# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md
 persistence:
   size: 5Gi
   labels:

@@ -46,9 +46,9 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
 dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
-before pushing with `scripts/validate.sh` (per app the dependencies, lint and a render with a
-Namespace; `-t` adds the Terraform). The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret
-(`scripts/seal-secret.sh`).
+before pushing with `scripts/validate.sh` (yamllint on the plain YAML, see `.yamllint`, and per app the dependencies,
+lint and a render with a Namespace; `-t` adds the Terraform). The same scripts triage an app (`scripts/debug-app.sh`)
+and seal a Secret (`scripts/seal-secret.sh`).
 
 Library charts only render through an app that uses them. `kubectl apply --dry-run=server -f -` checks a render
 against the cluster.

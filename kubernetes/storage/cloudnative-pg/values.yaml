@@ -2,8 +2,8 @@ cloudnative-pg:
   crds:
     create: true
 
-  # Its webhooks fail closed, so while it is down no database cluster can be changed. One replica leads (`--leader-elect`),
-  # the other waits. The chart has no PodDisruptionBudget, see templates/pod-disruption-budget.yaml.
+  # Its webhooks fail closed, so while it is down no database cluster can be changed. One replica leads
+  # (`--leader-elect`), the other waits. The chart has no PodDisruptionBudget, see templates/pod-disruption-budget.yaml.
   replicaCount: 2
 
   resources:

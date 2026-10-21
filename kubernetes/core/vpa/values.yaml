@@ -27,7 +27,8 @@ vpa:
 
 # Workloads that get a VerticalPodAutoscaler (templates/vertical-pod-autoscalers.yaml), as `<Kind>/<name>` per
 # namespace. Only kube-system is listed: Kyverno skips it, and generates a VPA for every other workload
-# (kubernetes/security/kyverno/templates/generate-vpa-policy.yaml). Their recommendations are on the VPA dashboard in Grafana.
+# (kubernetes/security/kyverno/templates/generate-vpa-policy.yaml). Their recommendations are on the VPA dashboard in
+# Grafana.
 workloads:
   kube-system:
     - DaemonSet/cilium

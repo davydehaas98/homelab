@@ -123,7 +123,8 @@ argo-cd:
       requests:
         memory: 64Mi
 
-  # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in templates/notifications-secret.yaml.
+  # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in
+  # templates/notifications-secret.yaml.
   notifications:
     enabled: true
     # The webhook SealedSecret creates it, see templates/notifications-secret.yaml
@@ -146,6 +147,8 @@ argo-cd:
         headers:
           - name: Content-Type
             value: application/json
+    # The Discord message bodies are one JSON line each
+    # yamllint disable rule:line-length
     templates:
       template.app-sync-failed: |
         webhook:
@@ -159,6 +162,7 @@ argo-cd:
             method: POST
             body: |
               {"embeds": [{"title": "Unhealthy: {{.app.metadata.name}}", "url": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}", "description": "Health is {{.app.status.health.status}}", "color": 15105570}]}
+    # yamllint enable rule:line-length
     triggers:
       trigger.on-sync-failed: |
         - when: app.status.operationState != nil and app.status.operationState.phase in ['Error', 'Failed']

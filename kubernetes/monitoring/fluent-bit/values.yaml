@@ -80,6 +80,7 @@ fluent-bit:
         Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
         Time_Key time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+    # yamllint disable rule:line-length
     outputs: |
       [OUTPUT]
         Name loki
@@ -90,6 +91,7 @@ fluent-bit:
         # Send only the log text, the pod metadata is in the labels
         Remove_Keys kubernetes,stream,logtag
         Drop_Single_Key raw
+  # yamllint enable rule:line-length
 
   daemonSetVolumes:
     - name: varlog

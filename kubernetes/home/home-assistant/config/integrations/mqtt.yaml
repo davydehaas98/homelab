@@ -1,4 +1,5 @@
-# Sensors from the DSMR and water meter gateways. The broker itself is added in the UI (mosquitto in the home namespace).
+# Sensors from the DSMR and water meter gateways. The broker itself is added in the UI (mosquitto in the home
+# namespace).
 mqtt:
   sensor:
     # DSMR

@@ -75,6 +75,7 @@ grafana:
       api_url: "https://auth.davydehaas.dev/application/o/userinfo/"
       signout_redirect_url: "https://auth.davydehaas.dev/application/o/grafana/end-session/"
       # Authentik group names: members of `authentik Admins` get GrafanaAdmin, `grafana-editors` get Editor
+      # yamllint disable-line rule:line-length
       role_attribute_path: contains(groups[*], 'authentik Admins') && 'GrafanaAdmin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
       # Only sign in through Authentik

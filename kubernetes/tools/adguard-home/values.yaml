@@ -38,7 +38,8 @@ resources:
     cpu: 20m
     memory: 128Mi
 
-# The statistics database does not work on NFS, so the disk is on yggdrasil, see kubernetes/media-server/media-server/README.md
+# The statistics database does not work on NFS, so the disk is on yggdrasil, see
+# kubernetes/media-server/media-server/README.md
 persistence:
   size: 2Gi
   mountPath: /data
