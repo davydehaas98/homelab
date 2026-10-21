@@ -1,6 +1,6 @@
 {{- /* Helm must not render the Go templates of the ApplicationSet, so the manifest is a raw string. */ -}}
 {{ `
-# One Application per kubernetes/<group>/<app>/app.yaml with deploy: true. The file's keys are the per-app options,
+# One Application per kubernetes/<group>/<app>/argocd.yaml with deploy: true. The file's keys are the per-app options,
 # see kubernetes/README.md. An app without the file, or without deploy: true, is not deployed.
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -9,14 +9,14 @@ metadata:
   namespace: argocd
 spec:
   goTemplate: true
-  # Optional keys in app.yaml are absent otherwise, and the default (error) would fail the render
+  # Optional keys in argocd.yaml are absent otherwise, and the default (error) would fail the render
   goTemplateOptions: ["missingkey=default"]
   generators:
     - git:
         repoURL: https://github.com/davydehaas98/homelab.git
         revision: HEAD
         files:
-          - path: kubernetes/tools/*/app.yaml
+          - path: kubernetes/tools/*/argocd.yaml
       # A missing deploy key does not match, so it counts as disabled
       selector:
         matchLabels:
