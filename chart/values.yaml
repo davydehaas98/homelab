@@ -33,15 +33,6 @@ applications:
     vpa:
       deploy: true
 
-  security:
-    authentik:
-      deploy: true
-    kyverno:
-      deploy: true
-      serverSideApply: true
-    policy-reporter:
-      deploy: true
-
   storage:
     cloudnative-pg:
       deploy: true
