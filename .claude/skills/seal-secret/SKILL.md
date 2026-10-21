@@ -15,7 +15,7 @@ Never commit plaintext, never print a value, never write it to a file. The flow 
 
    Always run it in the dev container (`.devcontainer/README.md`), from the repo root, with `~/.kube` mounted.
 2. **Name and namespace are part of the seal.** A SealedSecret only decrypts under the name and namespace it was made
-   for. Use the namespace of the app (`namespace:` in `chart/values.yaml`, else the app name).
+   for. Use the namespace of the app (`namespace:` in the app's `argocd.yaml`, else the app name).
 3. **The script writes `kubernetes/<group>/<app>/templates/<name>.yaml`**, next to the manifests that use it.
 4. **Adding a key to an existing Secret:** a SealedSecret cannot be edited. Use `-m`, which keeps the live Secret's
    keys and re-seals the whole Secret.

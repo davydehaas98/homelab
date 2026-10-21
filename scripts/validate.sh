@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 #
-# Validates what CI does not: the root chart, and for each given app its dependencies, lint and render. It warns when
+# Validates what CI does not: for each given app its dependencies, lint and render. It warns when
 # the render has no Namespace, as Argo CD does not create one; an app in the namespace of another has none. With -t it
 # also validates and format-checks the Terraform of davydehaas.dev, which needs no credentials. Run it in the dev
 # container (.devcontainer/README.md).
@@ -18,9 +18,6 @@ do
     esac
 done
 shift $((OPTIND - 1))
-
-echo "Rendering chart/.."
-helm template chart > /dev/null
 
 for APP in "$@"; do
     echo "Validating ${APP}.."

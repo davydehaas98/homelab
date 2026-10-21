@@ -1,2 +1,0 @@
-# Every app has moved to the ApplicationSet (kubernetes/core/argocd/templates/applicationset.yaml)
-applications: {}

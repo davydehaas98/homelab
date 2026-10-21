@@ -5,9 +5,8 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 
 ## Layout
 
-- `kubernetes/`: one Helm chart per app, by group. An app is deployed once `chart/values.yaml` lists it with
-  `deploy: true`.
-- `chart/`: the app-of-apps chart, see [`chart/README.md`](chart/README.md).
+- `kubernetes/`: one Helm chart per app, by group, deployed by an ApplicationSet once its `argocd.yaml` has
+  `deploy: true`, see [`kubernetes/README.md`](kubernetes/README.md).
 - `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
 - `terraform/`: Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
@@ -15,7 +14,7 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 
 ## Apps
 
-The apps with `deploy: true` in [`chart/values.yaml`](chart/values.yaml), as `kubernetes/<group>/<app>`.
+The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app>`.
 
 ### core
 

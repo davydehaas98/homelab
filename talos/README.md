@@ -103,15 +103,15 @@ may stay next to the old ones; back it up once something is sealed with it.
 
 ### Argo CD
 
-Install it with chart defaults (the repo's values need CRDs that don't exist yet), then hand over to the root
-Application, which creates every app, including `argocd`, which adopts this release:
+Install it with chart defaults (the repo's values need CRDs that don't exist yet), then hand over to the
+ApplicationSet, which creates every app, including `argocd`, which adopts this release:
 
 ```shell
 helm repo add argo https://argoproj.github.io/argo-helm
 helm install argocd argo/argo-cd --version 9.7.1 -n argocd --create-namespace --wait
 helm dependency update ../kubernetes/core/argocd
 helm template argocd ../kubernetes/core/argocd -n argocd \
-    -s templates/applications.yaml | kubectl apply -f -
+    -s templates/applicationset.yaml | kubectl apply -f -
 ```
 
 Apps whose first sync needs CRDs from other apps fail once and are not retried: sync them by hand when

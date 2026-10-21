@@ -7,12 +7,11 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 ## Apps
 
-- The root Application (`kubernetes/core/argocd/templates/applications.yaml`) renders `chart/`, which emits one
-  Application per `applications.<group>.<app>` in `chart/values.yaml` with `deploy: true`, pointing at
-  `kubernetes/<group>/<app>`. A directory that is not listed there is not deployed.
-- Directory names equal the kebab-cased keys. The namespace is the app name unless `namespace:` is set. Other
-  per-app keys are in `chart/README.md`.
-- `autoSync: false` turns off automated sync of an app (manual sync only), as for `cilium`.
+- The ApplicationSet in `kubernetes/core/argocd/templates/applicationset.yaml` makes one Application per
+  `kubernetes/<group>/<app>/argocd.yaml` with `deploy: true`. A directory without it is not deployed. `deploy: false`
+  or removing the file leaves the workloads running, as the Applications have no finalizer.
+- The namespace is the app name unless `namespace:` is set in `argocd.yaml`. Its other keys are in
+  `kubernetes/README.md`; `autoSync: false` turns off automated sync (manual sync only), as for `cilium`.
 - Each app is a wrapper chart: the upstream chart as a dependency, its overrides in `values.yaml`, and extra
   manifests in `templates/`. Single-container apps use the library chart `kubernetes/_library/app` instead and
   only set values (see its README). New apps start from a copy of `kubernetes/_base/`, following the `add-app` skill.
@@ -47,7 +46,7 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
 dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
-before pushing with `scripts/validate.sh` (the root chart, and per app the dependencies, lint and a render with a
+before pushing with `scripts/validate.sh` (per app the dependencies, lint and a render with a
 Namespace; `-t` adds the Terraform). The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret
 (`scripts/seal-secret.sh`).
 

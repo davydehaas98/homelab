@@ -8,12 +8,12 @@ description: Use when an app is OutOfSync, Degraded, Progressing for too long, o
 Read-only first: `get`, `describe`, `logs`, `events`. Do not sync, delete, restart or edit anything until the cause is
 known and the user agrees. The fix goes in git, as `AGENTS.md` says; a merge to `main` is a deployment.
 
-The namespace is the app name unless `namespace:` is set in `chart/values.yaml`. Run the CLIs in the dev container.
+The namespace is the app name unless `namespace:` is set in the app's `argocd.yaml`. Run the CLIs in the dev container.
 Start with `scripts/debug-app.sh -a <app>`, which prints the Application, SealedSecrets, pods, warning events, previous
 logs and route status, and changes nothing. The steps say what to make of it and where to dig further.
 
-1. **Is it deployed at all?** The app needs `deploy: true` under `applications.<group>.<app>` in `chart/values.yaml`
-   and a directory `kubernetes/<group>/<app>`. Then `kubectl -n argocd get application <app> -o yaml` and read
+1. **Is it deployed at all?** The app needs `kubernetes/<group>/<app>/argocd.yaml` with `deploy: true`, and its
+   group in the generator of `kubernetes/core/argocd/templates/applicationset.yaml`. Then `kubectl -n argocd get application <app> -o yaml` and read
    `status.conditions`, `status.sync`, `status.health` and `status.operationState.message`.
 2. **Automated sync?** `autoSync: false` turns it off: OutOfSync is expected and only a manual sync moves it.
 3. **Render fails** (`ComparisonError`, `InvalidSpecError`): reproduce with `helm dependency update` and
@@ -24,7 +24,7 @@ logs and route status, and changes nothing. The steps say what to make of it and
    owning the CRDs is Healthy, then ask the user to sync this one.
 5. **Perpetually OutOfSync**: the API server adds defaults. Look at `argocd app diff <app>` or the resource's diff in
    the UI. Fix with `serverSideApply: true` (which adds `ServerSideDiff`) or `ignoreDifferences`, both in
-   `chart/values.yaml`.
+   the app's `argocd.yaml`.
 6. **SealedSecret not decrypting**: `kubectl -n <ns> get sealedsecret` and `describe` it, and
    `kubectl -n kube-system logs deploy/sealed-secrets-controller`. A seal is bound to its name and namespace, so a
    renamed Secret or a changed `namespace:` needs a re-seal (skill `seal-secret`). `no key could decrypt` means the

@@ -22,7 +22,7 @@ fi
 
 echo "== Application"
 if ! kubectl -n argocd get application "${APP}" -o json > /tmp/debug-app.json; then
-    echo "Not deployed: it needs deploy: true in chart/values.yaml and a directory under kubernetes/"
+    echo "Not deployed: it needs kubernetes/<group>/<app>/argocd.yaml with deploy: true"
     exit 1
 fi
 jq '{project: .spec.project, namespace: .spec.destination.namespace, sync: .status.sync.status, health: .status.health.status,
