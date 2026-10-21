@@ -5,7 +5,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: applications
+  name: yggdrasil
   namespace: argocd
 spec:
   goTemplate: true
@@ -39,8 +39,8 @@ spec:
       name: '{{.path.basename}}'
       namespace: argocd
       labels:
-        davydehaas.nl/group: '{{index .path.segments 1}}'
-        davydehaas.nl/app: '{{.path.basename}}'
+        davydehaas.dev/group: '{{index .path.segments 1}}'
+        davydehaas.dev/app: '{{.path.basename}}'
     spec:
       project: default
       source:

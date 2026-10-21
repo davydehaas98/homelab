@@ -1,6 +1,6 @@
 # Apps
 
-Each app is a chart in `kubernetes/<group>/<app>`. The ApplicationSet `applications`
+Each app is a chart in `kubernetes/<group>/<app>`. The ApplicationSet `yggdrasil`
 (`core/argocd/templates/applicationset.yaml`) makes one Argo CD Application per `argocd.yaml` in such a directory
 with `deploy: true`. A new group also needs its path in the generator of the ApplicationSet.
 
