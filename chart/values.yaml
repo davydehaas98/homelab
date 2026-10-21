@@ -131,19 +131,3 @@ applications:
     velero:
       deploy: false
       serverSideApply: true
-
-  tools:
-    adguard-home:
-      deploy: false
-    gatus:
-      deploy: true
-    headlamp:
-      deploy: true
-    homepage:
-      deploy: true
-    it-tools:
-      deploy: true
-    omni-tools:
-      deploy: true
-    open-webui:
-      deploy: false

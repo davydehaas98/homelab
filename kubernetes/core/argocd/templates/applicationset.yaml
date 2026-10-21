@@ -1,0 +1,92 @@
+{{- /* Helm must not render the Go templates of the ApplicationSet, so the manifest is a raw string. */ -}}
+{{ `
+# One Application per kubernetes/<group>/<app>/app.yaml with deploy: true. The file's keys are the per-app options,
+# see kubernetes/README.md. An app without the file, or without deploy: true, is not deployed.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: applications
+  namespace: argocd
+spec:
+  goTemplate: true
+  # Optional keys in app.yaml are absent otherwise, and the default (error) would fail the render
+  goTemplateOptions: ["missingkey=default"]
+  generators:
+    - git:
+        repoURL: https://github.com/davydehaas98/homelab.git
+        revision: HEAD
+        files:
+          - path: kubernetes/tools/*/app.yaml
+      # A missing deploy key does not match, so it counts as disabled
+      selector:
+        matchLabels:
+          deploy: "true"
+  # Deleting an app directory removes its Application but leaves the workloads (deleting resources stays a manual act)
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  template:
+    metadata:
+      name: '{{.path.basename}}'
+      namespace: argocd
+      labels:
+        davydehaas.nl/group: '{{index .path.segments 1}}'
+        davydehaas.nl/app: '{{.path.basename}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/davydehaas98/homelab.git
+        targetRevision: HEAD
+        path: '{{.path.path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{default .path.basename .namespace}}'
+      revisionHistoryLimit: 2
+      syncPolicy:
+        syncOptions:
+          - RespectIgnoreDifferences=true
+          - FailOnSharedResource=true
+        automated:
+          enabled: true
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 2
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 10m
+  # Only the optional parts live here; a patch replaces lists, so syncOptions is repeated in full.
+  templatePatch: |
+    {{- if .serverSideApply }}
+    metadata:
+      annotations:
+        # The API server fills in defaults (for example on HTTPRoutes), compare against its result instead
+        argocd.argoproj.io/compare-options: ServerSideDiff=true
+    {{- end }}
+    {{- if or .valueFiles .ignoreDifferences .serverSideApply (and (hasKey . "autoSync") (not .autoSync)) }}
+    spec:
+      {{- with .valueFiles }}
+      source:
+        helm:
+          valueFiles: {{ toJson . }}
+      {{- end }}
+      {{- with .ignoreDifferences }}
+      ignoreDifferences: {{ toJson . }}
+      {{- end }}
+      {{- if or .serverSideApply (and (hasKey . "autoSync") (not .autoSync)) }}
+      syncPolicy:
+        {{- if and (hasKey . "autoSync") (not .autoSync) }}
+        automated:
+          enabled: false
+        {{- end }}
+        {{- if .serverSideApply }}
+        syncOptions:
+          - RespectIgnoreDifferences=true
+          - FailOnSharedResource=true
+          - ServerSideApply=true
+        {{- end }}
+      {{- end }}
+    {{- end }}
+` }}
