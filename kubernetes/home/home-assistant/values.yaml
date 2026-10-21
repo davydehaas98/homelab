@@ -1,11 +1,13 @@
 # Home Assistant with its SQLite database on the volume. The image runs as root, its init system needs that.
 # The gateway passes the real client address in a header, so its pods (the pod network) are trusted proxies.
-# The configuration is in config/, so Home Assistant cannot rewrite it; devices, the location and dashboards are
-# added in the UI. Not moved yet: the TTS and the location.
+# The configuration is in config/, so Home Assistant cannot rewrite it; devices and dashboards are added in the UI.
+# The volume holds what the UI writes (automations.yaml, scripts.yaml) and secrets.yaml, with the location. Not moved
+# yet: the TTS.
 image:
   registry: ghcr.io
   repository: home-assistant/home-assistant
-  tag: 2026.10.2
+  # The version of the home server's installation, so the move from there is not also an upgrade
+  tag: 2026.9.4
 
 port: 8123
 

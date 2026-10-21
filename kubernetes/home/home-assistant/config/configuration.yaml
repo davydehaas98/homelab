@@ -3,6 +3,10 @@ default_config:
 homeassistant:
   packages: !include_dir_named integrations
   name: Home
+  # In secrets.yaml on the volume, not in git
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
   radius: 50
   unit_system: metric
   temperature_unit: C
