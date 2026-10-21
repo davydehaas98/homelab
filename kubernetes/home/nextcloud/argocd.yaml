@@ -1,1 +1,6 @@
 deploy: true
+# Off: a PHP app with a vulnerability that may not be fixed yet. Its data stays on its volumes.
+suspend: true
+suspendValues:
+  nextcloud:
+    replicaCount: 0

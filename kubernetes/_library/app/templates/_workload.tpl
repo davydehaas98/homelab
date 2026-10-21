@@ -15,7 +15,7 @@ metadata:
     {{- include "app.labels" . | nindent 4 }}
 spec:
   revisionHistoryLimit: 0
-  replicas: {{ .Values.replicas | default 1 }}
+  replicas: {{ include "app.replicas" . }}
   selector:
     matchLabels:
       {{- include "app.selectorLabels" . | nindent 6 }}

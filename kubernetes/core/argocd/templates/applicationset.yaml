@@ -73,12 +73,23 @@ spec:
         # The API server fills in defaults (for example on HTTPRoutes), compare against its result instead
         argocd.argoproj.io/compare-options: ServerSideDiff=true
     {{- end }}
-    {{- if or .valueFiles .ignoreDifferences .serverSideApply (and (hasKey . "autoSync") (not .autoSync)) }}
+    {{- if or .valueFiles .suspend .ignoreDifferences .serverSideApply (and (hasKey . "autoSync") (not .autoSync)) }}
     spec:
-      {{- with .valueFiles }}
+      {{- if or .valueFiles .suspend }}
       source:
         helm:
+          {{- with .valueFiles }}
           valueFiles: {{ toJson . }}
+          {{- end }}
+          {{- if .suspend }}
+          parameters:
+            - name: suspend
+              value: "true"
+              forceString: true
+          {{- with .suspendValues }}
+          valuesObject: {{ toJson . }}
+          {{- end }}
+          {{- end }}
       {{- end }}
       {{- with .ignoreDifferences }}
       ignoreDifferences: {{ toJson . }}

@@ -60,3 +60,14 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/* The replica count: 0 while `suspend` is set, else `replicas`, else 1. `default 1` would turn replicas: 0 into 1. */}}
+{{- define "app.replicas" -}}
+{{- if eq (toString .Values.suspend) "true" -}}
+0
+{{- else if kindIs "invalid" .Values.replicas -}}
+1
+{{- else -}}
+{{ .Values.replicas }}
+{{- end -}}
+{{- end -}}
