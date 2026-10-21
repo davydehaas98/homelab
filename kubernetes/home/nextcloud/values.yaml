@@ -1,7 +1,5 @@
-# Switched off: a PHP app with a vulnerability that may not be fixed yet. The data stays on its volumes. Set
-# replicaCount, valkey.yaml's replicas and the hibernation of database.yaml back to switch it on.
 nextcloud:
-  replicaCount: 0
+  replicaCount: 1
 
   phpClientHttpsFix:
     enabled: true

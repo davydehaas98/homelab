@@ -7,8 +7,8 @@ kind: Cluster
 metadata:
   name: nextcloud-database
   annotations:
-    # Stops the database pod and keeps its volume
-    cnpg.io/hibernation: "on"
+    # While the app is suspended (argocd.yaml), the database pod stops and its volume stays
+    cnpg.io/hibernation: {{ if eq (toString .Values.suspend) "true" }}"on"{{ else }}"off"{{ end }}
 spec:
   instances: 1
   resources:

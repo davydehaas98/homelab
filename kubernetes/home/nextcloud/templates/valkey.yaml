@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: nextcloud-valkey
 spec:
-  replicas: 0
+  replicas: {{ if eq (toString .Values.suspend) "true" }}0{{ else }}1{{ end }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
