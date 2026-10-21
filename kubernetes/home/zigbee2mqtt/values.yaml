@@ -58,6 +58,12 @@ zigbee2mqtt:
     serial:
       port: tcp://192.168.1.30:6638
       adapter: zstack
+    # The chart replaces the whole `advanced` block of configuration.yaml, so it repeats the network of the coordinator:
+    # without it Zigbee2MQTT refuses to start. The network key is in secret.yaml on the data volume, not in git.
     advanced:
       # The chart default is 5, the old installation used the maximum of the coordinator
       transmit_power: 20
+      channel: 11
+      pan_id: 22479
+      ext_pan_id: [150, 163, 44, 38, 246, 255, 19, 29]
+      network_key: "!secret network_key"
