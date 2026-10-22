@@ -27,9 +27,13 @@ podSecurityContext:
     - name: net.ipv4.ip_unprivileged_port_start
       value: "0"
 securityContext:
+  # The binary of the image carries a file capability to bind low ports. The kernel refuses to run it when the container
+  # has dropped that capability, so it is added back (allowed by the restricted Pod Security profile)
   capabilities:
     drop:
       - ALL
+    add:
+      - NET_BIND_SERVICE
 
 resources:
   limits:
