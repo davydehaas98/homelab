@@ -47,7 +47,8 @@ service:
   annotations:
     lbipam.cilium.io/ips: 192.168.1.59
 
-# Its own accounts and login, so no gateway login in front of the playlists and the guide
+# The web UI is behind the gateway login (client `dispatcharr`). The paths that players and tuners call (playlist,
+# guide, streams, tuner emulation, Xtream Codes API, logos) skip it and are protected by the app's own accounts.
 route:
   enabled: true
   hostnames:
@@ -58,4 +59,23 @@ route:
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway
+
+oidc:
+  enabled: true
+  bypassPaths:
+    - /output/
+    - /hdhr/
+    - /proxy/ts/stream/
+    - /player_api.php
+    - /panel_api.php
+    - /get.php
+    - /xmltv.php
+    - /live/
+    - /movie/
+    - /series/
+    - /timeshift/
+    - /streaming/
+    - /logos/
+    - /api/channels/logos/
+    - /api/vod/vodlogos/
       sectionName: web-https

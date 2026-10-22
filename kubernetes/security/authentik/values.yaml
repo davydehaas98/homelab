@@ -8,6 +8,9 @@ oidcClients:
   - name: Bazarr
     slug: bazarr
     redirectURL: https://bazarr.davydehaas.dev/oauth2/callback
+  - name: Dispatcharr
+    slug: dispatcharr
+    redirectURL: https://dispatcharr.davydehaas.dev/oauth2/callback
   - name: Gatus
     slug: gatus
     redirectURL: https://gatus.davydehaas.dev/oauth2/callback
@@ -83,6 +86,8 @@ authentik:
           name: authentik-oidc-argocd
       - secretRef:
           name: authentik-oidc-bazarr
+      - secretRef:
+          name: authentik-oidc-dispatcharr
       - secretRef:
           name: authentik-oidc-gatus
       - secretRef:
