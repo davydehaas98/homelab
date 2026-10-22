@@ -23,6 +23,7 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Radarr             | `radarr`               | 5G   |
 | Lidarr             | `lidarr`               | 2G   |
 | Seerr              | `seerr`                | 1G   |
+| Tautulli           | `tautulli`             | 10G  |
 | Jellyfin           | `jellyfin`             | 10G  |
 | Bazarr             | `bazarr`               | 1G   |
 | Dispatcharr        | `dispatcharr`          | 5G   |
