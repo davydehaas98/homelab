@@ -1,6 +1,10 @@
 nextcloud:
   replicaCount: 1
 
+  # The tag is rebuilt for PHP fixes, so a node must not reuse a cached image
+  image:
+    pullPolicy: Always
+
   phpClientHttpsFix:
     enabled: true
     protocol: https

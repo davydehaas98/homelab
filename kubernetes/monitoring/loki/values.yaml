@@ -147,6 +147,10 @@ loki:
 
   gateway:
     enabled: true
+    image:
+      registry: docker.io
+      repository: nginxinc/nginx-unprivileged
+      tag: 1.31.7-alpine
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
