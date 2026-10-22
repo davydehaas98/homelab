@@ -3,7 +3,7 @@
 image:
   registry: docker.io
   repository: iib0011/omni-tools
-  tag: 0.6.0
+  tag: 0.7.0
 
 port: 8080
 
