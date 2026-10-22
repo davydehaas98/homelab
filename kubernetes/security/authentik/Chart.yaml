@@ -1,8 +1,8 @@
 apiVersion: v2
 name: authentik
-version: 1.0.0
+version: 1.0.1
 
 dependencies:
   - name: authentik
-    version: 2026.8.4
+    version: 2026.8.5
     repository: https://charts.goauthentik.io
