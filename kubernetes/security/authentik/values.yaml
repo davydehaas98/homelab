@@ -2,6 +2,9 @@
 # app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` /
 # `<SLUG>_CLIENT_SECRET` in the SealedSecret `templates/oidc-client-<slug>.yaml`, listed in `envFrom` below.
 oidcClients:
+  - name: AirTrail
+    slug: airtrail
+    redirectURL: https://airtrail.davydehaas.dev/oauth2/callback
   - name: Argo CD
     slug: argocd
     redirectURL: https://argocd.davydehaas.dev/auth/callback
@@ -82,6 +85,8 @@ authentik:
     # Client IDs and secrets read by the blueprints, one Secret per entry in `oidcClients`. The chart does not template
     # this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
     envFrom:
+      - secretRef:
+          name: authentik-oidc-airtrail
       - secretRef:
           name: authentik-oidc-argocd
       - secretRef:

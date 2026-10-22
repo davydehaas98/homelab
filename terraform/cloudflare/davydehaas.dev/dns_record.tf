@@ -50,6 +50,7 @@ locals {
   # HTTPRoute hostnames.
   kubernetes_apps = [
     "adguard",
+    "airtrail",
     "argocd",
     "auth",
     "bazarr",

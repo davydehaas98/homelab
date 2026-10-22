@@ -36,7 +36,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `replicas` | `1` | Number of pods; `0` stops the app. |
 | `suspend` | `false` | `true` stops the app (0 pods) and keeps its volume, whatever `replicas` says. The ApplicationSet sets it from `suspend: true` in the app's `argocd.yaml`. |
 | `args` | none | Arguments of the container, replacing the `CMD` of the image. |
-| `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). |
+| `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). A value that is a map becomes `valueFrom`, for one key of a Secret (`secretKeyRef`). |
 | `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. The pod gets `seccompProfile: RuntimeDefault` and the container `allowPrivilegeEscalation: false` unless the values set them. |
 | `probe` | `httpGet` on `/` | Liveness and readiness probe; the port is named `http`. |
 | `persistence` | none | The app's volume, a claim named `<app>-config`. Leave it out for a stateless app. |

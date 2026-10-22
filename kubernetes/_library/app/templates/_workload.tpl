@@ -39,7 +39,12 @@ spec:
           env:
             {{- range $name, $value := merge (deepCopy (.Values.env | default dict)) (dict "TZ" "Europe/Amsterdam") }}
             - name: {{ $name }}
+              {{- if kindIs "map" $value }}
+              valueFrom:
+                {{- toYaml $value | nindent 16 }}
+              {{- else }}
               value: {{ $value | toString | quote }}
+              {{- end }}
             {{- end }}
           {{- with .Values.envFrom }}
           envFrom:

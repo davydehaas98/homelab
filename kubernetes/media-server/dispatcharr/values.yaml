@@ -59,6 +59,7 @@ route:
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway
+      sectionName: web-https
 
 oidc:
   enabled: true
@@ -78,4 +79,3 @@ oidc:
     - /logos/
     - /api/channels/logos/
     - /api/vod/vodlogos/
-      sectionName: web-https

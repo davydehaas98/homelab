@@ -32,6 +32,7 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | AdGuard Home       | `adguard-home`         | 2G   |
 | Authentik Postgres | `authentik-postgresql` | 2G   |
 | Immich Postgres    | `immich-database`      | 32G  |
+| AirTrail Postgres  | `airtrail-database`    | 2G   |
 | Nextcloud code     | `nextcloud`            | 16G  |
 
 ### Adding an app

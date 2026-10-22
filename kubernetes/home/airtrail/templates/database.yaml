@@ -1,0 +1,60 @@
+# PostgreSQL for AirTrail, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which must be deployed first,
+# and which creates the Secret `airtrail-database-app` for it. The database is on an iSCSI disk on yggdrasil, a
+# target of its own, see kubernetes/media-server/media-server/README.md; one instance, as each instance needs a disk
+# of its own. The disk is owned by the postgres user: `OWNER=26:26 sh lun.sh copy airtrail-database <empty folder>`.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: airtrail-database
+  annotations:
+    # While the app is suspended (argocd.yaml), the database pod stops and its volume stays
+    cnpg.io/hibernation: {{ if eq (toString .Values.suspend) "true" }}"on"{{ else }}"off"{{ end }}
+spec:
+  instances: 1
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 128Mi
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
+  bootstrap:
+    initdb:
+      database: airtrail
+      owner: airtrail
+  storage:
+    size: 2Gi
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ""
+      volumeName: airtrail-database-1
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airtrail-database-1
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
+  csi:
+    driver: org.democratic-csi.node-manual
+    fsType: ext4
+    readOnly: false
+    volumeHandle: airtrail-database-1
+    volumeAttributes:
+      portal: "192.168.1.44:3260"
+      iqn: "iqn.2026-10.nl.davydehaas:airtrail-database"
+      lun: "0"
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
+  claimRef:
+    namespace: airtrail
+    name: airtrail-database-1
