@@ -1,0 +1,74 @@
+# Cache and job queue of Tracearr. Nothing in it needs to survive a restart.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracearr-valkey
+  labels:
+    app.kubernetes.io/name: tracearr-valkey
+spec:
+  replicas: {{ if eq (toString .Values.suspend) "true" }}0{{ else }}1{{ end }}
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tracearr-valkey
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tracearr-valkey
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2-alpine
+          args:
+            - valkey-server
+            - --save
+            - ""
+            - --appendonly
+            - "no"
+          ports:
+            - name: valkey
+              containerPort: 6379
+          livenessProbe:
+            tcpSocket:
+              port: valkey
+          readinessProbe:
+            tcpSocket:
+              port: valkey
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracearr-valkey
+  labels:
+    app.kubernetes.io/name: tracearr-valkey
+spec:
+  selector:
+    app.kubernetes.io/name: tracearr-valkey
+  ports:
+    - name: valkey
+      port: 6379
+      targetPort: valkey

@@ -75,6 +75,7 @@ locals {
     "seerr",
     "sonarr",
     "tautulli",
+    "tracearr",
     "www",
     "zigbee",
   ]

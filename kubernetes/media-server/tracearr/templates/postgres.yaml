@@ -1,0 +1,151 @@
+# PostgreSQL with TimescaleDB for Tracearr, as on the home server (the same image). CloudNativePG cannot run this
+# image, so it is a Deployment of its own. The database is on an iSCSI disk on yggdrasil, a target of its own, see
+# kubernetes/media-server/media-server/README.md; only one pod may mount it, hence Recreate.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracearr-postgres
+  labels:
+    app.kubernetes.io/name: tracearr-postgres
+spec:
+  replicas: {{ if eq (toString .Values.suspend) "true" }}0{{ else }}1{{ end }}
+  revisionHistoryLimit: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tracearr-postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tracearr-postgres
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1400
+        runAsGroup: 1400
+        fsGroup: 1400
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          image: docker.io/timescale/timescaledb-ha:pg18.1-ts2.25.0
+          args:
+            - postgres
+            - -c
+            - timescaledb.license=timescale
+            # Allow unlimited tuple decompression for migrations on compressed hypertables
+            - -c
+            - timescaledb.max_tuples_decompressed_per_dml_transaction=0
+            # Larger lock table, for large imports (Tautulli imports with many TimescaleDB chunks)
+            - -c
+            - max_locks_per_transaction=4096
+            - -c
+            - timescaledb.telemetry_level=off
+          env:
+            - name: POSTGRES_USER
+              value: tracearr
+            - name: POSTGRES_DB
+              value: tracearr
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tracearr-env
+                  key: POSTGRES_PASSWORD
+          ports:
+            - name: postgres
+              containerPort: 5432
+          startupProbe:
+            exec:
+              command: [sh, -c, "pg_isready -U tracearr -d tracearr"]
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            exec:
+              command: [sh, -c, "pg_isready -U tracearr -d tracearr"]
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: [sh, -c, "pg_isready -U tracearr -d tracearr"]
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: data
+              mountPath: /home/postgres/pgdata/data
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tracearr-postgres-data
+        # Shared memory of the database, 512M as on the home server (it counts against the memory limit)
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracearr-postgres
+  labels:
+    app.kubernetes.io/name: tracearr-postgres
+spec:
+  selector:
+    app.kubernetes.io/name: tracearr-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tracearr-postgres-data
+  labels:
+    app.kubernetes.io/name: tracearr-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  volumeName: media-server-tracearr-postgres-data
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-server-tracearr-postgres-data
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
+  csi:
+    driver: org.democratic-csi.node-manual
+    fsType: ext4
+    readOnly: false
+    volumeHandle: media-server-tracearr-postgres-data
+    volumeAttributes:
+      portal: "192.168.1.44:3260"
+      iqn: "iqn.2026-10.nl.davydehaas:tracearr-postgres"
+      lun: "0"
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
+  claimRef:
+    namespace: media-server
+    name: tracearr-postgres-data

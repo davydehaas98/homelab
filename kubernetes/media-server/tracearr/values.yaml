@@ -1,0 +1,63 @@
+# Playback monitoring for Plex and Jellyfin. Moved from the home server's compose file. The app keeps no state of its
+# own: its database is templates/postgres.yaml (TimescaleDB), its cache templates/valkey.yaml. The secrets are new, so
+# everyone signs in again: DATABASE_URL, JWT_SECRET and COOKIE_SECRET in `tracearr-env`.
+image:
+  registry: ghcr.io
+  repository: connorgallopo/tracearr
+  tag: 2.4.1
+
+port: 3000
+
+kind: Deployment
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1400
+  runAsGroup: 1400
+  fsGroup: 1400
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+env:
+  NODE_ENV: production
+  PORT: 3000
+  HOST: 0.0.0.0
+  LOG_LEVEL: INFO
+  REDIS_URL: redis://tracearr-valkey:6379
+
+envFrom:
+  - secretRef:
+      name: tracearr-env
+
+# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+backups:
+  claimName: backups
+  subPath: tracearr
+  mountPath: /data/backup
+
+resources:
+  limits:
+    memory: 1Gi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+
+route:
+  enabled: true
+  hostnames:
+    - tracearr.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `tracearr`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true
+  # The API is protected by the login of the app itself, and the mobile app cannot follow a redirect
+  bypassPaths:
+    - /api

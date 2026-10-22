@@ -71,6 +71,9 @@ oidcClients:
   - name: Tautulli
     slug: tautulli
     redirectURL: https://tautulli.davydehaas.dev/oauth2/callback
+  - name: Tracearr
+    slug: tracearr
+    redirectURL: https://tracearr.davydehaas.dev/oauth2/callback
   - name: Zigbee2MQTT
     slug: zigbee2mqtt
     redirectURL: https://zigbee.davydehaas.dev/oauth2/callback
@@ -132,6 +135,8 @@ authentik:
           name: authentik-oidc-sonarr
       - secretRef:
           name: authentik-oidc-tautulli
+      - secretRef:
+          name: authentik-oidc-tracearr
       - secretRef:
           name: authentik-oidc-zigbee2mqtt
 
