@@ -19,3 +19,11 @@ kind: SecurityProfileConfig
 # container plane inside an isolated sandbox namespace. That service isn't present on this
 # installer image, so cri hangs forever waiting for a sandbox namespace that never appears.
 workloadIsolation: false
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+# The nodes keep the router as DNS server, with a public fallback, instead of the DHCP-provided DNS, which becomes
+# AdGuard Home on this cluster: without DNS the nodes cannot pull the image to bring it back
+nameservers:
+  - address: 192.168.1.1
+  - address: 1.1.1.1

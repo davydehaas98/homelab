@@ -20,22 +20,22 @@ sh backup-configs.sh -c yggdrasil
 A board's schematic, node patches and scripts are in its directory (`rk1/`, `rpi4/`):
 
 ```shell
-sh gen-image.sh -b rk1 -n jotunheim_0 -v v1.14.2   # and jotunheim_1..3
-sh gen-image.sh -b rpi4 -n vanaheim_0 -v v1.14.2
+sh gen-image.sh -b rk1 -n jotunheim-0 -v v1.14.2   # and jotunheim-1..3
+sh gen-image.sh -b rpi4 -n vanaheim-0 -v v1.14.2
 ```
 
 Flash an RK1 through the BMC (firmware 2.0.0+ needs credentials for every command):
 
 ```shell
 export TPI_HOST=turingpi TPI_USER=root TPI_PASS=turing
-sh rk1/flash.sh jotunheim_0 1   # node, slot
+sh rk1/flash.sh jotunheim-0 1   # node, slot
 ```
 
 A Raspberry Pi has no BMC: write the image to its SD card or USB SSD, and check with
-`talosctl get links --insecure -n <ip>` that the interface name matches `rpi4/nodes/vanaheim_0.yaml`.
+`talosctl get links --insecure -n <ip>` that the interface name matches `rpi4/nodes/vanaheim-0.yaml`.
 
 ```shell
-sudo dd if=gen/vanaheim_0.metal-arm64.raw of=/dev/rdiskN bs=4m status=progress
+sudo dd if=gen/vanaheim-0.metal-arm64.raw of=/dev/rdiskN bs=4m status=progress
 ```
 
 ## Bootstrap
@@ -46,13 +46,13 @@ bootstrap. `apply-config.sh` generates a node's config and applies it, retrying 
 mode.
 
 ```shell
-sh gen-talosconfig.sh -c yggdrasil -n jotunheim_0
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim_0 -t controlplane   # and jotunheim_1, jotunheim_2
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim_3 -t worker
-talosctl bootstrap --nodes jotunheim_0
+sh gen-talosconfig.sh -c yggdrasil -n jotunheim-0
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0 -t controlplane   # and jotunheim-1, jotunheim-2
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-3 -t worker
+talosctl bootstrap --nodes jotunheim-0
 talosctl config endpoint $(sed -n 's|^endpoint: https://\(.*\):6443|\1|p' patches/cluster.yaml)
-talosctl config nodes jotunheim_0 jotunheim_1 jotunheim_2 jotunheim_3
-talosctl kubeconfig --nodes jotunheim_0
+talosctl config nodes jotunheim-0 jotunheim-1 jotunheim-2 jotunheim-3
+talosctl kubeconfig --nodes jotunheim-0
 talosctl health
 ```
 
@@ -61,8 +61,8 @@ talosctl health
 One node at a time, control plane first; check it is healthy before the next:
 
 ```shell
-sh upgrade-talos.sh -b rk1 -n jotunheim_0 -v v1.14.2
-talosctl --nodes jotunheim_0 etcd members
+sh upgrade-talos.sh -b rk1 -n jotunheim-0 -v v1.14.2
+talosctl --nodes jotunheim-0 etcd members
 kubectl get nodes
 ```
 

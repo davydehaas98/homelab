@@ -2,7 +2,7 @@
 
 Guidance for AI coding agents in this repository.
 
-GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim_0`–`3`, arm64), Cilium,
+GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim-0`–`3`, arm64), Cilium,
 and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment.
 
 ## Apps
