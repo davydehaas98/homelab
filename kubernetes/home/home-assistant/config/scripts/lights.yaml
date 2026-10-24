@@ -1,0 +1,21 @@
+# Switch lights off.
+# Moved here from the script editor, with the same ids, so the entities keep their history and state. The editor
+# shows them but cannot save them: change them in git. New ones made in the editor go to scripts.yaml on the volume.
+turn_everything_off:
+  sequence:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        floor_id: '0'
+  alias: Turn everything off
+  description: ''
+turn_off_all_lights:
+  sequence:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        label_id: lights
+  alias: Turn off all lights
+  description: ''

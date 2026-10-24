@@ -1,2 +1,0 @@
-# The automations made in the UI, in automations.yaml on the volume, which the UI editor writes
-automation: !include ../automations.yaml

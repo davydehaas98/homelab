@@ -1,42 +1,21 @@
-# Sensors from the DSMR and water meter gateways. The broker itself is added in the UI (mosquitto in the home
-# namespace).
+# The water meter gateway, from MQTT: the reading (a total, for the energy dashboard), the flow, the leak alarm and the
+# status of the gateway. The names of the status sensors have no prefix, so their entities are
+# sensor.running_firmware_version and so on; renaming them would break the dashboards that use them.
 mqtt:
   sensor:
-    # DSMR
-    - name: "DSMR running firmware version"
-      state_topic: dsmr/smart_gateways/running_firmware_version
-    - name: "DSMR available firmware version"
-      state_topic: dsmr/smart_gateways/available_firmware_version
-    - name: "DSMR update firmware version"
-      state_topic: dsmr/smart_gateways/update_available
-    - name: "DSMR MAC address"
-      state_topic: dsmr/smart_gateways/mac_address
-    - name: "DSMR Wi-Fi signal strength (RSSI)"
-      state_topic: dsmr/smart_gateways/wifi_rssi
-      unit_of_measurement: "dBm"
-    - name: "DSMR startup time"
-      state_topic: dsmr/smart_gateways/startup_time
-      device_class: timestamp
-      icon: mdi:clock-start
-    - name: "DSMR IP address"
-      state_topic: dsmr/smart_gateways/ip_address
-
-    # Water meter
     - name: "Current usage"
       state_topic: watermeter/reading/current_value
       state_class: total_increasing
       device_class: water
       unit_of_measurement: "L"
       icon: mdi:water
+    # Litres used in the last minute, so a flow rate: a water sensor may only be a total, and Home Assistant refused
+    # `measurement` for it
     - name: "Water used last minute"
       state_topic: watermeter/reading/water_used_last_minute
       state_class: measurement
-      device_class: water
-      unit_of_measurement: "L"
-      icon: mdi:water
-    - name: "Leak detected"
-      state_topic: watermeter/reading/leak_detect
-      device_class: water
+      device_class: volume_flow_rate
+      unit_of_measurement: "L/min"
       icon: mdi:water
     - name: "Running firmware version"
       state_topic: watermeter/smart_gateways/running_firmware_version
@@ -55,3 +34,11 @@ mqtt:
       icon: mdi:clock-start
     - name: "IP address"
       state_topic: watermeter/smart_gateways/ip_address
+
+  binary_sensor:
+    # The meter publishes true or false, which a sensor with a water device class refused as it expects a number
+    - name: "Leak detected"
+      state_topic: watermeter/reading/leak_detect
+      device_class: moisture
+      payload_on: "true"
+      payload_off: "false"

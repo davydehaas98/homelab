@@ -1,2 +1,0 @@
-# The scripts made in the UI, in scripts.yaml on the volume, which the UI editor writes
-script: !include ../scripts.yaml

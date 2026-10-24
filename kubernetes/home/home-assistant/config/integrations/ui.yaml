@@ -1,0 +1,8 @@
+# Automations and scripts come from two places. The ones in git are in ../automations and ../scripts, a file per
+# purpose, and cannot be saved from the editors. The editors of Home Assistant save what is made in the UI in
+# automations.yaml and scripts.yaml on the volume, next to the configuration (Velero backs the volume up). The ids must
+# differ between the two.
+automation: !include ../automations.yaml
+automation git: !include_dir_merge_list ../automations
+script: !include ../scripts.yaml
+script git: !include_dir_merge_named ../scripts

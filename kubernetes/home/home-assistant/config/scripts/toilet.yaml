@@ -1,0 +1,28 @@
+# The toilet light.
+# Moved here from the script editor, with the same ids, so the entities keep their history and state. The editor
+# shows them but cannot save them: change them in git. New ones made in the editor go to scripts.yaml on the volume.
+toilet:
+  sequence:
+    - if:
+        - condition: state
+          entity_id: binary_sensor.toilet_motion_sensor_occupancy
+          state: 'on'
+      then:
+        - action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 100
+          target:
+            device_id: 3171401fcd0c5fccfeb8da3c588b3d04
+        - wait_for_trigger:
+            - type: not_occupied
+              device_id: 1067cb993be6f0f2968f34ea42fac81b
+              entity_id: 3defc0991ca50a4850fcad20c1952446
+              domain: binary_sensor
+              trigger: device
+        - type: turn_off
+          device_id: 3171401fcd0c5fccfeb8da3c588b3d04
+          entity_id: a184dff4bebf75083f3a80ae44d8d135
+          domain: light
+  alias: Toilet
+  description: ''
