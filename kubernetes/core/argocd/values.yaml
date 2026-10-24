@@ -11,6 +11,8 @@ argo-cd:
       url: https://argocd.davydehaas.dev
       timeout.reconciliation: 60s
       timeout.reconciliation.jitter: 10s
+      # Only the single sign-on below. If Authentik is down, `argocd --core` with the kubeconfig still works.
+      admin.enabled: "false"
       # Single sign-on with Authentik. Client ID and secret live in the `argocd-authentik-oidc` Secret
       oidc.config: |
         name: Authentik
@@ -81,6 +83,8 @@ argo-cd:
 
     httproute:
       enabled: true
+      annotations:
+        davydehaas.dev/auth: native
       hostnames:
         - argocd.davydehaas.dev
       parentRefs:

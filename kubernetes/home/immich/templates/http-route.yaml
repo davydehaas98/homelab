@@ -1,6 +1,8 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    davydehaas.dev/auth: native
   name: immich
 spec:
   parentRefs:

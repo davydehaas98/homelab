@@ -1,0 +1,70 @@
+# Vanilla Minecraft, to test how a game server runs on an RK1. The settings are the ones of the minecraft-vanilla
+# container of the home server (compose.minecraft-vanilla.yaml), on a new world. Left out: RCON and the mc-backup
+# container (Velero copies the volume, and the world is not paused for it), autopause (it needs extra privileges),
+# the old version 1.18.1 (this runs the latest) and the memory limit of 8G (the nodes have 16G for everything).
+# Judge the speed by `kubectl -n minecraft logs statefulset/minecraft | grep "Can't keep up"` and `kubectl top pod`.
+image:
+  registry: docker.io
+  repository: itzg/minecraft-server
+  tag: 2026.10.0-java25
+
+port: 25565
+
+# The worker node: the control plane nodes run etcd, and a busy server would slow down the API
+nodeSelector:
+  kubernetes.io/hostname: jotunheim-3
+
+# The image runs as this user when it is not started as root
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+env:
+  EULA: "TRUE"
+  VERSION: LATEST
+  INIT_MEMORY: 1G
+  MAX_MEMORY: 3G
+  SERVER_NAME: vanilla
+  MOTD: Davy's Vanilla Minecraft server.
+  MODE: survival
+  DIFFICULTY: normal
+  MAX_PLAYERS: "10"
+  VIEW_DISTANCE: "8"
+  SIMULATION_DISTANCE: "6"
+  ENABLE_COMMAND_BLOCK: "TRUE"
+  PVP: "TRUE"
+  ONLINE_MODE: "TRUE"
+  OPS: Capta1nCreeper
+  WHITELIST: Capta1nCreeper,Draakjeiscool
+  ENFORCE_WHITELIST: "TRUE"
+
+# The server port is TCP and the container starts slowly (it downloads the server and makes the world), so the probe
+# checks the port and the startup probe of the library allows 15 minutes
+probe:
+  tcpSocket:
+    port: 25565
+
+resources:
+  limits:
+    memory: 4Gi
+  requests:
+    cpu: 500m
+    memory: 2Gi
+
+persistence:
+  backup: true
+  size: 5Gi
+  mountPath: /data
+
+# Reachable on the LAN at this address, outside the HTTP gateway
+service:
+  type: LoadBalancer
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.62

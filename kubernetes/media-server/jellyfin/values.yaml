@@ -73,6 +73,8 @@ jellyfin:
   # Jellyfin has its own login, so no login at the gateway
   httpRoute:
     enabled: true
+    annotations:
+      davydehaas.dev/auth: native
     parentRefs:
       - name: envoy-gateway
         namespace: envoy-gateway

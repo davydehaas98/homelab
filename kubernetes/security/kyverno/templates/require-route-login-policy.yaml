@@ -1,0 +1,55 @@
+# Audits every HTTPRoute: it needs a login at the gateway (an Envoy Gateway SecurityPolicy with `oidc` that targets it),
+# or the annotation `davydehaas.dev/auth` with the reason it has none: `native` (the app's own login), `public`, `redirect`
+# (an alias route that only redirects) or `bypass` (the paths of an app that skip the login). The library chart sets the
+# annotation, see kubernetes/_library/app/README.md; other charts set it in their values or templates. A route without
+# either shows in the policy reports (policy-reporter), so a new app cannot be published open by accident.
+# The CRD is in this chart, so the first sync cannot dry-run the policy before the CRD exists.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-route-login
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  validationActions:
+    - Audit
+  evaluation:
+    background:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["gateway.networking.k8s.io"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["httproutes"]
+  variables:
+    - name: securityPolicies
+      expression: resource.List("gateway.envoyproxy.io/v1alpha1", "securitypolicies", object.metadata.namespace)
+    - name: declared
+      expression: >-
+        has(object.metadata.annotations) &&
+        object.metadata.annotations.exists(k, k == 'davydehaas.dev/auth' &&
+        object.metadata.annotations[k] in ['native', 'public', 'redirect', 'bypass'])
+    - name: protected
+      expression: >-
+        dyn(variables.securityPolicies.items).exists(p, has(p.spec.oidc) &&
+        p.spec.targetRefs.exists(t, t.kind == 'HTTPRoute' && t.name == object.metadata.name))
+  validations:
+    - expression: variables.declared || variables.protected
+      message: >-
+        The route has no login at the gateway (a SecurityPolicy with oidc) and no annotation davydehaas.dev/auth of
+        native, public, redirect or bypass.
+---
+# Kyverno reads the SecurityPolicies of Envoy Gateway to check that a route has its login
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:read-securitypolicies
+  labels:
+    rbac.kyverno.io/aggregate-to-admission-controller: "true"
+    rbac.kyverno.io/aggregate-to-background-controller: "true"
+    rbac.kyverno.io/aggregate-to-reports-controller: "true"
+rules:
+  - apiGroups: ["gateway.envoyproxy.io"]
+    resources: ["securitypolicies"]
+    verbs: ["get", "list", "watch"]

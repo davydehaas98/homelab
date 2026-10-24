@@ -1,10 +1,22 @@
 {{- define "app.route" -}}
+{{- /* How the route is protected, for the Kyverno policy `require-route-login` */ -}}
+{{- $auth := "" -}}
+{{- if include "app.oidcEnabled" . -}}
+{{- $auth = "gateway" -}}
+{{- else -}}
+{{- $auth = .Values.route.auth | default "" -}}
+{{- end }}
 apiVersion: {{ .Values.route.apiVersion | default "gateway.networking.k8s.io/v1" }}
 kind: {{ .Values.route.kind | default "HTTPRoute" }}
 metadata:
-  {{- with .Values.route.annotations }}
+  {{- if or $auth .Values.route.annotations }}
   annotations:
+    {{- with $auth }}
+    davydehaas.dev/auth: {{ . }}
+    {{- end }}
+    {{- with .Values.route.annotations }}
     {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   name: {{ template "app.fullname" . }}
   labels:

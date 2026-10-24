@@ -40,6 +40,8 @@ seerr-chart:
   route:
     main:
       enabled: true
+      annotations:
+        davydehaas.dev/auth: native
       parentRefs:
         - name: envoy-gateway
           namespace: envoy-gateway
@@ -49,6 +51,8 @@ seerr-chart:
     # Redirect to the hostname above. The chart adds its own rule after this one, which is never reached
     aliases:
       enabled: true
+      annotations:
+        davydehaas.dev/auth: redirect
       parentRefs:
         - name: envoy-gateway
           namespace: envoy-gateway

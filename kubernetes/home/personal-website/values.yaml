@@ -35,7 +35,12 @@ resources:
 
 # The apex has a listener of its own, as the wildcard one doesn't match it. Its record is in
 # `terraform/cloudflare/davydehaas.dev/root.tf`, `www` is in `dns_record.tf`
+# A public site, so no login
+oidc:
+  enabled: false
+
 route:
+  auth: public
   enabled: true
   # Only this route sets a CSP and X-Frame-Options: apps that embed pages or need inline scripts would break on them
   filters:

@@ -46,10 +46,10 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{- if (.Values.route | default dict).enabled }}
 ---
 {{ include "app.route" . }}
-{{- if (.Values.oidc | default dict).enabled }}
+{{- if (include "app.oidcEnabled" .) }}
 ---
 {{ include "app.securityPolicy" . }}
-{{- if .Values.oidc.bypassPaths }}
+{{- if (.Values.oidc | default dict).bypassPaths }}
 ---
 {{ include "app.bypassRoute" . }}
 {{- end }}
@@ -59,6 +59,17 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{ include "app.aliasRoute" . }}
 {{- end }}
 {{- end }}
+{{- end -}}
+
+{{/*
+The login at the gateway is on for every route unless the app sets `oidc.enabled: false`, so an app that skips it has to
+say so (and why, in `route.auth`). Gives "true" or nothing. `default true` would turn false into true.
+*/}}
+{{- define "app.oidcEnabled" -}}
+{{- $oidc := .Values.oidc | default dict -}}
+{{- if hasKey $oidc "enabled" -}}
+{{- if $oidc.enabled }}true{{ end -}}
+{{- else }}true{{ end -}}
 {{- end -}}
 
 {{/* The replica count: 0 while `suspend` is set, else `replicas`, else 1. `default 1` would turn replicas: 0 into 1. */}}

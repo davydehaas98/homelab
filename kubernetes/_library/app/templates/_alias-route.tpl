@@ -6,6 +6,8 @@ a permanent redirect, so the login (cookies and callback of the first hostname) 
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    davydehaas.dev/auth: redirect
   name: {{ template "app.fullname" . }}-aliases
   labels:
     {{- include "app.labels" . | nindent 4 }}

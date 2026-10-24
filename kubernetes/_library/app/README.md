@@ -38,6 +38,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `args` | none | Arguments of the container, replacing the `CMD` of the image. |
 | `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). A value that is a map becomes `valueFrom`, for one key of a Secret (`secretKeyRef`). |
 | `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. The pod gets `seccompProfile: RuntimeDefault` and the container `allowPrivilegeEscalation: false` unless the values set them. |
+| `nodeSelector` | none | Labels a node must have, for a heavy app that should stay off the control plane nodes. |
 | `probe` | `httpGet` on `/` | Liveness and readiness probe; the port is named `http`. |
 | `persistence` | none | The app's volume, a claim named `<app>-config`. Leave it out for a stateless app. |
 | `persistence.size` | | Size of the volume. |
@@ -53,7 +54,8 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `backups.claimName`, `backups.subPath`, `backups.mountPath` | none, none, `/config/Backups` | Mount a `subPath` of an existing claim for the app's own backups, outside the `/config` volume. |
 | `route.enabled`, `route.hostnames`, `route.parentRefs` | off | `HTTPRoute` to the app. Also takes `annotations`, `labels`, `filters`, `matches` and `additionalRules`. |
 | `route.aliases` | none | Extra hostnames that redirect (301) to the first hostname. A separate route, so the login keeps working. They need a DNS record too. |
-| `oidc.enabled` | off | OIDC login on the route with an Envoy Gateway `SecurityPolicy`. Needs `route.enabled`. |
+| `route.auth` | none | Why an app has no login at the gateway, with `oidc.enabled: false`: `native` (the app's own login, such as a mobile app that cannot follow a redirect) or `public`. Set as the annotation `davydehaas.dev/auth` of the route, which the Kyverno policy `require-route-login` checks. The route of a login is annotated `gateway`, an alias route `redirect` and a bypass route `bypass`. |
+| `oidc.enabled` | on | OIDC login on the route with an Envoy Gateway `SecurityPolicy`. Needs `route.enabled`, and an Authentik client with sealed credentials (the `add-oidc-client` skill): without them the route breaks, which is on purpose. Set `false`, with `route.auth`, to skip it. |
 | `oidc.slug` | chart name | Application slug at the identity provider. |
 | `oidc.secretName` | `<app>-oidc-credentials` | Secret with the `client-id` and `client-secret`. |
 | `oidc.bypassPaths` | none | Paths that skip the login, as a second route without the policy (`<app>-bypass`). For an API that clients call with the app's own API key. |

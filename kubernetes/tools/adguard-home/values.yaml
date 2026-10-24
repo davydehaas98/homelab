@@ -53,7 +53,8 @@ persistence:
     iqn: iqn.2026-10.nl.davydehaas:adguard-home
     lun: 0
 
-# Its own login, from the configuration
+# Behind the gateway login (client `adguard-home`, credentials in templates/oidc-credentials.yaml), and then its own
+# login from the configuration. The DNS port is a separate Service and does not pass the gateway.
 route:
   enabled: true
   hostnames:
@@ -65,3 +66,6 @@ route:
     - name: envoy-gateway
       namespace: envoy-gateway
       sectionName: web-https
+
+oidc:
+  enabled: true

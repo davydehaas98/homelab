@@ -1,6 +1,8 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    davydehaas.dev/auth: redirect
   name: envoy-gateway-http-redirect
 spec:
   parentRefs:

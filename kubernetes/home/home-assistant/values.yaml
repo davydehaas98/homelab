@@ -45,7 +45,11 @@ persistence:
     lun: 0
 
 # Its own login, as the mobile app cannot follow a redirect to the identity provider
+oidc:
+  enabled: false
+
 route:
+  auth: native
   enabled: true
   hostnames:
     - home-assistant.davydehaas.dev

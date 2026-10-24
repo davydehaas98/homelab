@@ -36,6 +36,10 @@ spec:
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext: {{ toYaml (merge (deepCopy (.Values.podSecurityContext | default dict)) (dict "seccompProfile" (dict "type" "RuntimeDefault"))) | nindent 8 }}
       containers:
         - name: {{ template "app.name" . }}

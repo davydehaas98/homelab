@@ -6,6 +6,8 @@ specific path wins over the main route, so these paths skip the login and stay p
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    davydehaas.dev/auth: bypass
   name: {{ template "app.fullname" . }}-bypass
   labels:
     {{- include "app.labels" . | nindent 4 }}
