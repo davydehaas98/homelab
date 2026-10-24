@@ -130,6 +130,20 @@ resource "cloudflare_dns_record" "kubernetes_app" {
   proxied = false
 }
 
+# Any other name also reaches the Kubernetes gateway, which answers with its 404 page
+# (kubernetes/core/envoy-gateway/templates/not-found.yaml) instead of the browser showing a DNS error. The records
+# above take precedence.
+resource "cloudflare_dns_record" "wildcard" {
+  name    = "*"
+  ttl     = 1
+  type    = "A"
+  zone_id = var.zone_id
+
+  comment = "Port forward to the Kubernetes gateway, for its 404 page"
+  content = var.ipv4_address
+  proxied = false
+}
+
 resource "cloudflare_dns_record" "game_server" {
   for_each = toset(concat(local.game_servers, keys(local.minecraft_servers)))
 

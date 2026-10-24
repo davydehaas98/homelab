@@ -1,0 +1,38 @@
+# The page for every route of the gateway when an app is down, restarting or too slow (502, 503, 504), with the
+# original status code. It also replaces those codes when an app sends them itself. The page is files/error-page.html;
+# it may use Envoy command operators (%RESPONSE_CODE%), so a literal percent sign would break it. The *.davydehaas.nl
+# passthrough is not touched.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: error-page
+data:
+  response.body: |
+    {{- .Files.Get "files/error-page.html" | trim | nindent 4 }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: error-page
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway
+  responseOverride:
+    - match:
+        statusCodes:
+          - type: Value
+            value: 502
+          - type: Value
+            value: 503
+          - type: Value
+            value: 504
+      response:
+        contentType: text/html; charset=utf-8
+        body:
+          type: ValueRef
+          valueRef:
+            group: ""
+            kind: ConfigMap
+            name: error-page
