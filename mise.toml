@@ -2,7 +2,7 @@
 [tools]
 # Syncs and diffs apps, e.g. the manual-sync ones (`argocd login --core` uses the kubeconfig).
 # Keep it equal to the Argo CD version in kubernetes/core/argocd.
-argocd = "3.5.5"
+argocd = "3.5.6"
 
 # Checks Cilium health and connectivity (`cilium status`, `cilium connectivity test`).
 cilium-cli = "0.20.1"
