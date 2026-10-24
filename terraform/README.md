@@ -3,7 +3,7 @@
 ## cloudflare/davydehaas.dev
 
 All DNS records of `davydehaas.dev`. App hostnames (`kubernetes_apps`) and their redirect names
-(`kubernetes_aliases`, the `route.aliases` of an app) point at the home server, which passes TLS through to the
+(`kubernetes_aliases`, the `route.aliases` of an app) point at the public address, which the UniFi gateway forwards to the
 Kubernetes gateway. There is no wildcard record, so every new hostname goes in one of those lists.
 
 **State** is in S3 bucket `davydehaas-terraform-state` (`eu-central-1`), key `cloudflare/davydehaas.dev/terraform.tfstate`,

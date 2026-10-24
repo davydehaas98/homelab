@@ -27,8 +27,9 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 
 ## How the pieces connect
 
-- **Traffic.** The home server's Traefik (repo `home-server`) passes TLS for `*.davydehaas.dev` through to the
-  Envoy Gateway. Publish an app with an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`), no
+- **Traffic.** The UniFi gateway forwards 80 and 443 to the Envoy Gateway (`192.168.1.56`), the entry point.
+  `*.davydehaas.nl` is passed through to the Traefik of the home server (repo `home-server`), see
+  `kubernetes/core/envoy-gateway/templates/home-server.yaml`. Publish an app with an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`), no
   Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
   `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`.
 - **Logins.** Authentik, through a gateway `SecurityPolicy`, the app's native OIDC, or the app's own login. Adding

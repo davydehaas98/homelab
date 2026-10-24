@@ -113,7 +113,7 @@ locals {
   }
 }
 
-# Not proxied: the home server passes TLS through to the gateway.
+# Not proxied: the UniFi gateway forwards the traffic to the Kubernetes gateway.
 resource "cloudflare_dns_record" "kubernetes_app" {
   for_each = toset(concat(local.kubernetes_apps, local.kubernetes_aliases))
 
@@ -122,7 +122,7 @@ resource "cloudflare_dns_record" "kubernetes_app" {
   type    = "A"
   zone_id = var.zone_id
 
-  comment = "Home server, TLS passthrough to Kubernetes"
+  comment = "Port forward to the Kubernetes gateway"
   content = var.ipv4_address
   proxied = false
 }

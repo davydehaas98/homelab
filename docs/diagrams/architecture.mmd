@@ -3,9 +3,11 @@ flowchart TB
     dns(["Cloudflare DNS<br/>one A record per app"])
     github(["GitHub<br/>davydehaas98/homelab"])
 
-    subgraph edge["Home server (yggdrasil, 192.168.1.44): edge"]
-        traefik["Traefik<br/>TLS passthrough :443"]
-        docker["Docker services<br/>Plex, Ollama, Home Assistant,<br/>AdGuard Home, WireGuard, ..."]
+    unifi["UniFi Gateway Ultra<br/>port forward :80, :443"]
+
+    subgraph edge["Home server (yggdrasil, 192.168.1.44): davydehaas.nl"]
+        traefik["Traefik<br/>terminates TLS"]
+        docker["Docker services<br/>Plex, Ollama, AdGuard Home,<br/>WireGuard, ..."]
     end
 
     subgraph k8s["Cluster yggdrasil, 4x Turing RK1, Talos, arm64"]
@@ -25,9 +27,11 @@ flowchart TB
     end
 
     browser -->|resolves| dns
-    dns -.->|A record| traefik
-    browser -->|HTTPS| traefik
-    traefik -->|TLS passthrough| envoy
+    dns -.->|A record| unifi
+    browser -->|HTTPS| unifi
+    unifi -->|forward| envoy
+    envoy -->|"TLS passthrough (*.davydehaas.nl)"| traefik
+    traefik --> docker
     envoy -->|OIDC| authentik
     envoy -->|HTTPRoute| apps
     envoy -->|HTTPRoute| immich

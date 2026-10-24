@@ -1,0 +1,42 @@
+# Plex runs on the home server. Streams are one long response, so no route timeout
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+spec:
+  ports:
+    - name: http
+      port: 32400
+      protocol: TCP
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: plex
+  labels:
+    kubernetes.io/service-name: plex
+addressType: IPv4
+ports:
+  - name: http
+    port: 32400
+    protocol: TCP
+endpoints:
+  - addresses:
+      - 192.168.1.44
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: plex
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      sectionName: web-https
+  hostnames:
+    - plex.davydehaas.dev
+  rules:
+    - timeouts:
+        request: 0s
+      backendRefs:
+        - name: plex
+          port: 32400
