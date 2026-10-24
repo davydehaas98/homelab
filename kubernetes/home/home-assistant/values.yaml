@@ -2,10 +2,11 @@
 # The gateway passes the real client address in a header, so its pods (the pod network, 10.244.0.0/16) are trusted
 # proxies. That is set in the UI and kept in .storage/http on the volume; once migrated there, an `http:` in YAML is
 # ignored.
-# The configuration is in config/, a file per device or purpose in config/integrations/, so Home Assistant cannot
-# rewrite it. Integrations, devices and dashboards are added in the UI and live in .storage on the volume, with what the
-# editors write (automations.yaml, scripts.yaml); Velero backs the volume up. The location in secrets.yaml is sealed in
-# templates/home-assistant-secrets.yaml.
+# The configuration is in config/, a file per device or purpose in config/integrations/. A sidecar writes it to the
+# volume (below), so a change reaches the pod without a restart: reload the YAML in Developer tools afterwards.
+# Integrations, devices and dashboards are added in the UI and live in .storage on the volume, with what the editors
+# write (automations.yaml, scripts.yaml); Velero backs the volume up, with the files of the sidecar. The location in
+# secrets.yaml is sealed in templates/home-assistant-secrets.yaml.
 image:
   registry: ghcr.io
   repository: home-assistant/home-assistant
@@ -13,6 +14,12 @@ image:
   tag: 2026.10.3
 
 port: 8123
+
+# On the network of the node, so devices on the LAN are found (mDNS, SSDP) and Apple Home can reach a HomeKit bridge.
+# Home Assistant then listens on port 8123 of the node, next to the route of the gateway, and its login is the only
+# one. In the UI (Settings > System > Network) pick the LAN adapter, `end0`, so it does not announce itself on the
+# addresses of Cilium. The sidecars below keep their health port off 8080, which is the node's now.
+hostNetwork: true
 
 podSecurityContext:
   seccompProfile:
@@ -27,25 +34,62 @@ resources:
     cpu: 100m
     memory: 512Mi
 
-configFiles:
-  - name: config
-    mountPath: /config
-    glob: config/*.yaml
-  - name: integrations
-    mountPath: /config/integrations
-    glob: config/integrations/*.yaml
-  - name: automations
-    mountPath: /config/automations
-    glob: config/automations/*.yaml
-  - name: scripts
-    mountPath: /config/scripts
-    glob: config/scripts/*.yaml
-  # Only the location (`!secret` in configuration.yaml), as the volume holds no other file Home Assistant needs from it
-  - name: secrets
-    mountPath: /config
-    secret: home-assistant-secrets
-    keys:
-      - secrets.yaml
+# The sidecar kiwigrid/k8s-sidecar copies the ConfigMaps and Secrets with the label `home-assistant-config` to the
+# folder in their annotation `io.home-assistant/config-folder` (templates/config-files.yaml). One run first, in an
+# init container, so the files are there when Home Assistant starts, then a sidecar that keeps them current.
+serviceAccountName: home-assistant
+initContainers:
+  - name: config-init
+    image: docker.io/kiwigrid/k8s-sidecar:2.14.1
+    env:
+      # One run, then the container exits and the pod goes on
+      - name: METHOD
+        value: LIST
+      - name: HEALTH_PORT
+        value: "18080"
+      - name: LABEL
+        value: home-assistant-config
+      - name: FOLDER
+        value: /config
+      - name: FOLDER_ANNOTATION
+        value: io.home-assistant/config-folder
+      - name: RESOURCE
+        value: both
+    volumeMounts: &config-loader-mounts
+      - name: config
+        mountPath: /config
+    # Home Assistant runs as root and owns the files
+    securityContext: &config-loader-security
+      runAsUser: 0
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+    resources: &config-loader-resources
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
+  - name: config-watch
+    restartPolicy: Always
+    image: docker.io/kiwigrid/k8s-sidecar:2.14.1
+    env:
+      - name: IGNORE_ALREADY_PROCESSED
+        value: "true"
+      - name: HEALTH_PORT
+        value: "18080"
+      - name: LABEL
+        value: home-assistant-config
+      - name: FOLDER
+        value: /config
+      - name: FOLDER_ANNOTATION
+        value: io.home-assistant/config-folder
+      - name: RESOURCE
+        value: both
+    volumeMounts: *config-loader-mounts
+    securityContext: *config-loader-security
+    resources: *config-loader-resources
 
 # The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
 # kubernetes/media-server/media-server/README.md

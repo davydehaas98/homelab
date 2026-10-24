@@ -1,0 +1,17 @@
+# The configuration in config/, one ConfigMap per folder of /config. The sidecar writes each file where the annotation
+# says (see values.yaml), and Home Assistant picks a changed file up when YAML is reloaded (Developer tools > YAML), without
+# a restart of the pod. A file that is removed from git stays on the volume until it is deleted there.
+{{- range $folder, $path := dict "base" "config/*.yaml" "integrations" "config/integrations/*.yaml" "automations" "config/automations/*.yaml" "scripts" "config/scripts/*.yaml" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app.fullname" $ }}-cfg-{{ $folder }}
+  labels:
+    {{- include "app.labels" $ | nindent 4 }}
+    home-assistant-config: "1"
+  annotations:
+    io.home-assistant/config-folder: {{ ternary "/config" (printf "/config/%s" $folder) (eq $folder "base") | quote }}
+data:
+  {{- (($.Files.Glob $path).AsConfig) | nindent 2 }}
+{{- end }}

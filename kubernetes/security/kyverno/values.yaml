@@ -139,7 +139,27 @@ kyverno-policies:
   # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
   # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6) and Dispatcharr (entrypoint with su, and
   # Postgres, Redis and nginx in one container). A per-policy entry replaces the defaults above, so they are repeated.
+  # Home Assistant runs on the host network (values.yaml of the app), which these two policies forbid; Kubernetes also
+  # sets a host port equal to each container port then.
   vpolExcludeByPolicy:
+    disallow-host-namespaces:
+      excludeNamespaces:
+        - democratic-csi
+        - fluent-bit
+        - home-assistant
+        - kube-system
+        - nfs-subdir-external-provisioner
+        - node-feature-discovery
+        - prometheus-node-exporter
+    disallow-host-ports:
+      excludeNamespaces:
+        - democratic-csi
+        - fluent-bit
+        - home-assistant
+        - kube-system
+        - nfs-subdir-external-provisioner
+        - node-feature-discovery
+        - prometheus-node-exporter
     require-run-as-nonroot:
       excludeNamespaces:
         - democratic-csi

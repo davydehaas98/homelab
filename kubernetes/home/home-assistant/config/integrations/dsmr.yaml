@@ -4,83 +4,108 @@
 mqtt:
   sensor:
     - name: "DSMR running firmware version"
+      unique_id: dsmr_running_firmware_version
       state_topic: dsmr/smart_gateways/running_firmware_version
     - name: "DSMR available firmware version"
+      unique_id: dsmr_available_firmware_version
       state_topic: dsmr/smart_gateways/available_firmware_version
     - name: "DSMR update firmware version"
+      unique_id: dsmr_update_firmware_version
       state_topic: dsmr/smart_gateways/update_available
     - name: "DSMR MAC address"
+      unique_id: dsmr_mac_address
       state_topic: dsmr/smart_gateways/mac_address
     - name: "DSMR Wi-Fi signal strength (RSSI)"
+      unique_id: dsmr_wi_fi_signal_strength_rssi
       state_topic: dsmr/smart_gateways/wifi_rssi
       unit_of_measurement: "dBm"
     - name: "DSMR startup time"
+      unique_id: dsmr_startup_time
       state_topic: dsmr/smart_gateways/startup_time
       device_class: timestamp
       icon: mdi:clock-start
     - name: "DSMR IP address"
+      unique_id: dsmr_ip_address
       state_topic: dsmr/smart_gateways/ip_address
 
 utility_meter:
   gasusage_this_hour:
+    unique_id: gasusage_this_hour
     source: sensor.dsmr_consumption_gas_delivered
     cycle: hourly
   gasusage_today:
+    unique_id: gasusage_today
     source: sensor.dsmr_consumption_gas_delivered
     cycle: daily
   gasusage_this_week:
+    unique_id: gasusage_this_week
     source: sensor.dsmr_consumption_gas_delivered
     cycle: weekly
   gasusage_this_month:
+    unique_id: gasusage_this_month
     source: sensor.dsmr_consumption_gas_delivered
     cycle: monthly
   gasusage_this_quarter:
+    unique_id: gasusage_this_quarter
     source: sensor.dsmr_consumption_gas_delivered
     cycle: quarterly
   gasusage_this_year:
+    unique_id: gasusage_this_year
     source: sensor.dsmr_consumption_gas_delivered
     cycle: yearly
 
   hourly_energy_delivered_offpeak:
+    unique_id: hourly_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1
     cycle: hourly
   hourly_energy_delivered_peak:
+    unique_id: hourly_energy_delivered_peak
     source: sensor.dsmr_reading_electricity_delivered_2
     cycle: hourly
 
   hourly_energy_returned_offpeak:
+    unique_id: hourly_energy_returned_offpeak
     source: sensor.dsmr_reading_electricity_returned_1
     cycle: hourly
   hourly_energy_returned_peak:
+    unique_id: hourly_energy_returned_peak
     source: sensor.dsmr_reading_electricity_returned_2
     cycle: hourly
 
   # Daily values for electricity, peak and off-peak
   daily_energy_delivered_offpeak:
+    unique_id: daily_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1
     cycle: daily
   daily_energy_delivered_peak:
+    unique_id: daily_energy_delivered_peak
     source: sensor.dsmr_reading_electricity_delivered_2
     cycle: daily
 
   daily_energy_returned_offpeak:
+    unique_id: daily_energy_returned_offpeak
     source: sensor.dsmr_reading_electricity_returned_1
     cycle: daily
   daily_energy_returned_peak:
+    unique_id: daily_energy_returned_peak
     source: sensor.dsmr_reading_electricity_returned_2
     cycle: daily
 
   # Calculations per month
   monthly_energy_delivered_offpeak:
+    unique_id: monthly_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1
     cycle: monthly
   monthly_energy_delivered_peak:
+    unique_id: monthly_energy_delivered_peak
     source: sensor.dsmr_reading_electricity_delivered_2
     cycle: monthly
 
   monthly_energy_returned_offpeak:
+    unique_id: monthly_energy_returned_offpeak
     source: sensor.dsmr_reading_electricity_returned_1
     cycle: monthly
   monthly_energy_returned_peak:
+    unique_id: monthly_energy_returned_peak
     source: sensor.dsmr_reading_electricity_returned_2
     cycle: monthly
