@@ -18,6 +18,10 @@ securityContext:
     drop:
       - ALL
 
+# The Service `memos` makes Kubernetes set MEMOS_PORT to tcp://<ip>:5230, which Memos reads as port 0
+env:
+  MEMOS_PORT: 5230
+
 resources:
   limits:
     memory: 128Mi
