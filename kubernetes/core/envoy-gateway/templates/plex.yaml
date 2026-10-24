@@ -1,28 +1,14 @@
-# Plex runs on the home server. Streams are one long response, so no route timeout
-apiVersion: v1
-kind: Service
+# Plex runs on the home server. Streams are one long response, so no route timeout. A Backend, as Argo CD does not
+# sync EndpointSlices.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
 metadata:
   name: plex
 spec:
-  ports:
-    - name: http
-      port: 32400
-      protocol: TCP
----
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: plex
-  labels:
-    kubernetes.io/service-name: plex
-addressType: IPv4
-ports:
-  - name: http
-    port: 32400
-    protocol: TCP
-endpoints:
-  - addresses:
-      - 192.168.1.44
+  endpoints:
+    - ip:
+        address: 192.168.1.44
+        port: 32400
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -38,5 +24,7 @@ spec:
     - timeouts:
         request: 0s
       backendRefs:
-        - name: plex
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: plex
           port: 32400

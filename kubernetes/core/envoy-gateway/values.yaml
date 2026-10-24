@@ -14,3 +14,6 @@ gateway-helm:
       logging:
         level:
           default: info
+      # Backend resources for upstreams outside the cluster (templates/home-server.yaml, plex.yaml)
+      extensionApis:
+        enableBackend: true
