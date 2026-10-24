@@ -1,3 +1,10 @@
+cluster:
+  etcd:
+    extraArgs:
+      # Metrics (fsync and commit latency) in plain HTTP on every address of the node, scraped by Prometheus
+      # (kubernetes/monitoring/prometheus). Applying it restarts etcd, so do one control plane node at a time.
+      listen-metrics-urls: http://0.0.0.0:2381
+---
 apiVersion: v1alpha1
 kind: Layer2VIPConfig
 # gen-config.sh fills in the control plane VIP from patches/cluster.yaml
@@ -18,3 +25,14 @@ apiVersion: v1alpha1
 kind: KubeSchedulerConfig
 extraArgs:
   bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+# tuppr upgrades the nodes, talos-backup takes etcd snapshots. The roles are an upper bound for every listed namespace,
+# the pods ask for their own (os:etcd:backup for talos-backup, in its ServiceAccount).
+allowedRoles:
+  - os:admin
+  - os:etcd:backup
+allowedKubernetesNamespaces:
+  - tuppr
+  - talos-backup

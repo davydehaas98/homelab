@@ -7,7 +7,9 @@ kube-prometheus-stack:
   grafana:
     enabled: false
 
-  # Talos does not expose these components, the monitors and rules would only produce alerts
+  # Talos does not expose these components, the monitors and rules would only produce alerts. etcd is scraped from
+  # the nodes below instead (and its alerts are in templates/etcd-alerts.yaml): the chart's monitor and rules need an
+  # Endpoints object, which Argo CD does not sync.
   kubeControllerManager:
     enabled: false
   kubeScheduler:
@@ -51,6 +53,16 @@ kube-prometheus-stack:
       ruleSelectorNilUsesHelmValues: false
       probeSelectorNilUsesHelmValues: false
       scrapeConfigSelectorNilUsesHelmValues: false
+      # etcd of the control plane nodes, the metrics port is opened in talos/patches/controlplane.yaml. The job name
+      # is the one the etcd rules of the chart look for. The etcd data is on the eMMC of the nodes, so the fsync and
+      # commit latencies show when it gets slow.
+      additionalScrapeConfigs:
+        - job_name: kube-etcd
+          static_configs:
+            - targets:
+                - 192.168.1.50:2381
+                - 192.168.1.51:2381
+                - 192.168.1.52:2381
       resources:
         limits:
           memory: 4096Mi

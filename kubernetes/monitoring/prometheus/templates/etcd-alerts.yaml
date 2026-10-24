@@ -1,0 +1,43 @@
+# etcd of the control plane nodes, scraped from port 2381 (job kube-etcd, see values.yaml). The data is on the eMMC of the
+# nodes, so slow disk writes show here first. The rules of the chart are not used: they need its etcd monitor, which
+# needs an Endpoints object that Argo CD does not sync.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: etcd
+  namespace: prometheus
+spec:
+  groups:
+    - name: etcd
+      rules:
+        - alert: EtcdMemberDown
+          expr: up{job="kube-etcd"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`etcd on {{ $labels.instance }} is not scraped`}}"
+            description: "The metrics port of etcd does not answer: the member is down, or the port is closed in talos/patches/controlplane.yaml."
+        - alert: EtcdHighFsyncDuration
+          expr: histogram_quantile(0.99, sum by (instance, le) (rate(etcd_disk_wal_fsync_duration_seconds_bucket{job="kube-etcd"}[5m]))) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`etcd on {{ $labels.instance }} syncs its log slowly`}}"
+            description: "The 99th percentile of the WAL fsync is above 0.5 seconds: the eMMC of the node is slow or worn."
+        - alert: EtcdHighCommitDuration
+          expr: histogram_quantile(0.99, sum by (instance, le) (rate(etcd_disk_backend_commit_duration_seconds_bucket{job="kube-etcd"}[5m]))) > 0.25
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`etcd on {{ $labels.instance }} commits slowly`}}"
+            description: "The 99th percentile of the backend commit is above 0.25 seconds: the eMMC of the node is slow or worn."
+        - alert: EtcdFrequentLeaderChanges
+          expr: sum(increase(etcd_server_leader_changes_seen_total{job="kube-etcd"}[1h])) > 3
+          labels:
+            severity: warning
+          annotations:
+            summary: "etcd changed leader more than 3 times in an hour"
+            description: "Usually a node that is overloaded or has a slow disk; check the load of the control plane nodes."

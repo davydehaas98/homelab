@@ -34,9 +34,12 @@ immich:
               requests:
                 memory: 32Mi
 
-  # The machine learning image runs as any user, its cache is an emptyDir
+  # The machine learning image runs as any user, its cache is an emptyDir. The server and this pod keep to the worker:
+  # their jobs use several cores for hours, which slows etcd and the API server on the control plane nodes.
   machine-learning:
     defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: jotunheim-3
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000
@@ -59,6 +62,8 @@ immich:
   # The server image runs as root, so only seccomp and no privilege escalation
   server:
     defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: jotunheim-3
       securityContext:
         seccompProfile:
           type: RuntimeDefault
