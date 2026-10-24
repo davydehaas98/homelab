@@ -24,7 +24,7 @@ kubeseal = "0.40.0"
 talosctl = "1.14.4"
 
 # Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
-terraform = "1.16.6"
+terraform = "1.16.7"
 
 # Installs pipx: tools (yamllint) with a Python of its own.
 uv = "0.13.5"
