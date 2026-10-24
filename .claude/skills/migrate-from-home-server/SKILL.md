@@ -30,7 +30,7 @@ and what to leave behind.
    Say what you left out in a comment at the top of `values.yaml`.
 4. **Secrets** (`secrets.yaml`, password files, tokens): use the `seal-secret` skill; do not copy values.
 5. **Data.** For SQLite, a database or state in `/config`, use `add-iscsi-disk` and copy from the old folder on
-   yggdrasil (`~/home-server/<app>/`). The data is not in the repo, only the config. Otherwise the default volume.
+   yggdrasil (`/home/homelab/home-server/<app>/`, the `homelab` user's home, so not `~` in a `sudo` command). The data is not in the repo, only the config. Otherwise the default volume.
 6. **Cutover**, in this order, with the user:
    1. the new app is deployed and healthy while the old one still runs (different hostname, no shared ports);
    2. stop the old container, copy the data, start the new app;

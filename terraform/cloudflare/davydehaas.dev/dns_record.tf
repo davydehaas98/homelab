@@ -49,6 +49,7 @@ resource "cloudflare_dns_record" "dkim1" {
 locals {
   # HTTPRoute hostnames.
   kubernetes_apps = [
+    "actual",
     "adguard",
     "airtrail",
     "argocd",
@@ -65,6 +66,7 @@ locals {
     "it-tools",
     "jellyfin",
     "lidarr",
+    "memos",
     "nextcloud",
     "omni-tools",
     "policy",
@@ -84,6 +86,7 @@ locals {
   kubernetes_aliases = [
     "adguardhome",
     "authentik",
+    "budget",
     "drive",
     "dvr",
     "hass",

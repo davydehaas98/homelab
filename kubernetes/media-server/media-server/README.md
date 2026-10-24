@@ -36,6 +36,8 @@ SQLite and databases break on NFS, so each such app has an ext4 disk on yggdrasi
 | Immich Postgres    | `immich-database`      | 32G  |
 | AirTrail Postgres  | `airtrail-database`    | 2G   |
 | Nextcloud code     | `nextcloud`            | 16G  |
+| Actual Budget      | `actual-budget`        | 1G   |
+| Memos              | `memos`                | 1G   |
 
 ### Adding an app
 

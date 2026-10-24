@@ -1,0 +1,56 @@
+# Budgeting app, with its SQLite files in /data. Moved from the home server's compose file; its `chain-actual-budget`
+# login is now the gateway login, and the app sets the cross-origin headers that chain added itself.
+image:
+  registry: ghcr.io
+  repository: actualbudget/actual
+  tag: 26.9.0
+
+port: 5006
+
+# The image runs as root without needing it
+podSecurityContext:
+  runAsUser: 1400
+  runAsGroup: 1400
+  runAsNonRoot: true
+  fsGroup: 1400
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+env:
+  ACTUAL_DATA_DIR: /data
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 128Mi
+
+# The SQLite files are on an iSCSI disk on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md
+persistence:
+  size: 1Gi
+  mountPath: /data
+  backup: true
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:actual-budget
+    lun: 0
+
+route:
+  enabled: true
+  hostnames:
+    - actual.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - budget.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `actual-budget`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

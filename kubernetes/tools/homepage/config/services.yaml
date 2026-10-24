@@ -111,6 +111,12 @@
         siteMonitor: https://tracearr.davydehaas.dev
 
 - Home:
+    - Actual Budget:
+        icon: actual-budget.png
+        href: https://actual.davydehaas.dev
+        description: Budget
+        siteMonitor: http://actual-budget.actual-budget.svc.cluster.local:5006
+
     - Home Assistant:
         icon: home-assistant.png
         href: https://home-assistant.davydehaas.dev
@@ -122,6 +128,12 @@
         href: https://immich.davydehaas.dev
         description: Photos
         siteMonitor: http://immich-server.immich.svc.cluster.local:2283
+
+    - Memos:
+        icon: memos.png
+        href: https://memos.davydehaas.dev
+        description: Notes
+        siteMonitor: http://memos.memos.svc.cluster.local:5230
 
     - Nextcloud:
         icon: nextcloud.png

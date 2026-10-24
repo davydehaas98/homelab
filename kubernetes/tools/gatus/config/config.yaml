@@ -102,6 +102,15 @@ endpoints:
       - "[CERTIFICATE_EXPIRATION] > 168h"
     alerts:
       - type: discord
+  - name: Actual Budget
+    group: Home
+    url: http://actual-budget.actual-budget.svc.cluster.local:5006
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Home Assistant
     group: Home
     url: http://home-assistant.home-assistant.svc.cluster.local:8123
@@ -114,6 +123,15 @@ endpoints:
   - name: Immich
     group: Home
     url: http://immich-server.immich.svc.cluster.local:2283
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Memos
+    group: Home
+    url: http://memos.memos.svc.cluster.local:5230
     interval: 1m
     conditions:
       - "[STATUS] < 400"

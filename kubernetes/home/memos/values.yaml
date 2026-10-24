@@ -1,0 +1,50 @@
+# Notes, with its SQLite database in /var/opt/memos. Moved from the home server's compose file; its `chain-authentik`
+# login is now the gateway login.
+image:
+  registry: ghcr.io
+  repository: usememos/memos
+  tag: 0.31.0
+
+port: 5230
+
+# Started as root, the entrypoint chowns the data and drops to 10001; started as this user, it skips that
+podSecurityContext:
+  runAsUser: 1400
+  runAsGroup: 1400
+  runAsNonRoot: true
+  fsGroup: 1400
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  limits:
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 32Mi
+
+# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md
+persistence:
+  size: 1Gi
+  mountPath: /var/opt/memos
+  backup: true
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:memos
+    lun: 0
+
+route:
+  enabled: true
+  hostnames:
+    - memos.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `memos`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

@@ -2,6 +2,9 @@
 # app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` /
 # `<SLUG>_CLIENT_SECRET` in the SealedSecret `templates/oidc-client-<slug>.yaml`, listed in `envFrom` below.
 oidcClients:
+  - name: Actual Budget
+    slug: actual-budget
+    redirectURL: https://actual.davydehaas.dev/oauth2/callback
   - name: AdGuard Home
     slug: adguard-home
     redirectURL: https://adguard.davydehaas.dev/oauth2/callback
@@ -43,6 +46,9 @@ oidcClients:
   - name: Longhorn
     slug: longhorn
     redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
+  - name: Memos
+    slug: memos
+    redirectURL: https://memos.davydehaas.dev/oauth2/callback
   - name: Nextcloud
     slug: nextcloud
     # Native OIDC through the user_oidc app of Nextcloud, next to its local login
@@ -95,6 +101,8 @@ authentik:
     # this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
     envFrom:
       - secretRef:
+          name: authentik-oidc-actual-budget
+      - secretRef:
           name: authentik-oidc-adguard-home
       - secretRef:
           name: authentik-oidc-airtrail
@@ -120,6 +128,8 @@ authentik:
           name: authentik-oidc-lidarr
       - secretRef:
           name: authentik-oidc-longhorn
+      - secretRef:
+          name: authentik-oidc-memos
       - secretRef:
           name: authentik-oidc-nextcloud
       - secretRef:
