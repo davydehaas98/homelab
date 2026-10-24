@@ -13,6 +13,9 @@ machine is recreated) and restart VS Code:
 [Environment]::SetEnvironmentVariable('CONTAINER_CONNECTION', 'podman-machine-default', 'User')
 ```
 
+When `podman` says the connection is refused, run `pwsh .devcontainer/podman-fix.ps1`: it restarts the machine, whose SSH
+port can stop listening while it shows as running.
+
 Without VS Code:
 
 ```shell
