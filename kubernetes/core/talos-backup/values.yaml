@@ -8,7 +8,7 @@ image:
 schedule: "30 3 * * *"
 
 # The public key of the age pair that encrypts the snapshots, README.md. Not a secret, but the private key is.
-agePublicKey: ""
+agePublicKey: age1786zmdzlg2cd8wuedvrlr0lurhuw6krt669dgnswcevz724c2aeqwzcu54
 
 s3:
   endpoint: http://seaweedfs-all-in-one.seaweedfs:8333
