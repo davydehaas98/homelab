@@ -24,7 +24,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf "${TMP}"' EXIT
 mkdir -p "${TMP}/old" "${TMP}/new"
 git archive "${REF}" kubernetes | tar x -C "${TMP}/old"
-tar cf - --exclude='*/charts/*' kubernetes | tar x -C "${TMP}/new"
+tar cf - --exclude='*/charts/*' --exclude='*/Chart.lock' kubernetes | tar x -C "${TMP}/new"
 
 render() {
     dir="$1/kubernetes/$2"

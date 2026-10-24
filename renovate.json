@@ -24,6 +24,13 @@
       ],
       "automerge": true,
       "ignoreTests": true
+    },
+    {
+      "description": "linuxserver still publishes tags of Lidarr 0.8 (2021) as 8.x, which look newer than the current 3.x.",
+      "matchPackageNames": [
+        "ghcr.io/linuxserver/lidarr"
+      ],
+      "allowedVersions": "<8"
     }
   ],
   "argocd": {

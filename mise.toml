@@ -2,7 +2,7 @@
 [tools]
 # Syncs and diffs apps, e.g. the manual-sync ones (`argocd login --core` uses the kubeconfig).
 # Keep it equal to the Argo CD version in kubernetes/core/argocd.
-argocd = "3.5.5"
+argocd = "3.5.6"
 
 # Checks Cilium health and connectivity (`cilium status`, `cilium connectivity test`).
 cilium-cli = "0.20.1"
@@ -17,14 +17,14 @@ k9s = "0.51.0"
 kubectl = "1.37.1"
 
 # Seals secrets with the cluster's sealed-secrets controller.
-kubeseal = "0.40.0"
+kubeseal = "0.41.1"
 
 # Generates and applies Talos machine configs. Keep it equal to the Talos version on the nodes:
 # its default Kubernetes version follows its own version.
 talosctl = "1.14.4"
 
 # Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
-terraform = "1.16.6"
+terraform = "1.17.0"
 
 # Installs pipx: tools (yamllint) with a Python of its own.
 uv = "0.13.5"
