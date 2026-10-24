@@ -1,0 +1,57 @@
+# WireGuard VPN with a web interface (wg-easy), replacing the one on the home server's compose file. Its state (the
+# interface, the clients and their keys) is a SQLite database in /etc/wireguard, which starts empty: the old data is
+# not copied. The environment of the old file is not carried over: v15 keeps the host, port, DNS and allowed IPs in
+# that database, and asks for them in its setup wizard.
+# Left out: SYS_MODULE and the sysctls (Talos has the module built in and a pod inherits the node's ip_forward), the
+# host network card (the pod's is eth0), and the Traefik route with the Authentik login, as an admin interface should
+# not go on the internet before it sits behind the same login here. Reach it with
+# `kubectl -n wireguard port-forward statefulset/wireguard 51821`.
+image:
+  registry: ghcr.io
+  repository: wg-easy/wg-easy
+  tag: 15.4.0
+
+# The VPN port, UDP
+port: 51820
+protocol: UDP
+
+env:
+  # The interface is plain HTTP inside the cluster, which wg-easy refuses to log in over unless told so
+  INSECURE: "true"
+
+# The NAT of the VPN clients needs to change the firewall of the pod. The image runs as root.
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - NET_ADMIN
+
+# The VPN port is UDP, so the probe checks the web interface
+probe:
+  tcpSocket:
+    port: 51821
+
+resources:
+  limits:
+    memory: 256Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+# The database is SQLite, so the disk is on yggdrasil, a target of its own for this app, see
+# kubernetes/media-server/media-server/README.md
+persistence:
+  backup: true
+  size: 1Gi
+  mountPath: /etc/wireguard
+  iscsi:
+    targetPortal: 192.168.1.44:3260
+    iqn: iqn.2026-10.nl.davydehaas:wireguard
+    lun: 0
+
+# The router forwards UDP 51820 to this address
+service:
+  type: LoadBalancer
+  annotations:
+    lbipam.cilium.io/ips: 192.168.1.61
