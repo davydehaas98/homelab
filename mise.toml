@@ -17,7 +17,7 @@ k9s = "0.51.0"
 kubectl = "1.37.1"
 
 # Seals secrets with the cluster's sealed-secrets controller.
-kubeseal = "0.40.0"
+kubeseal = "0.41.1"
 
 # Generates and applies Talos machine configs. Keep it equal to the Talos version on the nodes:
 # its default Kubernetes version follows its own version.
