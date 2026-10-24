@@ -1,0 +1,30 @@
+# Scans the images and secrets of running workloads for vulnerabilities (VulnerabilityReports,
+# ExposedSecretReports). Kyverno already audits the pod configuration, so those scanners stay off.
+trivy-operator:
+  operator:
+    builtInTrivyServer: true
+    configAuditScannerEnabled: false
+    rbacAssessmentScannerEnabled: false
+    infraAssessmentScannerEnabled: false
+    clusterComplianceEnabled: false
+    exposedSecretScannerEnabled: true
+    scanJobsConcurrentLimit: 1
+
+  resources:
+    requests:
+      cpu: 30m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+  trivy:
+    server:
+      resources:
+        requests:
+          cpu: 20m
+          memory: 200Mi
+        limits:
+          memory: 600Mi
+
+  serviceMonitor:
+    enabled: true
