@@ -4,6 +4,11 @@
 # coordinator.
 zigbee2mqtt:
   statefulset:
+    # Velero copies the data volume, which holds the network key: without it every device has to be paired again
+    # (kubernetes/storage/velero)
+    podAnnotations:
+      backup.velero.io/backup-volumes: data-volume
+
     storage:
       enabled: true
       size: 1Gi

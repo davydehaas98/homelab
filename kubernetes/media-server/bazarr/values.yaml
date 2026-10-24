@@ -47,8 +47,7 @@ backups:
 # kubernetes/media-server/media-server/README.md
 persistence:
   size: 1Gi
-  labels:
-    backup.velero.io/include: "true"
+  backup: true
   iscsi:
     targetPortal: 192.168.1.44:3260
     iqn: iqn.2026-10.nl.davydehaas:bazarr

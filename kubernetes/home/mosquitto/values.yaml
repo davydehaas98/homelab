@@ -33,6 +33,7 @@ resources:
     memory: 64Mi
 
 persistence:
+  backup: true
   size: 1Gi
   mountPath: /mosquitto/data
 

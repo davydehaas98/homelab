@@ -45,6 +45,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.storageClass` | default class | StorageClass of the claim. |
 | `persistence.iscsi.targetPortal`, `.iqn`, `.lun` | | Use a static iSCSI volume instead of a StorageClass, mounted by the democratic-csi driver (`kubernetes/storage/democratic-csi`). Give every app a target of its own (`iqn.2026-10.nl.davydehaas:<app>`, `lun: 0`), as a node logs out of a whole target when one pod stops. Only one pod may mount it. |
 | `persistence.labels` | | Extra labels of the claim. |
+| `persistence.backup` | `false` | Annotate the pod so Velero backs up the volume. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath` (+ `readOnly: true`). |
 | `envFrom` | none | Environment variables from Secrets or ConfigMaps, a list of `secretRef` or `configMapRef` entries. |
 | `configFiles` | none | Files mounted into the app, a list of `name`, `mountPath` and either `files` (a map of file name to content) and/or `glob` (files of the app chart, such as `config/*.yaml`, not recursive), rendered into a ConfigMap, and the pod restarts when it changes, or `secret` (the name of an existing Secret, with `keys` to mount). `defaultMode` sets the permissions of the files. Each file is mounted on its own with a `subPath`, so it can sit in an `emptyDirs` folder that stays writable. |

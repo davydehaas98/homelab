@@ -45,6 +45,7 @@ resources:
 # The statistics database does not work on NFS, so the disk is on yggdrasil, see
 # kubernetes/media-server/media-server/README.md
 persistence:
+  backup: true
   size: 2Gi
   mountPath: /data
   iscsi:

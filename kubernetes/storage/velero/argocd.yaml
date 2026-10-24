@@ -1,2 +1,2 @@
-deploy: false
+deploy: true
 serverSideApply: true

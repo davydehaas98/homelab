@@ -21,9 +21,17 @@ spec:
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with (include "app.configChecksums" . | trim) }}
+      {{- $checksums := include "app.configChecksums" . | trim }}
+      {{- $backup := (.Values.persistence | default dict).backup }}
+      {{- if or $checksums $backup }}
       annotations:
+        {{- with $checksums }}
         {{- . | nindent 8 }}
+        {{- end }}
+        {{- if $backup }}
+        # The node agent of Velero copies the volume, see kubernetes/storage/velero
+        backup.velero.io/backup-volumes: config
+        {{- end }}
       {{- end }}
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
