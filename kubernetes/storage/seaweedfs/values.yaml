@@ -22,6 +22,7 @@ seaweedfs:
         - name: loki-ruler
         - name: loki-admin
         - name: velero
+        - name: talos-backup
 
     data:
       type: persistentVolumeClaim

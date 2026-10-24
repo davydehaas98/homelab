@@ -1,0 +1,3 @@
+# Registers the app with the ApplicationSet; keys in kubernetes/README.md
+# Off until the steps in README.md are done: the ServiceAccount kind below only exists with the Talos API access
+deploy: false

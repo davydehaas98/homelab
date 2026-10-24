@@ -1,0 +1,24 @@
+# The tag after v0.1.0-beta.3 that has USE_PATH_STYLE and AGE_RECIPIENT_PUBLIC_KEY; the images publish arm64.
+image:
+  registry: ghcr.io
+  repository: siderolabs/talos-backup
+  tag: v0.1.0-beta.3-10-gb9fd478
+
+# 03:30, after the Velero backup would run
+schedule: "30 3 * * *"
+
+# The public key of the age pair that encrypts the snapshots, README.md. Not a secret, but the private key is.
+agePublicKey: ""
+
+s3:
+  endpoint: http://seaweedfs-all-in-one.seaweedfs:8333
+  bucket: talos-backup
+  # Secret with the keys `access-key` and `secret-key`, README.md
+  secretName: talos-backup-s3-credentials
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
