@@ -1,0 +1,23 @@
+# Copies Secrets and ConfigMaps to other namespaces, by annotation (replicator.v1.mittwald.de/replicate-to). A
+# SealedSecret cannot be copied, as it is bound to its namespace; annotate the Secret it produces instead.
+kubernetes-replicator:
+  podSecurityContext:
+    fsGroup: 2000
+    seccompProfile:
+      type: RuntimeDefault
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 64Mi
