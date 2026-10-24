@@ -40,7 +40,8 @@ spec:
         The route has no login at the gateway (a SecurityPolicy with oidc) and no annotation davydehaas.dev/auth of
         native, public, redirect or bypass.
 ---
-# Kyverno reads the SecurityPolicies of Envoy Gateway to check that a route has its login
+# Kyverno reads the HTTPRoutes (the policy reports need it) and the SecurityPolicies of Envoy Gateway to check that a
+# route has its login
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -50,6 +51,9 @@ metadata:
     rbac.kyverno.io/aggregate-to-background-controller: "true"
     rbac.kyverno.io/aggregate-to-reports-controller: "true"
 rules:
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["httproutes"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: ["gateway.envoyproxy.io"]
     resources: ["securitypolicies"]
     verbs: ["get", "list", "watch"]
