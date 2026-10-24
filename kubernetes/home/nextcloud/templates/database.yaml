@@ -11,6 +11,8 @@ metadata:
     cnpg.io/hibernation: {{ if eq (toString .Values.suspend) "true" }}"on"{{ else }}"off"{{ end }}
 spec:
   instances: 1
+  # The budget of the primary blocks every drain with one instance, so a node upgrade could never finish
+  enablePDB: false
   resources:
     limits:
       memory: 1Gi
