@@ -44,6 +44,8 @@ zigbee2mqtt:
 
   httproute:
     enabled: true
+    annotations:
+      davydehaas.dev/auth: gateway
     parentRefs:
       - name: envoy-gateway
         namespace: envoy-gateway

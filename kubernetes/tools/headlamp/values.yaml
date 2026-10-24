@@ -32,6 +32,8 @@ headlamp:
 
   httpRoute:
     enabled: true
+    annotations:
+      davydehaas.dev/auth: gateway
     hostnames:
       - headlamp.davydehaas.dev
     parentRefs:
