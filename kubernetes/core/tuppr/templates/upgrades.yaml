@@ -1,0 +1,30 @@
+# One node at a time, each waiting until every node is Ready again. The nodes keep their own schematic (the
+# installer image of their current config).
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: yggdrasil
+spec:
+  parallelism: 1
+  talos:
+    version: {{ .Values.talos.image.tag }}
+  policy:
+    waitForVolumeDetach: true
+  healthChecks:
+    - apiVersion: v1
+      kind: Node
+      expr: status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m0s
+---
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: KubernetesUpgrade
+metadata:
+  name: yggdrasil
+spec:
+  kubernetes:
+    version: {{ .Values.kubernetes.image.tag }}
+  healthChecks:
+    - apiVersion: v1
+      kind: Node
+      expr: status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m0s

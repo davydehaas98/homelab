@@ -1,0 +1,4 @@
+# Registers the app with the ApplicationSet; keys in kubernetes/README.md
+deploy: true
+# Upgrades the nodes, so sync by hand after checking the diff
+autoSync: false
