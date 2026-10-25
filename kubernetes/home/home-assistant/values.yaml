@@ -11,7 +11,7 @@ image:
   registry: ghcr.io
   repository: home-assistant/home-assistant
   # The version of the home server's installation, so the move from there is not also an upgrade
-  tag: 2026.10.3
+  tag: 2026.10.4
 
 port: 8123
 
