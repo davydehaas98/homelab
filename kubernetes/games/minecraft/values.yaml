@@ -6,7 +6,7 @@
 image:
   registry: docker.io
   repository: itzg/minecraft-server
-  tag: 2026.10.0-java25
+  tag: 2026.10.1-java25
 
 port: 25565
 
