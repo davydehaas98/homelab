@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: johly/airtrail
-  tag: v3.13.0
+  tag: v3.13.1
 
 port: 3000
 
