@@ -4,8 +4,8 @@ image:
   repository: siderolabs/talos-backup
   tag: v0.1.0-beta.3-10-gb9fd478
 
-# 03:30, after the Velero backup would run
-schedule: "30 3 * * *"
+# 03:00 UTC, an hour after the Velero backup (02:00 UTC), so the snapshot has that night's Velero Backup
+schedule: "0 3 * * *"
 
 # The public key of the age pair that encrypts the snapshots, README.md. Not a secret, but the private key is.
 agePublicKey: age1786zmdzlg2cd8wuedvrlr0lurhuw6krt669dgnswcevz724c2aeqwzcu54

@@ -1,1 +1,8 @@
 deploy: true
+# The chart renders this Secret with new random SFTP passwords on every render, also with SFTP off (its lookup of the
+# live Secret finds nothing in Argo CD). The pod doesn't mount it without SFTP, so its data is left as it is.
+ignoreDifferences:
+  - kind: Secret
+    name: seaweedfs-sftp-secret
+    jsonPointers:
+      - /data

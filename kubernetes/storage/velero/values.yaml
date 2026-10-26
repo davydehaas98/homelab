@@ -45,10 +45,10 @@ velero:
         cpu: 10m
         memory: 256Mi
 
-  # Cluster resources are backed up daily, volumes only when a pod opts in with the annotation
-  # backup.velero.io/backup-volumes: <volume name>
+  # Cluster resources are backed up daily at 02:00 UTC, an hour before talos-backup, volumes only when a pod opts in
+  # with the annotation backup.velero.io/backup-volumes: <volume name>
   schedules:
     daily:
-      schedule: "0 3 * * *"
+      schedule: "0 2 * * *"
       template:
         ttl: 720h
