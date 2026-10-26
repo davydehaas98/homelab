@@ -49,7 +49,8 @@ cilium:
 
   # Requests from the VPA recommendations (`kubectl -n kube-system get vpa`), rounded up
   operator:
-    replicas: 1
+    # Two, so a drain doesn't leave new pods waiting for an IP
+    replicas: 2
     resources:
       limits:
         memory: 512Mi

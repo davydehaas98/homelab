@@ -7,8 +7,9 @@ image:
 
 port: 8080
 
-# No volume, so it updates without a gap
+# No volume, so it updates without a gap, and two replicas keep it up while a node drains
 kind: Deployment
+replicas: 2
 
 podSecurityContext:
   runAsNonRoot: true

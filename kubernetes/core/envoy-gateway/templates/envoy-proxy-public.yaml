@@ -30,6 +30,10 @@ spec:
             requests:
               cpu: 150m
               memory: 128Mi
+      # The entry point of all traffic: a drain evicts one replica at a time. maxUnavailable and not minAvailable, so
+      # a replica that cannot start never blocks a drain.
+      envoyPDB:
+        maxUnavailable: 1
       envoyService:
         annotations:
           "io.cilium/lb-ipam-ips": 192.168.1.56
