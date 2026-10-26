@@ -18,7 +18,9 @@ kyverno:
       enabled: true
       backgroundScanWorkers: 2
       backgroundScanInterval: 1h
-      skipResourceFilters: true
+      # The scan keeps to config.resourceFilters, whose defaults skip ReplicaSets: an old revision scaled to 0 keeps its
+      # old pod template, so it would fail long after the fix. The pods and their Deployments are still checked.
+      skipResourceFilters: false
     configMapCaching:
       enabled: true
     dumpPayload:
