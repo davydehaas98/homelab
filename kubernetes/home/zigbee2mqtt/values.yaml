@@ -30,12 +30,30 @@ zigbee2mqtt:
         cpu: 20m
         memory: 128Mi
 
+    # Runs as the image's node user (1000), which owns the data on NFS (fsGroup does not apply there, the files were
+    # chowned once)
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+
     # The chart defaults to privileged with SYS_ADMIN for a USB adapter, not needed for a network coordinator
     securityContext:
       privileged: false
       allowPrivilegeEscalation: false
       capabilities:
         add: []
+        drop:
+          - ALL
+
+  # The yq init container that merges the configuration defaults to root; it only edits files of the same user
+  secretesMigratorContainer:
+    securityContext:
+      runAsUser: 1000
+      allowPrivilegeEscalation: false
+      capabilities:
         drop:
           - ALL
 

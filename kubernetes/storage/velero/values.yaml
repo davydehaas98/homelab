@@ -56,7 +56,14 @@ velero:
       cpu: 10m
       memory: 128Mi
 
+  # It reads the volumes of other pods from the host as root, which needs a Kyverno exemption
+  # (kubernetes/security/kyverno); seccomp and no privilege escalation it can take. The chart's runAsUser 0 stays.
   nodeAgent:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
     resources:
       limits:
         memory: 1Gi

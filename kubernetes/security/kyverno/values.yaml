@@ -137,11 +137,42 @@ kyverno-policies:
       - prometheus-node-exporter
 
   # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
-  # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6) and Dispatcharr (entrypoint with su, and
-  # Postgres, Redis and nginx in one container). A per-policy entry replaces the defaults above, so they are repeated.
+  # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6), Dispatcharr (entrypoint with su, and
+  # Postgres, Redis and nginx in one container) and Nextcloud (apache drops to www-data). A per-policy entry replaces
+  # the defaults above, so they are repeated.
   # Home Assistant runs on the host network (values.yaml of the app), which these two policies forbid; Kubernetes also
-  # sets a host port equal to each container port then.
+  # sets a host port equal to each container port then. Its config sidecars run as root to write the config of the
+  # root Home Assistant.
+  # The Velero node agent reads the volumes of other pods from /var/lib/kubelet on the host, as root.
   vpolExcludeByPolicy:
+    disallow-host-path: &excludeNodeAgent
+      excludeNamespaces:
+        - democratic-csi
+        - fluent-bit
+        - kube-system
+        - nfs-subdir-external-provisioner
+        - node-feature-discovery
+        - prometheus-node-exporter
+      matchConditions:
+        - name: exclude-velero-node-agent
+          expression: >-
+            !(request.namespace == 'velero' && has(object.metadata.labels) &&
+            object.metadata.labels.exists(k, k == 'role' && object.metadata.labels[k] == 'node-agent'))
+    restrict-volume-types: *excludeNodeAgent
+    require-run-as-non-root-user:
+      excludeNamespaces:
+        - democratic-csi
+        - fluent-bit
+        - home-assistant
+        - kube-system
+        - nfs-subdir-external-provisioner
+        - node-feature-discovery
+        - prometheus-node-exporter
+      matchConditions:
+        - name: exclude-velero-node-agent
+          expression: >-
+            !(request.namespace == 'velero' && has(object.metadata.labels) &&
+            object.metadata.labels.exists(k, k == 'role' && object.metadata.labels[k] == 'node-agent'))
     disallow-host-namespaces:
       excludeNamespaces:
         - democratic-csi
@@ -174,5 +205,10 @@ kyverno-policies:
             !object.spec.containers.all(c, [
               'ghcr.io/linuxserver/',
               'ghcr.io/home-assistant/home-assistant:',
-              'docker.io/dispatcharr/dispatcharr:'
+              'docker.io/dispatcharr/dispatcharr:',
+              'docker.io/library/nextcloud:'
             ].exists(p, c.image.startsWith(p)))
+        - name: exclude-velero-node-agent
+          expression: >-
+            !(request.namespace == 'velero' && has(object.metadata.labels) &&
+            object.metadata.labels.exists(k, k == 'role' && object.metadata.labels[k] == 'node-agent'))

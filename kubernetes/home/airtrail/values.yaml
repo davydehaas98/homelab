@@ -10,6 +10,16 @@ port: 3000
 
 kind: Deployment
 
+# The image runs as root but has a node user, and the app writes nothing to disk (tested)
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
 env:
   # The public URL, which SvelteKit checks against form posts behind a proxy
   ORIGIN: https://airtrail.davydehaas.dev

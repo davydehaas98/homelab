@@ -61,12 +61,16 @@ immich:
                 cpu: 50m
                 memory: 512Mi
 
-  # The server image runs as root, so only seccomp and no privilege escalation
+  # The server image runs as root but has a node user (1000), which owns the library on NFS (fsGroup does not apply
+  # there, the files were chowned once)
   server:
     defaultPodOptions:
       nodeSelector:
         kubernetes.io/hostname: jotunheim-3
       securityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
     controllers:
@@ -75,6 +79,9 @@ immich:
           main:
             securityContext:
               allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
             resources:
               limits:
                 memory: 4Gi
