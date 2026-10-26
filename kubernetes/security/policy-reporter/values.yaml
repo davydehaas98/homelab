@@ -6,8 +6,8 @@ policy-reporter:
     limits:
       memory: 128Mi
     requests:
-      memory: 32Mi
-      cpu: 5m
+      memory: 64Mi
+      cpu: 50m
 
   metrics:
     enabled: true
@@ -22,7 +22,7 @@ policy-reporter:
         memory: 128Mi
       requests:
         memory: 32Mi
-        cpu: 5m
+        cpu: 10m
 
     ingress:
       enabled: false

@@ -19,7 +19,9 @@ bound, and OOM kills (`lastState.terminated.reason`). Sum requests and limits ag
   machine learning, Java, spiky or young apps), go higher.
 - Never a limit without a request: the request then equals the limit.
 - Lower an existing value only when the gap is big: four times or more above both the use and the VPA value.
-- CPU: requests only. The media-server apps also have CPU limits; leave those unless the user asks.
+- CPU: requests only, the VPA target or the use rounded up to 10m steps below 100m and 50m steps above; not powers
+  of two. A target at the VPA floor (about 11m) counts as 10m. The media-server apps also have CPU limits; leave
+  those unless the user asks.
 - Leave the Talos static pods (`kube-apiserver`, `kube-controller-manager`, `kube-scheduler`) alone.
 
 **Where the keys are:** library apps `resources` (`kubernetes/_library/app/README.md`); upstream charts their own keys,

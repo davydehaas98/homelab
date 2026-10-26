@@ -54,7 +54,7 @@ cilium:
       limits:
         memory: 512Mi
       requests:
-        cpu: 15m
+        cpu: 30m
         memory: 256Mi
     prometheus:
       enabled: true
@@ -81,10 +81,10 @@ cilium:
 
   resources:
     limits:
-      memory: 1024Mi
+      memory: 2Gi
     requests:
-      cpu: 150m
-      memory: 512Mi
+      cpu: 200m
+      memory: 1Gi
 
   monitor:
     enabled: true

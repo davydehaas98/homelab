@@ -28,7 +28,7 @@ resources:
     memory: 4Gi
   requests:
     cpu: 100m
-    memory: 1Gi
+    memory: 2Gi
 
 # PostgreSQL does not work on NFS, so the disk is on yggdrasil, see kubernetes/media-server/media-server/README.md
 persistence:

@@ -8,6 +8,7 @@ grafana:
       limits:
         memory: 256Mi
       requests:
+        cpu: 10m
         memory: 128Mi
     dashboards:
       enabled: true
@@ -105,10 +106,10 @@ grafana:
 
   resources:
     limits:
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 50m
-      memory: 256Mi
+      memory: 1Gi
 
   # Its init container runs as root to chown the data, which the restricted standard forbids. The data is already
   # owned by the grafana user (472).

@@ -34,7 +34,7 @@ velero:
     limits:
       memory: 512Mi
     requests:
-      cpu: 50m
+      cpu: 10m
       memory: 128Mi
 
   nodeAgent:
@@ -42,7 +42,7 @@ velero:
       limits:
         memory: 1Gi
       requests:
-        cpu: 50m
+        cpu: 10m
         memory: 256Mi
 
   # Cluster resources are backed up daily, volumes only when a pod opts in with the annotation

@@ -57,6 +57,7 @@ loki:
       limits:
         memory: 256Mi
       requests:
+        cpu: 10m
         memory: 128Mi
 
   memcachedExporter:
@@ -64,6 +65,7 @@ loki:
       limits:
         memory: 128Mi
       requests:
+        cpu: 30m
         memory: 16Mi
 
   memcached:
@@ -96,10 +98,10 @@ loki:
     replicas: 1
     resources:
       requests:
-        cpu: 50m
-        memory: 256Mi
+        cpu: 250m
+        memory: 2Gi
       limits:
-        memory: 1Gi
+        memory: 4Gi
     persistence:
       size: 5Gi
     affinity: null
@@ -114,7 +116,7 @@ loki:
     legacyReadTarget: false
     resources:
       requests:
-        cpu: 20m
+        cpu: 30m
         memory: 256Mi
       limits:
         memory: 1Gi
@@ -131,7 +133,7 @@ loki:
     replicas: 1
     resources:
       requests:
-        cpu: 20m
+        cpu: 30m
         memory: 128Mi
       limits:
         memory: 512Mi
@@ -158,7 +160,7 @@ loki:
     replicas: 1
     resources:
       requests:
-        cpu: 10m
+        cpu: 30m
         memory: 32Mi
       limits:
         memory: 128Mi

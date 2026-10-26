@@ -22,7 +22,7 @@ resources:
     cpu: 1000m
     memory: 1Gi
   requests:
-    cpu: 20m
+    cpu: 50m
     memory: 256Mi
 
 image:

@@ -43,8 +43,8 @@ argo-cd:
       limits:
         memory: 2048Mi
       requests:
-        cpu: 150m
-        memory: 512Mi
+        cpu: 900m
+        memory: 1Gi
     metrics:
       enabled: true
       serviceMonitor:
@@ -59,7 +59,7 @@ argo-cd:
       limits:
         memory: 256Mi
       requests:
-        cpu: 50m
+        cpu: 10m
         memory: 128Mi
     exporter:
       enabled: true
@@ -100,7 +100,8 @@ argo-cd:
       limits:
         memory: 512Mi
       requests:
-        memory: 128Mi
+        cpu: 30m
+        memory: 256Mi
 
   # Renders the manifests of every sync, so while it is down nothing syncs
   repoServer:
@@ -110,10 +111,10 @@ argo-cd:
       minAvailable: 1
     resources:
       limits:
-        memory: 512Mi
+        memory: 2Gi
       requests:
-        cpu: 50m
-        memory: 128Mi
+        cpu: 150m
+        memory: 1Gi
     metrics:
       enabled: true
       serviceMonitor:
@@ -125,7 +126,8 @@ argo-cd:
       limits:
         memory: 256Mi
       requests:
-        memory: 64Mi
+        cpu: 50m
+        memory: 128Mi
 
   # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in
   # templates/notifications-secret.yaml.
@@ -138,7 +140,7 @@ argo-cd:
       limits:
         memory: 128Mi
       requests:
-        cpu: 10m
+        cpu: 30m
         memory: 64Mi
     metrics:
       enabled: true

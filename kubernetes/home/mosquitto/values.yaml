@@ -30,7 +30,7 @@ resources:
     memory: 256Mi
   requests:
     cpu: 10m
-    memory: 64Mi
+    memory: 16Mi
 
 persistence:
   backup: true

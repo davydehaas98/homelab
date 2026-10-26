@@ -29,7 +29,7 @@ fluent-bit:
     limits:
       memory: 128Mi
     requests:
-      cpu: 60m
+      cpu: 100m
       memory: 64Mi
 
   # Do not ship the logs of this agent itself

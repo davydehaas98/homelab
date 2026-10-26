@@ -52,7 +52,7 @@ kyverno:
           memory: 1Gi
         requests:
           cpu: 50m
-          memory: 128Mi
+          memory: 256Mi
 
     serviceMonitor:
       enabled: true
@@ -110,10 +110,10 @@ kyverno:
 
     resources:
       limits:
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 50m
-        memory: 64Mi
+        memory: 128Mi
 
     serviceMonitor:
       enabled: true

@@ -65,10 +65,10 @@ kube-prometheus-stack:
                 - 192.168.1.52:2381
       resources:
         limits:
-          memory: 4096Mi
+          memory: 8Gi
         requests:
-          cpu: 100m
-          memory: 2048Mi
+          cpu: 200m
+          memory: 4Gi
       # The iSCSI disk of templates/prometheus-volume.yaml
       storageSpec:
         volumeClaimTemplate:
@@ -126,10 +126,10 @@ kube-prometheus-stack:
   kube-state-metrics:
     resources:
       limits:
-        memory: 128Mi
+        memory: 512Mi
       requests:
-        cpu: 10m
-        memory: 64Mi
+        cpu: 30m
+        memory: 256Mi
     # Exports the recommendations of the VerticalPodAutoscalers (kubernetes/core/vpa) as
     # kube_customresource_vpa_containerrecommendations_*, for the VPA dashboard in grafana-dashboards
     rbac:
@@ -231,4 +231,5 @@ kube-prometheus-stack:
       limits:
         memory: 128Mi
       requests:
+        cpu: 10m
         memory: 32Mi

@@ -32,6 +32,7 @@ immich:
               limits:
                 memory: 256Mi
               requests:
+                cpu: 30m
                 memory: 32Mi
 
   # The machine learning image runs as any user, its cache is an emptyDir. The server and this pod keep to the worker:
@@ -57,6 +58,7 @@ immich:
               limits:
                 memory: 4Gi
               requests:
+                cpu: 50m
                 memory: 512Mi
 
   # The server image runs as root, so only seccomp and no privilege escalation
@@ -77,7 +79,8 @@ immich:
               limits:
                 memory: 4Gi
               requests:
-                memory: 1Gi
+                cpu: 50m
+                memory: 2Gi
             env:
               DB_HOSTNAME:
                 valueFrom:

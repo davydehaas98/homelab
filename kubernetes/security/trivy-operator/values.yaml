@@ -13,9 +13,9 @@ trivy-operator:
   resources:
     requests:
       cpu: 30m
-      memory: 128Mi
-    limits:
       memory: 512Mi
+    limits:
+      memory: 1Gi
 
   trivy:
     # The scan jobs unpack the layers of an image on the node. The /var disk of a node is 27 GiB and the images alone
@@ -30,9 +30,9 @@ trivy-operator:
       resources:
         requests:
           cpu: 20m
-          memory: 200Mi
+          memory: 1Gi
         limits:
-          memory: 600Mi
+          memory: 2Gi
 
   serviceMonitor:
     enabled: true

@@ -87,9 +87,10 @@ nextcloud:
     sidecar:
       resources:
         limits:
-          memory: 256Mi
+          memory: 1Gi
         requests:
-          memory: 32Mi
+          cpu: 10m
+          memory: 256Mi
 
   # The code and config are on an iSCSI disk (templates/html-volume.yaml), and apart from it the files of the users
   persistence:

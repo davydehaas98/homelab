@@ -15,6 +15,7 @@ democratic-csi:
         limits:
           memory: 128Mi
         requests:
+          cpu: 10m
           memory: 32Mi
     externalProvisioner:
       enabled: false
@@ -30,6 +31,7 @@ democratic-csi:
         limits:
           memory: 256Mi
         requests:
+          cpu: 50m
           memory: 128Mi
 
   driver:
@@ -55,18 +57,21 @@ democratic-csi:
         limits:
           memory: 512Mi
         requests:
-          memory: 128Mi
+          cpu: 100m
+          memory: 256Mi
     driverRegistrar:
       resources:
         limits:
           memory: 128Mi
         requests:
+          cpu: 10m
           memory: 32Mi
     cleanup:
       resources:
         limits:
           memory: 64Mi
         requests:
+          cpu: 10m
           memory: 16Mi
 
   csiProxy:
@@ -74,4 +79,5 @@ democratic-csi:
       limits:
         memory: 64Mi
       requests:
+        cpu: 10m
         memory: 16Mi
