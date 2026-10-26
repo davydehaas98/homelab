@@ -23,6 +23,16 @@ trivy-operator:
     seccompProfile:
       type: RuntimeDefault
 
+  # The scan Jobs: the trivy image has no user of its own, an image scan only writes to its emptyDirs (tested). Their
+  # containers are restricted by the chart default.
+  trivyOperator:
+    scanJobPodTemplatePodSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault
+
   trivy:
     # The scan jobs unpack the layers of an image on the node. The /var disk of a node is 27 GiB and the images alone
     # take about 13, so without a limit a scan of a large image pushed a node into disk pressure and the kubelet evicted
