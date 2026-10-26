@@ -11,28 +11,28 @@ trivy-operator:
     scanJobsConcurrentLimit: 1
 
   resources:
+    limits:
+      memory: 1Gi
     requests:
       cpu: 30m
       memory: 512Mi
-    limits:
-      memory: 1Gi
 
   trivy:
     # The scan jobs unpack the layers of an image on the node. The /var disk of a node is 27 GiB and the images alone
     # take about 13, so without a limit a scan of a large image pushed a node into disk pressure and the kubelet evicted
     # pods (also other apps). A scan that needs more than this fails and is retried; the others stay up.
     resources:
-      requests:
-        ephemeralStorage: 512Mi
       limits:
         ephemeralStorage: 2Gi
+      requests:
+        ephemeralStorage: 512Mi
     server:
       resources:
+        limits:
+          memory: 2Gi
         requests:
           cpu: 20m
           memory: 1Gi
-        limits:
-          memory: 2Gi
 
   serviceMonitor:
     enabled: true

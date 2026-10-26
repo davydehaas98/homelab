@@ -34,7 +34,7 @@ fluent-bit:
 
   # Do not ship the logs of this agent itself
   podAnnotations:
-    fluentbit.io/exclude: 'true'
+    fluentbit.io/exclude: "true"
 
   config:
     service: |

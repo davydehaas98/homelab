@@ -41,7 +41,7 @@ argo-cd:
     replicas: 1
     resources:
       limits:
-        memory: 2048Mi
+        memory: 2Gi
       requests:
         cpu: 900m
         memory: 1Gi

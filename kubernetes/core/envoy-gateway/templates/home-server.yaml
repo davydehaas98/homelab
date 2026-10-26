@@ -21,7 +21,7 @@ spec:
     - name: envoy-gateway
       sectionName: home-server-apex
   hostnames:
-    - '*.davydehaas.nl'
+    - "*.davydehaas.nl"
     - davydehaas.nl
   rules:
     - backendRefs:

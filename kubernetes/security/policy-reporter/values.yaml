@@ -6,8 +6,8 @@ policy-reporter:
     limits:
       memory: 128Mi
     requests:
-      memory: 64Mi
       cpu: 50m
+      memory: 64Mi
 
   metrics:
     enabled: true
@@ -21,8 +21,8 @@ policy-reporter:
       limits:
         memory: 128Mi
       requests:
-        memory: 32Mi
         cpu: 10m
+        memory: 32Mi
 
     ingress:
       enabled: false
@@ -35,8 +35,8 @@ policy-reporter:
       limits:
         memory: 128Mi
       requests:
-        memory: 32Mi
         cpu: 5m
+        memory: 32Mi
 
   # database:
   #   type: postgres

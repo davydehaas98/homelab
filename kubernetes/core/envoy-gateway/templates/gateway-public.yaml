@@ -10,58 +10,58 @@ spec:
       kind: EnvoyProxy
       name: envoy-gateway
   listeners:
-   - name: web-http
-     protocol: HTTP
-     port: 80
-     allowedRoutes:
-       namespaces:
-         from: Same
-   - name: web-https
-     protocol: HTTPS
-     port: 443
-     hostname: '*.davydehaas.dev'
-     allowedRoutes:
-       namespaces:
-         from: All
-     tls:
-       mode: Terminate
-       certificateRefs:
-       - group: ''
-         kind: Secret
-         name: default-tls-certificate
-   - name: web-https-apex
-     protocol: HTTPS
-     port: 443
-     hostname: davydehaas.dev
-     allowedRoutes:
-       namespaces:
-         from: All
-     tls:
-       mode: Terminate
-       certificateRefs:
-       - group: ''
-         kind: Secret
-         name: default-tls-certificate
-   # The home server's own domain stays with its Traefik, which terminates TLS itself
-   - name: home-server
-     protocol: TLS
-     port: 443
-     hostname: '*.davydehaas.nl'
-     allowedRoutes:
-       kinds:
-         - kind: TLSRoute
-       namespaces:
-         from: Same
-     tls:
-       mode: Passthrough
-   - name: home-server-apex
-     protocol: TLS
-     port: 443
-     hostname: davydehaas.nl
-     allowedRoutes:
-       kinds:
-         - kind: TLSRoute
-       namespaces:
-         from: Same
-     tls:
-       mode: Passthrough
+    - name: web-http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: web-https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.davydehaas.dev"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: default-tls-certificate
+    - name: web-https-apex
+      protocol: HTTPS
+      port: 443
+      hostname: davydehaas.dev
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: default-tls-certificate
+    # The home server's own domain stays with its Traefik, which terminates TLS itself
+    - name: home-server
+      protocol: TLS
+      port: 443
+      hostname: "*.davydehaas.nl"
+      allowedRoutes:
+        kinds:
+          - kind: TLSRoute
+        namespaces:
+          from: Same
+      tls:
+        mode: Passthrough
+    - name: home-server-apex
+      protocol: TLS
+      port: 443
+      hostname: davydehaas.nl
+      allowedRoutes:
+        kinds:
+          - kind: TLSRoute
+        namespaces:
+          from: Same
+      tls:
+        mode: Passthrough

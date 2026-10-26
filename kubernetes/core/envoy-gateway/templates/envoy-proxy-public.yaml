@@ -25,13 +25,13 @@ spec:
         replicas: 3
         container:
           resources:
+            limits:
+              memory: 512Mi
             requests:
               cpu: 150m
               memory: 128Mi
-            limits:
-              memory: 512Mi
       envoyService:
         annotations:
-          'io.cilium/lb-ipam-ips': 192.168.1.56
+          "io.cilium/lb-ipam-ips": 192.168.1.56
         externalTrafficPolicy: Cluster
         allocateLoadBalancerNodePorts: false

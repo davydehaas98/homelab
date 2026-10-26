@@ -6,8 +6,8 @@ plex:
       limits:
         memory: 512Mi
       requests:
-        memory: 256Mi
         cpu: 50m
+        memory: 256Mi
 
   ingress:
     enabled: false

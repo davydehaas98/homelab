@@ -12,10 +12,10 @@ sonarqube:
 
   resources:
     limits:
-      memory: 4096Mi
+      memory: 4Gi
     requests:
       cpu: 100m
-      memory: 2048Mi
+      memory: 2Gi
 
   persistence:
     enabled: true

@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: home-assistant
   labels:
-    # Home Assistant runs on the network of its node, to find devices on the LAN and to be found by them (mDNS, HomeKit).
+    # Home Assistant runs on the network of its node, to find devices on the LAN and to be found by them (mDNS,
+    # HomeKit).
     # Talos enforces baseline by default, which does not allow it.
     pod-security.kubernetes.io/enforce: privileged

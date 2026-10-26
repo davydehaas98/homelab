@@ -3,5 +3,6 @@ kind: Namespace
 metadata:
   name: wireguard
   labels:
-    # Adds NET_ADMIN for the interface and the NAT of the VPN, Talos enforces baseline by default, which does not allow it
+    # Adds NET_ADMIN for the interface and the NAT of the VPN, Talos enforces baseline by default, which does not
+    # allow it
     pod-security.kubernetes.io/enforce: privileged

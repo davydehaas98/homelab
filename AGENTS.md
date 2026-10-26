@@ -16,6 +16,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
   manifests in `templates/`. Single-container apps use the library chart `kubernetes/_library/app` instead and
   only set values (see its README). New apps start from a copy of `kubernetes/_base/`, following the `add-app` skill.
 - Images must publish arm64.
+- YAML style: `resources` with `limits` before `requests` and keys alphabetical, memory in `Mi` below 1Gi and `Gi`
+  from there, double quotes, indented sequences. Templates are not linted, so keep to it there too.
 
 ## Secrets
 
