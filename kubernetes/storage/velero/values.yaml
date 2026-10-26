@@ -3,9 +3,28 @@ velero:
     - name: velero-plugin-for-aws
       image: velero/velero-plugin-for-aws:v1.14.4
       imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
       volumeMounts:
         - mountPath: /target
           name: plugins
+
+  # The image runs as the named user cnb (1002:1000), so runAsNonRoot needs the numbers. The node agent has its own
+  # security context.
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1002
+    runAsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
 
   configuration:
     # SeaweedFS S3 gateway, bucket `velero`, see README.md

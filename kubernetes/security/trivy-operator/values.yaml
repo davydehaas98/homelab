@@ -17,6 +17,12 @@ trivy-operator:
       cpu: 30m
       memory: 512Mi
 
+  # The image runs as user 10000, the container's own security context is restricted already
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
   trivy:
     # The scan jobs unpack the layers of an image on the node. The /var disk of a node is 27 GiB and the images alone
     # take about 13, so without a limit a scan of a large image pushed a node into disk pressure and the kubelet evicted
@@ -33,6 +39,15 @@ trivy-operator:
         requests:
           cpu: 20m
           memory: 1Gi
+      # Merged with the chart's defaults, which already run it as user 65534
+      podSecurityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
 
   serviceMonitor:
     enabled: true

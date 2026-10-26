@@ -91,6 +91,9 @@ nextcloud:
         requests:
           cpu: 10m
           memory: 256Mi
+      # Root like the main container, so the same: no privilege escalation
+      securityContext:
+        allowPrivilegeEscalation: false
 
   # The code and config are on an iSCSI disk (templates/html-volume.yaml), and apart from it the files of the users
   persistence:
