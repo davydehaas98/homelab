@@ -1,0 +1,34 @@
+# Only for the home network: the UniFi gateway forwards nothing to its address, so its routes are not on the internet.
+# For tools that should not be public, under *.mcp.davydehaas.dev (the MCP servers); their records point to this
+# address, see terraform/cloudflare/davydehaas.dev/dns_record.tf.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway-private
+spec:
+  gatewayClassName: envoy-gateway
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: envoy-gateway-private
+  listeners:
+    - name: web-http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: web-https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.mcp.davydehaas.dev"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: default-tls-certificate

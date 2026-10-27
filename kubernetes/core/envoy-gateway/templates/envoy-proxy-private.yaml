@@ -1,0 +1,40 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-gateway-private
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              revisionHistoryLimit: 0
+              template:
+                spec:
+                  containers:
+                    - name: shutdown-manager
+                      resources:
+                        limits:
+                          memory: 200Mi
+                        requests:
+                          cpu: 10m
+                          memory: 100Mi
+        replicas: 2
+        container:
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 20m
+              memory: 100Mi
+      # maxUnavailable and not minAvailable, so a replica that cannot start never blocks a drain
+      envoyPDB:
+        maxUnavailable: 1
+      envoyService:
+        annotations:
+          "io.cilium/lb-ipam-ips": 192.168.1.61
+        externalTrafficPolicy: Cluster
+        allocateLoadBalancerNodePorts: false

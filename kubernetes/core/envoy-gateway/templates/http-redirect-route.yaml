@@ -10,6 +10,10 @@ spec:
       kind: Gateway
       name: envoy-gateway
       sectionName: web-http
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway-private
+      sectionName: web-http
   rules:
     - matches:
         - path:

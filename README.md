@@ -66,6 +66,7 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 | fluent-bit         | Log shipper              |
 | grafana            | Dashboards               |
 | grafana-dashboards | Dashboards as ConfigMaps |
+| grafana-mcp        | Grafana MCP server       |
 | loki               | Log storage              |
 | prometheus         | Metrics and alerts       |
 | prometheus-crd     | Prometheus Operator CRDs |

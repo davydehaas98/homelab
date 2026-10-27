@@ -21,7 +21,7 @@ Without VS Code:
 ```shell
 podman build -t homelab-dev -f .devcontainer/Dockerfile .
 podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -v ~/.talos:/root/.talos \
-  -v homelab-claude-config:/root/.claude -e GRAFANA_SERVICE_ACCOUNT_TOKEN -w /workspace localhost/homelab-dev sh
+  -v homelab-claude-config:/root/.claude -e GRAFANA_MCP_TOKEN -w /workspace localhost/homelab-dev sh
 ```
 
 ## Cluster CLIs
@@ -42,11 +42,11 @@ argocd app list --core
 ## Claude Code
 
 Run `claude`; its login is kept in the `homelab-claude-config` volume. `.mcp.json` adds the read-only Grafana MCP
-server, which needs a token of a Grafana service account with the Viewer role (Administration > Users and access >
-Service accounts). Set it on the host and restart VS Code:
+server in the cluster (`kubernetes/monitoring/grafana-mcp`), which needs the `server-token` of its sealed
+`grafana-mcp-credentials`. Set it on the host and restart VS Code:
 
 ```powershell
-[Environment]::SetEnvironmentVariable('GRAFANA_SERVICE_ACCOUNT_TOKEN', '<token>', 'User')
+[Environment]::SetEnvironmentVariable('GRAFANA_MCP_TOKEN', '<token>', 'User')
 ```
 
 ## Git signing

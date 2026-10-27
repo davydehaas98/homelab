@@ -35,8 +35,5 @@ yq = "4.54.1"
 # Drives the Turing Pi BMC (flashing, power, UART). Its release archive keeps the binary in usr/bin.
 "github:turing-machines/tpi" = { version = "1.0.7", bin_path = "usr/bin" }
 
-# MCP server that lets Claude Code read Grafana (dashboards, Prometheus, Loki), see .mcp.json.
-"github:grafana/mcp-grafana" = "2.1.1"
-
 # Lints the plain YAML (values, Chart.yaml, argocd.yaml), see .yamllint. Installed with uv, which brings its own Python.
 "pipx:yamllint" = "1.38.0"

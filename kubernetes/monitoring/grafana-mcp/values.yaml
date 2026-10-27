@@ -1,0 +1,74 @@
+# Read-only MCP server for Claude Code (.mcp.json): dashboards, Prometheus and Loki through Grafana
+grafana-mcp:
+  revisionHistoryLimit: 0
+
+  # Grafana in-cluster, with the token of a service account with the Viewer role; both tokens are in
+  # templates/grafana-mcp-credentials.yaml
+  grafana:
+    url: http://grafana.grafana.svc
+    apiKeySecret:
+      name: grafana-mcp-credentials
+      key: grafana-token
+
+  # Clients send `Authorization: Bearer <server-token>`, mcp-grafana checks it itself (the route is `native`)
+  serverAuth:
+    tokenSecret:
+      name: grafana-mcp-credentials
+      key: server-token
+
+  disableWrite: true
+  disabledCategories:
+    - asserts
+    - clickhouse
+    - cloudwatch
+    - elasticsearch
+    - incident
+    - oncall
+    - pyroscope
+
+  # Host validation is off, as the kubelet probes by pod IP; the bearer token guards the endpoint
+  extraArgs:
+    - -t
+    - streamable-http
+    - --allowed-hosts=*
+
+  # A port of its own, which skips the host validation of the MCP port
+  metrics:
+    enabled: true
+    port: 9090
+
+  serviceMonitor:
+    enabled: true
+
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: mcp-http
+    periodSeconds: 10
+
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: mcp-http
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 20m
+      memory: 128Mi
+
+  route:
+    main:
+      enabled: true
+      annotations:
+        davydehaas.dev/auth: native
+      hostnames:
+        - grafana.mcp.davydehaas.dev
+      # Home network only
+      parentRefs:
+        - name: envoy-gateway-private
+          namespace: envoy-gateway
+          sectionName: web-https

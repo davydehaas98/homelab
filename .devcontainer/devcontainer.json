@@ -14,7 +14,7 @@
   ],
   // Token of the Grafana MCP server (.mcp.json), set on the host
   "remoteEnv": {
-    "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${localEnv:GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+    "GRAFANA_MCP_TOKEN": "${localEnv:GRAFANA_MCP_TOKEN}"
   },
   "customizations": {
     "vscode": {

@@ -6,6 +6,7 @@ spec:
   secretName: default-tls-certificate
   dnsNames:
     - "*.davydehaas.dev"
+    - "*.mcp.davydehaas.dev"
     - "davydehaas.dev"
   issuerRef:
     group: cert-manager.io

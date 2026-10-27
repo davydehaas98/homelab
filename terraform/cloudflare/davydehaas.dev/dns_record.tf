@@ -82,6 +82,11 @@ locals {
     "zigbee",
   ]
 
+  # HTTPRoute hostnames on the private gateway, only reachable from the home network.
+  kubernetes_private_apps = [
+    "grafana.mcp",
+  ]
+
   # Their `route.aliases`, which redirect to the main name.
   kubernetes_aliases = [
     "adguardhome",
@@ -127,6 +132,21 @@ resource "cloudflare_dns_record" "kubernetes_app" {
 
   comment = "Port forward to the Kubernetes gateway"
   content = var.ipv4_address
+  proxied = false
+}
+
+# A private address, which only resolves to something on the home network: the UniFi gateway forwards nothing to it
+# (kubernetes/core/envoy-gateway/templates/gateway-private.yaml).
+resource "cloudflare_dns_record" "kubernetes_private_app" {
+  for_each = toset(local.kubernetes_private_apps)
+
+  name    = each.value
+  ttl     = 1
+  type    = "A"
+  zone_id = var.zone_id
+
+  comment = "Private Kubernetes gateway"
+  content = "192.168.1.61"
   proxied = false
 }
 

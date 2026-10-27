@@ -7,6 +7,9 @@ spec:
     - group: gateway.networking.k8s.io
       kind: Gateway
       name: envoy-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway-private
   tls:
     minVersion: "1.2"
     maxVersion: "1.3"
