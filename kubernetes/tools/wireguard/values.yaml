@@ -34,10 +34,10 @@ probe:
 
 resources:
   limits:
-    memory: 256Mi
+    memory: 300Mi
   requests:
     cpu: 10m
-    memory: 64Mi
+    memory: 70Mi
 
 # The database is SQLite, so the disk is on yggdrasil, a target of its own for this app, see
 # kubernetes/media-server/media-server/README.md

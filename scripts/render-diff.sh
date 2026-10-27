@@ -33,7 +33,10 @@ render() {
         helm repo add "$(echo "${url}" | md5sum | cut -c1-8)" "${url}" --force-update > /dev/null
     done
     helm dependency build "${dir}" > /dev/null
-    NAMESPACE=$(yq '.namespace // ""' "${dir}/argocd.yaml" 2> /dev/null)
+    NAMESPACE=""
+    if [ -f "${dir}/argocd.yaml" ]; then
+        NAMESPACE=$(yq '.namespace // ""' "${dir}/argocd.yaml")
+    fi
     helm template "$(basename "$2")" "${dir}" --namespace "${NAMESPACE:-$(basename "$2")}" \
         --api-versions monitoring.coreos.com/v1
 }

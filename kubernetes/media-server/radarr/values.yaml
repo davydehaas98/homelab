@@ -20,10 +20,10 @@ media:
 resources:
   limits:
     cpu: 1000m
-    memory: 1Gi
+    memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 512Mi
+    cpu: 150m
+    memory: 1000Mi
 
 image:
   registry: ghcr.io

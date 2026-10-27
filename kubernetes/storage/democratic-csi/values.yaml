@@ -13,10 +13,10 @@ democratic-csi:
       enabled: true
       resources:
         limits:
-          memory: 128Mi
+          memory: 60Mi
         requests:
           cpu: 10m
-          memory: 32Mi
+          memory: 50Mi
     externalProvisioner:
       enabled: false
     externalResizer:
@@ -29,10 +29,10 @@ democratic-csi:
         tag: v1.9.5
       resources:
         limits:
-          memory: 256Mi
+          memory: 150Mi
         requests:
           cpu: 50m
-          memory: 128Mi
+          memory: 90Mi
 
   driver:
     config:
@@ -55,29 +55,29 @@ democratic-csi:
       iscsiDirHostPathType: ""
       resources:
         limits:
-          memory: 512Mi
+          memory: 250Mi
         requests:
-          cpu: 100m
-          memory: 256Mi
+          cpu: 80m
+          memory: 200Mi
     driverRegistrar:
       resources:
         limits:
-          memory: 128Mi
+          memory: 40Mi
         requests:
           cpu: 10m
-          memory: 32Mi
+          memory: 30Mi
     cleanup:
       resources:
         limits:
-          memory: 64Mi
+          memory: 20Mi
         requests:
           cpu: 10m
-          memory: 16Mi
+          memory: 20Mi
 
   csiProxy:
     resources:
       limits:
-        memory: 64Mi
+        memory: 40Mi
       requests:
         cpu: 10m
-        memory: 16Mi
+        memory: 30Mi

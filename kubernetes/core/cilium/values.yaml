@@ -53,10 +53,10 @@ cilium:
     replicas: 2
     resources:
       limits:
-        memory: 512Mi
+        memory: 150Mi
       requests:
         cpu: 30m
-        memory: 256Mi
+        memory: 150Mi
     prometheus:
       enabled: true
       serviceMonitor:
@@ -68,33 +68,33 @@ cilium:
         enabled: true
     resources:
       limits:
-        memory: 512Mi
+        memory: 550Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 70Mi
 
   # The init containers run briefly, then the agent starts
   initResources:
     limits:
-      memory: 512Mi
+      memory: 550Mi
     requests:
-      memory: 32Mi
+      memory: 40Mi
 
   resources:
     limits:
-      memory: 2Gi
+      memory: 800Mi
     requests:
       cpu: 200m
-      memory: 1Gi
+      memory: 500Mi
 
   monitor:
     enabled: true
     resources:
       limits:
-        memory: 128Mi
+        memory: 90Mi
       requests:
-        cpu: 35m
-        memory: 64Mi
+        cpu: 40m
+        memory: 50Mi
 
   prometheus:
     enabled: true
@@ -135,10 +135,10 @@ cilium:
       rollOutPods: true
       resources:
         limits:
-          memory: 128Mi
+          memory: 90Mi
         requests:
-          cpu: 15m
-          memory: 64Mi
+          cpu: 10m
+          memory: 50Mi
       prometheus:
         enabled: true
         serviceMonitor:
@@ -150,14 +150,14 @@ cilium:
       backend:
         resources:
           limits:
-            memory: 64Mi
+            memory: 60Mi
           requests:
-            cpu: 10m
-            memory: 16Mi
+            cpu: 40m
+            memory: 60Mi
       frontend:
         resources:
           limits:
-            memory: 64Mi
+            memory: 40Mi
           requests:
             cpu: 10m
-            memory: 16Mi
+            memory: 30Mi

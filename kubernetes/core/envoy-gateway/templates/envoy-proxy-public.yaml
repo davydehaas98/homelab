@@ -18,18 +18,18 @@ spec:
                     - name: shutdown-manager
                       resources:
                         limits:
-                          memory: 128Mi
+                          memory: 200Mi
                         requests:
                           cpu: 10m
-                          memory: 32Mi
+                          memory: 100Mi
         replicas: 3
         container:
           resources:
             limits:
-              memory: 512Mi
+              memory: 200Mi
             requests:
-              cpu: 150m
-              memory: 128Mi
+              cpu: 30m
+              memory: 90Mi
       # The entry point of all traffic: a drain evicts one replica at a time. maxUnavailable and not minAvailable, so
       # a replica that cannot start never blocks a drain.
       envoyPDB:

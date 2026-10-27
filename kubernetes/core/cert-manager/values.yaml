@@ -30,10 +30,10 @@ cert-manager:
 
   resources:
     limits:
-      memory: 256Mi
+      memory: 150Mi
     requests:
       cpu: 10m
-      memory: 128Mi
+      memory: 70Mi
 
   # Its webhooks fail closed, so while it is down no Certificate or Issuer can be created
   webhook:
@@ -62,10 +62,10 @@ cert-manager:
 
     resources:
       limits:
-        memory: 256Mi
+        memory: 60Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 40Mi
 
   cainjector:
     enabled: true
@@ -73,10 +73,10 @@ cert-manager:
 
     resources:
       limits:
-        memory: 512Mi
+        memory: 300Mi
       requests:
         cpu: 10m
-        memory: 256Mi
+        memory: 200Mi
 
     securityContext:
       runAsNonRoot: true

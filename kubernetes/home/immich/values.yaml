@@ -30,10 +30,10 @@ immich:
               allowPrivilegeEscalation: false
             resources:
               limits:
-                memory: 256Mi
+                memory: 40Mi
               requests:
                 cpu: 30m
-                memory: 32Mi
+                memory: 30Mi
 
   # The machine learning image runs as any user, its cache is an emptyDir. The server and this pod keep to the worker:
   # their jobs use several cores for hours, which slows etcd and the API server on the control plane nodes.
@@ -58,8 +58,8 @@ immich:
               limits:
                 memory: 4Gi
               requests:
-                cpu: 50m
-                memory: 512Mi
+                cpu: 80m
+                memory: 2.5Gi
 
   # The server image runs as root but has a node user (1000), which owns the library on NFS (fsGroup does not apply
   # there, the files were chowned once)
@@ -84,10 +84,10 @@ immich:
                   - ALL
             resources:
               limits:
-                memory: 4Gi
+                memory: 4.5Gi
               requests:
-                cpu: 50m
-                memory: 2Gi
+                cpu: 150m
+                memory: 3Gi
             env:
               DB_HOSTNAME:
                 valueFrom:

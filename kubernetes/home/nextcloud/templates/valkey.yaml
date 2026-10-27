@@ -43,10 +43,10 @@ spec:
               port: valkey
           resources:
             limits:
-              memory: 128Mi
+              memory: 20Mi
             requests:
               cpu: 10m
-              memory: 16Mi
+              memory: 20Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

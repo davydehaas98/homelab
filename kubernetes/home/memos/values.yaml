@@ -24,10 +24,10 @@ env:
 
 resources:
   limits:
-    memory: 128Mi
+    memory: 60Mi
   requests:
     cpu: 10m
-    memory: 32Mi
+    memory: 40Mi
 
 # The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
 # kubernetes/media-server/media-server/README.md

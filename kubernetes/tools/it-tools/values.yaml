@@ -61,10 +61,10 @@ configFiles:
 
 resources:
   limits:
-    memory: 128Mi
+    memory: 20Mi
   requests:
     cpu: 10m
-    memory: 32Mi
+    memory: 20Mi
 
 route:
   enabled: true

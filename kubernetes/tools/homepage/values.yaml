@@ -44,10 +44,10 @@ probe:
 
 resources:
   limits:
-    memory: 512Mi
+    memory: 300Mi
   requests:
-    cpu: 10m
-    memory: 256Mi
+    cpu: 20m
+    memory: 200Mi
 
 emptyDirs:
   - name: config

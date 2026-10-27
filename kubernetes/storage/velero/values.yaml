@@ -51,10 +51,10 @@ velero:
 
   resources:
     limits:
-      memory: 512Mi
+      memory: 1Gi
     requests:
-      cpu: 10m
-      memory: 128Mi
+      cpu: 30m
+      memory: 450Mi
 
   # It reads the volumes of other pods from the host as root, which needs a Kyverno exemption
   # (kubernetes/security/kyverno); seccomp and no privilege escalation it can take. The chart's runAsUser 0 stays.
@@ -66,10 +66,10 @@ velero:
       allowPrivilegeEscalation: false
     resources:
       limits:
-        memory: 1Gi
+        memory: 150Mi
       requests:
         cpu: 10m
-        memory: 256Mi
+        memory: 100Mi
 
   # Cluster resources are backed up daily at 02:00 UTC, an hour before talos-backup, volumes only when a pod opts in
   # with the annotation backup.velero.io/backup-volumes: <volume name>

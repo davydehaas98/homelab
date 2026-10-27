@@ -5,22 +5,26 @@ description: Use when setting or changing CPU and memory requests and limits of 
 
 # Tune requests and limits
 
-Every workload has a VerticalPodAutoscaler that only recommends (Kyverno generates them, see `kubernetes/core/vpa`):
-`kubectl get vpa -A`, and the VPA dashboard in Grafana. Its target and upper bound are only as good as its history;
+Every workload has a VerticalPodAutoscaler that only recommends (Kyverno generates them, see `kubernetes/core/vpa`).
+Its target and upper bound are only as good as its history;
 a young VPA, or an upper bound far above use, is a reason to stay careful.
 
-**Gather** per container: current request and limit, use (`kubectl top pods -A --containers`), VPA target and upper
-bound, and OOM kills (`lastState.terminated.reason`). Sum requests and limits against the nodes' allocatable memory.
+**Gather** per container with the Grafana MCP (`query_prometheus`, datasource `prometheus`): current request and
+limit, peak use over Prometheus' whole history (15 days at most), VPA target and upper bound
+(`kube_customresource_vpa_containerrecommendations_*`), and OOM kills. Pods are matched to their VPA by
+`target_name`; the trivy-operator scan jobs are short-lived and not tuned. Sum requests and limits against the nodes'
+allocatable memory.
 
 **Rules:**
 
-- Values are powers of two in Mi or Gi (64Mi, 128Mi, … 1Gi, 2Gi). Round up.
-- Request: the VPA target, or the use if higher. Limit: about twice the VPA upper bound. When unsure (databases,
-  machine learning, Java, spiky or young apps), go higher.
+- Memory rounded up, as CPU: 10Mi steps below 100Mi, 50Mi steps below 1Gi, 0.5Gi steps from there.
+- Request: the peak use, or the VPA target if higher. Limit: the VPA upper bound, or the peak if higher; higher after
+  OOM kills. When unsure (databases, machine learning, Java, spiky or young apps), go higher.
+- Every value follows these rules, also where there is no VPA (jobs, init containers): round the current value up.
 - Never a limit without a request: the request then equals the limit.
-- Lower an existing value only when the gap is big: four times or more above both the use and the VPA value.
-- CPU: requests only, the VPA target or the use rounded up to 10m steps below 100m and 50m steps above; not powers
-  of two. A target at the VPA floor (about 11m) counts as 10m. The media-server apps also have CPU limits; leave
+- The summed requests must stay under the nodes' allocatable memory.
+- CPU: requests only, the VPA target or the use rounded up to 10m steps below 100m and 50m steps above. A target at
+  the VPA floor (about 11m) counts as 10m. The media-server apps also have CPU limits; leave
   those unless the user asks.
 - Leave the Talos static pods (`kube-apiserver`, `kube-controller-manager`, `kube-scheduler`) alone.
 

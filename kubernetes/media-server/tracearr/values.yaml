@@ -41,10 +41,10 @@ backups:
 
 resources:
   limits:
-    memory: 1Gi
+    memory: 500Mi
   requests:
-    cpu: 50m
-    memory: 512Mi
+    cpu: 1500m
+    memory: 500Mi
 
 route:
   enabled: true

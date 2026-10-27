@@ -55,29 +55,42 @@ loki:
   sidecar:
     resources:
       limits:
-        memory: 256Mi
+        memory: 200Mi
       requests:
         cpu: 10m
-        memory: 128Mi
+        memory: 90Mi
 
   memcachedExporter:
     resources:
       limits:
-        memory: 128Mi
+        memory: 40Mi
       requests:
         cpu: 30m
-        memory: 16Mi
+        memory: 30Mi
 
   memcached:
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
 
+  # Memcached grows to allocatedMemory (MB) and some overhead, so each limit stays above allocatedMemory * 1.2
   chunksCache:
     allocatedMemory: 512
+    resources:
+      limits:
+        memory: 1.5Gi
+      requests:
+        cpu: 10m
+        memory: 600Mi
 
   resultsCache:
     allocatedMemory: 128
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
 
   monitoring:
     dashboards:
@@ -98,10 +111,10 @@ loki:
     replicas: 1
     resources:
       limits:
-        memory: 4Gi
+        memory: 8Gi
       requests:
         cpu: 250m
-        memory: 2Gi
+        memory: 2.5Gi
     persistence:
       size: 5Gi
     affinity: null
@@ -116,10 +129,10 @@ loki:
     legacyReadTarget: false
     resources:
       limits:
-        memory: 1Gi
+        memory: 200Mi
       requests:
         cpu: 30m
-        memory: 256Mi
+        memory: 150Mi
     persistence:
       size: 5Gi
     affinity: null
@@ -133,10 +146,10 @@ loki:
     replicas: 1
     resources:
       limits:
-        memory: 512Mi
+        memory: 250Mi
       requests:
         cpu: 30m
-        memory: 128Mi
+        memory: 150Mi
     persistence:
       size: 5Gi
       enableStatefulSetAutoDeletePVC: false
@@ -160,8 +173,8 @@ loki:
     replicas: 1
     resources:
       limits:
-        memory: 128Mi
+        memory: 40Mi
       requests:
-        cpu: 30m
-        memory: 32Mi
+        cpu: 20m
+        memory: 30Mi
     affinity: null

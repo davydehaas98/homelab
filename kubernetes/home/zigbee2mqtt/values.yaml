@@ -25,10 +25,10 @@ zigbee2mqtt:
 
     resources:
       limits:
-        memory: 512Mi
+        memory: 250Mi
       requests:
-        cpu: 20m
-        memory: 128Mi
+        cpu: 10m
+        memory: 200Mi
 
     # Runs as the image's node user (1000), which owns the data on NFS (fsGroup does not apply there, the files were
     # chowned once)

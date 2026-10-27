@@ -50,7 +50,7 @@ seaweedfs:
 
     resources:
       limits:
-        memory: 1Gi
+        memory: 2Gi
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 30m
+        memory: 950Mi

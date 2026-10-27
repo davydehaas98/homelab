@@ -29,16 +29,16 @@ kube-prometheus-stack:
   prometheusOperator:
     resources:
       limits:
-        memory: 256Mi
+        memory: 90Mi
       requests:
-        cpu: 20m
-        memory: 128Mi
+        cpu: 10m
+        memory: 50Mi
     prometheusConfigReloader:
       resources:
         limits:
-          memory: 128Mi
+          memory: 150Mi
         requests:
-          memory: 32Mi
+          memory: 40Mi
 
   prometheus:
     prometheusSpec:
@@ -109,10 +109,10 @@ kube-prometheus-stack:
         - alertmanager-discord
       resources:
         limits:
-          memory: 128Mi
+          memory: 150Mi
         requests:
           cpu: 10m
-          memory: 64Mi
+          memory: 70Mi
       storage:
         volumeClaimTemplate:
           spec:
@@ -126,10 +126,10 @@ kube-prometheus-stack:
   kube-state-metrics:
     resources:
       limits:
-        memory: 512Mi
+        memory: 1Gi
       requests:
         cpu: 30m
-        memory: 256Mi
+        memory: 300Mi
     # Exports the recommendations of the VerticalPodAutoscalers (kubernetes/core/vpa) as
     # kube_customresource_vpa_containerrecommendations_*, for the VPA dashboard in grafana-dashboards
     rbac:
@@ -229,7 +229,7 @@ kube-prometheus-stack:
     namespaceOverride: prometheus-node-exporter
     resources:
       limits:
-        memory: 128Mi
+        memory: 60Mi
       requests:
         cpu: 10m
-        memory: 32Mi
+        memory: 40Mi

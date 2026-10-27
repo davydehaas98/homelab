@@ -14,7 +14,7 @@ spec:
     limits:
       memory: 2Gi
     requests:
-      memory: 256Mi
+      memory: 300Mi
   imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
   storage:
     size: 32Gi

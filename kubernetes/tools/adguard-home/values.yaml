@@ -37,10 +37,10 @@ securityContext:
 
 resources:
   limits:
-    memory: 256Mi
+    memory: 150Mi
   requests:
-    cpu: 20m
-    memory: 128Mi
+    cpu: 10m
+    memory: 80Mi
 
 # The statistics database does not work on NFS, so the disk is on yggdrasil, see
 # kubernetes/media-server/media-server/README.md

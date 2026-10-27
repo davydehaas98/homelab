@@ -8,9 +8,9 @@ sealed-secrets:
 
   resources:
     limits:
-      memory: 256Mi
+      memory: 300Mi
     requests:
-      memory: 64Mi
+      memory: 70Mi
 
   ingress:
     enabled: false

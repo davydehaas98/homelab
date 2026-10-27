@@ -180,10 +180,10 @@ authentik:
       allowPrivilegeEscalation: false
     resources:
       limits:
-        memory: 2Gi
+        memory: 1.5Gi
       requests:
-        cpu: 100m
-        memory: 1Gi
+        cpu: 150m
+        memory: 800Mi
 
   worker:
     replicas: 1
@@ -198,10 +198,10 @@ authentik:
       allowPrivilegeEscalation: false
     resources:
       limits:
-        memory: 1Gi
+        memory: 650Mi
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 400Mi
 
   postgresql:
     enabled: true
@@ -225,7 +225,7 @@ authentik:
         successThreshold: 1
       resources:
         limits:
-          memory: 512Mi
+          memory: 550Mi
         requests:
           cpu: 150m
-          memory: 256Mi
+          memory: 400Mi

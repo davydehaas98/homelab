@@ -29,10 +29,10 @@ emptyDirs:
 
 resources:
   limits:
-    memory: 64Mi
+    memory: 20Mi
   requests:
     cpu: 10m
-    memory: 16Mi
+    memory: 20Mi
 
 # The apex has a listener of its own, as the wildcard one doesn't match it. Its record is in
 # `terraform/cloudflare/davydehaas.dev/root.tf`, `www` is in `dns_record.tf`

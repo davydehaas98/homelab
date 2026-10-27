@@ -13,10 +13,10 @@ port: 9696
 resources:
   limits:
     cpu: 1000m
-    memory: 512Mi
+    memory: 450Mi
   requests:
-    cpu: 20m
-    memory: 256Mi
+    cpu: 60m
+    memory: 250Mi
 
 image:
   registry: ghcr.io

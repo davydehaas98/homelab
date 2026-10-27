@@ -33,10 +33,10 @@ metrics-server:
 
   resources:
     limits:
-      memory: 256Mi
+      memory: 150Mi
     requests:
       cpu: 30m
-      memory: 128Mi
+      memory: 90Mi
 
   serviceMonitor:
     enabled: true

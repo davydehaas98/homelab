@@ -8,7 +8,7 @@ cloudnative-pg:
 
   resources:
     limits:
-      memory: 256Mi
+      memory: 150Mi
     requests:
-      cpu: 10m
-      memory: 128Mi
+      cpu: 30m
+      memory: 100Mi

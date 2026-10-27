@@ -27,10 +27,10 @@ probe:
 
 resources:
   limits:
-    memory: 256Mi
+    memory: 20Mi
   requests:
     cpu: 10m
-    memory: 16Mi
+    memory: 20Mi
 
 persistence:
   backup: true

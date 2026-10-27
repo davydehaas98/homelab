@@ -31,10 +31,10 @@ seerr-chart:
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 500Mi
     requests:
-      cpu: 20m
-      memory: 256Mi
+      cpu: 10m
+      memory: 300Mi
 
   # Requests come from outside, so there is no login at the gateway: Seerr has its own
   route:

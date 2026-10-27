@@ -6,10 +6,10 @@ grafana:
   sidecar:
     resources:
       limits:
-        memory: 256Mi
+        memory: 200Mi
       requests:
-        cpu: 10m
-        memory: 128Mi
+        cpu: 40m
+        memory: 150Mi
     dashboards:
       enabled: true
       # Sort dashboards into the folder named by their `grafana_folder` annotation
@@ -108,8 +108,8 @@ grafana:
     limits:
       memory: 2Gi
     requests:
-      cpu: 50m
-      memory: 1Gi
+      cpu: 40m
+      memory: 1000Mi
 
   # Its init container runs as root to chown the data, which the restricted standard forbids. The data is already
   # owned by the grafana user (472).

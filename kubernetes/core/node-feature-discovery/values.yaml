@@ -7,28 +7,31 @@ node-feature-discovery:
     # The chart defaults are made for big clusters (limit 4Gi); here it uses ~40Mi, the VPA upper bound is ~100Mi
     resources:
       limits:
-        memory: 256Mi
+        memory: 150Mi
       requests:
-        memory: 64Mi
+        cpu: 10m
+        memory: 70Mi
 
   gc:
     enable: true
     replicaCount: 1
 
-    # The chart default is a 1Gi limit, it uses ~15Mi
+    # The chart default is a 1Gi limit, it uses ~30Mi
     resources:
       limits:
-        memory: 128Mi
+        memory: 60Mi
       requests:
-        memory: 32Mi
+        cpu: 10m
+        memory: 40Mi
 
-  # The chart default is a 512Mi limit, it uses 16-34Mi
+  # The chart default is a 512Mi limit, it uses up to ~55Mi
   worker:
     resources:
       limits:
-        memory: 128Mi
+        memory: 60Mi
       requests:
-        memory: 64Mi
+        cpu: 30m
+        memory: 60Mi
 
   tls:
     enable: true

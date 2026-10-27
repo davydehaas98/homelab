@@ -3,10 +3,10 @@ gateway-helm:
     envoyGateway:
       resources:
         limits:
-          memory: 256Mi
+          memory: 200Mi
         requests:
-          cpu: 10m
-          memory: 128Mi
+          cpu: 20m
+          memory: 200Mi
     replicas: 2
 
   config:

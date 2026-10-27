@@ -29,10 +29,10 @@ securityContext:
 
 resources:
   limits:
-    memory: 2Gi
+    memory: 1.5Gi
   requests:
-    cpu: 100m
-    memory: 1Gi
+    cpu: 150m
+    memory: 650Mi
 
 # The sidecar kiwigrid/k8s-sidecar copies the ConfigMaps and Secrets with the label `home-assistant-config` to the
 # folder in their annotation `io.home-assistant/config-folder` (templates/config-files.yaml). One run first, in an
@@ -67,10 +67,10 @@ initContainers:
           - ALL
     resources: &config-loader-resources
       limits:
-        memory: 128Mi
+        memory: 150Mi
       requests:
         cpu: 10m
-        memory: 32Mi
+        memory: 40Mi
   - name: config-watch
     restartPolicy: Always
     image: docker.io/kiwigrid/k8s-sidecar:2.14.1

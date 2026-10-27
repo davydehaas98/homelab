@@ -39,10 +39,10 @@ longhorn:
 
   resources:
     limits:
-      memory: 512Mi
+      memory: 550Mi
     requests:
       cpu: 100m
-      memory: 128Mi
+      memory: 150Mi
 
   ingress:
     enabled: false

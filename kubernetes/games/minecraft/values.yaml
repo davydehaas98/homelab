@@ -55,8 +55,8 @@ resources:
   limits:
     memory: 4Gi
   requests:
-    cpu: 500m
-    memory: 2Gi
+    cpu: 450m
+    memory: 1.5Gi
 
 persistence:
   backup: true
