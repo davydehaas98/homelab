@@ -6,18 +6,11 @@
     "main"
   ],
   "separateMinorPatch": true,
-  "commitMessagePrefix": "[{{#if parentDir}}{{parentDir}}{{else}}{{manager}}{{/if}}]",
-  "additionalBranchPrefix": "{{#if parentDir}}{{parentDir}}{{else}}{{manager}}{{/if}}-",
   "automergeSchedule": [
-    "* 0-6 * * *"
+    "* * * * *"
   ],
   "packageRules": [
     {
-      "description": "Only the Kubernetes charts and the image tags in their values automerge. Updates of mise tools, the devcontainer, workflows and Terraform stay open for a manual merge.",
-      "matchManagers": [
-        "helmv3",
-        "helm-values"
-      ],
       "matchUpdateTypes": [
         "patch",
         "digest"
