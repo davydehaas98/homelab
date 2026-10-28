@@ -23,8 +23,12 @@ and crashes on its delay profile and download clients, so those stay in the UI.
 
 Releases are ranked by quality first, then by the summed scores of their custom formats, then by how close their size is
 to the preferred size of the quality definition. Surround sound weighs most, then HEVC, then 10 bit and HDR; HDR weighs
-more in the 2160p profile. A score of -10000 blocks a release. Upgrades stop at the cutoff quality with a score of 35,
-and need a gain of at least 10. Formats scored 0 are left out of a profile, as the apps drop them.
+more in the 2160p profile. A score of -10000 blocks a release. Upgrades stop at the cutoff with a score of 60, which
+includes the Multi Audio score below, and need a gain of at least 10. The cutoff is WEB for series and Blu-ray for
+movies. Formats scored 0 are left out of a profile, as the apps drop them.
+
+Both apps allow the original language and English. For series and movies in another language, releases with both
+score 25 more, and the cutoff waits for one; for English ones every release has both.
 
 The regexes match release and file names. Test a change against the release titles in the apps' history before
 applying it.
