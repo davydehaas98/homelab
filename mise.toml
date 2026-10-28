@@ -17,10 +17,10 @@ helm = "4.3.1"
 k9s = "0.51.0"
 
 # Talks to the cluster. Keep it in step with the cluster's Kubernetes version.
-kubectl = "1.37.1"
+kubectl = "1.37.2"
 
 # Seals secrets with the cluster's sealed-secrets controller.
-kubeseal = "0.41.1"
+kubeseal = "0.41.2"
 
 # Follows the logs of several pods and containers at once (`stern -n <namespace> <pod prefix>`).
 stern = "1.35.0"
