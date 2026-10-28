@@ -1,11 +1,11 @@
 #!/bin/sh
 #
-# Exports the secrets of terraform/arr as TF_VAR_* in the current shell, read from the apps in the cluster: the API
+# Exports the secrets of this stack as TF_VAR_* in the current shell, read from the apps in the cluster: the API
 # keys from their config, the Discord webhooks from their API. Prowlarr only returns the NZBgeek key masked, so that
 # one is asked for without echo, unless TF_VAR_nzbgeek_api_key is set already. Nothing is printed or written to disk.
 # Needs `kubectl` with access to the cluster, and `yq`. Run it in the dev container (.devcontainer/README.md).
 #
-# Usage: . scripts/arr-env.sh
+# Usage: . ./env.sh (in terraform/devopsarr)
 
 arr_exec() {
     kubectl -n media-server exec "$1-0" -- sh -c "$2"

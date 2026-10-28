@@ -33,7 +33,7 @@ done
 
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
-    for STACK in terraform/cloudflare/davydehaas.dev terraform/arr; do
+    for STACK in terraform/cloudflare/davydehaas.dev terraform/devopsarr; do
         (
             cd "${STACK}"
             # Keep the lock file out of the working tree unless it is there already

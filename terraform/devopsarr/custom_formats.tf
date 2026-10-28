@@ -1,14 +1,21 @@
 # Custom formats of Sonarr and Radarr, with their scores in the HD (1080p/720p) and UHD (2160p) quality profiles.
 # A score of -10000 blocks a release.
 locals {
+  # HDR10, HDR10+ and HLG, but not HDRip (an SD or HD re-encode)
+  hdr = "\\bHDR(?!Rip)|\\bHLG\\b"
+
   custom_formats = {
+    # Any 5.1 or 7.1 track (also written 51 or 6CH), and the surround-only codecs
     surround_sound = {
       name      = "SS"
       apps      = ["sonarr", "radarr"]
       score_hd  = 20
       score_uhd = 20
       specifications = [
-        { name = "Surround Sound", value = "DTS.?(HD|ES|X(?!\\D))|TRUEHD|ATMOS|DD(\\+|P)?.?([5-9])|EAC3.?([5-9])" },
+        {
+          name  = "Surround Sound"
+          value = "\\b(DTS(.?(HD|ES|X))?|TRUEHD|ATMOS)\\b|(?<!\\d)[5-7][ .]1(?!\\d)|\\b(AAC|AC3|DDP?|EAC3)[ .]?[5-7]1\\b|\\b[68]CH\\b"
+        },
       ]
     }
     hevc = {
@@ -35,7 +42,7 @@ locals {
       score_hd  = 5
       score_uhd = 5
       specifications = [
-        { name = "10 bit", value = "10BIT" },
+        { name = "10 bit", value = "\\b10.?bit\\b" },
       ]
     }
     hdr = {
@@ -44,7 +51,18 @@ locals {
       score_hd  = 5
       score_uhd = 25
       specifications = [
-        { name = "HDR", value = "\\bHDR(?!Rip)" },
+        { name = "HDR", value = local.hdr },
+      ]
+    }
+    # Releases with a proper or repack fix. Scored here instead of through "Propers and Repacks" in media management,
+    # which would rank them above every custom format.
+    repack_proper = {
+      name      = "Repack/Proper"
+      apps      = ["sonarr", "radarr"]
+      score_hd  = 10
+      score_uhd = 10
+      specifications = [
+        { name = "Repack/Proper", value = "\\b(REPACK\\d?|PROPER|RERIP)\\b" },
       ]
     }
     # Side-by-side and other 3D releases
@@ -74,7 +92,27 @@ locals {
       score_hd  = -10000
       score_uhd = -10000
       specifications = [
-        { name = "LQ", value = "\\b(YTS|YIFY|aXXo)\\b" },
+        { name = "LQ", value = "\\b(YTS|YIFY|aXXo|PSA|MeGusta)\\b" },
+      ]
+    }
+    # SD or HD blown up to a higher resolution
+    upscaled = {
+      name      = "Upscaled"
+      apps      = ["sonarr", "radarr"]
+      score_hd  = -10000
+      score_uhd = -10000
+      specifications = [
+        { name = "Upscaled", value = "\\b(Upscaled?|AI.?Upscaled?)\\b" },
+      ]
+    }
+    # 2160p without HDR, which the UHD profile is for
+    sdr = {
+      name      = "SDR"
+      apps      = ["sonarr", "radarr"]
+      score_hd  = 0
+      score_uhd = -10000
+      specifications = [
+        { name = "SDR", value = "\\bSDR\\b" },
       ]
     }
     # AV1, which many Plex clients cannot direct play
@@ -95,7 +133,7 @@ locals {
       score_uhd = -10000
       specifications = [
         { name = "DV", value = "\\b(DV|DoVi|Dolby.?Vision)\\b" },
-        { name = "Not HDR", value = "\\bHDR(?!Rip)", negate = true },
+        { name = "Not HDR", value = local.hdr, negate = true },
       ]
     }
     # Dubs and other releases without the original language (-2 is Original). Radarr filters on language in its
@@ -142,110 +180,4 @@ resource "radarr_custom_format" "this" {
       value          = specification.value
     }
   ]
-}
-
-# The custom formats were separate resources before; these move them into the maps above instead of recreating them
-moved {
-  from = sonarr_custom_format.surround_sound
-  to   = sonarr_custom_format.this["surround_sound"]
-}
-
-moved {
-  from = sonarr_custom_format.hevc
-  to   = sonarr_custom_format.this["hevc"]
-}
-
-moved {
-  from = sonarr_custom_format.avc
-  to   = sonarr_custom_format.this["avc"]
-}
-
-moved {
-  from = sonarr_custom_format.ten_bit
-  to   = sonarr_custom_format.this["ten_bit"]
-}
-
-moved {
-  from = sonarr_custom_format.hdr
-  to   = sonarr_custom_format.this["hdr"]
-}
-
-moved {
-  from = sonarr_custom_format.three_d
-  to   = sonarr_custom_format.this["three_d"]
-}
-
-moved {
-  from = sonarr_custom_format.br_disk
-  to   = sonarr_custom_format.this["br_disk"]
-}
-
-moved {
-  from = sonarr_custom_format.low_quality
-  to   = sonarr_custom_format.this["low_quality"]
-}
-
-moved {
-  from = sonarr_custom_format.av1
-  to   = sonarr_custom_format.this["av1"]
-}
-
-moved {
-  from = sonarr_custom_format.dv_without_hdr
-  to   = sonarr_custom_format.this["dv_without_hdr"]
-}
-
-moved {
-  from = sonarr_custom_format.not_original_language
-  to   = sonarr_custom_format.this["not_original_language"]
-}
-
-moved {
-  from = radarr_custom_format.surround_sound
-  to   = radarr_custom_format.this["surround_sound"]
-}
-
-moved {
-  from = radarr_custom_format.hevc
-  to   = radarr_custom_format.this["hevc"]
-}
-
-moved {
-  from = radarr_custom_format.avc
-  to   = radarr_custom_format.this["avc"]
-}
-
-moved {
-  from = radarr_custom_format.ten_bit
-  to   = radarr_custom_format.this["ten_bit"]
-}
-
-moved {
-  from = radarr_custom_format.hdr
-  to   = radarr_custom_format.this["hdr"]
-}
-
-moved {
-  from = radarr_custom_format.three_d
-  to   = radarr_custom_format.this["three_d"]
-}
-
-moved {
-  from = radarr_custom_format.br_disk
-  to   = radarr_custom_format.this["br_disk"]
-}
-
-moved {
-  from = radarr_custom_format.low_quality
-  to   = radarr_custom_format.this["low_quality"]
-}
-
-moved {
-  from = radarr_custom_format.av1
-  to   = radarr_custom_format.this["av1"]
-}
-
-moved {
-  from = radarr_custom_format.dv_without_hdr
-  to   = radarr_custom_format.this["dv_without_hdr"]
 }

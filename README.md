@@ -8,7 +8,7 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 - `kubernetes/`: one Helm chart per app, by group, deployed by an ApplicationSet once its `argocd.yaml` has
   `deploy: true`, see [`kubernetes/README.md`](kubernetes/README.md).
 - `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
-- `terraform/`: Cloudflare DNS of `davydehaas.dev`, see [`terraform/README.md`](terraform/README.md).
+- `terraform/`: Cloudflare DNS and the arr settings (devopsarr), see [`terraform/README.md`](terraform/README.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
 - `docs/`: Mermaid diagrams ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter gateways.
 
