@@ -27,7 +27,7 @@ stern = "1.35.0"
 
 # Generates and applies Talos machine configs. Keep it equal to the Talos version on the nodes:
 # its default Kubernetes version follows its own version.
-talosctl = "1.14.4"
+talosctl = "1.14.5"
 
 # Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
 terraform = "1.17.0"
