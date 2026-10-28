@@ -41,27 +41,27 @@ import {
 }
 
 import {
-  to = sonarr_custom_format.hevc
+  to = sonarr_custom_format.this["hevc"]
   id = "1"
 }
 
 import {
-  to = sonarr_custom_format.avc
+  to = sonarr_custom_format.this["avc"]
   id = "2"
 }
 
 import {
-  to = sonarr_custom_format.surround_sound
+  to = sonarr_custom_format.this["surround_sound"]
   id = "3"
 }
 
 import {
-  to = sonarr_custom_format.ten_bit
+  to = sonarr_custom_format.this["ten_bit"]
   id = "4"
 }
 
 import {
-  to = sonarr_custom_format.hdr
+  to = sonarr_custom_format.this["hdr"]
   id = "5"
 }
 
@@ -121,27 +121,27 @@ import {
 }
 
 import {
-  to = radarr_custom_format.ten_bit
+  to = radarr_custom_format.this["ten_bit"]
   id = "2"
 }
 
 import {
-  to = radarr_custom_format.hevc
+  to = radarr_custom_format.this["hevc"]
   id = "3"
 }
 
 import {
-  to = radarr_custom_format.surround_sound
+  to = radarr_custom_format.this["surround_sound"]
   id = "4"
 }
 
 import {
-  to = radarr_custom_format.avc
+  to = radarr_custom_format.this["avc"]
   id = "5"
 }
 
 import {
-  to = radarr_custom_format.hdr
+  to = radarr_custom_format.this["hdr"]
   id = "6"
 }
 
@@ -226,11 +226,6 @@ import {
 }
 
 import {
-  to = prowlarr_sync_profile.torrent
-  id = "1"
-}
-
-import {
   to = prowlarr_sync_profile.usenet
   id = "2"
 }
@@ -238,14 +233,4 @@ import {
 import {
   to = prowlarr_indexer.nzbgeek
   id = "6"
-}
-
-import {
-  to = prowlarr_indexer.the_pirate_bay
-  id = "4"
-}
-
-import {
-  to = prowlarr_indexer.torrent_downloads
-  id = "9"
 }

@@ -26,7 +26,7 @@ notifications, delay profiles, custom formats, quality and metadata profiles, an
 profiles and the apps it syncs the indexers to. The indexers in the other apps are left to that sync.
 
 The Lidarr provider is behind on Lidarr's API and crashes on its delay profile and download clients, so those stay in
-the UI. So do Prowlarr's disabled altHUB indexer and the indexers whose definitions Prowlarr no longer has.
+the UI.
 
 **State** is local, `terraform.tfstate` here, and gitignored. It holds the secrets in plain text. If it is lost, the
 import blocks in `imports.tf` adopt the settings again on the next apply.

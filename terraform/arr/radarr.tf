@@ -67,7 +67,7 @@ resource "radarr_indexer_config" "radarr" {
 
 resource "radarr_delay_profile" "default" {
   bypass_if_highest_quality = true
-  enable_torrent            = true
+  enable_torrent            = false
   enable_usenet             = true
   order                     = 2147483647
   preferred_protocol        = "usenet"
@@ -96,112 +96,24 @@ resource "radarr_notification_discord" "discord" {
   web_hook_url                     = var.radarr_discord_web_hook_url
 }
 
-resource "radarr_custom_format" "hevc" {
-  include_custom_format_when_renaming = false
-  name                                = "HEVC"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "HEVC"
-      negate         = false
-      required       = true
-      value          = "((X|H)\\.?265)|(HEVC)"
-    },
-  ]
-}
-
-resource "radarr_custom_format" "avc" {
-  include_custom_format_when_renaming = false
-  name                                = "AVC"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "AVC"
-      negate         = false
-      required       = true
-      value          = "((X|H)\\.?264)|(AVC)"
-    },
-  ]
-}
-
-resource "radarr_custom_format" "surround_sound" {
-  include_custom_format_when_renaming = false
-  name                                = "SS"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "Surround Sound"
-      negate         = false
-      required       = true
-      value          = "DTS.?(HD|ES|X(?!\\D))|TRUEHD|ATMOS|DD(\\+|P)?.?([5-9])|EAC3.?([5-9])"
-    },
-  ]
-}
-
-resource "radarr_custom_format" "ten_bit" {
-  include_custom_format_when_renaming = false
-  name                                = "10 bit"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "10 bit"
-      negate         = false
-      required       = true
-      value          = "10BIT"
-    },
-  ]
-}
-
-resource "radarr_custom_format" "hdr" {
-  include_custom_format_when_renaming = false
-  name                                = "HDR"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "HDR"
-      negate         = false
-      required       = true
-      value          = "\\bHDR(?!Rip)"
-    },
-  ]
-}
-
 resource "radarr_quality_profile" "hd" {
   cutoff              = 7
-  cutoff_format_score = 40
+  cutoff_format_score = 35
   format_items = [
-    {
-      format = radarr_custom_format.ten_bit.id
-      name   = "10 bit"
-      score  = 4
-    },
-    {
-      format = radarr_custom_format.hevc.id
-      name   = "HEVC"
-      score  = 32
-    },
-    {
-      format = radarr_custom_format.surround_sound.id
-      name   = "SS"
-      score  = 8
-    },
-    {
-      format = radarr_custom_format.avc.id
-      name   = "AVC"
-      score  = 16
-    },
-    {
-      format = radarr_custom_format.hdr.id
-      name   = "HDR"
-      score  = 2
-    },
+    for key, format in radarr_custom_format.this : {
+      format = format.id
+      name   = format.name
+      score  = local.custom_formats[key].score_hd
+    }
+    # The apps leave formats scored 0 out of a profile
+    if local.custom_formats[key].score_hd != 0
   ]
   language = {
     id   = -2
     name = "Original"
   }
   min_format_score         = 0
-  min_upgrade_format_score = 1
+  min_upgrade_format_score = 10
   name                     = "1080p/720p"
   quality_groups = [
     {
@@ -286,40 +198,22 @@ resource "radarr_quality_profile" "hd" {
 
 resource "radarr_quality_profile" "uhd" {
   cutoff              = 19
-  cutoff_format_score = 40
+  cutoff_format_score = 35
   format_items = [
-    {
-      format = radarr_custom_format.ten_bit.id
-      name   = "10 bit"
-      score  = 4
-    },
-    {
-      format = radarr_custom_format.hevc.id
-      name   = "HEVC"
-      score  = 32
-    },
-    {
-      format = radarr_custom_format.surround_sound.id
-      name   = "SS"
-      score  = 8
-    },
-    {
-      format = radarr_custom_format.avc.id
-      name   = "AVC"
-      score  = 16
-    },
-    {
-      format = radarr_custom_format.hdr.id
-      name   = "HDR"
-      score  = 2
-    },
+    for key, format in radarr_custom_format.this : {
+      format = format.id
+      name   = format.name
+      score  = local.custom_formats[key].score_uhd
+    }
+    # The apps leave formats scored 0 out of a profile
+    if local.custom_formats[key].score_uhd != 0
   ]
   language = {
     id   = -2
     name = "Original"
   }
   min_format_score         = 0
-  min_upgrade_format_score = 1
+  min_upgrade_format_score = 10
   name                     = "2160p"
   quality_groups = [
     {

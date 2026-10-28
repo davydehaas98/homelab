@@ -3,16 +3,16 @@ resource "sonarr_root_folder" "sonarr" {
 }
 
 resource "sonarr_naming" "sonarr" {
-  anime_episode_format       = "{Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}"
+  anime_episode_format       = "{Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Quality Full}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}"
   colon_replacement_format   = 3
-  daily_episode_format       = "{Series TitleYear} - {Air-Date} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{MediaInfo AudioLanguages}{[MediaInfo VideoCodec]}{-Release Group}"
+  daily_episode_format       = "{Series TitleYear} - {Air-Date} - {Episode CleanTitle} [{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{MediaInfo AudioLanguages}{[MediaInfo VideoCodec]}{-Release Group}"
   multi_episode_style        = 5
   rename_episodes            = true
   replace_illegal_characters = true
   season_folder_format       = "Season {season:00}"
   series_folder_format       = "{Series TitleYear} {[ImdbId]}"
   specials_folder_format     = "Specials"
-  standard_episode_format    = "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{MediaInfo AudioLanguages}{[MediaInfo VideoCodec]}{-Release Group}"
+  standard_episode_format    = "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{MediaInfo AudioLanguages}{[MediaInfo VideoCodec]}{-Release Group}"
 }
 
 resource "sonarr_media_management" "sonarr" {
@@ -67,13 +67,13 @@ resource "sonarr_indexer_config" "sonarr" {
 resource "sonarr_delay_profile" "default" {
   bypass_if_above_custom_format_score = false
   bypass_if_highest_quality           = false
-  enable_torrent                      = true
+  enable_torrent                      = false
   enable_usenet                       = true
   minimum_custom_format_score         = 0
   order                               = 2147483647
   preferred_protocol                  = "usenet"
   tags                                = []
-  torrent_delay                       = 10
+  torrent_delay                       = 0
   usenet_delay                        = 0
 }
 
@@ -107,108 +107,20 @@ resource "sonarr_metadata" "plex" {
   tags            = []
 }
 
-resource "sonarr_custom_format" "hevc" {
-  include_custom_format_when_renaming = true
-  name                                = "HEVC"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "HEVC"
-      negate         = false
-      required       = true
-      value          = "(((X|H)\\.?265)|(HEVC))"
-    },
-  ]
-}
-
-resource "sonarr_custom_format" "avc" {
-  include_custom_format_when_renaming = true
-  name                                = "AVC"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "AVC"
-      negate         = false
-      required       = true
-      value          = "((X|H)\\.?264)|(AVC)"
-    },
-  ]
-}
-
-resource "sonarr_custom_format" "surround_sound" {
-  include_custom_format_when_renaming = true
-  name                                = "SS"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "Surround Sound"
-      negate         = false
-      required       = true
-      value          = "DTS.?(HD|ES|X(?!\\D))|TRUEHD|ATMOS|DD(\\+|P)?.?([5-9])|EAC3.?([5-9])"
-    },
-  ]
-}
-
-resource "sonarr_custom_format" "ten_bit" {
-  include_custom_format_when_renaming = true
-  name                                = "10 bit"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "10 bit"
-      negate         = false
-      required       = true
-      value          = "10BIT"
-    },
-  ]
-}
-
-resource "sonarr_custom_format" "hdr" {
-  include_custom_format_when_renaming = true
-  name                                = "HDR"
-  specifications = [
-    {
-      implementation = "ReleaseTitleSpecification"
-      name           = "HDR"
-      negate         = false
-      required       = true
-      value          = "\\bHDR(?!Rip)"
-    },
-  ]
-}
-
 resource "sonarr_quality_profile" "hd" {
   cutoff              = 7
-  cutoff_format_score = 40
+  cutoff_format_score = 35
   format_items = [
-    {
-      format = sonarr_custom_format.hevc.id
-      name   = "HEVC"
-      score  = 32
-    },
-    {
-      format = sonarr_custom_format.avc.id
-      name   = "AVC"
-      score  = 16
-    },
-    {
-      format = sonarr_custom_format.surround_sound.id
-      name   = "SS"
-      score  = 8
-    },
-    {
-      format = sonarr_custom_format.ten_bit.id
-      name   = "10 bit"
-      score  = 4
-    },
-    {
-      format = sonarr_custom_format.hdr.id
-      name   = "HDR"
-      score  = 2
-    },
+    for key, format in sonarr_custom_format.this : {
+      format = format.id
+      name   = format.name
+      score  = local.custom_formats[key].score_hd
+    }
+    # The apps leave formats scored 0 out of a profile
+    if local.custom_formats[key].score_hd != 0
   ]
   min_format_score         = 0
-  min_upgrade_format_score = 1
+  min_upgrade_format_score = 10
   name                     = "1080p/720p"
   quality_groups = [
     {
@@ -293,36 +205,18 @@ resource "sonarr_quality_profile" "hd" {
 
 resource "sonarr_quality_profile" "uhd" {
   cutoff              = 19
-  cutoff_format_score = 40
+  cutoff_format_score = 35
   format_items = [
-    {
-      format = sonarr_custom_format.hevc.id
-      name   = "HEVC"
-      score  = 32
-    },
-    {
-      format = sonarr_custom_format.avc.id
-      name   = "AVC"
-      score  = 16
-    },
-    {
-      format = sonarr_custom_format.surround_sound.id
-      name   = "SS"
-      score  = 8
-    },
-    {
-      format = sonarr_custom_format.ten_bit.id
-      name   = "10 bit"
-      score  = 4
-    },
-    {
-      format = sonarr_custom_format.hdr.id
-      name   = "HDR"
-      score  = 2
-    },
+    for key, format in sonarr_custom_format.this : {
+      format = format.id
+      name   = format.name
+      score  = local.custom_formats[key].score_uhd
+    }
+    # The apps leave formats scored 0 out of a profile
+    if local.custom_formats[key].score_uhd != 0
   ]
   min_format_score         = 0
-  min_upgrade_format_score = 1
+  min_upgrade_format_score = 10
   name                     = "2160p"
   quality_groups = [
     {
