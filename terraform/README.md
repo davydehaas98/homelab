@@ -18,3 +18,20 @@ and its trust policy must allow the subject `repo:davydehaas98/homelab:ref:refs/
 **Locally**, set `TF_VAR_cloudflare_api_token`, `TF_VAR_ipv4_address` and `TF_VAR_ipv6_address`, then
 `terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with
 `terraform providers lock -platform=linux_amd64 -platform=linux_arm64 -platform=darwin_arm64`.
+
+## arr
+
+Settings of Sonarr, Radarr, Lidarr and Prowlarr: root folders, naming, media management, download clients, Discord
+notifications, delay profiles, custom formats, quality and metadata profiles, and in Prowlarr the indexers, sync
+profiles and the apps it syncs the indexers to. The indexers in the other apps are left to that sync.
+
+The Lidarr provider is behind on Lidarr's API and crashes on its delay profile and download clients, so those stay in
+the UI. So do Prowlarr's disabled altHUB indexer and the indexers whose definitions Prowlarr no longer has.
+
+**State** is local, `terraform.tfstate` here, and gitignored. It holds the secrets in plain text. If it is lost, the
+import blocks in `imports.tf` adopt the settings again on the next apply.
+
+**Applied locally only**, no CI. `. scripts/arr-env.sh` exports the variables in `variables.tf`, read from the
+cluster, then `terraform init && terraform plan`. The providers use the public hostnames, whose `/api` skips the Authentik login.
+The APIs do not return secrets, so the first apply after an import writes them again. A change made in the UI shows
+as drift in the next plan.

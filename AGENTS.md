@@ -54,13 +54,15 @@ CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`)
 dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
 before pushing with `scripts/validate.sh` (yamllint on the plain YAML, see `.yamllint`, and per app the dependencies,
 lint and a render with a Namespace; `-t` adds the Terraform). `scripts/render-diff.sh` shows what a change does to an
-app's manifests. The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret (`scripts/seal-secret.sh`).
+app's manifests. The same scripts triage an app (`scripts/debug-app.sh`), seal a Secret (`scripts/seal-secret.sh`) and
+export the secrets of `terraform/arr` (`scripts/arr-env.sh`).
 
 Library charts only render through an app that uses them. `kubectl apply --dry-run=server -f -` checks a render
 against the cluster.
 
 Terraform without credentials: `terraform init -backend=false && terraform validate && terraform fmt -check`. CI
-applies on a merge to `main`, see `terraform/README.md`. Never commit `*.tfvars` or state.
+applies `cloudflare/` on a merge to `main`, and `arr/` (Sonarr, Radarr, Lidarr and Prowlarr settings) is applied by hand, see
+`terraform/README.md`. Never commit `*.tfvars` or state.
 
 ## Talos
 

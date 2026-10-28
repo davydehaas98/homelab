@@ -33,13 +33,17 @@ done
 
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
-    cd terraform/cloudflare/davydehaas.dev
-    # Keep the lock file out of the working tree unless it is there already
-    [ -f .terraform.lock.hcl ] && LOCKED=1
-    terraform init -backend=false > /dev/null
-    terraform validate
-    terraform fmt -check
-    [ -n "${LOCKED}" ] || rm -f .terraform.lock.hcl
+    for STACK in terraform/cloudflare/davydehaas.dev terraform/arr; do
+        (
+            cd "${STACK}"
+            # Keep the lock file out of the working tree unless it is there already
+            [ -f .terraform.lock.hcl ] && LOCKED=1
+            terraform init -backend=false > /dev/null
+            terraform validate
+            terraform fmt -check
+            [ -n "${LOCKED}" ] || rm -f .terraform.lock.hcl
+        )
+    done
 fi
 
 echo "Valid"
