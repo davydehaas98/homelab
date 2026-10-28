@@ -6,6 +6,9 @@ snapshot-controller:
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
+    # Merged into the chart's own securityContext
+    securityContext:
+      allowPrivilegeEscalation: false
 
     resources:
       limits:
