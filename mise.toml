@@ -8,7 +8,7 @@ argocd = "3.5.6"
 cilium-cli = "0.20.1"
 
 # Reads GitHub: CI runs (the terraform-cloudflare workflow), PRs and Renovate updates.
-gh = "2.103.2"
+gh = "2.103.3"
 
 # Renders and lints the wrapper charts under kubernetes/.
 helm = "4.3.1"
