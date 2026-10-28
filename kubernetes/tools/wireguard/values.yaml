@@ -9,7 +9,7 @@
 image:
   registry: ghcr.io
   repository: wg-easy/wg-easy
-  tag: 15.4.0
+  tag: 15.5.0
 
 # The VPN port, UDP
 port: 51820
