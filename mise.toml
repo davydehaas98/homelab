@@ -30,7 +30,7 @@ stern = "1.35.0"
 talosctl = "1.14.5"
 
 # Validates and formats terraform/. Keep it equal to the version in the terraform-cloudflare workflow.
-terraform = "1.17.0"
+terraform = "1.17.1"
 
 # Installs pipx: tools (yamllint) with a Python of its own.
 uv = "0.13.5"
