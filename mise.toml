@@ -20,7 +20,7 @@ k9s = "0.51.0"
 kubectl = "1.37.1"
 
 # Seals secrets with the cluster's sealed-secrets controller.
-kubeseal = "0.41.1"
+kubeseal = "0.41.2"
 
 # Follows the logs of several pods and containers at once (`stern -n <namespace> <pod prefix>`).
 stern = "1.35.0"
