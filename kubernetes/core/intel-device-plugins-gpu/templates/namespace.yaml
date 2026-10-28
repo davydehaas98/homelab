@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Release.Namespace }}
-  labels:
-    # Host access (hostPath, host network) is needed by this app, Talos enforces baseline by default
-    pod-security.kubernetes.io/enforce: privileged

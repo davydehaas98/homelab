@@ -1,0 +1,26 @@
+zfs-localpv:
+  analytics:
+    enabled: false
+
+  # The snapshot CRDs and controller come from the snapshot-controller app
+  crds:
+    csi:
+      volumeSnapshots:
+        enabled: false
+
+  zfsController:
+    snapshotController:
+      enabled: false
+
+  zfsNode:
+    # Talos' root is read-only
+    encrKeysDir: /var/openebs/keys
+
+    # The pools are on midgard-0 only
+    nodeSelector:
+      kubernetes.io/hostname: midgard-0
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule

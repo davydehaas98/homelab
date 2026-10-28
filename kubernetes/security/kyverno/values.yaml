@@ -133,10 +133,12 @@ kyverno-policies:
     excludeNamespaces:
       - democratic-csi
       - fluent-bit
+      - intel-gpu-resource-driver
       - kube-system
       - nfs-subdir-external-provisioner
       - node-feature-discovery
       - prometheus-node-exporter
+      - zfs-localpv
 
   # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
   # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6), Dispatcharr (entrypoint with su, and
@@ -151,10 +153,12 @@ kyverno-policies:
       excludeNamespaces:
         - democratic-csi
         - fluent-bit
+        - intel-gpu-resource-driver
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - prometheus-node-exporter
+        - zfs-localpv
       matchConditions:
         - name: exclude-velero-node-agent
           expression: >-
@@ -166,10 +170,12 @@ kyverno-policies:
         - democratic-csi
         - fluent-bit
         - home-assistant
+        - intel-gpu-resource-driver
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - prometheus-node-exporter
+        - zfs-localpv
       matchConditions:
         - name: exclude-velero-node-agent
           expression: >-
@@ -180,27 +186,33 @@ kyverno-policies:
         - democratic-csi
         - fluent-bit
         - home-assistant
+        - intel-gpu-resource-driver
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - prometheus-node-exporter
+        - zfs-localpv
     disallow-host-ports:
       excludeNamespaces:
         - democratic-csi
         - fluent-bit
         - home-assistant
+        - intel-gpu-resource-driver
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - prometheus-node-exporter
+        - zfs-localpv
     require-run-as-nonroot:
       excludeNamespaces:
         - democratic-csi
         - fluent-bit
+        - intel-gpu-resource-driver
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - prometheus-node-exporter
+        - zfs-localpv
       matchConditions:
         - name: exclude-root-init-images
           expression: >-

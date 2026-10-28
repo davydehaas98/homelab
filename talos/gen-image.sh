@@ -24,24 +24,36 @@ Generating Talos image.. (node: '${NODE_NAME}', version: '${TALOS_VERSION}')
 # Retrieve image schematic ID
 ID=$(sh ${BOARD}/gen-schematic-id.sh "${NODE_NAME}")
 
+# The boards are flashed with a disk image, the i5-10600k boots an ISO from USB
+case ${BOARD} in
+    i5-10600k) IMAGE_TYPE=metal-amd64.iso ;;
+    *) IMAGE_TYPE=metal-arm64.raw ;;
+esac
+
 # Retrieve image
-WEBSITE=https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/metal-arm64.raw.xz
-IMAGE=gen/${NODE_NAME}.metal-arm64.raw
+WEBSITE=https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/${IMAGE_TYPE}
+IMAGE=gen/${NODE_NAME}.${IMAGE_TYPE}
 
 mkdir -p gen
 
-echo "
+if [ "${IMAGE_TYPE}" = "metal-amd64.iso" ]; then
+    echo "
 Retrieving image from '${WEBSITE}' ..
 "
+    curl --location ${WEBSITE} --output ${IMAGE}
+else
+    echo "
+Retrieving image from '${WEBSITE}.xz' ..
+"
+    curl --location ${WEBSITE}.xz --output ${IMAGE}.xz
 
-curl --location ${WEBSITE} --output ${IMAGE}.xz
-
-echo "
+    echo "
 Decompressing image '${IMAGE}.xz' ..
 "
 
-# Decompress .xz file
-xz --decompress --force --verbose ${IMAGE}.xz
+    # Decompress .xz file
+    xz --decompress --force --verbose ${IMAGE}.xz
+fi
 
 echo "
 Image downloaded and decompressed to '${IMAGE}'

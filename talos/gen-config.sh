@@ -23,12 +23,14 @@ CLUSTER_IP=${CLUSTER_IP%:*}
 
 echo "Generating Talos config for '${NODE_NAME}'.."
 
-CONFIG_PATCHES="--config-patch @${BOARD}/nodes/${NODE_NAME}.yaml --config-patch @patches/cluster.yaml"
+CONFIG_PATCHES="--config-patch @patches/cluster.yaml"
 if [ "${NODE_TYPE}" = "controlplane" ]; then
     mkdir -p gen
     sed "s/__CLUSTER_IP__/${CLUSTER_IP}/" patches/controlplane.yaml > gen/${NODE_NAME}.controlplane.yaml
     CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @gen/${NODE_NAME}.controlplane.yaml"
 fi
+# The node patch goes last, so its taints survive the cluster patch removing the default ones
+CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @${BOARD}/nodes/${NODE_NAME}.yaml"
 
 talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \

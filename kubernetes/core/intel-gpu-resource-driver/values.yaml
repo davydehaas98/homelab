@@ -1,0 +1,21 @@
+# Intel GPUs through Dynamic Resource Allocation: a pod asks for one with a ResourceClaimTemplate of DeviceClass
+# gpu.intel.com. Runs on the nodes that node-feature-discovery labels with an Intel GPU.
+intel-gpu-resource-driver-chart:
+  nodeFeatureRules:
+    enabled: true
+
+  # Talos' /etc is read-only
+  cdi:
+    staticPath: /run/cdi
+
+  kubeletPlugin:
+    # Without xpumd the driver reads the GPU's details from the device, which needs privileged
+    healthMonitoring:
+      enabled: false
+    privileged: true
+
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule

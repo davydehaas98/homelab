@@ -26,6 +26,13 @@ node-feature-discovery:
 
   # The chart default is a 512Mi limit, it uses up to ~55Mi
   worker:
+    # Also on midgard-0, whose GPU label the GPU driver needs
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
+
     resources:
       limits:
         memory: 60Mi

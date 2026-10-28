@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zfs-localpv
+  labels:
+    # The node pods run privileged and mount the host's devices and kubelet directory
+    pod-security.kubernetes.io/enforce: privileged

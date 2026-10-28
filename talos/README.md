@@ -38,6 +38,15 @@ A Raspberry Pi has no BMC: write the image to its SD card or USB SSD, and check 
 sudo dd if=gen/vanaheim-0.metal-arm64.raw of=/dev/rdiskN bs=4m status=progress
 ```
 
+The i5-10600k (`midgard-0`) boots the ISO from USB and installs itself from the installer image in its node file,
+which holds the schematic of `i5-10600k/gen-schematic-id.sh`: update it when the extensions change. Before applying
+the config in maintenance mode, check that only the install disk matches its `diskSelector`
+(`talosctl get disks --insecure -n <ip>`).
+
+```shell
+sh gen-image.sh -b i5-10600k -n midgard-0 -v v1.14.5
+```
+
 ## Bootstrap
 
 `gen-talosconfig.sh` generates the cluster secrets once (if missing) and the talosconfig, merges it into
@@ -49,6 +58,7 @@ mode.
 sh gen-talosconfig.sh -c yggdrasil -n jotunheim-0
 sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0 -t controlplane   # and jotunheim-1, jotunheim-2
 sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-3 -t worker
+sh apply-config.sh -b i5-10600k -c yggdrasil -n midgard-0 -t worker
 talosctl bootstrap --nodes jotunheim-0
 talosctl config endpoint $(sed -n 's|^endpoint: https://\(.*\):6443|\1|p' patches/cluster.yaml)
 talosctl config nodes jotunheim-0 jotunheim-1 jotunheim-2 jotunheim-3

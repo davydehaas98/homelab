@@ -64,6 +64,12 @@ velero:
         type: RuntimeDefault
     containerSecurityContext:
       allowPrivilegeEscalation: false
+    # Also on midgard-0, where the volumes on ZFS are
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
     resources:
       limits:
         memory: 150Mi

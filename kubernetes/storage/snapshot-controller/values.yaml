@@ -1,0 +1,18 @@
+# The VolumeSnapshot CRDs and their controller for every CSI driver; zfs-localpv ships its own, which is turned off
+snapshot-controller:
+  keepCRDs: true
+
+  controller:
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+    resources:
+      limits:
+        memory: 150Mi
+      requests:
+        cpu: 10m
+        memory: 60Mi
+
+    serviceMonitor:
+      create: true

@@ -5,4 +5,5 @@ metadata:
 spec:
   interfaces:
     - ^end0$
+    - ^eno1$
   loadBalancerIPs: true

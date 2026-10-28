@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: intel-gpu-resource-driver
+  labels:
+    # The kubelet plugin runs privileged with host paths for the device and the CDI specs
+    pod-security.kubernetes.io/enforce: privileged
