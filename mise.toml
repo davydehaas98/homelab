@@ -5,7 +5,7 @@
 argocd = "3.5.6"
 
 # Checks Cilium health and connectivity (`cilium status`, `cilium connectivity test`).
-cilium-cli = "0.20.1"
+cilium-cli = "0.20.2"
 
 # Reads GitHub: CI runs (the terraform-cloudflare workflow), PRs and Renovate updates.
 gh = "2.103.3"
