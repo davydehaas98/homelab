@@ -4,7 +4,7 @@ FROM debian:trixie-20261005-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git jq openssh-client xz-utils && rm -rf /var/lib/apt/lists/*
 
 # Cluster CLIs are pinned in mise.toml. Trusting the workspace's copy installs bumped versions on first use.
-COPY --from=jdxcode/mise:2026.10.22 /usr/local/bin/mise /usr/local/bin/mise
+COPY --from=jdxcode/mise:2026.10.23 /usr/local/bin/mise /usr/local/bin/mise
 ENV MISE_DATA_DIR=/opt/mise \
     MISE_TRUSTED_CONFIG_PATHS=/workspace:/workspaces \
     PATH="/opt/mise/shims:${PATH}"
