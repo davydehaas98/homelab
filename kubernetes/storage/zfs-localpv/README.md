@@ -23,3 +23,19 @@ Its VolumeSnapshotClass needs the CRDs of `storage/snapshot-controller`; on a fr
 that one is healthy.
 
 Talos imports the pools at boot; their mountpoints must be under `/var`.
+
+## Backup
+
+A nightly CronJob runs `backup.sh`:
+
+- It dumps the databases listed in `values.yaml` to the volume `database-dumps` on `tank`, from inside their pods. The
+  dumps hold password hashes, so encrypt any copy that leaves the node.
+- It snapshots every dataset of `fast` at the same moment, except `exclude`, and sends each to `tank/backup/fast`, which
+  is not mounted. A dataset removed from `fast` keeps its copy until it is destroyed by hand.
+
+Both keep `keep` days. A snapshot counts towards its volume's quota, so `fast` keeps only the latest, which the next run
+starts from. If that snapshot is lost the dataset's copy fails each night: destroy its copy to start over. Nothing here
+protects against losing the node or `tank`, or covers the data on `tank` itself.
+
+To restore a dataset, stop its app, then `zfs send` the snapshot from `tank/backup/fast` back and rename it over the
+old one with mountpoint `legacy`.

@@ -1,0 +1,22 @@
+node-problem-detector:
+  # Talos has no Docker, and no journal for the chart's default monitor of it
+  settings:
+    log_monitors:
+      - /config/kernel-monitor.json
+      - /config/readonly-monitor.json
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+    prometheusRule:
+      enabled: true
+      defaultRules:
+        create: true
+
+  resources:
+    limits:
+      memory: 100Mi
+    requests:
+      cpu: 20m
+      memory: 40Mi

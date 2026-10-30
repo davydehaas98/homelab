@@ -25,6 +25,52 @@ zfs-localpv:
         value: storage
         effect: NoSchedule
 
+# The nightly backup, README.md. 01:00 UTC, before the Velero backup (02:00 UTC).
+backup:
+  image:
+    registry: docker.io
+    repository: alpine/k8s
+    tag: 1.37.1
+  schedule: "0 1 * * *"
+  # Days of dumps and of copies on `tank`
+  keep: 14
+  # Datasets of `fast` not worth copying: metrics that change all day, and a cache
+  exclude:
+    - prometheus-db
+    - trivy-server
+  databases:
+    - name: airtrail
+      namespace: airtrail
+      selector: cnpg.io/cluster=airtrail-database,cnpg.io/instanceRole=primary
+      container: postgres
+      command: pg_dumpall -U postgres
+    - name: immich
+      namespace: immich
+      selector: cnpg.io/cluster=immich-database,cnpg.io/instanceRole=primary
+      container: postgres
+      command: pg_dumpall -U postgres
+    - name: nextcloud
+      namespace: nextcloud
+      selector: cnpg.io/cluster=nextcloud-database,cnpg.io/instanceRole=primary
+      container: postgres
+      command: pg_dumpall -U postgres
+    - name: authentik
+      namespace: authentik
+      selector: app.kubernetes.io/instance=authentik,app.kubernetes.io/name=postgresql
+      container: postgresql
+      command: PGPASSWORD="$(cat "$POSTGRES_PASSWORD_FILE")" pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DATABASE"
+    - name: tracearr
+      namespace: media-server
+      selector: app.kubernetes.io/name=tracearr-postgres
+      container: postgres
+      command: pg_dumpall -U "$POSTGRES_USER"
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
 # Static volumes, each a dataset `<pool>/k8s/<name>` with its PV `zfs-<name>` bound to `namespace`/`claim`, which
 # the app's chart makes on the pool's StorageClass. `source` is what fill-volumes.sh copies in, relative to the
 # mountpoint of `tank`: an iSCSI image or an NFS folder from Ubuntu. `shared: "yes"` allows several pods to mount it.

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: node-problem-detector
+  labels:
+    # It runs privileged to read the kernel log of the host
+    pod-security.kubernetes.io/enforce: privileged

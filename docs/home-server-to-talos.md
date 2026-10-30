@@ -8,7 +8,7 @@ its storage and the Intel GPU for Plex. The Docker stack goes away with Ubuntu; 
 | Disk | Now | After |
 |---|---|---|
 | `sda`, 128G SATA SSD | Old Ubuntu LVM, unmounted | Talos system disk |
-| `nvme0n1`, 500G NVMe | Ubuntu root | Partitions 1–2 kept, as their GRUB boots Talos from `sda`; pool `fast` on partition 3: databases, app configs, Plex, Prometheus |
+| `nvme0n1`, 500G NVMe | Ubuntu root | Pool `fast` on partition 3 (partitions 1–2 are unused leftovers): databases, app configs, Plex, Prometheus |
 | `sdb`, `sdd`, `sde`, 3x 4T | md0 RAID5, ext4, 115G used | Pool `tank`, RAIDZ1: shared files, SeaweedFS, photos, backups |
 | `sdc`, 16T | ext4, media (13.1T, 96%) | Unchanged ext4, mounted by Talos; no redundancy until a second 16T is mirrored |
 
@@ -79,9 +79,8 @@ Prepared while Ubuntu still runs; nothing in it acts before the node joins.
 ## 4. Cutover (one maintenance window)
 
 All remote, over SSH. From the shutdown of Ubuntu, no NFS or iSCSI is served, so every app using them is down until
-it has moved. Until step 6 the NVMe still holds Ubuntu: booting it again (a reboot, until Talos is the GRUB default)
-and resetting the mountpoint of `tank` to `/mnt/md0` undoes the cutover. If Talos does not come up on the network,
-only a power cycle at home returns to Ubuntu.
+it has moved. Until step 6 the NVMe still holds Ubuntu: booting it again (from the firmware's boot menu, at the
+machine) and resetting the mountpoint of `tank` to `/mnt/md0` undoes the cutover.
 
 1. `pg_dump` every Postgres (the CloudNativePG clusters of AirTrail, Immich and Nextcloud, Authentik, Tracearr) to
    `tank`, in case a database copied as files does not start.
@@ -96,11 +95,11 @@ only a power cycle at home returns to Ubuntu.
 
 4. Scale every app on iSCSI and NFS to 0. Then `sudo zfs set mountpoint=/var/mnt/tank tank` and
    `sudo zpool export tank`.
-5. Write the Talos image to `sda`, boot it once from GRUB and apply the node config (`talos/README.md`). Check
-   `talosctl get extensions` and that `tank` and `media` are mounted, then make Talos the GRUB default.
+5. Write the Talos image to `sda`, reboot (the firmware prefers its EFI partition) and apply the node config
+   (`talos/README.md`). Check `talosctl get extensions` and that `tank` and `media` are mounted.
 6. Create `fast` on the NVMe's third partition from a debug pod (`kubectl debug --profile sysadmin node/<node>`,
-   `chroot /host zpool create -f ... -O mountpoint=/var/mnt/fast fast /dev/disk/by-id/<nvme>-part3`), keeping
-   partitions 1–2 for GRUB, and the `k8s` datasets in both pools.
+   `chroot /host zpool create -f ... -O mountpoint=/var/mnt/fast fast /dev/disk/by-id/<nvme>-part3`), and the
+   `k8s` datasets in both pools.
 7. Check that the ZFS LocalPV and GPU driver pods run on the node, run `fill-volumes.sh`, then merge the branch. Argo
    CD cannot change the claims and StatefulSet claim templates whose storage moved: delete those, and the old PVs, so
    it makes them again on the ZFS volumes.
@@ -112,8 +111,7 @@ only a power cycle at home returns to Ubuntu.
 ## 5. Clean up
 
 Remove `fill-volumes.sh` and the `source` keys, democratic-csi, nfs-subdir-external-provisioner, `lun.sh`,
-`persistence.iscsi` in the library chart, the iSCSI table, the `add-iscsi-disk` skill, and `iscsi-tools` from the RK1 schematic. Update the storage section and the arm64 rule in `AGENTS.md`, and remove this file once done. Back up
-`fast` to `tank` (Velero to SeaweedFS), as it is a single disk.
+`persistence.iscsi` in the library chart, the iSCSI table, the `add-iscsi-disk` skill, and `iscsi-tools` from the RK1 schematic. Update the storage section and the arm64 rule in `AGENTS.md`, and remove this file once done.
 
 ## Later
 

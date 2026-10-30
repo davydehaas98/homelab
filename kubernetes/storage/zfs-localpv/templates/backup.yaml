@@ -1,0 +1,136 @@
+# The nightly backup of backup.sh, README.md. It runs privileged on the node for `zfs`, and execs into the databases,
+# so it needs no database passwords of its own.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup
+  namespace: {{ .Release.Namespace }}
+{{- $namespaces := list }}
+{{- range .Values.backup.databases }}
+{{- $namespaces = append $namespaces .namespace }}
+{{- end }}
+{{- range $namespaces | uniq }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: zfs-localpv-backup
+  namespace: {{ . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: zfs-localpv-backup
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: zfs-localpv-backup
+subjects:
+  - kind: ServiceAccount
+    name: backup
+    namespace: {{ $.Release.Namespace }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup
+  namespace: {{ .Release.Namespace }}
+data:
+  backup.sh: |
+    {{- .Files.Get "backup.sh" | nindent 4 }}
+  databases: |
+    {{- range .Values.backup.databases }}
+    {{ .name }} {{ .namespace }} {{ .selector }} {{ .container }} {{ .command }}
+    {{- end }}
+  exclude: |
+    {{- range .Values.backup.exclude }}
+    {{ . }}
+    {{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-dumps
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: zfs-tank
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.backup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 21600
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: backup
+          nodeSelector:
+            kubernetes.io/hostname: midgard-0
+          tolerations:
+            - key: davydehaas.dev/dedicated
+              operator: Equal
+              value: storage
+              effect: NoSchedule
+          containers:
+            - name: backup
+              image: {{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - /config/backup.sh
+              env:
+                - name: KEEP
+                  value: {{ .Values.backup.keep | quote }}
+              resources:
+                {{- toYaml .Values.backup.resources | nindent 16 }}
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: config
+                  mountPath: /config
+                - name: dumps
+                  mountPath: /dumps
+                - name: host
+                  mountPath: /host
+          volumes:
+            - name: config
+              configMap:
+                name: backup
+            - name: dumps
+              persistentVolumeClaim:
+                claimName: database-dumps
+            - name: host
+              hostPath:
+                path: /
