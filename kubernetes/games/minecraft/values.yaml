@@ -10,10 +10,6 @@ image:
 
 port: 25565
 
-# The worker node: the control plane nodes run etcd, and a busy server would slow down the API
-nodeSelector:
-  kubernetes.io/hostname: jotunheim-3
-
 # The image runs as this user when it is not started as root
 podSecurityContext:
   fsGroup: 1000

@@ -1,5 +1,7 @@
 podSecurityContext:
   fsGroup: 1400
+  # The media disk and the backups are large: only change their group when the root of the volume differs
+  fsGroupChangePolicy: OnRootMismatch
 securityContext: {}
 
 # linuxserver.io images run as this user and group: the owner of the media on the NFS share

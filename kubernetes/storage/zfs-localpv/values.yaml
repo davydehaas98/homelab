@@ -27,7 +27,7 @@ zfs-localpv:
 
 # Static volumes, each a dataset `<pool>/k8s/<name>` with its PV `zfs-<name>` bound to `namespace`/`claim`, which
 # the app's chart makes on the pool's StorageClass. `source` is what fill-volumes.sh copies in, relative to the
-# mountpoint of `tank`: an iSCSI image or an NFS folder from Ubuntu.
+# mountpoint of `tank`: an iSCSI image or an NFS folder from Ubuntu. `shared: "yes"` allows several pods to mount it.
 volumes:
   - name: actual-budget-config
     pool: fast
@@ -98,6 +98,8 @@ volumes:
   - name: media-server-backups
     pool: tank
     size: 10Gi
+    # Mounted by several pods; the driver refuses a second mount otherwise
+    shared: "yes"
     namespace: media-server
     claim: backups
     source: kubernetes/backups

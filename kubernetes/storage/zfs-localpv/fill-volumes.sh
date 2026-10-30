@@ -63,7 +63,13 @@ spec:
   containers:
     - name: fill
       image: docker.io/library/alpine:3.22
-      command: [sh, -c, "apk add --no-cache rsync > /dev/null && touch /ready && sleep infinity"]
+      # New loop devices do not show up in the /dev of a container
+      command:
+        - sh
+        - -c
+        - >-
+          for i in \$(seq 0 63); do [ -e /dev/loop\$i ] || mknod /dev/loop\$i b 7 \$i; done;
+          apk add --no-cache rsync > /dev/null && touch /ready && sleep infinity
       securityContext:
         privileged: true
       volumeMounts:

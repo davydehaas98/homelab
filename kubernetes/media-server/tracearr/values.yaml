@@ -15,6 +15,8 @@ podSecurityContext:
   runAsUser: 1400
   runAsGroup: 1400
   fsGroup: 1400
+  # The media disk and the backups are large: only change their group when the root of the volume differs
+  fsGroupChangePolicy: OnRootMismatch
   seccompProfile:
     type: RuntimeDefault
 securityContext:

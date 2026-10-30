@@ -16,6 +16,9 @@ spec:
   ownerNodeID: midgard-0
   poolName: {{ $pool }}
   volumeType: DATASET
+  {{- with .shared }}
+  shared: {{ . | quote }}
+  {{- end }}
 status:
   state: Ready
 ---
