@@ -20,8 +20,11 @@ spec:
   parentRefs:
     - name: envoy-gateway
       sectionName: web-https
+    - name: envoy-gateway
+      sectionName: web-https-nl
   hostnames:
     - plex.davydehaas.dev
+    - plex.davydehaas.nl
   rules:
     - timeouts:
         request: 0s

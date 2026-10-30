@@ -90,6 +90,9 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.port }}
+              {{- with .Values.hostPort }}
+              hostPort: {{ . }}
+              {{- end }}
               protocol: {{ .Values.protocol | default "TCP" }}
           {{- $resources := deepCopy (.Values.resources | default dict) }}
           {{- if .Values.gpu }}

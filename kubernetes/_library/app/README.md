@@ -41,6 +41,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `nodeSelector` | none | Labels a node must have, for a heavy app that should stay off the control plane nodes. |
 | `hostNetwork` | off | Run the pod on the network of its node instead of the pod network, for an app that finds devices on the LAN (mDNS, SSDP) or that they must find, such as a HomeKit bridge. It listens on the ports of the node, and the namespace needs the label `pod-security.kubernetes.io/enforce: privileged` as the default level forbids it. The DNS policy is set so the names of the cluster keep working. |
 | `gpu.deviceClassName` | none | Give the container a GPU of this DeviceClass (`gpu.intel.com`, `kubernetes/core/intel-gpu-resource-driver`), with a ResourceClaimTemplate. |
+| `hostPort` | none | Also listen on this port of the pod's node, for a client that cannot change its address. The namespace needs the label `pod-security.kubernetes.io/enforce: privileged`. |
 | `serviceAccountName` | none | Service account of the pod, for an app (or an init container) that talks to the Kubernetes API. The app's chart makes the account and its role. |
 | `initContainers` | none | A list of init containers, as in a pod spec. One with `restartPolicy: Always` is a sidecar that starts before the app and runs next to it. The volume of the app is named `config`. |
 | `probe` | `httpGet` on `/` | Liveness and readiness probe; the port is named `http`. |

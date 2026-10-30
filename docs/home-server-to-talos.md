@@ -112,8 +112,7 @@ only a power cycle at home returns to Ubuntu.
 ## 5. Clean up
 
 Remove `fill-volumes.sh` and the `source` keys, democratic-csi, nfs-subdir-external-provisioner, `lun.sh`,
-`persistence.iscsi` in the library chart, the iSCSI table, the `add-iscsi-disk` skill, the `home-server` Backend in
-envoy-gateway, and `iscsi-tools` from the RK1 schematic. Update the storage section and the arm64 rule in `AGENTS.md`, and remove this file once done. Back up
+`persistence.iscsi` in the library chart, the iSCSI table, the `add-iscsi-disk` skill, and `iscsi-tools` from the RK1 schematic. Update the storage section and the arm64 rule in `AGENTS.md`, and remove this file once done. Back up
 `fast` to `tank` (Velero to SeaweedFS), as it is a single disk.
 
 ## Later

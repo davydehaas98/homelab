@@ -1,4 +1,4 @@
-# The page for a hostname under davydehaas.dev that no app publishes. A route with the wildcard hostname only gets
+# The page for a hostname under davydehaas.dev or davydehaas.nl that no app publishes. A route with the wildcard hostname only gets
 # the requests that no route with an exact hostname matches, so the 404s of the apps stay their own. The page is
 # files/not-found.html; like files/error-page.html it may use Envoy command operators, so no literal percent sign.
 apiVersion: v1
@@ -36,8 +36,13 @@ spec:
       kind: Gateway
       name: envoy-gateway
       sectionName: web-https
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway
+      sectionName: web-https-nl
   hostnames:
     - "*.davydehaas.dev"
+    - "*.davydehaas.nl"
   rules:
     - matches:
         - path:

@@ -7,6 +7,8 @@ image:
   tag: 2.0.22
 
 port: 1883
+# The meter gateways use the address of the home server, which is midgard-0 now, where the volume keeps this pod
+hostPort: 1883
 
 podSecurityContext:
   runAsNonRoot: true

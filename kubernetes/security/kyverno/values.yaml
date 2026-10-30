@@ -200,6 +200,7 @@ kyverno-policies:
         - home-assistant
         - intel-gpu-resource-driver
         - kube-system
+        - mosquitto
         - nfs-subdir-external-provisioner
         - node-feature-discovery
         - plex

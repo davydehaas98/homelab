@@ -30,9 +30,9 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 ## How the pieces connect
 
 - **Traffic.** The UniFi gateway forwards 80 and 443 to the Envoy Gateway (`192.168.1.56`), the entry point.
-  `*.davydehaas.nl` is passed through to the Traefik of the home server (repo `home-server`), see
-  `kubernetes/core/envoy-gateway/templates/home-server.yaml`. Publish an app with an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`), no
-  Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
+  The old domain `*.davydehaas.nl` serves Plex and redirects other names to `davydehaas.dev`
+  (`nlRedirects` in `kubernetes/core/envoy-gateway/values.yaml`). Publish an app with an `HTTPRoute` on Gateway
+  `envoy-gateway` (`sectionName: web-https`), no Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
   `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`. Tools only for the home network go on Gateway
   `envoy-gateway-private` (`192.168.1.61`, not forwarded) under `*.mcp.davydehaas.dev`, with a record in
   `kubernetes_private_apps`.

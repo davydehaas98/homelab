@@ -14,6 +14,55 @@ gateway-helm:
       logging:
         level:
           default: info
-      # Backend resources for upstreams outside the cluster (templates/home-server.yaml, plex.yaml)
+      # Backend resources for upstreams outside the cluster (templates/plex.yaml)
       extensionApis:
         enableBackend: true
+
+# Names under davydehaas.nl that redirect to the same name under davydehaas.dev (templates/nl-redirects.yaml)
+nlRedirects:
+  - actual
+  - adguard
+  - adguardhome
+  - airtrail
+  - argocd
+  - auth
+  - authentik
+  - bazarr
+  - budget
+  - dispatcharr
+  - drive
+  - dvr
+  - gatus
+  - grafana
+  - hass
+  - headlamp
+  - home
+  - home-assistant
+  - homepage
+  - hubble
+  - immich
+  - it-tools
+  - jellyfin
+  - lidarr
+  - memos
+  - movies
+  - music
+  - nextcloud
+  - omni-tools
+  - policy
+  - prometheus
+  - prowlarr
+  - radarr
+  - request
+  - requests
+  - sabnzbd
+  - seerr
+  - series
+  - sonarr
+  - status
+  - subtitles
+  - tautulli
+  - tracearr
+  - usenet
+  - www
+  - zigbee
