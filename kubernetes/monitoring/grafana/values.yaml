@@ -116,12 +116,20 @@ grafana:
   initChownData:
     enabled: false
 
+  # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
   persistence:
     type: StatefulSet
     enabled: true
+    storageClassName: zfs-fast
     accessModes:
       - ReadWriteOnce
     size: 16Gi
+
+  tolerations:
+    - key: davydehaas.dev/dedicated
+      operator: Equal
+      value: storage
+      effect: NoSchedule
 
   admin:
     existingSecret: grafana-credentials

@@ -42,16 +42,13 @@ resources:
     cpu: 10m
     memory: 80Mi
 
-# The statistics database does not work on NFS, so the disk is on yggdrasil, see
-# kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   backup: true
   size: 2Gi
   mountPath: /data
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:adguard-home
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-adguard-home-config
 
 # Behind the gateway login (client `adguard-home`, credentials in templates/oidc-credentials.yaml), and then its own
 # login from the configuration. The DNS port is a separate Service and does not pass the gateway.

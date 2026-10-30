@@ -1,7 +1,6 @@
 # PostgreSQL with VectorChord for Immich, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which must be
-# deployed first. The extension comes from an image volume. The database is on an iSCSI disk on yggdrasil, a target
-# of its own, see kubernetes/media-server/media-server/README.md; one instance, as each instance needs a disk of
-# its own. The disk is owned by the postgres user: `OWNER=26:26 sh lun.sh copy immich-database <empty folder>`.
+# deployed first. The extension comes from an image volume. The database is on a ZFS volume on midgard-0 (see
+# kubernetes/storage/zfs-localpv); one instance, as each instance needs a volume of its own.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -10,6 +9,12 @@ spec:
   instances: 1
   # The budget of the primary blocks every drain with one instance, so a node upgrade could never finish
   enablePDB: false
+  affinity:
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
   resources:
     limits:
       memory: 2Gi
@@ -21,8 +26,8 @@ spec:
     pvcTemplate:
       accessModes:
         - ReadWriteOnce
-      storageClassName: ""
-      volumeName: immich-database-1
+      storageClassName: zfs-fast
+      volumeName: zfs-immich-database
       resources:
         requests:
           storage: 32Gi
@@ -57,30 +62,3 @@ spec:
       ensure: present
     - name: cube
       ensure: present
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: immich-database-1
-spec:
-  capacity:
-    storage: 32Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: ""
-  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
-  csi:
-    driver: org.democratic-csi.node-manual
-    fsType: ext4
-    readOnly: false
-    volumeHandle: immich-database-1
-    volumeAttributes:
-      portal: "192.168.1.44:3260"
-      iqn: "iqn.2026-10.nl.davydehaas:immich-database"
-      lun: "0"
-      node_attach_driver: iscsi
-      provisioner_driver: node-manual
-  claimRef:
-    namespace: immich
-    name: immich-database-1

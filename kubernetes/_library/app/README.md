@@ -40,6 +40,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. The pod gets `seccompProfile: RuntimeDefault` and the container `allowPrivilegeEscalation: false` unless the values set them. |
 | `nodeSelector` | none | Labels a node must have, for a heavy app that should stay off the control plane nodes. |
 | `hostNetwork` | off | Run the pod on the network of its node instead of the pod network, for an app that finds devices on the LAN (mDNS, SSDP) or that they must find, such as a HomeKit bridge. It listens on the ports of the node, and the namespace needs the label `pod-security.kubernetes.io/enforce: privileged` as the default level forbids it. The DNS policy is set so the names of the cluster keep working. |
+| `gpu.deviceClassName` | none | Give the container a GPU of this DeviceClass (`gpu.intel.com`, `kubernetes/core/intel-gpu-resource-driver`), with a ResourceClaimTemplate. |
 | `serviceAccountName` | none | Service account of the pod, for an app (or an init container) that talks to the Kubernetes API. The app's chart makes the account and its role. |
 | `initContainers` | none | A list of init containers, as in a pod spec. One with `restartPolicy: Always` is a sidecar that starts before the app and runs next to it. The volume of the app is named `config`. |
 | `probe` | `httpGet` on `/` | Liveness and readiness probe; the port is named `http`. |
@@ -47,6 +48,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.size` | | Size of the volume. |
 | `persistence.mountPath` | `/config` | Where the volume is mounted. |
 | `persistence.storageClass` | default class | StorageClass of the claim. |
+| `persistence.volumeName` | none | Bind the claim to a static volume, such as a ZFS volume of `kubernetes/storage/zfs-localpv` (`zfs-<name>`, with `storageClass` its pool's class). A pod with `persistence` (other than `iscsi`), `media` or `backups` tolerates the taint of `midgard-0`, where those volumes are. |
 | `persistence.iscsi.targetPortal`, `.iqn`, `.lun` | | Use a static iSCSI volume instead of a StorageClass, mounted by the democratic-csi driver (`kubernetes/storage/democratic-csi`). Give every app a target of its own (`iqn.2026-10.nl.davydehaas:<app>`, `lun: 0`), as a node logs out of a whole target when one pod stops. Only one pod may mount it. |
 | `persistence.labels` | | Extra labels of the claim. |
 | `persistence.backup` | `false` | Annotate the pod so Velero backs up the volume. |

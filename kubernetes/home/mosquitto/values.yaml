@@ -32,10 +32,13 @@ resources:
     cpu: 10m
     memory: 20Mi
 
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   backup: true
   size: 1Gi
   mountPath: /mosquitto/data
+  storageClass: zfs-fast
+  volumeName: zfs-mosquitto-config
 
 # Mosquitto wants its password file owned by its own user, and a mounted Secret is owned by root: copy it at the start
 args:

@@ -37,21 +37,18 @@ image:
 
 replicas: 1
 
-# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: bazarr
   mountPath: /config/backup
 
-# The config is on an iSCSI disk on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   backup: true
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:bazarr
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-bazarr-config
 
 route:
   enabled: true

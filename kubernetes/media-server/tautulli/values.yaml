@@ -29,15 +29,12 @@ resources:
     cpu: 20m
     memory: 200Mi
 
-# The database is SQLite, so the disk is on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   backup: true
   size: 10Gi
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:tautulli
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-tautulli-config
 
 route:
   enabled: true

@@ -40,6 +40,14 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if or (and .Values.persistence (not .Values.persistence.iscsi)) .Values.media .Values.backups }}
+      # The volumes are on midgard-0 (kubernetes/storage/zfs-localpv), which only runs the apps whose data is there
+      tolerations:
+        - key: davydehaas.dev/dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
+      {{- end }}
       {{- with .Values.serviceAccountName }}
       serviceAccountName: {{ . }}
       {{- end }}
@@ -49,6 +57,11 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       securityContext: {{ toYaml (merge (deepCopy (.Values.podSecurityContext | default dict)) (dict "seccompProfile" (dict "type" "RuntimeDefault"))) | nindent 8 }}
+      {{- if .Values.gpu }}
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: {{ template "app.fullname" . }}-gpu
+      {{- end }}
       {{- with .Values.initContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
@@ -78,7 +91,11 @@ spec:
             - name: http
               containerPort: {{ .Values.port }}
               protocol: {{ .Values.protocol | default "TCP" }}
-          resources: {{ toYaml (.Values.resources | default dict) | nindent 12 }}
+          {{- $resources := deepCopy (.Values.resources | default dict) }}
+          {{- if .Values.gpu }}
+          {{- $_ := set $resources "claims" (list (dict "name" "gpu")) }}
+          {{- end }}
+          resources: {{ toYaml $resources | nindent 12 }}
           securityContext: {{ toYaml (merge (deepCopy (.Values.securityContext | default dict)) (dict "allowPrivilegeEscalation" false)) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
           # The first start of an app with a new database runs its migrations, which takes minutes on NFS.

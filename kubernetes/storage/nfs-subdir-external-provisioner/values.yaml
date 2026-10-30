@@ -9,7 +9,8 @@ nfs-subdir-external-provisioner:
 
   storageClass:
     name: nfs
-    defaultClass: true
+    # zfs-fast (storage/zfs-localpv) is the default
+    defaultClass: false
     reclaimPolicy: Retain
     archiveOnDelete: true
     accessModes: ReadWriteOnce

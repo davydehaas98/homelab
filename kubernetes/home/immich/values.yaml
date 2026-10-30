@@ -35,8 +35,8 @@ immich:
                 cpu: 30m
                 memory: 30Mi
 
-  # The machine learning image runs as any user, its cache is an emptyDir. The server and this pod keep to the worker:
-  # their jobs use several cores for hours, which slows etcd and the API server on the control plane nodes.
+  # The machine learning image runs as any user, its cache is an emptyDir. It keeps to the worker: its jobs use several
+  # cores for hours, which slows etcd and the API server on the control plane nodes.
   machine-learning:
     defaultPodOptions:
       nodeSelector:
@@ -61,12 +61,15 @@ immich:
                 cpu: 80m
                 memory: 2.5Gi
 
-  # The server image runs as root but has a node user (1000), which owns the library on NFS (fsGroup does not apply
-  # there, the files were chowned once)
+  # The server image runs as root but has a node user (1000), which owns the library. It runs on midgard-0, where the
+  # library is.
   server:
     defaultPodOptions:
-      nodeSelector:
-        kubernetes.io/hostname: jotunheim-3
+      tolerations:
+        - key: davydehaas.dev/dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
       securityContext:
         runAsGroup: 1000
         runAsNonRoot: true

@@ -1,0 +1,38 @@
+# The media disk of midgard-0, as in kubernetes/media-server/media-server, whose claim is in the namespace there
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-local-plex
+spec:
+  capacity:
+    storage: 14Ti
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local
+  local:
+    path: /var/mnt/media
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - midgard-0
+  claimRef:
+    namespace: plex
+    name: media
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local
+  volumeName: media-local-plex
+  resources:
+    requests:
+      storage: 14Ti

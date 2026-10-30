@@ -33,7 +33,7 @@ envFrom:
   - secretRef:
       name: tracearr-env
 
-# The backups of the app are on the RAID of yggdrasil (md0), next to the image of the LUN
+# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: tracearr

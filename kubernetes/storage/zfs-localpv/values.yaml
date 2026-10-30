@@ -24,3 +24,220 @@ zfs-localpv:
         operator: Equal
         value: storage
         effect: NoSchedule
+
+# Static volumes, each a dataset `<pool>/k8s/<name>` with its PV `zfs-<name>` bound to `namespace`/`claim`, which
+# the app's chart makes on the pool's StorageClass. `source` is what fill-volumes.sh copies in, relative to the
+# mountpoint of `tank`: an iSCSI image or an NFS folder from Ubuntu.
+volumes:
+  - name: actual-budget-config
+    pool: fast
+    size: 1Gi
+    namespace: actual-budget
+    claim: actual-budget-config
+    source: iscsi/actual-budget-config.img
+  - name: adguard-home-config
+    pool: fast
+    size: 2Gi
+    namespace: adguard-home
+    claim: adguard-home-config
+    source: iscsi/adguard-home-config.img
+  - name: airtrail-database
+    pool: fast
+    size: 2Gi
+    namespace: airtrail
+    claim: airtrail-database-1
+    source: iscsi/airtrail-database-config.img
+  - name: authentik-postgresql
+    pool: fast
+    size: 2Gi
+    namespace: authentik
+    claim: authentik-postgresql-data
+    source: iscsi/authentik-postgresql-config.img
+  - name: factorio-config
+    pool: fast
+    size: 5Gi
+    namespace: factorio
+    claim: factorio-config
+    source: kubernetes/factorio-factorio-config-pvc-87c7964d-475c-40ab-b6e1-1d33d979189c
+  - name: grafana-storage
+    pool: fast
+    size: 16Gi
+    namespace: grafana
+    claim: storage-grafana-0
+    source: kubernetes/grafana-storage-grafana-0-pvc-a67fe8fe-7bc0-4e3e-9981-55466681e9ea
+  - name: home-assistant-config
+    pool: fast
+    size: 5Gi
+    namespace: home-assistant
+    claim: home-assistant-config
+    source: iscsi/home-assistant-config.img
+  - name: immich-database
+    pool: fast
+    size: 32Gi
+    namespace: immich
+    claim: immich-database-1
+    source: iscsi/immich-database-config.img
+  - name: immich-library
+    pool: tank
+    size: 200Gi
+    namespace: immich
+    claim: immich-library
+    source: kubernetes/immich-immich-library-pvc-5d53d91a-4666-4e9b-8ce8-32659ac7d9df
+  - name: loki-backend
+    pool: fast
+    size: 5Gi
+    namespace: loki
+    claim: data-loki-backend-0
+    source: kubernetes/loki-data-loki-backend-0-pvc-aa75f4e8-c2d5-4839-a798-9e667ad9d4e7
+  - name: loki-write
+    pool: fast
+    size: 5Gi
+    namespace: loki
+    claim: data-loki-write-0
+    source: kubernetes/loki-data-loki-write-0-pvc-7896183a-aab6-4254-be87-55ac56d6e91e
+  - name: media-server-backups
+    pool: tank
+    size: 10Gi
+    namespace: media-server
+    claim: backups
+    source: kubernetes/backups
+  - name: bazarr-config
+    pool: fast
+    size: 1Gi
+    namespace: media-server
+    claim: bazarr-config
+    source: iscsi/bazarr-config.img
+  - name: dispatcharr-config
+    pool: fast
+    size: 5Gi
+    namespace: media-server
+    claim: dispatcharr-config
+    source: iscsi/dispatcharr-config.img
+  - name: jellyfin-config
+    pool: fast
+    size: 20Gi
+    namespace: media-server
+    claim: jellyfin-config
+    source: iscsi/jellyfin-config.img
+  - name: lidarr-config
+    pool: fast
+    size: 2Gi
+    namespace: media-server
+    claim: lidarr-config
+    source: iscsi/lidarr-config.img
+  - name: prowlarr-config
+    pool: fast
+    size: 1Gi
+    namespace: media-server
+    claim: prowlarr-config
+    source: iscsi/prowlarr-config.img
+  - name: radarr-config
+    pool: fast
+    size: 5Gi
+    namespace: media-server
+    claim: radarr-config
+    source: iscsi/radarr-config.img
+  - name: sabnzbd-config
+    pool: fast
+    size: 1Gi
+    namespace: media-server
+    claim: sabnzbd-config
+    source: iscsi/sabnzbd-config.img
+  - name: seerr-config
+    pool: fast
+    size: 1Gi
+    namespace: media-server
+    claim: seerr-config
+    source: iscsi/seerr-config.img
+  - name: sonarr-config
+    pool: fast
+    size: 5Gi
+    namespace: media-server
+    claim: sonarr-config
+    source: iscsi/sonarr-config.img
+  - name: tautulli-config
+    pool: fast
+    size: 10Gi
+    namespace: media-server
+    claim: tautulli-config
+    source: iscsi/tautulli-config.img
+  - name: tracearr-postgres
+    pool: fast
+    size: 10Gi
+    namespace: media-server
+    claim: tracearr-postgres-data
+    source: iscsi/tracearr-postgres-config.img
+  - name: memos-config
+    pool: fast
+    size: 1Gi
+    namespace: memos
+    claim: memos-config
+    source: iscsi/memos-config.img
+  - name: minecraft-config
+    pool: fast
+    size: 5Gi
+    namespace: minecraft
+    claim: minecraft-config
+    source: kubernetes/minecraft-minecraft-config-pvc-f3421855-2369-4c61-9d2b-4fa2364e5ba4
+  - name: mosquitto-config
+    pool: fast
+    size: 1Gi
+    namespace: mosquitto
+    claim: mosquitto-config
+    source: kubernetes/mosquitto-mosquitto-config-pvc-f4d4f878-3338-45c8-b91c-12a1335a0d63
+  - name: nextcloud-data
+    pool: tank
+    size: 200Gi
+    namespace: nextcloud
+    claim: nextcloud-nextcloud-data
+    source: kubernetes/nextcloud-nextcloud-nextcloud-data-pvc-5254ee31-8f40-439b-a49f-f3c1cdbd3363
+  - name: nextcloud-database
+    pool: fast
+    size: 10Gi
+    namespace: nextcloud
+    claim: nextcloud-database-1
+    source: iscsi/nextcloud-database-config.img
+  - name: nextcloud-html
+    pool: fast
+    size: 16Gi
+    namespace: nextcloud
+    claim: nextcloud-html
+    source: iscsi/nextcloud-config.img
+  - name: plex-config
+    pool: fast
+    size: 100Gi
+    namespace: plex
+    claim: plex-config
+    source: plex-config
+  - name: alertmanager
+    pool: fast
+    size: 2Gi
+    namespace: prometheus
+    # yamllint disable-line rule:line-length
+    claim: alertmanager-prometheus-kube-prometheus-alertmanager-db-alertmanager-prometheus-kube-prometheus-alertmanager-0
+    # yamllint disable-line rule:line-length
+    source: kubernetes/prometheus-alertmanager-prometheus-kube-prometheus-alertmanager-db-alertmanager-prometheus-kube-prometheus-alertmanager-0-pvc-0ad5833e-313f-47e0-b4ee-5d132dd62a15
+  - name: prometheus-db
+    pool: fast
+    size: 10Gi
+    namespace: prometheus
+    claim: prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0
+    source: iscsi/prometheus-config.img
+  - name: seaweedfs-data
+    pool: tank
+    size: 50Gi
+    namespace: seaweedfs
+    claim: seaweedfs-all-in-one-data
+    source: kubernetes/seaweedfs-seaweedfs-all-in-one-data-pvc-4c63e8d4-5ca2-4013-bcda-edc86f5c276d
+  - name: trivy-server
+    pool: fast
+    size: 5Gi
+    namespace: trivy-operator
+    claim: data-trivy-server-0
+    source: kubernetes/trivy-operator-data-trivy-server-0-pvc-f053e78e-5b2c-4b98-97d9-f42dbe6f7190
+  - name: zigbee2mqtt-data
+    pool: fast
+    size: 1Gi
+    namespace: zigbee2mqtt
+    claim: data-volume-zigbee2mqtt-0
+    source: kubernetes/zigbee2mqtt-data

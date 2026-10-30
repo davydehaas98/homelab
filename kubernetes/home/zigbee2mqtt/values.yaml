@@ -1,7 +1,6 @@
 # Official chart. It merges the `zigbee2mqtt:` block below over the configuration.yaml on the data volume, so only
-# set what must differ. The network key, devices and groups stay in the volume (templates/data-volume.yaml), filled
-# from ~/home-server/zigbee2mqtt/data before the first start: a new volume makes Zigbee2MQTT form a new network on the
-# coordinator.
+# set what must differ. The network key, devices and groups stay in the volume: a new volume makes Zigbee2MQTT form a
+# new network on the coordinator.
 zigbee2mqtt:
   statefulset:
     # Velero copies the data volume, which holds the network key: without it every device has to be paired again
@@ -9,11 +8,18 @@ zigbee2mqtt:
     podAnnotations:
       backup.velero.io/backup-volumes: data-volume
 
+    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
     storage:
       enabled: true
       size: 1Gi
-      storageClassName: nfs
-      existingVolume: zigbee2mqtt-data
+      storageClassName: zfs-fast
+      existingVolume: zfs-zigbee2mqtt-data
+
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
 
     # The MQTT password of the broker's account admin, from templates/zigbee2mqtt-mqtt.yaml
     env:

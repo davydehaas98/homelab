@@ -95,7 +95,8 @@ nextcloud:
       securityContext:
         allowPrivilegeEscalation: false
 
-  # The code and config are on an iSCSI disk (templates/html-volume.yaml), and apart from it the files of the users
+  # The code and config (templates/html-volume.yaml), and apart from it the files of the users on `tank`: both ZFS
+  # volumes on midgard-0 (kubernetes/storage/zfs-localpv), whose claim names they are
   persistence:
     enabled: true
     existingClaim: nextcloud-html
@@ -103,8 +104,15 @@ nextcloud:
     size: 16Gi
     nextcloudData:
       enabled: true
+      storageClass: zfs-tank
       accessMode: ReadWriteOnce
       size: 200Gi
+
+  tolerations:
+    - key: davydehaas.dev/dedicated
+      operator: Equal
+      value: storage
+      effect: NoSchedule
 
   resources:
     limits:

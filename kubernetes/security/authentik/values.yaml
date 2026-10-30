@@ -213,9 +213,14 @@ authentik:
         adminPasswordKey: postgres-password
         userPasswordKey: password
     primary:
-      # The iSCSI disk of templates/postgresql-volume.yaml
+      # The ZFS volume of templates/postgresql-volume.yaml, on midgard-0
       persistence:
         existingClaim: authentik-postgresql-data
+      tolerations:
+        - key: davydehaas.dev/dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
       startupProbe:
         enabled: true
         initialDelaySeconds: 30
