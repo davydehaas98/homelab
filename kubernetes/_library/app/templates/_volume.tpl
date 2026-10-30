@@ -2,7 +2,7 @@
 The app's volume, a claim named `<app>-config`. With `persistence.iscsi` it is an iSCSI LUN on the home
 server (yggdrasil), which the node mounts as a local ext4 disk so SQLite locking works (see
 kubernetes/media-server/media-server/README.md). Without it, the claim gets a volume from `persistence.storageClass`
-(the default StorageClass, NFS, when unset), which is fine for apps without SQLite.
+(the default StorageClass when unset), or the static ZFS volume `persistence.volumeName` (kubernetes/storage/zfs-localpv).
 */}}
 {{- define "app.volume" -}}
 {{- $name := include "app.fullname" . -}}
@@ -51,8 +51,13 @@ spec:
   {{- if .Values.persistence.iscsi }}
   storageClassName: ""
   volumeName: {{ .Release.Namespace }}-{{ $name }}-config
-  {{- else if .Values.persistence.storageClass }}
-  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- else }}
+  {{- with .Values.persistence.storageClass }}
+  storageClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.persistence.volumeName }}
+  volumeName: {{ . }}
+  {{- end }}
   {{- end }}
   resources:
     requests:

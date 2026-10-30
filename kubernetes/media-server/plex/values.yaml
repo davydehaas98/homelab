@@ -1,16 +1,65 @@
-plex-media-server:
-  pms:
-    configStorage: 2Gi
+# The Plex of the home server's Docker stack, the same image, user and config, so it stays the same server with the
+# same claim. On the network of midgard-0 (192.168.1.44), which keeps the port forward of 32400, the route of
+# kubernetes/core/envoy-gateway/templates/plex.yaml and the address in Tautulli.
+image:
+  registry: ghcr.io
+  repository: linuxserver/plex
+  tag: 1.43.5
 
-    resources:
-      limits:
-        memory: 550Mi
-      requests:
-        cpu: 50m
-        memory: 300Mi
+# linuxserver.io images start as root and run Plex as this user and group, the owner of the config and the media
+env:
+  PUID: 1400
+  PGID: 1400
+  VERSION: docker
+securityContext: {}
 
-  ingress:
-    enabled: false
+port: 32400
+hostNetwork: true
 
-  extraEnv:
-    PLEX_CLAIM: "claim"
+# Answers without a login
+probe:
+  httpGet:
+    path: /identity
+    port: http
+
+resources:
+  limits:
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 1Gi
+
+# Hardware transcoding on the UHD 630
+gpu:
+  deviceClassName: gpu.intel.com
+
+# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), too large for Velero
+persistence:
+  size: 100Gi
+  storageClass: zfs-fast
+  volumeName: zfs-plex-config
+
+# At the paths of the Docker container, so the libraries keep their folders
+media:
+  claimName: media
+  mounts:
+    - mountPath: /movies
+      subPath: media/movies
+      readOnly: true
+    - mountPath: /series
+      subPath: media/series
+      readOnly: true
+    - mountPath: /music
+      subPath: media/music
+      readOnly: true
+    - mountPath: /dvr
+      subPath: media/dvr
+
+emptyDirs:
+  - name: transcode
+    mountPath: /transcode
+    sizeLimit: 20Gi
+
+# Behind kubernetes/core/envoy-gateway/templates/plex.yaml, which reaches the node's port
+route:
+  enabled: false

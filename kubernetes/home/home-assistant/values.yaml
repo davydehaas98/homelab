@@ -91,15 +91,12 @@ initContainers:
     securityContext: *config-loader-security
     resources: *config-loader-resources
 
-# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   backup: true
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:home-assistant
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-home-assistant-config
 
 # Its own login, as the mobile app cannot follow a redirect to the identity provider
 oidc:

@@ -29,16 +29,13 @@ resources:
     cpu: 10m
     memory: 40Mi
 
-# The SQLite database is on an iSCSI disk on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   mountPath: /var/opt/memos
   backup: true
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:memos
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-memos-config
 
 route:
   enabled: true

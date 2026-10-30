@@ -1,6 +1,6 @@
 # PostgreSQL with TimescaleDB for Tracearr, as on the home server (the same image). CloudNativePG cannot run this
-# image, so it is a Deployment of its own. The database is on an iSCSI disk on yggdrasil, a target of its own, see
-# kubernetes/media-server/media-server/README.md; only one pod may mount it, hence Recreate.
+# image, so it is a Deployment of its own. The database is on a ZFS volume on midgard-0 (see
+# kubernetes/storage/zfs-localpv); only one pod may mount it, hence Recreate.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +20,11 @@ spec:
       labels:
         app.kubernetes.io/name: tracearr-postgres
     spec:
+      tolerations:
+        - key: davydehaas.dev/dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
       securityContext:
         runAsNonRoot: true
         runAsUser: 1400
@@ -117,35 +122,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""
-  volumeName: media-server-tracearr-postgres-data
+  storageClassName: zfs-fast
+  volumeName: zfs-tracearr-postgres
   resources:
     requests:
       storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: media-server-tracearr-postgres-data
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: ""
-  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
-  csi:
-    driver: org.democratic-csi.node-manual
-    fsType: ext4
-    readOnly: false
-    volumeHandle: media-server-tracearr-postgres-data
-    volumeAttributes:
-      portal: "192.168.1.44:3260"
-      iqn: "iqn.2026-10.nl.davydehaas:tracearr-postgres"
-      lun: "0"
-      node_attach_driver: iscsi
-      provisioner_driver: node-manual
-  claimRef:
-    namespace: media-server
-    name: tracearr-postgres-data

@@ -26,10 +26,13 @@ resources:
     cpu: 30m
     memory: 800Mi
 
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   backup: true
   size: 5Gi
   mountPath: /factorio
+  storageClass: zfs-fast
+  volumeName: zfs-factorio-config
 
 # Reachable on the LAN at this address, outside the HTTP gateway
 service:

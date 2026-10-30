@@ -35,6 +35,13 @@ jellyfin:
       - name: TZ
         value: Europe/Amsterdam
 
+  # The config and the media are on midgard-0
+  tolerations:
+    - key: davydehaas.dev/dedicated
+      operator: Equal
+      value: storage
+      effect: NoSchedule
+
   persistence:
     config:
       existingClaim: jellyfin-config

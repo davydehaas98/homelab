@@ -1,5 +1,5 @@
 # IPTV manager that serves Plex as an HDHomeRun tuner and provides M3U and XMLTV output. The all-in-one image runs
-# PostgreSQL, Redis, nginx, uWSGI and Celery in one container, so its /data volume is a database disk on yggdrasil.
+# PostgreSQL, Redis, nginx, uWSGI and Celery in one container, so its /data volume is a ZFS volume on midgard-0.
 # Left out: GPU devices and a priority boost, which the nodes do not offer. The image needs root to start its services
 # (it drops to PUID and PGID itself), so the pod runs as root with the default capabilities.
 image:
@@ -30,15 +30,13 @@ resources:
     cpu: 200m
     memory: 1.5Gi
 
-# PostgreSQL does not work on NFS, so the disk is on yggdrasil, see kubernetes/media-server/media-server/README.md
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   mountPath: /data
   backup: true
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:dispatcharr
-    lun: 0
+  storageClass: zfs-fast
+  volumeName: zfs-dispatcharr-config
 
 # Plex on the home server reaches the tuner (http://192.168.1.59:9191) on this address, outside the HTTP gateway
 service:

@@ -69,12 +69,17 @@ kube-prometheus-stack:
         requests:
           cpu: 200m
           memory: 4Gi
-      # The iSCSI disk of templates/prometheus-volume.yaml
+      # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
+      tolerations: &storage-tolerations
+        - key: davydehaas.dev/dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: ""
-            volumeName: prometheus-db
+            storageClassName: zfs-fast
+            volumeName: zfs-prometheus-db
             accessModes:
               - ReadWriteOnce
             resources:
@@ -113,10 +118,13 @@ kube-prometheus-stack:
         requests:
           cpu: 10m
           memory: 70Mi
+      # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
+      tolerations: *storage-tolerations
       storage:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs
+            storageClassName: zfs-fast
+            volumeName: zfs-alertmanager
             accessModes:
               - ReadWriteOnce
             resources:

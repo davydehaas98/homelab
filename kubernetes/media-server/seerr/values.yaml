@@ -21,12 +21,17 @@ seerr-chart:
   service:
     port: 5055
 
-  # The volume is in templates/config-volume.yaml. "-" is no storage class, so the claim binds to it by name
+  # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), which the claim binds to by name
+  tolerations:
+    - key: davydehaas.dev/dedicated
+      operator: Equal
+      value: storage
+      effect: NoSchedule
   config:
     persistence:
       size: 1Gi
-      storageClass: "-"
-      volumeName: media-server-seerr-config
+      storageClass: zfs-fast
+      volumeName: zfs-seerr-config
 
   resources:
     limits:

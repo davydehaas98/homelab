@@ -1,33 +1,5 @@
-# The code, config, themes and custom apps of Nextcloud: some 30,000 small files, which are too slow on NFS (the first
-# start copies the whole program and never finished). An iSCSI disk on yggdrasil is mounted as a local ext4 disk, see
-# kubernetes/media-server/media-server/README.md. The files of the users stay on NFS.
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nextcloud-html
-spec:
-  capacity:
-    storage: 16Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: ""
-  # Mounted by the democratic-csi driver `node-manual` (kubernetes/storage/democratic-csi)
-  csi:
-    driver: org.democratic-csi.node-manual
-    fsType: ext4
-    readOnly: false
-    volumeHandle: nextcloud-html
-    volumeAttributes:
-      portal: "192.168.1.44:3260"
-      iqn: "iqn.2026-10.nl.davydehaas:nextcloud"
-      lun: "0"
-      node_attach_driver: iscsi
-      provisioner_driver: node-manual
-  claimRef:
-    namespace: nextcloud
-    name: nextcloud-html
----
+# The code, config, themes and custom apps of Nextcloud: some 30,000 small files, on a ZFS volume on midgard-0 (see
+# kubernetes/storage/zfs-localpv).
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -35,8 +7,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""
-  volumeName: nextcloud-html
+  storageClassName: zfs-fast
+  volumeName: zfs-nextcloud-html
   resources:
     requests:
       storage: 16Gi

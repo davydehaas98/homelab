@@ -1,10 +1,13 @@
+# The photos and videos, a ZFS volume on `tank` (kubernetes/storage/zfs-localpv)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: immich-library
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
+  storageClassName: zfs-tank
+  volumeName: zfs-immich-library
   resources:
     requests:
       storage: 200Gi

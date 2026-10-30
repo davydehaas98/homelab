@@ -58,10 +58,13 @@ resources:
     cpu: 450m
     memory: 1.5Gi
 
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   backup: true
   size: 5Gi
   mountPath: /data
+  storageClass: zfs-fast
+  volumeName: zfs-minecraft-config
 
 # Reachable on the LAN at this address, outside the HTTP gateway
 service:

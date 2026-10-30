@@ -1,0 +1,52 @@
+# The static volumes of values.yaml: an existing dataset, imported with a ZFSVolume that is already Ready, so the
+# driver only mounts it. Neither has a finalizer or is pruned, so removing an entry never destroys a dataset.
+{{- range .Values.volumes }}
+{{- $pool := printf "%s/k8s" .pool }}
+---
+apiVersion: zfs.openebs.io/v1
+kind: ZFSVolume
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  capacity: {{ mul (trimSuffix "Gi" .size | int64) 1073741824 | quote }}
+  fsType: zfs
+  ownerNodeID: midgard-0
+  poolName: {{ $pool }}
+  volumeType: DATASET
+status:
+  state: Ready
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zfs-{{ .name }}
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  capacity:
+    storage: {{ .size }}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: zfs-{{ .pool }}
+  csi:
+    driver: zfs.csi.openebs.io
+    fsType: zfs
+    volumeHandle: {{ .name }}
+    volumeAttributes:
+      openebs.io/poolname: {{ $pool }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - midgard-0
+  claimRef:
+    namespace: {{ .namespace }}
+    name: {{ .claim }}
+{{- end }}

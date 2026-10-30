@@ -190,6 +190,7 @@ kyverno-policies:
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
+        - plex
         - prometheus-node-exporter
         - zfs-localpv
     disallow-host-ports:
@@ -201,6 +202,7 @@ kyverno-policies:
         - kube-system
         - nfs-subdir-external-provisioner
         - node-feature-discovery
+        - plex
         - prometheus-node-exporter
         - zfs-localpv
     require-run-as-nonroot:

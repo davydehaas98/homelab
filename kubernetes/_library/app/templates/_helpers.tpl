@@ -39,6 +39,21 @@ app.kubernetes.io/part-of: {{ .Chart.Name | quote }}
 {{ include "app.workload" . }}
 ---
 {{ include "app.service" . }}
+{{- with .Values.gpu }}
+---
+# A GPU for the pod, through Dynamic Resource Allocation (kubernetes/core/intel-gpu-resource-driver)
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaimTemplate
+metadata:
+  name: {{ template "app.fullname" $ }}-gpu
+spec:
+  spec:
+    devices:
+      requests:
+        - name: gpu
+          exactly:
+            deviceClassName: {{ .deviceClassName }}
+{{- end }}
 {{- if (include "app.configFiles" . | trim) }}
 ---
 {{ include "app.configFiles" . }}

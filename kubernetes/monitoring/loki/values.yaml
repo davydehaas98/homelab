@@ -115,8 +115,15 @@ loki:
       requests:
         cpu: 250m
         memory: 2.5Gi
+    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
     persistence:
       size: 5Gi
+      storageClass: zfs-fast
+    tolerations: &storage-tolerations
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
     affinity: null
     extraArgs:
       - "-config.expand-env=true"
@@ -150,9 +157,12 @@ loki:
       requests:
         cpu: 30m
         memory: 150Mi
+    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
     persistence:
       size: 5Gi
+      storageClass: zfs-fast
       enableStatefulSetAutoDeletePVC: false
+    tolerations: *storage-tolerations
     affinity: null
     extraArgs:
       - "-config.expand-env=true"

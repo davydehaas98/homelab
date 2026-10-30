@@ -24,10 +24,17 @@ seaweedfs:
         - name: velero
         - name: talos-backup
 
+    # A ZFS volume on `tank` on midgard-0 (kubernetes/storage/zfs-localpv), bound to the chart's claim
     data:
       type: persistentVolumeClaim
-      size: 20Gi
-      storageClass: nfs
+      size: 50Gi
+      storageClass: zfs-tank
+    # A string in this chart
+    tolerations: |
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
 
     # The image runs as root, but weed only needs to own /data (tested as nobody). The files on NFS were chowned once,
     # as fsGroup does not apply there.
