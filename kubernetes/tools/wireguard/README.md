@@ -7,7 +7,7 @@ port is UDP 51820 on `192.168.1.61`, a LoadBalancer address. The admin interface
 
 Setup, in order:
 
-1. `sudo sh lun.sh create wireguard 1G` on yggdrasil, and sync the Cilium app (its pool now includes `.61`).
+1. Sync the Cilium app (its pool now includes `.61`).
 2. Set `deploy: true` in `argocd.yaml`, push, and open the interface through the port-forward. The setup wizard asks for the admin
    account; set the host to `wireguard.davydehaas.nl` (it points at the public address) and the port to 51820.
 3. Check the interface settings: the device should be `eth0`, and turn IPv6 off if the pod has none.

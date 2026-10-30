@@ -9,7 +9,7 @@ flowchart TB
 
     sab["SABnzbd<br/>:8080"]
 
-    subgraph storage["/mnt/storage on the home server (NFS)"]
+    subgraph storage["Media disk of midgard-0"]
         downloads["downloads/usenet<br/>imported by Sonarr, Radarr, Lidarr"]
         subgraph media["media"]
             music[music]

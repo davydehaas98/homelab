@@ -25,7 +25,7 @@ while read -r name namespace selector container command; do
         ls -1t "${DUMPS}/${name}" | tail -n +$((KEEP + 1)) | while read -r old; do
             rm -f "${DUMPS}/${name}/${old}"
         done
-        echo "${name}: dumped $(du -h "${file}" | cut -f1)"
+        echo "${name}: dumped $(ls -l "${file}" | awk '{print $5}') bytes"
     else
         rm -f "${file}.tmp"
         echo "${name}: dump failed"

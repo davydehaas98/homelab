@@ -82,12 +82,11 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 
 ### storage
 
-| App                             | Description                        |
-| ------------------------------- | ---------------------------------- |
-| cloudnative-pg                  | PostgreSQL operator                |
-| democratic-csi                  | iSCSI volumes                      |
-| nfs-subdir-external-provisioner | NFS volumes (default StorageClass) |
-| seaweedfs                       | S3 storage                         |
+| App            | Description                       |
+| -------------- | --------------------------------- |
+| cloudnative-pg | PostgreSQL operator               |
+| seaweedfs      | S3 storage                        |
+| zfs-localpv    | ZFS volumes (default StorageClass) |
 
 ### tools
 
@@ -101,9 +100,9 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 
 ## Hardware
 
-|         | Home server (`yggdrasil`)        | 4x Turing RK1 (Turing Pi 2)      |
-| ------- | -------------------------------- | -------------------------------- |
-| CPU     | Intel i5 10600K (6 cores, amd64) | Rockchip RK3588 (8 cores, arm64) |
-| RAM     | 2x 16 GB DDR4                    | 16 GB LPDDR4                     |
-| Storage | 3x 4 TB HDD (RAID), 16 TB HDD    | eMMC                             |
-| OS      | Ubuntu Server                    | Talos                            |
+|         | Storage node (`midgard-0`)              | 4x Turing RK1 (Turing Pi 2)      |
+| ------- | --------------------------------------- | -------------------------------- |
+| CPU     | Intel i5 10600K (6 cores, amd64)        | Rockchip RK3588 (8 cores, arm64) |
+| RAM     | 2x 16 GB DDR4                           | 16 GB LPDDR4                     |
+| Storage | 128 GB SSD, 500 GB NVMe, 3x 4 TB, 16 TB | eMMC                             |
+| OS      | Talos                                   | Talos                            |

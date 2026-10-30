@@ -2,8 +2,9 @@
 
 Guidance for AI coding agents in this repository.
 
-GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim-0`–`3`, arm64), Cilium,
-and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment.
+GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim-0`–`3`, arm64) and the
+storage node `midgard-0` (amd64), Cilium, and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a
+deployment.
 
 ## Apps
 
@@ -15,7 +16,8 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 - Each app is a wrapper chart: the upstream chart as a dependency, its overrides in `values.yaml`, and extra
   manifests in `templates/`. Single-container apps use the library chart `kubernetes/_library/app` instead and
   only set values (see its README). New apps start from a copy of `kubernetes/_base/`, following the `add-app` skill.
-- Images must publish arm64.
+- Images must publish the architecture of their node: amd64 for an app with a volume, which runs on `midgard-0`, and
+  arm64 for the rest, which run on the RK1 nodes.
 - YAML style: `resources` with `limits` before `requests` and keys alphabetical, memory in `Mi` below 1Gi and `Gi`
   from there, double quotes, indented sequences. Templates are not linted, so keep to it there too.
 
@@ -39,9 +41,10 @@ and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a deployment
 - **Logins.** Authentik, through a gateway `SecurityPolicy`, the app's native OIDC, or the app's own login. Adding
   a client is in `kubernetes/security/authentik/README.md`. Ship the sealed credentials in the same commit as the
   policy: a policy without its Secret breaks the route.
-- **Storage.** The default StorageClass is NFS from the home server. SQLite apps and databases get an iSCSI disk
-  of their own instead, see `kubernetes/media-server/media-server/README.md`. The nodes have no usable data disk,
-  so node-local storage (Longhorn) is not an option.
+- **Storage.** Volumes are ZFS datasets on `midgard-0`, see `kubernetes/storage/zfs-localpv/README.md`: StorageClass
+  `zfs-fast` (default, NVMe) or `zfs-tank` (RAIDZ1, for large files). A pod with such a volume can only run there and
+  must tolerate its taint, which the library chart does. The media is a `local` volume on the same node. The RK1 nodes
+  have no usable data disk, so node-local storage there (Longhorn) is not an option.
 - **Monitoring.** Prometheus picks up ServiceMonitors and PodMonitors from all namespaces. Its CRDs come from the
   `prometheus-crd` app, which must match the operator version. Grafana only reads dashboard ConfigMaps from its
   own namespace.

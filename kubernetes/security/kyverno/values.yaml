@@ -131,11 +131,9 @@ kyverno-policies:
   # They cannot meet the standard, so leave them out of the reports and let the rest show what can be fixed.
   vpolExclude:
     excludeNamespaces:
-      - democratic-csi
       - fluent-bit
       - intel-gpu-resource-driver
       - kube-system
-      - nfs-subdir-external-provisioner
       - node-feature-discovery
       - node-problem-detector
       - prometheus-node-exporter
@@ -152,11 +150,9 @@ kyverno-policies:
   vpolExcludeByPolicy:
     disallow-host-path: &excludeNodeAgent
       excludeNamespaces:
-        - democratic-csi
         - fluent-bit
         - intel-gpu-resource-driver
         - kube-system
-        - nfs-subdir-external-provisioner
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter
@@ -169,12 +165,10 @@ kyverno-policies:
     restrict-volume-types: *excludeNodeAgent
     require-run-as-non-root-user:
       excludeNamespaces:
-        - democratic-csi
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
         - kube-system
-        - nfs-subdir-external-provisioner
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter
@@ -186,12 +180,10 @@ kyverno-policies:
             object.metadata.labels.exists(k, k == 'role' && object.metadata.labels[k] == 'node-agent'))
     disallow-host-namespaces:
       excludeNamespaces:
-        - democratic-csi
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
         - kube-system
-        - nfs-subdir-external-provisioner
         - node-feature-discovery
         - node-problem-detector
         - plex
@@ -199,13 +191,11 @@ kyverno-policies:
         - zfs-localpv
     disallow-host-ports:
       excludeNamespaces:
-        - democratic-csi
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
         - kube-system
         - mosquitto
-        - nfs-subdir-external-provisioner
         - node-feature-discovery
         - node-problem-detector
         - plex
@@ -213,11 +203,9 @@ kyverno-policies:
         - zfs-localpv
     require-run-as-nonroot:
       excludeNamespaces:
-        - democratic-csi
         - fluent-bit
         - intel-gpu-resource-driver
         - kube-system
-        - nfs-subdir-external-provisioner
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter

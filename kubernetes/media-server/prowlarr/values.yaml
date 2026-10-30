@@ -5,7 +5,7 @@ podSecurityContext:
 
 securityContext: {}
 
-# linuxserver.io images run as this user and group: the owner of the media on the NFS share
+# linuxserver.io images run as this user and group: the owner of the media
 env:
   PUID: 1400
   PGID: 1400

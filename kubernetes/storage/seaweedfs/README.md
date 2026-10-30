@@ -1,6 +1,6 @@
 # SeaweedFS
 
-S3 storage for Loki, Velero and talos-backup: one all-in-one pod with its data on `nfs`, endpoint
+S3 storage for Loki, Velero and talos-backup: one all-in-one pod with its data on `tank`, endpoint
 `http://seaweedfs-all-in-one.seaweedfs:8333`. The chart's post-install hook creates the buckets.
 
 ## Credentials

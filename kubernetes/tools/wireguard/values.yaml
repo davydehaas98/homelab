@@ -39,16 +39,10 @@ resources:
     cpu: 10m
     memory: 70Mi
 
-# The database is SQLite, so the disk is on yggdrasil, a target of its own for this app, see
-# kubernetes/media-server/media-server/README.md
 persistence:
   backup: true
   size: 1Gi
   mountPath: /etc/wireguard
-  iscsi:
-    targetPortal: 192.168.1.44:3260
-    iqn: iqn.2026-10.nl.davydehaas:wireguard
-    lun: 0
 
 # The router forwards UDP 51820 to this address
 service:

@@ -36,7 +36,7 @@ zigbee2mqtt:
         cpu: 10m
         memory: 200Mi
 
-    # Runs as the image's node user (1000), which owns the data on NFS (fsGroup does not apply there, the files were
+    # Runs as the image's node user (1000), which owns the data (the files were
     # chowned once)
     podSecurityContext:
       runAsUser: 1000

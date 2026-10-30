@@ -1,5 +1,5 @@
-# A pod that waits in ContainerCreating for ten minutes: usually an iSCSI disk that cannot attach or mount, see
-# kubernetes/media-server/media-server/README.md. The rules of the chart only fire after 15 minutes to an hour.
+# A pod that waits in ContainerCreating for ten minutes: usually a volume that cannot mount. The rules of the chart only
+# fire after 15 minutes to an hour.
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:

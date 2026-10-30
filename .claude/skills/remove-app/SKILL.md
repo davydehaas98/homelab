@@ -10,9 +10,8 @@ Decide first which one the user wants:
 - **Stop for a while, keep the data:** `suspend: true` in the app's `argocd.yaml` (see `kubernetes/README.md`; an app
   that is not a library app also needs `suspendValues` and its own templates reading `.Values.suspend`, as `nextcloud`
   does). The route stays and answers an error. Undo by removing the line.
-- **Remove for good:** the steps below. Deleting volumes and disks loses data; get the user's go-ahead for each of
-  those steps, and check for a backup first (Velero cannot snapshot the iSCSI disks, see "Backups" in
-  `kubernetes/media-server/media-server/README.md`).
+- **Remove for good:** the steps below. Deleting volumes loses data; get the user's go-ahead for each of those steps, and
+  check for a backup first (`kubernetes/storage/zfs-localpv/README.md`).
 
 The Applications have no finalizer, so removing one never deletes its workloads. An app whose chart has delete hooks
 (Argo CD adds `pre-delete-finalizer`/`post-delete-finalizer` to its Application) runs them when the Application goes.
@@ -25,12 +24,7 @@ The Applications have no finalizer, so removing one never deletes its workloads.
    `scripts/validate.sh -t`.
 3. **After the sync, in the cluster** (the user's go-ahead): delete its namespace, or, when other apps share it, its
    workloads by name. The VerticalPodAutoscalers go with the workloads.
-4. **Volumes.** An NFS volume (default StorageClass) is archived on the home server when its claim goes
-   (`archiveOnDelete`). An iSCSI PersistentVolume is `Retain`: delete it by hand once its claim is gone.
-5. **The iSCSI disk on yggdrasil**, which `lun.sh` cannot remove. Give the user the commands, after
-   `sudo targetcli sessions` shows no session on the target: `targetcli /iscsi delete iqn.2026-10.nl.davydehaas:<app>`,
-   `targetcli /backstores/fileio delete <app>-config`, `targetcli saveconfig`, then the image
-   `/mnt/md0/iscsi/<app>-config.img` and the backups in `/mnt/md0/kubernetes/backups/<app>`. Remove its row from the
-   table in that README.
-6. **Report** what is gone, what the user still has to run, and anything left (a shared namespace, an archived NFS
-   folder).
+4. **Volumes.** A ZFS PersistentVolume is `Retain`: once its claim is gone, delete the PV and give the user the command
+   to destroy the dataset under `<pool>/k8s` and its copy under `tank/backup/fast`. Remove a static volume from
+   `volumes` in `kubernetes/storage/zfs-localpv/values.yaml`.
+5. **Report** what is gone, what the user still has to run, and anything left (a shared namespace, a dataset).

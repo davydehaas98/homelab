@@ -14,6 +14,5 @@ curl -s https://factory.talos.dev/schematics \
             - talos.hostname='${NODE_NAME}'
         systemExtensions:
             officialExtensions:
-                - siderolabs/iscsi-tools
                 - siderolabs/util-linux-tools
     ' | jq --raw-output '.id'

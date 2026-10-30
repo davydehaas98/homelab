@@ -40,7 +40,7 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (and .Values.persistence (not .Values.persistence.iscsi)) .Values.media .Values.backups }}
+      {{- if or .Values.persistence .Values.media .Values.backups }}
       # The volumes are on midgard-0 (kubernetes/storage/zfs-localpv), which only runs the apps whose data is there
       tolerations:
         - key: davydehaas.dev/dedicated
@@ -101,7 +101,7 @@ spec:
           resources: {{ toYaml $resources | nindent 12 }}
           securityContext: {{ toYaml (merge (deepCopy (.Values.securityContext | default dict)) (dict "allowPrivilegeEscalation" false)) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
-          # The first start of an app with a new database runs its migrations, which takes minutes on NFS.
+          # The first start of an app with a new database runs its migrations, which can take minutes.
           # The liveness probe only starts once this one succeeds (up to 15 minutes), instead of killing the app halfway.
           startupProbe: {{ toYaml (merge (deepCopy $probe) (dict "periodSeconds" 10 "failureThreshold" 90)) | nindent 12 }}
           livenessProbe: {{ toYaml $probe | nindent 12 }}

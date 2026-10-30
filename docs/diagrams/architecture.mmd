@@ -5,43 +5,38 @@ flowchart TB
 
     unifi["UniFi Gateway Ultra<br/>port forward :80, :443"]
 
-    subgraph edge["Home server (yggdrasil, 192.168.1.44): davydehaas.nl"]
-        traefik["Traefik<br/>terminates TLS"]
-        docker["Docker services<br/>Plex, Ollama, AdGuard Home,<br/>WireGuard, ..."]
-    end
-
-    subgraph k8s["Cluster yggdrasil, 4x Turing RK1, Talos, arm64"]
-        envoy["Envoy Gateway<br/>192.168.1.56"]
-        authentik["Authentik<br/>OIDC login"]
-        apps["Media apps<br/>Sonarr, Radarr, Lidarr, Prowlarr,<br/>Bazarr, SABnzbd, Seerr, Jellyfin"]
-        immich["Immich<br/>CloudNativePG database"]
-        factorio["Factorio<br/>LoadBalancer 192.168.1.58"]
-        monitoring["Prometheus, Grafana, Loki"]
-        argo["Argo CD"]
-    end
-
-    subgraph storage["Home server (yggdrasil, 192.168.1.44): storage"]
-        media[("NFS /mnt/storage<br/>media + downloads")]
-        nfs[("NFS /mnt/md0/kubernetes<br/>volumes + app backups")]
-        iscsi[("iSCSI :3260<br/>one target per SQLite app<br/>or database")]
+    subgraph k8s["Cluster yggdrasil, Talos"]
+        subgraph rk1["4x Turing RK1, arm64"]
+            envoy["Envoy Gateway<br/>192.168.1.56"]
+            argo["Argo CD"]
+        end
+        subgraph midgard["midgard-0, amd64: apps with data"]
+            authentik["Authentik<br/>OIDC login"]
+            apps["Media apps<br/>Plex, Sonarr, Radarr, Lidarr, Prowlarr,<br/>Bazarr, SABnzbd, Seerr, Jellyfin"]
+            immich["Immich<br/>CloudNativePG database"]
+            factorio["Factorio<br/>LoadBalancer 192.168.1.58"]
+            monitoring["Prometheus, Grafana, Loki"]
+            fast[("ZFS fast, NVMe<br/>configs + databases")]
+            tank[("ZFS tank, RAIDZ1<br/>files + backups")]
+            media[("Media disk<br/>media + downloads")]
+        end
     end
 
     browser -->|resolves| dns
     dns -.->|A record| unifi
     browser -->|HTTPS| unifi
     unifi -->|forward| envoy
-    envoy -->|"TLS passthrough (*.davydehaas.nl)"| traefik
-    traefik --> docker
     envoy -->|OIDC| authentik
     envoy -->|HTTPRoute| apps
     envoy -->|HTTPRoute| immich
     browser -.->|UDP 34197| factorio
 
-    apps -->|NFS, media claim| media
-    apps -->|NFS, nfs class and backups| nfs
-    apps -->|iSCSI, democratic-csi| iscsi
-    immich -->|NFS, photo library| nfs
-    immich -->|iSCSI, database| iscsi
+    apps -->|local volume| media
+    apps -->|zfs-fast| fast
+    apps -->|app backups| tank
+    immich -->|photo library| tank
+    immich -->|database| fast
+    fast -->|nightly copy| tank
 
     github -->|syncs main| argo
     argo -->|deploys| apps
@@ -50,5 +45,5 @@ flowchart TB
 
     classDef server fill:#e8eef7,stroke:#5b7bb0,color:#000
     classDef cluster fill:#eaf5ea,stroke:#4f9a4f,color:#000
-    class edge,storage server
-    class k8s cluster
+    class midgard server
+    class k8s,rk1 cluster

@@ -37,7 +37,7 @@ velero:
           region: us-east-1
           s3ForcePathStyle: "true"
           s3Url: http://seaweedfs-all-in-one.seaweedfs:8333
-    # The nfs StorageClass has no snapshots, volumes are backed up from the node agent instead
+    # Volumes are backed up from the node agent instead of with snapshots
     volumeSnapshotLocation: []
     uploaderType: kopia
 

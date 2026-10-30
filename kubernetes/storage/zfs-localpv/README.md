@@ -16,8 +16,8 @@ chroot /host zfs create tank/k8s
 
 The volumes moved from Ubuntu are static: `volumes` in `values.yaml` lists each dataset, which
 `templates/volumes.yaml` imports with a ZFSVolume and a PV `zfs-<name>`, and the app's claim names that PV and the
-pool's StorageClass. `fill-volumes.sh` creates the datasets and copies the data in, before the apps start. Removing
-an entry leaves the dataset; destroy it by hand.
+pool's StorageClass. Create a new dataset by hand first, with `quota` and `mountpoint=legacy`; a new app can just use a
+StorageClass instead. Removing an entry leaves the dataset; destroy it by hand.
 
 Its VolumeSnapshotClass needs the CRDs of `storage/snapshot-controller`; on a fresh cluster sync this app again once
 that one is healthy.

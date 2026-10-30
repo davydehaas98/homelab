@@ -16,13 +16,14 @@ tick each off before reporting the app as done. Moving an app from the home serv
    `{{ include "app.resources" . }}`, the rest in `values.yaml`. **Upstream chart**: the chart as a dependency.
 3. **Register it** in the copied `argocd.yaml`: `deploy: true`, plus `namespace:` and the other keys from
    `kubernetes/README.md` where needed. A new group also needs its path in the ApplicationSet's generator.
-4. **Image**: it must publish `linux/arm64`; check the manifest, not the name. Pin a version tag Renovate can follow.
+4. **Image**: it must publish the architecture of its node, `linux/amd64` with a volume and `linux/arm64` without; check
+   the manifest, not the name. Pin a version tag Renovate can follow.
 5. **Exposure**: an `HTTPRoute` on Gateway `envoy-gateway` (`sectionName: web-https`) and a DNS record in
    `terraform/cloudflare/davydehaas.dev/dns_record.tf` (`kubernetes_apps`, or `kubernetes_aliases` for aliases).
 6. **Login**: Authentik OIDC (the `add-oidc-client` skill), or the app's own. Commit the sealed credentials in the
    same change as the policy. Other secrets: the `seal-secret` skill.
-7. **Storage and monitoring**: a volume as in the library README (iSCSI for SQLite and databases, the
-   `add-iscsi-disk` skill), and a ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
+7. **Storage and monitoring**: a volume as in the library README (`zfs-fast` by default, `zfs-tank` for large files), and
+   a ServiceMonitor, PodMonitor or dashboard ConfigMap when the app exposes metrics.
 8. **Validate** with `scripts/validate.sh` (`-t` when `dns_record.tf` changed), always in the dev container
    (`podman exec`). It lints the YAML, renders the app and warns when the render has no Namespace (fine only for an
    app in another app's namespace).

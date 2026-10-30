@@ -49,8 +49,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.size` | | Size of the volume. |
 | `persistence.mountPath` | `/config` | Where the volume is mounted. |
 | `persistence.storageClass` | default class | StorageClass of the claim. |
-| `persistence.volumeName` | none | Bind the claim to a static volume, such as a ZFS volume of `kubernetes/storage/zfs-localpv` (`zfs-<name>`, with `storageClass` its pool's class). A pod with `persistence` (other than `iscsi`), `media` or `backups` tolerates the taint of `midgard-0`, where those volumes are. |
-| `persistence.iscsi.targetPortal`, `.iqn`, `.lun` | | Use a static iSCSI volume instead of a StorageClass, mounted by the democratic-csi driver (`kubernetes/storage/democratic-csi`). Give every app a target of its own (`iqn.2026-10.nl.davydehaas:<app>`, `lun: 0`), as a node logs out of a whole target when one pod stops. Only one pod may mount it. |
+| `persistence.volumeName` | none | Bind the claim to a static volume, such as a ZFS volume of `kubernetes/storage/zfs-localpv` (`zfs-<name>`, with `storageClass` its pool's class). A pod with `persistence`, `media` or `backups` tolerates the taint of `midgard-0`, where those volumes are. |
 | `persistence.labels` | | Extra labels of the claim. |
 | `persistence.backup` | `false` | Annotate the pod so Velero backs up the volume. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath` (+ `readOnly: true`). |

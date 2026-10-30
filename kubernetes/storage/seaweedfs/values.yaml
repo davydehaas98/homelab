@@ -36,8 +36,8 @@ seaweedfs:
         value: storage
         effect: NoSchedule
 
-    # The image runs as root, but weed only needs to own /data (tested as nobody). The files on NFS were chowned once,
-    # as fsGroup does not apply there.
+    # The image runs as root, but weed only needs to own /data (tested as nobody). The files were chowned once,
+    # so fsGroup is not needed.
     podSecurityContext:
       enabled: true
       runAsUser: 65534

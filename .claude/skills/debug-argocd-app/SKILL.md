@@ -35,9 +35,9 @@ logs and route status, and changes nothing. The steps say what to make of it and
    controller lacks the key, see "Sealed-secrets keys" in `talos/README.md`.
 7. **Healthy sync, broken pod**: `kubectl -n <ns> get pods`, then `describe pod` (events) and
    `logs --previous` for crash loops. Check, in order:
-   - `ImagePullBackOff` or `exec format error`: the image has no arm64 build.
-   - `Pending` on a PVC: the StorageClass, or an iSCSI disk that is not there (skill `add-iscsi-disk`).
-   - A SQLite or database error on NFS: it needs its own iSCSI disk.
+   - `ImagePullBackOff` or `exec format error`: the image has no build for the node (arm64 on the RK1s, amd64 on
+     `midgard-0`).
+   - `Pending` on a PVC: the StorageClass, the dataset of a static volume, or a pod without the toleration of `midgard-0`.
    - `FailedMount` on a Secret or ConfigMap: it is missing or in another namespace.
 8. **Reachable?** `kubectl -n <ns> get httproute` and check it is `Accepted` and `ResolvedRefs`, with parent Gateway
    `envoy-gateway`, `sectionName: web-https`. Then the DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`.
