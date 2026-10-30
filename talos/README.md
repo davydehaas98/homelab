@@ -38,14 +38,37 @@ A Raspberry Pi has no BMC: write the image to its SD card or USB SSD, and check 
 sudo dd if=gen/vanaheim-0.metal-arm64.raw of=/dev/rdiskN bs=4m status=progress
 ```
 
-The i5-10600k (`midgard-0`) boots the ISO from USB and installs itself from the installer image in its node file,
-which holds the schematic of `i5-10600k/gen-schematic-id.sh`: update it when the extensions change. Before applying
-the config in maintenance mode, check that only the install disk matches its `diskSelector`
-(`talosctl get disks --insecure -n <ip>`).
+The i5-10600k (`midgard-0`) boots in legacy BIOS mode, always from the NVMe, whose GRUB (from Ubuntu, on its first
+two partitions, which stay) loads the Talos GRUB config from `sda`. Upgrades come from the installer image in its node
+file, which holds the schematic of `i5-10600k/gen-schematic-id.sh`: update it when the extensions change. Install it
+from Ubuntu, over SSH:
 
 ```shell
 sh gen-image.sh -b i5-10600k -n midgard-0 -v v1.14.5
+scp gen/midgard-0.metal-amd64.raw davy@192.168.1.44:/tmp/
 ```
+
+On Ubuntu, write the image and add a GRUB entry, then boot Talos once; a reboot returns to Ubuntu:
+
+```shell
+sudo vgchange -an ubuntu-vg
+sudo dd if=/tmp/midgard-0.metal-amd64.raw of=/dev/sda bs=4M conv=fsync status=progress
+sudo tee -a /etc/grub.d/40_custom <<'EOF'
+menuentry "Talos" --id talos {
+  insmod part_gpt
+  insmod xfs
+  search --no-floppy --set=root --label BOOT
+  configfile /grub/grub.cfg
+}
+EOF
+sudo sed -i -e 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=saved/' -e 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=menu/' \
+  -e 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=5/' /etc/default/grub
+sudo update-grub && sudo grub-set-default 0 && sudo grub-reboot talos && sudo reboot
+```
+
+Check in maintenance mode that only `sda` matches the `diskSelector` (`talosctl get disks --insecure -n <ip>`), then
+apply the config. Once the node is healthy, `talosctl reboot` back to Ubuntu and make Talos the default with
+`sudo grub-set-default talos`.
 
 ## Bootstrap
 

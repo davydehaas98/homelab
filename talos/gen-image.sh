@@ -24,9 +24,8 @@ Generating Talos image.. (node: '${NODE_NAME}', version: '${TALOS_VERSION}')
 # Retrieve image schematic ID
 ID=$(sh ${BOARD}/gen-schematic-id.sh "${NODE_NAME}")
 
-# The boards are flashed with a disk image, the i5-10600k boots an ISO from USB
 case ${BOARD} in
-    i5-10600k) IMAGE_TYPE=metal-amd64.iso ;;
+    i5-10600k) IMAGE_TYPE=metal-amd64.raw ;;
     *) IMAGE_TYPE=metal-arm64.raw ;;
 esac
 
@@ -36,24 +35,17 @@ IMAGE=gen/${NODE_NAME}.${IMAGE_TYPE}
 
 mkdir -p gen
 
-if [ "${IMAGE_TYPE}" = "metal-amd64.iso" ]; then
-    echo "
-Retrieving image from '${WEBSITE}' ..
-"
-    curl --location ${WEBSITE} --output ${IMAGE}
-else
-    echo "
+echo "
 Retrieving image from '${WEBSITE}.xz' ..
 "
-    curl --location ${WEBSITE}.xz --output ${IMAGE}.xz
+curl --location ${WEBSITE}.xz --output ${IMAGE}.xz
 
-    echo "
+echo "
 Decompressing image '${IMAGE}.xz' ..
 "
 
-    # Decompress .xz file
-    xz --decompress --force --verbose ${IMAGE}.xz
-fi
+# Decompress .xz file
+xz --decompress --force --verbose ${IMAGE}.xz
 
 echo "
 Image downloaded and decompressed to '${IMAGE}'
