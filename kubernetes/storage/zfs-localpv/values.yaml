@@ -242,11 +242,6 @@ volumes:
     size: 50Gi
     namespace: seaweedfs
     claim: seaweedfs-all-in-one-data
-  - name: trivy-server
-    pool: fast
-    size: 5Gi
-    namespace: trivy-operator
-    claim: data-trivy-server-0
   - name: zigbee2mqtt-data
     pool: fast
     size: 1Gi

@@ -46,7 +46,7 @@ resources:
     memory: 500Mi
   requests:
     cpu: 1500m
-    memory: 500Mi
+    memory: 400Mi
 
 route:
   enabled: true

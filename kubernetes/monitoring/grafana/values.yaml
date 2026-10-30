@@ -109,7 +109,7 @@ grafana:
       memory: 2Gi
     requests:
       cpu: 40m
-      memory: 1000Mi
+      memory: 850Mi
 
   # Its init container runs as root to chown the data, which the restricted standard forbids. The data is already
   # owned by the grafana user (472).

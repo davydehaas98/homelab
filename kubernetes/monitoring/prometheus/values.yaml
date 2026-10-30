@@ -38,7 +38,7 @@ kube-prometheus-stack:
         limits:
           memory: 150Mi
         requests:
-          memory: 40Mi
+          memory: 30Mi
 
   prometheus:
     prometheusSpec:
@@ -68,7 +68,7 @@ kube-prometheus-stack:
           memory: 8Gi
         requests:
           cpu: 200m
-          memory: 4Gi
+          memory: 3.5Gi
       # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
       tolerations: &storage-tolerations
         - key: davydehaas.dev/dedicated
@@ -117,7 +117,7 @@ kube-prometheus-stack:
           memory: 150Mi
         requests:
           cpu: 10m
-          memory: 70Mi
+          memory: 40Mi
       # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
       tolerations: *storage-tolerations
       storage:

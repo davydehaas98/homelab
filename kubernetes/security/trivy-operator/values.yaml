@@ -33,16 +33,10 @@ trivy-operator:
       seccompProfile:
         type: RuntimeDefault
 
-  # The database of the built-in Trivy server is a ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to
-  # the claim of its StatefulSet. These tolerations apply to the operator too.
-  tolerations:
-    - key: davydehaas.dev/dedicated
-      operator: Equal
-      value: storage
-      effect: NoSchedule
-
   trivy:
-    storageClassName: zfs-fast
+    # The database of the built-in Trivy server is a cache in an emptyDir, downloaded again when its pod restarts, so it
+    # needs no volume and can run on the RK1 nodes
+    storageClassEnabled: false
     # The scan jobs unpack the layers of an image on the node. The /var disk of a node is 27 GiB and the images alone
     # take about 13, so without a limit a scan of a large image pushed a node into disk pressure and the kubelet evicted
     # pods (also other apps). A scan that needs more than this fails and is retried; the others stay up.

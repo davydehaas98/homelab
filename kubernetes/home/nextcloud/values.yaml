@@ -90,7 +90,7 @@ nextcloud:
           memory: 450Mi
         requests:
           cpu: 10m
-          memory: 300Mi
+          memory: 250Mi
       # Root like the main container, so the same: no privilege escalation
       securityContext:
         allowPrivilegeEscalation: false
@@ -119,7 +119,7 @@ nextcloud:
       memory: 600Mi
     requests:
       cpu: 30m
-      memory: 600Mi
+      memory: 200Mi
 
   # The first start copies Nextcloud to the volume, which takes longer than the liveness probe allows; it may kill the
   # container only after this probe has passed
