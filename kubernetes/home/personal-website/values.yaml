@@ -43,11 +43,18 @@ oidc:
 route:
   auth: public
   enabled: true
-  # Only this route sets a CSP and X-Frame-Options: apps that embed pages or need inline scripts would break on them
+  # Stricter than the defaults of the gateway (core/envoy-gateway/templates/client-traffic-policy.yaml), as it only
+  # loads its own files: apps that embed pages or need inline scripts would break on these
   filters:
     - type: ResponseHeaderModifier
       responseHeaderModifier:
         set:
+          - name: cross-origin-embedder-policy
+            value: require-corp
+          - name: cross-origin-opener-policy
+            value: same-origin
+          - name: cross-origin-resource-policy
+            value: same-origin
           - name: x-frame-options
             value: DENY
           - name: content-security-policy

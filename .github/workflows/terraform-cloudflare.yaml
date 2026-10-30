@@ -12,7 +12,6 @@ on:
 env:
   TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   TF_VAR_ipv4_address: ${{ secrets.SERVER_IPV4_ADDRESS }}
-  TF_VAR_ipv6_address: ${{ secrets.SERVER_IPV6_ADDRESS }}
 
 jobs:
   plan:

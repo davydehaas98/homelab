@@ -8,16 +8,6 @@ resource "cloudflare_dns_record" "root_a" {
   proxied = false
 }
 
-resource "cloudflare_dns_record" "root_aaaa" {
-  name    = "davydehaas.dev"
-  ttl     = 1
-  type    = "AAAA"
-  zone_id = var.zone_id
-
-  content = var.ipv6_address
-  proxied = false
-}
-
 resource "cloudflare_dns_record" "root_caa_issue" {
   name    = "davydehaas.dev"
   ttl     = 1

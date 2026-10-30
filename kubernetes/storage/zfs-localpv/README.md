@@ -19,6 +19,11 @@ The volumes moved from Ubuntu are static: `volumes` in `values.yaml` lists each 
 pool's StorageClass. Create a new dataset by hand first, with `quota` and `mountpoint=legacy`; a new app can just use a
 StorageClass instead. Removing an entry leaves the dataset; destroy it by hand.
 
+The driver only mounts a ZFSVolume with `status.state: Ready`, and without it a pod that restarts waits in
+`ContainerCreating` with `verifyMount: volume is not ready to be mounted`. Argo CD drops that field at the first sync after
+it created the object, so after adding an entry, set it once by hand, which also keeps it there:
+`kubectl -n zfs-localpv patch zfsvolume <name> --type=merge -p '{"status":{"state":"Ready"}}'`.
+
 Its VolumeSnapshotClass needs the CRDs of `storage/snapshot-controller`; on a fresh cluster sync this app again once
 that one is healthy.
 

@@ -41,7 +41,7 @@ spec:
         certificateRefs:
           - group: ""
             kind: Secret
-            name: default-tls-certificate
+            name: apex-tls-certificate
     # The old domain: Plex is served on it, the other names redirect to davydehaas.dev (templates/nl-redirects.yaml)
     - name: web-https-nl
       protocol: HTTPS
@@ -68,4 +68,4 @@ spec:
         certificateRefs:
           - group: ""
             kind: Secret
-            name: nl-tls-certificate
+            name: nl-apex-tls-certificate

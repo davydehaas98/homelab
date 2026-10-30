@@ -22,6 +22,8 @@ spec:
       - ECDHE-RSA-AES128-GCM-SHA256
       - ECDHE-ECDSA-AES256-GCM-SHA384
       - ECDHE-RSA-AES256-GCM-SHA384
+  # Needs UDP 443 forwarded by the UniFi gateway to the Envoy Gateway
+  http3: {}
   headers:
     enableEnvoyHeaders: false
     lateResponseHeaders:
@@ -34,3 +36,18 @@ spec:
           value: "no-referrer"
         - name: "x-content-type-options"
           value: "nosniff"
+      # Only where an app sets none of its own. The CSP limits framing, plugins and <base>, not scripts, as apps need inline
+      # scripts: it is no protection against XSS. Browsers follow frame-ancestors over X-Frame-Options, so these apps can
+      # still frame each other. Popups stay allowed for logins such as Plex's. Cross-Origin-Resource-Policy and
+      # -Embedder-Policy are not set here: app.plex.tv loads images from the Plex server, for one.
+      addIfAbsent:
+        - name: "content-security-policy"
+          value: "base-uri 'self'; object-src 'none'; frame-ancestors 'self' https://*.davydehaas.dev"
+        - name: "x-frame-options"
+          value: "SAMEORIGIN"
+        - name: "cross-origin-opener-policy"
+          value: "same-origin-allow-popups"
+      # Software and versions of the backends
+      remove:
+        - "server"
+        - "x-powered-by"
