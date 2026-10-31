@@ -1,0 +1,35 @@
+# Velero starts a pod per volume to upload or restore a snapshot, on the node of the volume, and does not give it the
+# tolerations of its node agent, so it waits forever on midgard-0. This adds the toleration to those pods only. If Kyverno
+# is down, a pod of Velero starts without it and waits.
+# The CRD is in this chart, so the first sync cannot dry-run the policy before the CRD exists.
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: velero-data-mover-toleration
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  autogen:
+    podControllers:
+      controllers: []
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: velero
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE"]
+        resources: ["pods"]
+  matchConditions:
+    - name: data-mover
+      expression: >-
+        has(object.metadata.labels) &&
+        ('velero.io/data-upload' in object.metadata.labels || 'velero.io/data-download' in object.metadata.labels)
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: >-
+          has(object.spec.tolerations) ?
+          [JSONPatch{op: "add", path: "/spec/tolerations/-", value: dyn({"key": "davydehaas.dev/dedicated", "operator": "Equal", "value": "storage", "effect": "NoSchedule"})}] :
+          [JSONPatch{op: "add", path: "/spec/tolerations", value: dyn([{"key": "davydehaas.dev/dedicated", "operator": "Equal", "value": "storage", "effect": "NoSchedule"}])}]

@@ -34,8 +34,9 @@ backup:
   schedule: "0 1 * * *"
   # Days of dumps and of copies on `tank`
   keep: 14
-  # Datasets of `fast` not worth copying: metrics that change all day, and a cache
+  # Datasets of `fast` not worth copying: metrics that change all day, and caches
   exclude:
+    - plex-cache
     - prometheus-db
     - trivy-server
   databases:
@@ -226,6 +227,11 @@ volumes:
     size: 100Gi
     namespace: plex
     claim: plex-config
+  - name: plex-cache
+    pool: fast
+    size: 100Gi
+    namespace: plex
+    claim: plex-cache
   - name: alertmanager
     pool: fast
     size: 2Gi

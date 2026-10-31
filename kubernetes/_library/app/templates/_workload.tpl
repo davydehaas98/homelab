@@ -140,6 +140,13 @@ spec:
               name: backups
               subPath: {{ .subPath }}
             {{- end }}
+            {{- range $claim := .Values.extraClaims }}
+            {{- range .mounts }}
+            - mountPath: {{ .mountPath | quote }}
+              name: {{ $claim.name }}
+              subPath: {{ .subPath | quote }}
+            {{- end }}
+            {{- end }}
       volumes:
         {{- if .Values.persistence }}
         - name: config
@@ -155,6 +162,11 @@ spec:
         - name: backups
           persistentVolumeClaim:
             claimName: {{ .claimName }}
+        {{- end }}
+        {{- range .Values.extraClaims }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}
         {{- end }}
         {{- range .Values.emptyDirs }}
         - name: {{ .name }}

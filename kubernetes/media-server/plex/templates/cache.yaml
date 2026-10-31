@@ -1,0 +1,13 @@
+# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), left out of the backups
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: zfs-fast
+  volumeName: zfs-plex-cache
+  resources:
+    requests:
+      storage: 100Gi

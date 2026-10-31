@@ -24,7 +24,7 @@ probe:
 
 resources:
   limits:
-    memory: 4Gi
+    memory: 6Gi
   requests:
     cpu: 100m
     memory: 1Gi
@@ -33,11 +33,22 @@ resources:
 gpu:
   deviceClassName: gpu.intel.com
 
-# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), too large for Velero
+# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), with what cannot be rebuilt: the databases and settings
 persistence:
   size: 100Gi
   storageClass: zfs-fast
   volumeName: zfs-plex-config
+
+# Previews, artwork and cache, which Plex can rebuild, on a volume that is not backed up (templates/cache.yaml)
+extraClaims:
+  - name: plex-cache
+    mounts:
+      - mountPath: /config/Library/Application Support/Plex Media Server/Cache
+        subPath: Cache
+      - mountPath: /config/Library/Application Support/Plex Media Server/Media
+        subPath: Media
+      - mountPath: /config/Library/Application Support/Plex Media Server/Metadata
+        subPath: Metadata
 
 # At the paths of the Docker container, so the libraries keep their folders
 media:
