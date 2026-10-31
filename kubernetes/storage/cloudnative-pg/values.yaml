@@ -12,3 +12,12 @@ cloudnative-pg:
     requests:
       cpu: 30m
       memory: 100Mi
+
+# Backs up the databases to the bucket `cnpg` on SeaweedFS, see README.md. Its TLS certificates come from cert-manager.
+plugin-barman-cloud:
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi

@@ -245,7 +245,7 @@ volumes:
     claim: prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0
   - name: seaweedfs-data
     pool: tank
-    size: 50Gi
+    size: 500Gi
     namespace: seaweedfs
     claim: seaweedfs-all-in-one-data
   - name: zigbee2mqtt-data

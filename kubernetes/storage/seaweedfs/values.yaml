@@ -23,11 +23,12 @@ seaweedfs:
         - name: loki-admin
         - name: velero
         - name: talos-backup
+        - name: cnpg
 
     # A ZFS volume on `tank` on midgard-0 (kubernetes/storage/zfs-localpv), bound to the chart's claim
     data:
       type: persistentVolumeClaim
-      size: 50Gi
+      size: 500Gi
       storageClass: zfs-tank
     # A string in this chart
     tolerations: |
