@@ -2,7 +2,7 @@
 image:
   registry: ghcr.io
   repository: usememos/memos
-  tag: 0.31.0
+  tag: 26.10.0
 
 port: 5230
 
