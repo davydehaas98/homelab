@@ -1,0 +1,43 @@
+# The backup of the database in the bucket `cnpg` on SeaweedFS, see kubernetes/storage/cloudnative-pg/README.md
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: immich-database
+spec:
+  retentionPolicy: 14d
+  configuration:
+    destinationPath: s3://cnpg/
+    endpointURL: http://seaweedfs-all-in-one.seaweedfs:8333
+    s3Credentials:
+      accessKeyId:
+        name: database-backup-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: database-backup-credentials
+        key: ACCESS_SECRET_KEY
+    data:
+      compression: gzip
+    wal:
+      compression: gzip
+  instanceSidecarConfiguration:
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: immich-database
+spec:
+  # 00:30 UTC, with seconds first
+  schedule: "0 30 0 * * *"
+  immediate: true
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  cluster:
+    name: immich-database

@@ -12,6 +12,12 @@ spec:
   instances: 1
   # The budget of the primary blocks every drain with one instance, so a node upgrade could never finish
   enablePDB: false
+  # Backs up to the bucket `cnpg`, see templates/database-backup.yaml
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: nextcloud-database
   affinity:
     tolerations:
       - key: davydehaas.dev/dedicated
