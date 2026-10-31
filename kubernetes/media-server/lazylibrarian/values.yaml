@@ -1,0 +1,56 @@
+podSecurityContext:
+  fsGroup: 1400
+  # The media disk is large: only change its group when the root of the volume differs
+  fsGroupChangePolicy: OnRootMismatch
+securityContext: {}
+
+# linuxserver.io images run as this user and group: the owner of the media
+env:
+  PUID: 1400
+  PGID: 1400
+
+port: 5299
+
+media:
+  claimName: media
+  # One mount with only its own downloads and library, so an import moves the file instead of copying it
+  mounts:
+    - mountPath: /data/books
+      subPath: data/books
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 30m
+    memory: 200Mi
+
+# Its tags are commit hashes without an order, so Renovate can't follow them: update this by hand
+image:
+  registry: ghcr.io
+  repository: linuxserver/lazylibrarian
+  tag: 85edbb10-ls387
+
+replicas: 1
+
+# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
+persistence:
+  size: 2Gi
+  storageClass: zfs-fast
+
+route:
+  enabled: true
+  hostnames:
+    - lazylibrarian.davydehaas.dev
+  # Redirects to the hostname above, see kubernetes/_library/app/README.md
+  aliases:
+    - books.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+# Sign in with Authentik (client `lazylibrarian`), the credentials are in templates/oidc-credentials.yaml
+oidc:
+  enabled: true

@@ -65,6 +65,7 @@ locals {
     "immich",
     "it-tools",
     "jellyfin",
+    "lazylibrarian",
     "lidarr",
     "memos",
     "nextcloud",
@@ -91,6 +92,7 @@ locals {
   kubernetes_aliases = [
     "adguardhome",
     "authentik",
+    "books",
     "budget",
     "drive",
     "dvr",

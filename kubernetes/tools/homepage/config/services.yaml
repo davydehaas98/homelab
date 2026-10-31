@@ -43,6 +43,12 @@
           url: http://lidarr.media-server.svc.cluster.local:8686
           key: "{{HOMEPAGE_FILE_LIDARR_KEY}}"
 
+    - LazyLibrarian:
+        icon: lazylibrarian.png
+        href: https://lazylibrarian.davydehaas.dev
+        description: Book management
+        siteMonitor: http://lazylibrarian.media-server.svc.cluster.local:5299
+
     - Plex:
         icon: plex.png
         href: https://plex.davydehaas.dev

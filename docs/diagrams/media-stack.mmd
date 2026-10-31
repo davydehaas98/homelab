@@ -6,6 +6,7 @@ flowchart TB
     lidarr["Lidarr<br/>:8686"]
     sonarr["Sonarr<br/>:8989"]
     radarr["Radarr<br/>:7878"]
+    lazylibrarian["LazyLibrarian<br/>:5299"]
 
     sab["SABnzbd<br/>:8080"]
 
@@ -14,6 +15,7 @@ flowchart TB
             music[music]
             series[series]
             movies[movies]
+            books[books]
         end
     end
 
@@ -25,17 +27,20 @@ flowchart TB
     prowlarr -->|indexers| sonarr
     prowlarr -->|indexers| radarr
     prowlarr -->|indexers| lidarr
+    prowlarr -->|indexers| lazylibrarian
     bazarr -->|subtitles| sonarr
     bazarr -->|subtitles| radarr
 
     sonarr -->|grabs| sab
     radarr -->|grabs| sab
     lidarr -->|grabs| sab
+    lazylibrarian -->|grabs| sab
     sab --> media
 
     sonarr --> series
     radarr --> movies
     lidarr --> music
+    lazylibrarian --> books
 
     media --> jellyfin
     media --> plex
@@ -44,7 +49,7 @@ flowchart TB
     classDef downloader fill:#ffa500,stroke:#b36b00,color:#000
     classDef streamer fill:#90ee90,stroke:#3c9a3c,color:#000
     classDef request fill:#dda0dd,stroke:#8e5a8e,color:#000
-    class prowlarr,bazarr,sonarr,radarr,lidarr manager
+    class prowlarr,bazarr,sonarr,radarr,lidarr,lazylibrarian manager
     class sab downloader
     class jellyfin,plex streamer
     class seerr request

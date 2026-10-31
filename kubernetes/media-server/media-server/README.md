@@ -5,9 +5,9 @@ static ZFS volume `media-server-backups` on `tank`, shared by the apps for their
 `media-server` namespace. Each app has its own ZFS volume for its config, see
 [`storage/zfs-localpv`](../../storage/zfs-localpv/README.md), which also covers how they are backed up.
 
-On the disk, `data/series`, `data/movies` and `data/music` each hold a `library` and a `downloads` folder. Sonarr,
-Radarr and Lidarr mount only their own of these at the same path under `/data`, so an import moves the file instead of
-copying it, and they can't see each other's media. SABnzbd mounts all of `data` at `/data` for the same reason. Its
+On the disk, `data/series`, `data/movies`, `data/music` and `data/books` each hold a `library` and a `downloads` folder.
+Sonarr, Radarr, Lidarr and LazyLibrarian mount only their own of these at the same path under `/data`, so an import moves
+the file instead of copying it, and they can't see each other's media. SABnzbd mounts all of `data` at `/data` for the same reason. Its
 folders `/data/downloads/incomplete` and `/data/downloads/complete` and the `downloads` folder per category are in
 its config, not in Terraform. Bazarr uses the paths of the `*arr` apps, and Plex and Jellyfin mount each `library`.
 

@@ -40,6 +40,9 @@ oidcClients:
   - name: IT Tools
     slug: it-tools
     redirectURL: https://it-tools.davydehaas.dev/oauth2/callback
+  - name: LazyLibrarian
+    slug: lazylibrarian
+    redirectURL: https://lazylibrarian.davydehaas.dev/oauth2/callback
   - name: Lidarr
     slug: lidarr
     redirectURL: https://lidarr.davydehaas.dev/oauth2/callback
@@ -124,6 +127,8 @@ authentik:
           name: authentik-oidc-hubble
       - secretRef:
           name: authentik-oidc-it-tools
+      - secretRef:
+          name: authentik-oidc-lazylibrarian
       - secretRef:
           name: authentik-oidc-lidarr
       - secretRef:
