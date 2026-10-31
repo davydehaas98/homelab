@@ -105,7 +105,6 @@ spec:
               name: config
             {{- end }}
             {{- with (.Values.media | default dict).mounts }}
-            # Mounted at the paths of the home-server containers, so a restored configuration keeps working
             {{- range . }}
             - mountPath: {{ .mountPath }}
               name: media

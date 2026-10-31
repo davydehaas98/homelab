@@ -1,5 +1,4 @@
-# Budgeting app, with its SQLite files in /data. Moved from the home server's compose file; its `chain-actual-budget`
-# login is now the gateway login, and the app sets the cross-origin headers that chain added itself.
+# Budgeting app behind the gateway login, with its SQLite files in /data.
 image:
   registry: ghcr.io
   repository: actualbudget/actual

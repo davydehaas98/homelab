@@ -15,7 +15,7 @@ Renovate automerges patch and digest updates of the charts and image tags; the r
 3. **Render the difference:** on the PR branch, `scripts/render-diff.sh -r origin/main <group>/<app>`. Look for:
    - removed or renamed resources (Argo CD prunes them; a renamed PVC or StatefulSet means new, empty storage);
    - changed selectors or StatefulSet volume templates, which Kubernetes refuses to change in place;
-   - CRD changes, and whether the app needs `serverSideApply`;
+   - CRD changes, and whether the app needs `serverSideApply`; `prometheus-crd` must match the operator version;
    - new hooks: Argo CD adds `pre-delete`/`post-delete` finalizers for delete hooks, which run when the Application is
      deleted;
    - changed security contexts, resources or images.

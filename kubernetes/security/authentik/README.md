@@ -1,7 +1,7 @@
 # Authentik
 
-Identity provider at <https://auth.davydehaas.dev>, separate from the home server's Authentik (`davydehaas.nl`). On
-a new install, set the `akadmin` password at <https://auth.davydehaas.dev/if/flow/initial-setup/>.
+Identity provider at <https://auth.davydehaas.dev>. On a new install, set the `akadmin` password at
+<https://auth.davydehaas.dev/if/flow/initial-setup/>.
 
 ## Secrets
 

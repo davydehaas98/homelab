@@ -1,7 +1,7 @@
 seerr-chart:
   fullnameOverride: seerr
 
-  # Runs as this user and group, the same as the container on the home server
+  # Runs as the owner of its config
   podSecurityContext:
     fsGroup: 1400
   securityContext:

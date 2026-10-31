@@ -1,5 +1,5 @@
-# Apps on the cluster are checked at their address in the cluster, apps on the home server at their public one. The
-# public names also check the certificate. Gatus follows redirects, so a login page counts as up.
+# Apps are checked at their address in the cluster or their public one, which also checks the certificate. Gatus
+# follows redirects, so a login page counts as up.
 metrics: true
 
 storage:
@@ -67,6 +67,15 @@ endpoints:
   - name: Lidarr
     group: Media
     url: http://lidarr.media-server.svc.cluster.local:8686
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: LazyLibrarian
+    group: Media
+    url: http://lazylibrarian.media-server.svc.cluster.local:5299
     interval: 1m
     conditions:
       - "[STATUS] < 400"

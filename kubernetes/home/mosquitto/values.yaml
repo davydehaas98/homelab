@@ -1,13 +1,13 @@
 # MQTT broker for Zigbee2MQTT, Home Assistant and the meter gateways. The config is in this file and only the
-# persistence database is in the volume. Like the broker on the home server it needs a username and password, and only
-# the LAN can reach it. Websockets (9001) are not exposed.
+# persistence database is in the volume. It needs a username and password, and only the LAN can reach it. Websockets
+# (9001) are not exposed.
 image:
   registry: docker.io
   repository: library/eclipse-mosquitto
   tag: 2.0.22
 
 port: 1883
-# The meter gateways use the address of the home server, which is midgard-0 now, where the volume keeps this pod
+# The meter gateways use the address of midgard-0, where the volume keeps this pod
 hostPort: 1883
 
 podSecurityContext:

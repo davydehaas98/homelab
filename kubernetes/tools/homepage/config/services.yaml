@@ -1,4 +1,4 @@
-# Apps on the cluster use their address in the cluster for the widget, apps on the home server their public one
+# Widgets use the address of an app in the cluster, or its public one
 - Media:
     - Bazarr:
         icon: bazarr.png

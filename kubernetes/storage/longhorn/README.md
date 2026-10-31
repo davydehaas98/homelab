@@ -1,7 +1,6 @@
 # Longhorn
 
-Not deployed: the nodes have no usable data disk. Sealed with the command in the
-[root README](../../../README.md#secrets):
+Not deployed: the nodes have no usable data disk. Sealed with `scripts/seal-secret.sh`:
 
 - `templates/s3-credentials.yaml`: Secret `s3-credentials`, keys `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
   `AWS_ENDPOINTS`, for the backup target.

@@ -87,7 +87,7 @@ zigbee2mqtt:
     # The chart replaces the whole `advanced` block of configuration.yaml, so it repeats the network of the coordinator:
     # without it Zigbee2MQTT refuses to start. The network key is in secret.yaml on the data volume, not in git.
     advanced:
-      # The chart default is 5, the old installation used the maximum of the coordinator
+      # The maximum of the coordinator; the chart default is 5
       transmit_power: 20
       channel: 11
       pan_id: 22479

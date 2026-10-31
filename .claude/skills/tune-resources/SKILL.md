@@ -22,7 +22,8 @@ allocatable memory.
   OOM kills. When unsure (databases, machine learning, Java, spiky or young apps), go higher.
 - Every value follows these rules, also where there is no VPA (jobs, init containers): round the current value up.
 - Never a limit without a request: the request then equals the limit.
-- The summed requests must stay under the nodes' allocatable memory.
+- The summed requests must stay under the nodes' allocatable memory, per node: `midgard-0` runs every app with a volume
+  and has the least to spare.
 - CPU: requests only, the VPA target or the use rounded up to 10m steps below 100m and 50m steps above. A target at
   the VPA floor (about 11m) counts as 10m. The media-server apps also have CPU limits; leave
   those unless the user asks.

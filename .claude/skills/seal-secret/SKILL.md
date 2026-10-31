@@ -10,8 +10,8 @@ Never commit plaintext, never print a value, never write it to a file. The rules
 
 1. **Ask the user for the value, or have them run the script.** You do not have the value, and must not read it from
    `talos/gen/`, `talos/talosconfig`, a `.env` or the live cluster to put it in the output. Give the user the command
-   of `scripts/seal-secret.sh` (usage in its header) and tell them to run it with `! <command>`, so the value is typed
-   in their terminal and not in the conversation.
+   of `scripts/seal-secret.sh` (usage in its header) and have them run it in their own terminal, so the value is not in
+   the conversation.
 
    Always run it in the dev container (`.devcontainer/README.md`), from the repo root, with `~/.kube` mounted.
 2. **Name and namespace are part of the seal.** A SealedSecret only decrypts under the name and namespace it was made

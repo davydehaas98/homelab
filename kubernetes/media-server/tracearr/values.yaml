@@ -1,6 +1,5 @@
-# Playback monitoring for Plex and Jellyfin. Moved from the home server's compose file. The app keeps no state of its
-# own: its database is templates/postgres.yaml (TimescaleDB), its cache templates/valkey.yaml. The secrets are new, so
-# everyone signs in again: DATABASE_URL, JWT_SECRET and COOKIE_SECRET in `tracearr-env`.
+# Playback monitoring for Plex and Jellyfin. The app keeps no state of its own: its database is templates/postgres.yaml
+# (TimescaleDB), its cache templates/valkey.yaml, and its secrets are in `tracearr-env`.
 image:
   registry: ghcr.io
   repository: connorgallopo/tracearr

@@ -37,16 +37,14 @@ persistence:
   storageClass: zfs-fast
   volumeName: zfs-dispatcharr-config
 
-# Plex on the home server reaches the tuner (http://192.168.1.59:9191) on this address, outside the HTTP gateway
+# Plex reaches the tuner on this address, outside the HTTP gateway
 service:
   type: LoadBalancer
   annotations:
     lbipam.cilium.io/ips: 192.168.1.59
 
-# The web UI is behind the gateway login (client `dispatcharr`). The paths that players call with the credentials of an
-# account (the Xtream Codes API and its streams) skip it. The playlist, guide, stream and tuner paths (/output/, /hdhr/,
-# /proxy/ts/stream/) do not: Dispatcharr answered /output/ to anyone, and Plex on the home server reaches the tuner on
-# the LAN address below, outside the gateway.
+# The web UI is behind the gateway login (client `dispatcharr`). Only the paths that players call with the credentials
+# of an account skip it, as the app leaves its other output paths open.
 route:
   enabled: true
   hostnames:

@@ -5,8 +5,9 @@ description: Use when the Kyverno policy reports show failing policies (Pod Secu
 
 # Fix failing policy reports
 
-The policies come from `kyverno-policies` in `kubernetes/security/kyverno` (restricted standard). They only audit
-(`validationFailureAction: Audit`), so nothing is blocked; the reports show what to fix.
+The Pod Security policies come from `kyverno-policies` in `kubernetes/security/kyverno` (restricted standard). They only
+audit (`validationFailureAction: Audit`), so they block nothing; the reports show what to fix. `require-route-login`, in
+the chart's own templates, does block.
 
 1. **Read the reports:** `kubectl get policyreport -A -o json`, the failing results per pod (`scope.kind: Pod`) and
    policy. The background scan runs hourly, so a result older than the last change is stale; restarting
@@ -23,5 +24,5 @@ The policies come from `kyverno-policies` in `kubernetes/security/kyverno` (rest
    `vpolExclude` for whole namespaces of node agents, or `vpolExcludeByPolicy` with a `matchConditions` on the images
    for one policy. A per-policy entry replaces the global excludes, so repeat them in it. Check the rendered policy
    with `kubectl apply --dry-run=server`, which compiles the CEL.
-5. **After the sync**, rescan and read the reports again. Report what is fixed, what is exempt and why, and what still
-   fails.
+5. **After the sync**, rescan and read the reports again. A resource that became exempt keeps its old failures until its
+   PolicyReport is deleted. Report what is fixed, what is exempt and why, and what still fails.

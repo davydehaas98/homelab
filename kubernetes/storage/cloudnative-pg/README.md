@@ -13,4 +13,5 @@ Cluster's status after a change.
 
 To restore, make a new Cluster with `bootstrap.recovery.source` naming an entry in `externalClusters`, whose `plugin` has
 `barmanObjectName` and `serverName` set to the name of the old Cluster. It can't write its own backups to the same path, so
-give its own `plugins` entry another `serverName`.
+give its own `plugins` entry another `serverName`. Immich's new Cluster also needs the `postgresql` block of the old one,
+for VectorChord. Vector search there needs `vchordrq.probes` set, which Immich does itself.

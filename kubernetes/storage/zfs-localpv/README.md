@@ -14,10 +14,11 @@ chroot /host zfs create tank/k8s
 
 ## Static volumes
 
-The volumes moved from Ubuntu are static: `volumes` in `values.yaml` lists each dataset, which
-`templates/volumes.yaml` imports with a ZFSVolume and a PV `zfs-<name>`, and the app's claim names that PV and the
-pool's StorageClass. Create a new dataset by hand first, with `quota` and `mountpoint=legacy`; a new app can just use a
-StorageClass instead. Removing an entry leaves the dataset; destroy it by hand.
+`volumes` in `values.yaml` lists each existing dataset, which `templates/volumes.yaml` imports with a ZFSVolume and a PV
+`zfs-<name>`, and the app's claim names that PV and the pool's StorageClass. Create a new dataset by hand first, with
+`quota` and `mountpoint=legacy`; a new app can just use a StorageClass instead. Removing an entry leaves the dataset;
+destroy it by hand. To grow a volume, raise `size` and the app's claim in one change, then check the dataset's `quota`
+followed.
 
 The driver only mounts a ZFSVolume with `status.state: Ready`, and without it a pod that restarts waits in
 `ContainerCreating` with `verifyMount: volume is not ready to be mounted`. Argo CD drops that field at the first sync after

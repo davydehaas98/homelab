@@ -1,5 +1,5 @@
 jellyfin:
-  # No hardware transcoding: the GPU is in yggdrasil, so video that has to be transcoded runs on the CPU of the node.
+  # No hardware transcoding: video that has to be transcoded runs on the CPU of the node.
   image:
     tag: "12.2"
 
@@ -7,7 +7,7 @@ jellyfin:
   deploymentStrategy:
     type: Recreate
 
-  # Runs as this user and group, the same as the container on the home server
+  # Runs as the owner of the media
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1400
@@ -43,7 +43,7 @@ jellyfin:
   persistence:
     config:
       existingClaim: jellyfin-config
-    # The library is mounted at the paths of the home server below, not at /media
+    # The library is mounted at the paths below, not at /media
     media:
       enabled: false
 
@@ -58,7 +58,7 @@ jellyfin:
         medium: Memory
         sizeLimit: 1Gi
 
-  # The library is read-only, as on the home server
+  # The library is read-only
   volumeMounts:
     - name: library
       mountPath: /movies

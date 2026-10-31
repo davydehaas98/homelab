@@ -1,5 +1,4 @@
-# PostgreSQL with TimescaleDB for Tracearr, as on the home server (the same image). CloudNativePG cannot run this
-# image, so it is a Deployment of its own. The database is on a ZFS volume on midgard-0 (see
+# PostgreSQL with TimescaleDB for Tracearr. CloudNativePG cannot run this image, so it is a Deployment of its own. The database is on a ZFS volume on midgard-0 (see
 # kubernetes/storage/zfs-localpv); only one pod may mount it, hence Recreate.
 apiVersion: apps/v1
 kind: Deployment
@@ -93,7 +92,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: tracearr-postgres-data
-        # Shared memory of the database, 512M as on the home server (it counts against the memory limit)
+        # Shared memory of the database, which counts against the memory limit
         - name: shm
           emptyDir:
             medium: Memory

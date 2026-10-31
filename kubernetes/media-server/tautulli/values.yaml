@@ -1,7 +1,4 @@
-# Plex monitoring. Moved from the home server's compose file. Plex stays on the home server, so after copying the
-# config set the server address in Tautulli (Settings > Plex Media Server) to http://192.168.1.44:32400, as the old one
-# may be the Docker name `plex`. Left out: the read-only mount of the Plex config, which Tautulli only reads for the
-# logs of Plex (Settings > Plex Media Server > Logs Folder), and the /logs mount, which the image does not use.
+# Plex monitoring. The address of Plex is set in the app; the logs of Plex are not mounted.
 image:
   registry: ghcr.io
   repository: linuxserver/tautulli

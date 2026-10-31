@@ -7,7 +7,7 @@ image:
   repository: adguard/adguardhome
   tag: v0.107.79
 
-# The web interface; the old configuration has it on port 80
+# The web interface, as its configuration on the volume has it
 port: 80
 
 args:

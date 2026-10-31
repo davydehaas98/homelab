@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   name: plex
   labels:
-    # Plex runs on the network of its node, so it keeps the address of the home server (port forward, LAN discovery).
-    # Talos enforces baseline by default, which does not allow it.
+    # Plex runs on the network of its node, for the port forward and LAN discovery. Talos enforces baseline by default,
+    # which does not allow it.
     pod-security.kubernetes.io/enforce: privileged

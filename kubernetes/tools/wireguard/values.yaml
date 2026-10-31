@@ -1,11 +1,6 @@
-# WireGuard VPN with a web interface (wg-easy), replacing the one on the home server's compose file. Its state (the
-# interface, the clients and their keys) is a SQLite database in /etc/wireguard, which starts empty: the old data is
-# not copied. The environment of the old file is not carried over: v15 keeps the host, port, DNS and allowed IPs in
-# that database, and asks for them in its setup wizard.
-# Left out: SYS_MODULE and the sysctls (Talos has the module built in and a pod inherits the node's ip_forward), the
-# host network card (the pod's is eth0), and the Traefik route with the Authentik login, as an admin interface should
-# not go on the internet before it sits behind the same login here. Reach it with
-# `kubectl -n wireguard port-forward statefulset/wireguard 51821`.
+# WireGuard VPN with a web interface (wg-easy). Its state and settings are a SQLite database in /etc/wireguard, filled
+# by its setup wizard. Talos has the kernel module built in and a pod inherits the node's ip_forward, so it needs no
+# SYS_MODULE or sysctls. The interface has no route, see README.md.
 image:
   registry: ghcr.io
   repository: wg-easy/wg-easy

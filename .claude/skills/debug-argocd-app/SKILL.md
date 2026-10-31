@@ -38,10 +38,13 @@ logs and route status, and changes nothing. The steps say what to make of it and
    - `ImagePullBackOff` or `exec format error`: the image has no build for the node (arm64 on the RK1s, amd64 on
      `midgard-0`).
    - `Pending` on a PVC: the StorageClass, the dataset of a static volume, or a pod without the toleration of `midgard-0`.
+   - `ContainerCreating` with `verifyMount: volume is not ready`: the ZFSVolume lost `status.state`. Every pod that
+     restarts then hangs, so check all of them (`kubernetes/storage/zfs-localpv/README.md`).
    - `FailedMount` on a Secret or ConfigMap: it is missing or in another namespace.
 8. **Reachable?** `kubectl -n <ns> get httproute` and check it is `Accepted` and `ResolvedRefs`, with parent Gateway
    `envoy-gateway`, `sectionName: web-https`. Then the DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`.
-   A `SecurityPolicy` whose Secret is missing breaks the route (skill `add-oidc-client`).
+   A `SecurityPolicy` whose Secret is missing breaks the route, and one left `Invalid` by an Authentik restart makes it
+   answer 500 (skill `add-oidc-client`).
 
 Deleting an Application (also by a rename or a move) runs the chart's pre-delete and post-delete hooks, which Argo CD
 marks with `pre-delete-finalizer`/`post-delete-finalizer` on the Application: Kyverno's scale it to 0 and remove its

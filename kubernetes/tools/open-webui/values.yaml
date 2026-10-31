@@ -1,7 +1,5 @@
-# Chat UI for the Ollama on the home server (GPU), nothing runs models in the cluster. The first account
-# to sign up becomes the admin.
+# Chat UI for an Ollama outside the cluster, which runs the models. The first account to sign up becomes the admin.
 open-webui:
-  # Models run on the home server
   ollama:
     enabled: false
   ollamaUrls:

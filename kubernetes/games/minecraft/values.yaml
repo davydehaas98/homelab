@@ -1,8 +1,6 @@
-# Vanilla Minecraft, to test how a game server runs on an RK1. The settings are the ones of the minecraft-vanilla
-# container of the home server (compose.minecraft-vanilla.yaml), on a new world. Left out: RCON and the mc-backup
-# container (Velero copies the volume, and the world is not paused for it), autopause (it needs extra privileges),
-# the old version 1.18.1 (this runs the latest) and the memory limit of 8G (the nodes have 16G for everything).
-# Judge the speed by `kubectl -n minecraft logs statefulset/minecraft | grep "Can't keep up"` and `kubectl top pod`.
+# Vanilla Minecraft, to test how a game server runs on an RK1. Without RCON, and without autopause, which needs extra
+# privileges. Judge the speed by `kubectl -n minecraft logs statefulset/minecraft | grep "Can't keep up"` and
+# `kubectl top pod`.
 image:
   registry: docker.io
   repository: itzg/minecraft-server

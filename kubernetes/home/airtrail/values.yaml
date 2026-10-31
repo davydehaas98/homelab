@@ -1,6 +1,5 @@
-# Flight log. The database (templates/database.yaml) is CloudNativePG, so the app keeps no state of its own and
-# updates without a gap. Moved from the home server's compose file; its `chain-authentik` login is now the gateway
-# login.
+# Flight log behind the gateway login. The database (templates/database.yaml) is CloudNativePG, so the app keeps no
+# state of its own and updates without a gap.
 image:
   registry: docker.io
   repository: johly/airtrail

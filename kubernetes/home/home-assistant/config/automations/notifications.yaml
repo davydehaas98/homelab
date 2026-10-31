@@ -1,7 +1,5 @@
-# Notifications to the phone.
-# Moved here from the automation editor, with the same ids, so the entities keep their history and state. The
-# editor shows them but cannot save them: change them in git. New ones made in the editor go to automations.yaml on
-# the volume.
+# Notifications to the phone. The action is named after the name of the phone in the Companion app, so it changes with
+# a new phone. The editor shows these but cannot save them; new ones made there go to automations.yaml on the volume.
 - id: '1767795795548'
   alias: Washing machine done
   description: ''
@@ -29,7 +27,7 @@
             minutes: 5
             seconds: 0
   actions:
-    - action: notify.mobile_app_davys_iphone_15_pro_max
+    - action: notify.mobile_app_davys_iphone_18_pro_max
       metadata: {}
       data:
         message: Washer is done

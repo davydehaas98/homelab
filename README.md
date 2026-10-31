@@ -18,46 +18,61 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 
 ### core
 
-| App                    | Description               |
-| ---------------------- | ------------------------- |
-| argocd                 | GitOps controller         |
-| cert-manager           | TLS certificates          |
-| cilium                 | CNI, Hubble               |
-| descheduler            | Evicts misplaced pods     |
-| envoy-gateway          | Gateway API ingress       |
-| metrics-server         | Resource metrics          |
-| node-feature-discovery | Node labels from hardware |
-| sealed-secrets         | Encrypted Secrets in git  |
-| vpa                    | Resource recommendations  |
+| App                       | Description                      |
+| ------------------------- | -------------------------------- |
+| argocd                    | GitOps controller                |
+| cert-manager              | TLS certificates                 |
+| cilium                    | CNI, Hubble                      |
+| descheduler               | Evicts misplaced pods            |
+| envoy-gateway             | Gateway API ingress              |
+| intel-gpu-resource-driver | Intel GPU access                 |
+| kubernetes-replicator     | Copies Secrets across namespaces |
+| metrics-server            | Resource metrics                 |
+| node-feature-discovery    | Node labels from hardware        |
+| sealed-secrets            | Encrypted Secrets in git         |
+| talos-backup              | etcd snapshots                   |
+| tuppr                     | Talos and Kubernetes upgrades    |
+| vpa                       | Resource recommendations         |
 
 ### games
 
-| App      | Description |
-| -------- | ----------- |
-| factorio | Game server |
+| App       | Description |
+| --------- | ----------- |
+| factorio  | Game server |
+| minecraft | Game server |
 
 ### home
 
 | App              | Description     |
 | ---------------- | --------------- |
+| actual-budget    | Budgeting       |
+| airtrail         | Flight log      |
 | home-assistant   | Home automation |
 | immich           | Photos          |
+| memos            | Notes           |
+| mosquitto        | MQTT broker     |
 | nextcloud        | Files and sync  |
 | personal-website | Website         |
+| zigbee2mqtt      | Zigbee bridge   |
 
 ### media-server
 
-| App          | Description                  |
-| ------------ | ---------------------------- |
-| bazarr       | Subtitles                    |
-| jellyfin     | Media server                 |
-| lidarr       | Music                        |
-| media-server | Namespace and shared volumes |
-| prowlarr     | Indexers                     |
-| radarr       | Movies                       |
-| sabnzbd      | Usenet downloader            |
-| seerr        | Requests                     |
-| sonarr       | Series                       |
+| App           | Description                  |
+| ------------- | ---------------------------- |
+| bazarr        | Subtitles                    |
+| dispatcharr   | IPTV tuner                   |
+| jellyfin      | Media server                 |
+| lazylibrarian | Books                        |
+| lidarr        | Music                        |
+| media-server  | Namespace and shared volumes |
+| plex          | Media server                 |
+| prowlarr      | Indexers                     |
+| radarr        | Movies                       |
+| sabnzbd       | Usenet downloader            |
+| seerr         | Requests                     |
+| sonarr        | Series                       |
+| tautulli      | Plex monitoring              |
+| tracearr      | Playback monitoring          |
 
 ### monitoring
 
@@ -79,24 +94,28 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 | authentik       | Identity provider (OIDC) |
 | kyverno         | Policy engine            |
 | policy-reporter | Policy report UI         |
+| trivy-operator  | Vulnerability scans      |
 
 ### storage
 
-| App            | Description                       |
-| -------------- | --------------------------------- |
-| cloudnative-pg | PostgreSQL operator               |
-| seaweedfs      | S3 storage                        |
-| zfs-localpv    | ZFS volumes (default StorageClass) |
+| App                 | Description                        |
+| ------------------- | ---------------------------------- |
+| cloudnative-pg      | PostgreSQL operator and backups    |
+| seaweedfs           | S3 storage                         |
+| snapshot-controller | Volume snapshots                   |
+| velero              | Backups of resources and volumes   |
+| zfs-localpv         | ZFS volumes (default StorageClass) |
 
 ### tools
 
-| App        | Description          |
-| ---------- | -------------------- |
-| gatus      | Status page          |
-| headlamp   | Kubernetes dashboard |
-| homepage   | Start page           |
-| it-tools   | Developer utilities  |
-| omni-tools | Everyday utilities   |
+| App          | Description          |
+| ------------ | -------------------- |
+| adguard-home | DNS filtering        |
+| gatus        | Status page          |
+| headlamp     | Kubernetes dashboard |
+| homepage     | Start page           |
+| it-tools     | Developer utilities  |
+| omni-tools   | Everyday utilities   |
 
 ## Hardware
 
