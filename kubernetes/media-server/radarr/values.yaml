@@ -13,12 +13,10 @@ port: 7878
 
 media:
   claimName: media
-  # Only its own downloads, at the folder of its category in SABnzbd, and its own library
+  # One mount with only its own downloads and library, so an import moves the file instead of copying it
   mounts:
-    - mountPath: /downloads/usenet/complete/movies
-      subPath: downloads/usenet/complete/movies
-    - mountPath: /movies
-      subPath: media/movies
+    - mountPath: /data/movies
+      subPath: data/movies
 
 resources:
   limits:

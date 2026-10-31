@@ -1,5 +1,5 @@
 resource "radarr_root_folder" "radarr" {
-  path = "/movies"
+  path = "/data/movies/library"
 }
 
 resource "radarr_naming" "radarr" {

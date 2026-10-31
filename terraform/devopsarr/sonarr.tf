@@ -1,5 +1,5 @@
 resource "sonarr_root_folder" "sonarr" {
-  path = "/series"
+  path = "/data/series/library"
 }
 
 resource "sonarr_naming" "sonarr" {

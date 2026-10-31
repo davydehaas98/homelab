@@ -19,10 +19,10 @@ probe:
 
 media:
   claimName: media
-  # One mount, so a finished download moves from incomplete to complete instead of being copied
+  # One mount, so a finished download moves to the folder of its category instead of being copied
   mounts:
-    - mountPath: /downloads
-      subPath: downloads
+    - mountPath: /data
+      subPath: data
 
 resources:
   limits:

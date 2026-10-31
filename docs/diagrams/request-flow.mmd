@@ -18,10 +18,10 @@ sequenceDiagram
     Arr->>SABnzbd: Send grab
 
     SABnzbd->>Usenet: Download request
-    Usenet-->>SABnzbd: Articles, written to /downloads/usenet/incomplete/
-    SABnzbd-->>Arr: Done, in /downloads/usenet/complete/
+    Usenet-->>SABnzbd: Articles, written to /data/incomplete/
+    SABnzbd-->>Arr: Done, in /data/#lt;category#gt;/downloads/
 
-    Note over Arr: Imports into /series/#lt;title#gt;/#lt;episode#gt;<br/>or /movies/#lt;title#gt;
+    Note over Arr: Moves into /data/series/library/#lt;title#gt;/#lt;episode#gt;<br/>or /data/movies/library/#lt;title#gt;
 
     Arr->>Bazarr: New file
     Bazarr->>Provider: Request subtitles

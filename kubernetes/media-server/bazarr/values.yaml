@@ -19,10 +19,11 @@ probe:
 media:
   claimName: media
   mounts:
-    - mountPath: /movies
-      subPath: media/movies
-    - mountPath: /series
-      subPath: media/series
+    # The same paths as in Radarr and Sonarr
+    - mountPath: /data/movies/library
+      subPath: data/movies/library
+    - mountPath: /data/series/library
+      subPath: data/series/library
 
 resources:
   limits:

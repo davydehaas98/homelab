@@ -3,7 +3,7 @@ resource "lidarr_root_folder" "lidarr" {
   monitor_option          = "all"
   name                    = "music"
   new_item_monitor_option = "all"
-  path                    = "/music"
+  path                    = "/data/music/library"
   quality_profile_id      = 3 # Standard
   tags                    = []
 }

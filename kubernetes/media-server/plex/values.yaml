@@ -55,16 +55,16 @@ media:
   claimName: media
   mounts:
     - mountPath: /movies
-      subPath: media/movies
+      subPath: data/movies/library
       readOnly: true
     - mountPath: /series
-      subPath: media/series
+      subPath: data/series/library
       readOnly: true
     - mountPath: /music
-      subPath: media/music
+      subPath: data/music/library
       readOnly: true
     - mountPath: /dvr
-      subPath: media/dvr
+      subPath: data/dvr
 
 emptyDirs:
   - name: transcode

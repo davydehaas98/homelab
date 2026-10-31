@@ -66,15 +66,15 @@ jellyfin:
   volumeMounts:
     - name: library
       mountPath: /movies
-      subPath: media/movies
+      subPath: data/movies/library
       readOnly: true
     - name: library
       mountPath: /music
-      subPath: media/music
+      subPath: data/music/library
       readOnly: true
     - name: library
       mountPath: /series
-      subPath: media/series
+      subPath: data/series/library
       readOnly: true
     - name: transcode
       mountPath: /data/transcode

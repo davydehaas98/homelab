@@ -10,8 +10,7 @@ flowchart TB
     sab["SABnzbd<br/>:8080"]
 
     subgraph storage["Media disk of midgard-0"]
-        downloads["downloads/usenet<br/>imported by Sonarr, Radarr, Lidarr"]
-        subgraph media["media"]
+        subgraph media["data, with a library and downloads folder each"]
             music[music]
             series[series]
             movies[movies]
@@ -32,7 +31,7 @@ flowchart TB
     sonarr -->|grabs| sab
     radarr -->|grabs| sab
     lidarr -->|grabs| sab
-    sab --> downloads
+    sab --> media
 
     sonarr --> series
     radarr --> movies
