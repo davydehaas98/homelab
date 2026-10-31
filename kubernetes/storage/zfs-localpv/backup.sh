@@ -15,12 +15,26 @@ failed=0
 
 z() { chroot /host zfs "$@"; }
 
+# kubectl exec can end its stream early and still exit 0, so a dump only counts when it ends as pg_dump ends a dump
+complete() {
+    [ "$(gzip -dc "$1" | tail -n 8 | grep -c 'dump complete' || true)" -gt 0 ]
+}
+
 # One database per line of the `databases` file: name, namespace, selector, container, command
 while read -r name namespace selector container command; do
-    pod=$(kubectl -n "${namespace}" get pod -l "${selector}" -o name | sed -n 1p) || true
     mkdir -p "${DUMPS}/${name}"
     file=${DUMPS}/${name}/${name}-${now}.sql.gz
-    if kubectl -n "${namespace}" exec "${pod}" -c "${container}" -- sh -c "${command}" | gzip > "${file}.tmp"; then
+    dumped=0
+    for try in 1 2 3; do
+        pod=$(kubectl -n "${namespace}" get pod -l "${selector}" -o name | sed -n 1p) || true
+        if kubectl -n "${namespace}" exec "${pod}" -c "${container}" -- sh -c "${command}" | gzip > "${file}.tmp" &&
+            complete "${file}.tmp"; then
+            dumped=1
+            break
+        fi
+        echo "${name}: try ${try} incomplete"
+    done
+    if [ "${dumped}" = 1 ]; then
         mv "${file}.tmp" "${file}"
         ls -1t "${DUMPS}/${name}" | tail -n +$((KEEP + 1)) | while read -r old; do
             rm -f "${DUMPS}/${name}/${old}"

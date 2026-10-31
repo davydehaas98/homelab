@@ -33,8 +33,8 @@ Talos imports the pools at boot; their mountpoints must be under `/var`.
 
 A nightly CronJob runs `backup.sh`:
 
-- It dumps the databases listed in `values.yaml` to the volume `database-dumps` on `tank`, from inside their pods. The
-  dumps hold password hashes, so encrypt any copy that leaves the node.
+- It dumps the databases listed in `values.yaml` to the volume `database-dumps` on `tank`, from inside their pods, and
+  retries a dump that does not end as complete. The dumps hold password hashes, so encrypt any copy that leaves the node.
 - It snapshots every dataset of `fast` at the same moment, except `exclude`, and sends each to `tank/backup/fast`, which
   is not mounted. A dataset removed from `fast` keeps its copy until it is destroyed by hand.
 
