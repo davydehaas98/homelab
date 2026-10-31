@@ -18,7 +18,7 @@ sequenceDiagram
     Arr->>SABnzbd: Send grab
 
     SABnzbd->>Usenet: Download request
-    Usenet-->>SABnzbd: Articles, written to /data/incomplete/
+    Usenet-->>SABnzbd: Articles, written to /data/downloads/incomplete/
     SABnzbd-->>Arr: Done, in /data/#lt;category#gt;/downloads/
 
     Note over Arr: Moves into /data/series/library/#lt;title#gt;/#lt;episode#gt;<br/>or /data/movies/library/#lt;title#gt;
