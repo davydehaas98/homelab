@@ -38,7 +38,6 @@ backup:
   exclude:
     - plex-cache
     - prometheus-db
-    - trivy-server
   databases:
     - name: airtrail
       namespace: airtrail

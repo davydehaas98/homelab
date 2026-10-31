@@ -15,9 +15,10 @@ Read-only. A schedule that exists proves nothing, so look at the last run of eac
 
 - **Velero:** `backups.velero.io` (`kubectl get backup` resolves to CloudNativePG): `Completed`, no errors, and its
   `datauploads.velero.io` all `Completed`. No VolumeSnapshots may stay behind, as they count towards a volume's quota.
-- **Databases:** per Cluster, `ContinuousArchiving` and `lastSuccessfulBackup` in its status, and
-  `failed_count` against `archived_count` in `pg_stat_archiver`. A backup that fails while the pod restarts is not a
-  fault in itself; the next one must complete.
+- **Databases:** per Cluster, `ContinuousArchiving` in its status, `serverRecoveryWindow` in the status of its
+  ObjectStore (the Cluster's own `lastSuccessfulBackup` stays empty with the plugin), and `failed_count` against
+  `archived_count` in `pg_stat_archiver`. A backup that fails while the pod restarts is not a fault in itself; the next
+  one must complete.
 - **etcd:** the last job of the `talos-backup` CronJob.
 - **Room:** `df` of `/data` in SeaweedFS.
 
@@ -50,7 +51,7 @@ Check each result means what it seems: a query that errors on both sides also co
 ## Clean up
 
 The StorageClasses `Retain`, so a test leaves data behind after its namespace and PV are gone. Deleting those is fine;
-deleting the remaining ZFSVolume `pvc-*` destroys the copy, so give the user that command with the exact names. One of
-those names is real: `database-dumps` has a `pvc-*` volume too.
+deleting the remaining ZFSVolume `pvc-*` destroys the copy, so give the user that command with the exact names of the
+test's copies. Real volumes made by a StorageClass are named `pvc-*` too, so never select by that pattern.
 
 Report what was restored and from when, what was compared, and what was not proven, such as running the app on the copy.

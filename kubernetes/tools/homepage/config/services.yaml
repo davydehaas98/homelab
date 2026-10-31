@@ -53,7 +53,7 @@
         icon: plex.png
         href: https://plex.davydehaas.dev
         description: Media server
-        siteMonitor: https://plex.davydehaas.dev
+        siteMonitor: https://plex.davydehaas.dev/identity
         widget:
           type: plex
           url: https://plex.davydehaas.dev
@@ -110,10 +110,16 @@
           url: http://sonarr.media-server.svc.cluster.local:8989
           key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
 
+    - Tautulli:
+        icon: tautulli.png
+        href: https://tautulli.davydehaas.dev
+        description: Plex monitoring
+        siteMonitor: http://tautulli.media-server.svc.cluster.local:8181
+
     - Tracearr:
         icon: tracearr.png
         href: https://tracearr.davydehaas.dev
-        description: Torrent tracker manager
+        description: Playback monitoring
         siteMonitor: https://tracearr.davydehaas.dev
 
 - Home:
@@ -122,6 +128,12 @@
         href: https://actual.davydehaas.dev
         description: Budget
         siteMonitor: http://actual-budget.actual-budget.svc.cluster.local:5006
+
+    - AirTrail:
+        icon: mdi-airplane
+        href: https://airtrail.davydehaas.dev
+        description: Flight log
+        siteMonitor: http://airtrail.airtrail.svc.cluster.local:3000
 
     - Home Assistant:
         icon: home-assistant.png
@@ -145,7 +157,14 @@
         icon: nextcloud.png
         href: https://nextcloud.davydehaas.dev
         description: Files and sync
-        siteMonitor: http://nextcloud.nextcloud.svc.cluster.local:8080
+        # It rejects other hostnames
+        siteMonitor: https://nextcloud.davydehaas.dev/status.php
+
+    - Zigbee2MQTT:
+        icon: zigbee2mqtt.png
+        href: https://zigbee.davydehaas.dev
+        description: Zigbee bridge
+        siteMonitor: http://zigbee2mqtt.zigbee2mqtt.svc.cluster.local:8080
 
 - Monitoring:
     - Gatus:
@@ -201,14 +220,20 @@
         siteMonitor: http://hubble-ui.kube-system.svc.cluster.local:80
 
 - Tools:
+    - AdGuard Home:
+        icon: adguard-home.png
+        href: https://adguard.davydehaas.dev
+        description: DNS filtering
+        siteMonitor: http://adguard-home.adguard-home.svc.cluster.local:80
+
     - IT-Tools:
         icon: it-tools.png
         href: https://it-tools.davydehaas.dev
         description: Developer utilities
-        siteMonitor: http://it-tools.it-tools.svc.cluster.local:80
+        siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
 
     - Omni Tools:
         icon: mdi-tools
         href: https://omni-tools.davydehaas.dev
         description: Everyday utilities
-        siteMonitor: http://omni-tools.omni-tools.svc.cluster.local:80
+        siteMonitor: http://omni-tools.omni-tools.svc.cluster.local:8080

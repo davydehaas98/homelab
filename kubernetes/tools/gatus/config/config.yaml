@@ -147,10 +147,22 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
+  - name: AirTrail
+    group: Home
+    url: http://airtrail.airtrail.svc.cluster.local:3000
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  # Nextcloud rejects other hostnames, as does Homepage
   - name: Nextcloud
     group: Home
-    url: http://nextcloud.nextcloud.svc.cluster.local:8080
+    url: http://nextcloud.nextcloud.svc.cluster.local:8080/status.php
     interval: 1m
+    headers:
+      Host: nextcloud.davydehaas.dev
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
@@ -159,6 +171,15 @@ endpoints:
   - name: Personal website
     group: Home
     url: http://personal-website.personal-website.svc.cluster.local:8080
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Zigbee2MQTT
+    group: Home
+    url: http://zigbee2mqtt.zigbee2mqtt.svc.cluster.local:8080
     interval: 1m
     conditions:
       - "[STATUS] < 400"
@@ -228,10 +249,21 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
+  - name: AdGuard Home
+    group: Tools
+    url: http://adguard-home.adguard-home.svc.cluster.local:80
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Homepage
     group: Tools
     url: http://homepage.homepage.svc.cluster.local:3000
     interval: 1m
+    headers:
+      Host: homepage.davydehaas.dev
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
@@ -239,7 +271,7 @@ endpoints:
       - type: discord
   - name: IT-Tools
     group: Tools
-    url: http://it-tools.it-tools.svc.cluster.local:80
+    url: http://it-tools.it-tools.svc.cluster.local:8080
     interval: 1m
     conditions:
       - "[STATUS] < 400"
@@ -248,21 +280,31 @@ endpoints:
       - type: discord
   - name: Omni Tools
     group: Tools
-    url: http://omni-tools.omni-tools.svc.cluster.local:80
+    url: http://omni-tools.omni-tools.svc.cluster.local:8080
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
+  # Plex answers its root with 401, so it is checked at a path without a login
   - name: Plex
     group: Media
-    url: https://plex.davydehaas.dev
+    url: https://plex.davydehaas.dev/identity
     interval: 1m
     conditions:
       - "[STATUS] < 400"
       - "[RESPONSE_TIME] < 2000"
       - "[CERTIFICATE_EXPIRATION] > 168h"
+    alerts:
+      - type: discord
+  - name: Tautulli
+    group: Media
+    url: http://tautulli.media-server.svc.cluster.local:8181
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
   - name: Tracearr
