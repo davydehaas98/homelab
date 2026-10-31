@@ -31,9 +31,9 @@ deployment.
 
 ## How the pieces connect
 
-- **Traffic.** The UniFi gateway forwards 80 and 443 to the Envoy Gateway (`192.168.1.56`), the entry point.
+- **Traffic.** The UniFi gateway forwards 80, 443 and UDP 443 to the Envoy Gateway (`192.168.1.56`), the entry point.
   The old domain `*.davydehaas.nl` serves Plex and redirects other names to `davydehaas.dev`
-  (`nlRedirects` in `kubernetes/core/envoy-gateway/values.yaml`). Publish an app with an `HTTPRoute` on Gateway
+  (`nlRedirects` in `kubernetes/core/envoy-gateway/values.yaml`); its DNS is a wildcard. Publish an app with an `HTTPRoute` on Gateway
   `envoy-gateway` (`sectionName: web-https`), no Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
   `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`. Tools only for the home network go on Gateway
   `envoy-gateway-private` (`192.168.1.61`, not forwarded) under `*.mcp.davydehaas.dev`, with a record in
@@ -63,7 +63,8 @@ Library charts only render through an app that uses them. `kubectl apply --dry-r
 against the cluster.
 
 Terraform without credentials: `terraform init -backend=false && terraform validate && terraform fmt -check`. CI
-applies `cloudflare/` on a merge to `main`, and `devopsarr/` is applied by hand, see `terraform/README.md`. Never commit
+applies `cloudflare/davydehaas.dev` on a merge to `main`, `cloudflare/davydehaas.nl` on a manual run, and `devopsarr/`
+is applied by hand, see `terraform/README.md`. Never commit
 `*.tfvars` or state.
 
 ## Talos

@@ -3,8 +3,8 @@ set -e
 #
 # Validates what CI does not: the plain YAML with yamllint (.yamllint, on the files git tracks), and for each given app
 # its dependencies, lint and render. It warns when the render has no Namespace, as Argo CD does not create one; an app
-# in the namespace of another has none. With -t it also validates and format-checks the Terraform of davydehaas.dev,
-# which needs no credentials. Run it in the dev container (.devcontainer/README.md).
+# in the namespace of another has none. With -t it also validates and format-checks the Terraform stacks, which needs no
+# credentials. Run it in the dev container (.devcontainer/README.md).
 #
 # Usage: sh scripts/validate.sh [-t] [<group>/<app> ...]
 
@@ -33,7 +33,7 @@ done
 
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
-    for STACK in terraform/cloudflare/davydehaas.dev terraform/devopsarr; do
+    for STACK in terraform/cloudflare/davydehaas.dev terraform/cloudflare/davydehaas.nl terraform/devopsarr; do
         (
             cd "${STACK}"
             # Keep the lock file out of the working tree unless it is there already
