@@ -15,7 +15,8 @@ failed=0
 
 z() { chroot /host zfs "$@"; }
 
-# kubectl exec can end its stream early and still exit 0, so a dump only counts when it ends as pg_dump ends a dump
+# kubectl exec can end its stream early and still exit 0, which cut off Immich's dump every time when it was sent
+# uncompressed, so gzip runs in the database's pod, and a dump only counts when it ends as pg_dump ends a dump
 complete() {
     [ "$(gzip -dc "$1" | tail -n 8 | grep -c 'dump complete' || true)" -gt 0 ]
 }
@@ -27,7 +28,7 @@ while read -r name namespace selector container command; do
     dumped=0
     for try in 1 2 3; do
         pod=$(kubectl -n "${namespace}" get pod -l "${selector}" -o name | sed -n 1p) || true
-        if kubectl -n "${namespace}" exec "${pod}" -c "${container}" -- sh -c "${command}" | gzip > "${file}.tmp" &&
+        if kubectl -n "${namespace}" exec "${pod}" -c "${container}" -- sh -c "${command} | gzip" > "${file}.tmp" &&
             complete "${file}.tmp"; then
             dumped=1
             break

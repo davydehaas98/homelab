@@ -40,6 +40,8 @@ velero:
     # Volumes are backed up from the node agent instead of with snapshots
     volumeSnapshotLocation: []
     uploaderType: kopia
+    # CSI snapshots of the ZFS volumes, only for backups that ask for them with snapshotVolumes: true
+    features: EnableCSI
 
   credentials:
     useSecret: true
@@ -84,3 +86,5 @@ velero:
       schedule: "0 2 * * *"
       template:
         ttl: 720h
+        # A snapshot counts towards the quota of its volume, so a backup must not keep one of every volume for its ttl
+        snapshotVolumes: false
