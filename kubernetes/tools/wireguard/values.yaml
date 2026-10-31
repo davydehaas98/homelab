@@ -40,7 +40,6 @@ resources:
     memory: 70Mi
 
 persistence:
-  backup: true
   size: 1Gi
   mountPath: /etc/wireguard
 

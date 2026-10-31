@@ -41,7 +41,6 @@ backups:
 # A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 2Gi
-  backup: true
   storageClass: zfs-fast
   volumeName: zfs-lidarr-config
 

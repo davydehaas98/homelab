@@ -7,10 +7,6 @@ jellyfin:
   deploymentStrategy:
     type: Recreate
 
-  # Velero copies the config volume, not the media library (kubernetes/storage/velero)
-  podAnnotations:
-    backup.velero.io/backup-volumes: config
-
   # Runs as this user and group, the same as the container on the home server
   podSecurityContext:
     runAsNonRoot: true

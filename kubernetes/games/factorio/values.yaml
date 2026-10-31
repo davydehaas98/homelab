@@ -28,7 +28,6 @@ resources:
 
 # A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
-  backup: true
   size: 5Gi
   mountPath: /factorio
   storageClass: zfs-fast

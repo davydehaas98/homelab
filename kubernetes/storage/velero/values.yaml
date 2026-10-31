@@ -37,10 +37,9 @@ velero:
           region: us-east-1
           s3ForcePathStyle: "true"
           s3Url: http://seaweedfs-all-in-one.seaweedfs:8333
-    # Volumes are backed up from the node agent instead of with snapshots
+    # Snapshots stay on the node only until they are copied to the bucket, by Kopia in a pod per volume
     volumeSnapshotLocation: []
     uploaderType: kopia
-    # CSI snapshots of the ZFS volumes, only for backups that ask for them with snapshotVolumes: true
     features: EnableCSI
 
   credentials:
@@ -79,12 +78,16 @@ velero:
         cpu: 10m
         memory: 100Mi
 
-  # Cluster resources are backed up daily at 02:00 UTC, an hour before talos-backup, volumes only when a pod opts in
-  # with the annotation backup.velero.io/backup-volumes: <volume name>
+  # Daily at 02:00 UTC, an hour before talos-backup. Each volume is snapshotted, copied to the bucket and the snapshot
+  # removed, as it counts towards the quota of its volume. See README.md for what is left out.
   schedules:
     daily:
       schedule: "0 2 * * *"
       template:
         ttl: 720h
-        # A snapshot counts towards the quota of its volume, so a backup must not keep one of every volume for its ttl
-        snapshotVolumes: false
+        snapshotVolumes: true
+        snapshotMoveData: true
+        excludedNamespaces:
+          - loki
+          - prometheus
+          - seaweedfs

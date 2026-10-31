@@ -1,8 +1,4 @@
 grafana:
-  # Velero copies the volume with the users and settings (kubernetes/storage/velero)
-  podAnnotations:
-    backup.velero.io/backup-volumes: storage
-
   sidecar:
     resources:
       limits:

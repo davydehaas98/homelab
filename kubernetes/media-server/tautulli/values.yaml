@@ -31,7 +31,6 @@ resources:
 
 # A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
-  backup: true
   size: 10Gi
   storageClass: zfs-fast
   volumeName: zfs-tautulli-config

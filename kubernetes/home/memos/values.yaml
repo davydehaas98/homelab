@@ -33,7 +33,6 @@ resources:
 persistence:
   size: 1Gi
   mountPath: /var/opt/memos
-  backup: true
   storageClass: zfs-fast
   volumeName: zfs-memos-config
 

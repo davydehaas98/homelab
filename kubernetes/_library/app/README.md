@@ -51,7 +51,6 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `persistence.storageClass` | default class | StorageClass of the claim. |
 | `persistence.volumeName` | none | Bind the claim to a static volume, such as a ZFS volume of `kubernetes/storage/zfs-localpv` (`zfs-<name>`, with `storageClass` its pool's class). A pod with `persistence`, `media` or `backups` tolerates the taint of `midgard-0`, where those volumes are. |
 | `persistence.labels` | | Extra labels of the claim. |
-| `persistence.backup` | `false` | Annotate the pod so Velero backs up the volume. |
 | `media.claimName`, `media.mounts` | none | Mount `subPath`s of an existing claim, as a list of `mountPath` + `subPath` (+ `readOnly: true`). |
 | `extraClaims` | none | More existing claims, a list of `name` and `mounts` (`mountPath` + `subPath`), mounted after the app's volume, such as data to keep out of its backup. |
 | `envFrom` | none | Environment variables from Secrets or ConfigMaps, a list of `secretRef` or `configMapRef` entries. |

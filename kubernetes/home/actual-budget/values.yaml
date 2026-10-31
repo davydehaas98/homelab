@@ -32,7 +32,6 @@ resources:
 persistence:
   size: 1Gi
   mountPath: /data
-  backup: true
   storageClass: zfs-fast
   volumeName: zfs-actual-budget-config
 

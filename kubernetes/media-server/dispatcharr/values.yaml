@@ -34,7 +34,6 @@ resources:
 persistence:
   size: 5Gi
   mountPath: /data
-  backup: true
   storageClass: zfs-fast
   volumeName: zfs-dispatcharr-config
 
