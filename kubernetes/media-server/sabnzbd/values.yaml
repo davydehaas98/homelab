@@ -19,11 +19,10 @@ probe:
 
 media:
   claimName: media
+  # One mount, so a finished download moves from incomplete to complete instead of being copied
   mounts:
-    - mountPath: /downloads/usenet/complete
-      subPath: downloads/usenet/complete
-    - mountPath: /downloads/usenet/incomplete
-      subPath: downloads/usenet/incomplete
+    - mountPath: /downloads
+      subPath: downloads
 
 resources:
   limits:

@@ -13,9 +13,10 @@ port: 8686
 
 media:
   claimName: media
+  # Only its own downloads, at the folder of its category in SABnzbd, and its own library
   mounts:
-    - mountPath: /downloads
-      subPath: downloads
+    - mountPath: /downloads/usenet/complete/audio
+      subPath: downloads/usenet/complete/audio
     - mountPath: /music
       subPath: media/music
 

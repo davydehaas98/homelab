@@ -13,9 +13,10 @@ port: 7878
 
 media:
   claimName: media
+  # Only its own downloads, at the folder of its category in SABnzbd, and its own library
   mounts:
-    - mountPath: /downloads
-      subPath: downloads
+    - mountPath: /downloads/usenet/complete/movies
+      subPath: downloads/usenet/complete/movies
     - mountPath: /movies
       subPath: media/movies
 
