@@ -30,7 +30,7 @@ backup:
   image:
     registry: docker.io
     repository: alpine/k8s
-    tag: 1.37.1
+    tag: 1.37.2
   schedule: "0 1 * * *"
   # Days of dumps and of copies on `tank`
   keep: 14
