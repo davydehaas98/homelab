@@ -33,6 +33,12 @@
           showEpisodeNumber: true
           expandOneStreamToTwoRows: false
 
+    - LazyLibrarian:
+        icon: lazylibrarian.png
+        href: https://lazylibrarian.davydehaas.dev
+        description: Book management
+        siteMonitor: http://lazylibrarian.media-server.svc.cluster.local:5299
+
     - Lidarr:
         icon: lidarr.png
         href: https://lidarr.davydehaas.dev
@@ -43,21 +49,11 @@
           url: http://lidarr.media-server.svc.cluster.local:8686
           key: "{{HOMEPAGE_FILE_LIDARR_KEY}}"
 
-    - LazyLibrarian:
-        icon: lazylibrarian.png
-        href: https://lazylibrarian.davydehaas.dev
-        description: Book management
-        siteMonitor: http://lazylibrarian.media-server.svc.cluster.local:5299
-
     - Plex:
         icon: plex.png
         href: https://plex.davydehaas.dev
         description: Media server
         siteMonitor: https://plex.davydehaas.dev/identity
-        widget:
-          type: plex
-          url: https://plex.davydehaas.dev
-          key: "{{HOMEPAGE_VAR_PLEX_KEY}}"
 
     - Prowlarr:
         icon: prowlarr.png
@@ -172,6 +168,9 @@
         href: https://gatus.davydehaas.dev
         description: Status page
         siteMonitor: http://gatus.gatus.svc.cluster.local:8080
+        widget:
+          type: gatus
+          url: http://gatus.gatus.svc.cluster.local:8080
 
     - Grafana:
         icon: grafana.png
@@ -196,7 +195,7 @@
 
 - Platform:
     - Argo CD:
-        icon: argocd.png
+        icon: argo-cd.png
         href: https://argocd.davydehaas.dev
         description: GitOps
         siteMonitor: http://argocd-server.argocd.svc.cluster.local:80
@@ -237,3 +236,16 @@
         href: https://omni-tools.davydehaas.dev
         description: Everyday utilities
         siteMonitor: http://omni-tools.omni-tools.svc.cluster.local:8080
+
+- Games:
+    # No widget: GameDig gets no answer from a server that is not in Factorio's public list
+    - Factorio:
+        icon: mdi-factory
+        description: Game server
+
+    - Minecraft:
+        icon: minecraft.png
+        description: Game server
+        widget:
+          type: minecraft
+          url: udp://minecraft.minecraft.svc.cluster.local:25565

@@ -47,5 +47,5 @@ terraform init && terraform plan
 ```
 
 `env.sh` reads the API keys and webhooks from the cluster and asks for the NZBgeek key, which Prowlarr only returns
-masked. The providers use the public hostnames, whose `/api` skips the Authentik login. As the APIs return no secrets,
-the first apply after an import writes them again. A change made in the UI shows as drift in the next plan.
+masked. The providers use the names on the private gateway, so a plan needs the home network or the VPN. As the APIs
+return no secrets, the first apply after an import writes them again. A change made in the UI shows as drift in the next plan.

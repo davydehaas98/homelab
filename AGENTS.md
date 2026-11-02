@@ -36,8 +36,10 @@ deployment.
   (`nlRedirects` in `kubernetes/core/envoy-gateway/values.yaml`); its DNS is a wildcard. Publish an app with an `HTTPRoute` on Gateway
   `envoy-gateway` (`sectionName: web-https`), no Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
   `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`. Tools only for the home network go on Gateway
-  `envoy-gateway-private` (`192.168.1.61`, not forwarded) under `*.mcp.davydehaas.dev`, with a record in
-  `kubernetes_private_apps`.
+  `envoy-gateway-private` (`192.168.1.61`, not forwarded) under `*.mcp.davydehaas.dev`, and APIs under
+  `*.lan.davydehaas.dev` with `oidc.privateHostname` of the library chart, each with a record in
+  `kubernetes_private_apps`. The public gateway does not see real client addresses, so do not restrict by source address
+  there.
 - **Logins.** Authentik, through a gateway `SecurityPolicy`, the app's native OIDC, or the app's own login. Adding
   a client is in `kubernetes/security/authentik/README.md`. Ship the sealed credentials in the same commit as the
   policy: a policy without its Secret breaks the route.

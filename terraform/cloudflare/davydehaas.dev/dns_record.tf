@@ -86,6 +86,11 @@ locals {
   # HTTPRoute hostnames on the private gateway, only reachable from the home network.
   kubernetes_private_apps = [
     "grafana.mcp",
+    "lidarr.lan",
+    "prowlarr.lan",
+    "radarr.lan",
+    "sabnzbd.lan",
+    "sonarr.lan",
   ]
 
   # Their `route.aliases`, which redirect to the main name.

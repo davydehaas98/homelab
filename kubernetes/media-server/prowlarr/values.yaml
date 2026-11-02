@@ -49,6 +49,7 @@ route:
 
 oidc:
   enabled: true
-  # The API is protected by the API key of the app, not by the login
+  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
+  privateHostname: prowlarr.lan.davydehaas.dev

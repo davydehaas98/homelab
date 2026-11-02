@@ -64,3 +64,4 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `oidc.slug` | chart name | Application slug at the identity provider. |
 | `oidc.secretName` | `<app>-oidc-credentials` | Secret with the `client-id` and `client-secret`. |
 | `oidc.bypassPaths` | none | Paths that skip the login, as a second route without the policy (`<app>-bypass`). For an API that clients call with the app's own API key. |
+| `oidc.privateHostname` | none | Puts that route on this name under `*.lan.davydehaas.dev` on the private gateway, so the internet cannot reach the paths. It needs a record in `kubernetes_private_apps`. |

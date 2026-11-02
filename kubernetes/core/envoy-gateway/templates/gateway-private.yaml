@@ -1,6 +1,6 @@
 # Only for the home network: the UniFi gateway forwards nothing to its address, so its routes are not on the internet.
-# For tools that should not be public, under *.mcp.davydehaas.dev (the MCP servers); their records point to this
-# address, see terraform/cloudflare/davydehaas.dev/dns_record.tf.
+# For what should not be public: the MCP servers under *.mcp.davydehaas.dev, the rest under *.lan.davydehaas.dev. Their
+# records point to this address, see terraform/cloudflare/davydehaas.dev/dns_record.tf.
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -32,3 +32,16 @@ spec:
           - group: ""
             kind: Secret
             name: default-tls-certificate
+    - name: web-https-lan
+      protocol: HTTPS
+      port: 443
+      hostname: "*.lan.davydehaas.dev"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: lan-tls-certificate

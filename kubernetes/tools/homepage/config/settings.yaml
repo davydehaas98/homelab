@@ -19,6 +19,9 @@ layout:
   Media:
     style: row
     columns: 4
+  Games:
+    style: row
+    columns: 4
 
 headerStyle: boxedWidgets
 showStats: true

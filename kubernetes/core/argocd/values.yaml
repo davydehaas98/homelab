@@ -13,6 +13,8 @@ argo-cd:
       timeout.reconciliation.jitter: 10s
       # Only the single sign-on below. If Authentik is down, `argocd --core` with the kubeconfig still works.
       admin.enabled: "false"
+      # For the token of the Homepage widget, which can only read
+      accounts.homepage: apiKey
       # Single sign-on with Authentik. Client ID and secret live in the `argocd-authentik-oidc` Secret
       oidc.config: |
         name: Authentik
@@ -31,6 +33,7 @@ argo-cd:
       policy.default: ""
       policy.csv: |
         g, authentik Admins, role:admin
+        g, homepage, role:readonly
       scopes: "[groups]"
     secret:
       createSecret: true
