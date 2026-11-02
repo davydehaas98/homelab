@@ -5,11 +5,12 @@ image:
   repository: nginxinc/nginx-unprivileged
   tag: 1.31.7-alpine
 
+replicas: 2
+
 port: 8080
 
 # No volume, so it updates without a gap, and two replicas keep it up while a node drains
 kind: Deployment
-replicas: 2
 
 podSecurityContext:
   runAsNonRoot: true

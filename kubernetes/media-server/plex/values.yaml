@@ -5,10 +5,7 @@ image:
   repository: linuxserver/plex
   tag: 1.43.5
 
-# linuxserver.io images start as root and run Plex as this user and group, the owner of the config and the media
 env:
-  PUID: 1400
-  PGID: 1400
   VERSION: docker
 securityContext: {}
 

@@ -1,4 +1,6 @@
 metrics-server:
+  replicas: 2
+
   serviceAccount:
     create: true
 
@@ -10,8 +12,6 @@ metrics-server:
 
   hostNetwork:
     enabled: false
-
-  replicas: 2
 
   podDisruptionBudget:
     enabled: true

@@ -141,7 +141,7 @@ kyverno-policies:
       - zfs-localpv
 
   # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
-  # SETGID and CHOWN, tested with runAsUser 1400), Home Assistant (s6), Dispatcharr (entrypoint with su, and
+  # SETGID and CHOWN, tested with another runAsUser), Home Assistant (s6), Dispatcharr (entrypoint with su, and
   # Postgres, Redis and nginx in one container) and Nextcloud (apache drops to www-data). A per-policy entry replaces
   # the defaults above, so they are repeated.
   # Home Assistant runs on the host network (values.yaml of the app), which these two policies forbid; Kubernetes also

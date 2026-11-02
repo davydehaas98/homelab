@@ -1,12 +1,12 @@
 seerr-chart:
   fullnameOverride: seerr
 
-  # Runs as the owner of its config
+  # Runs as the user of the image
   podSecurityContext:
-    fsGroup: 1400
+    fsGroup: 1000
   securityContext:
-    runAsUser: 1400
-    runAsGroup: 1400
+    runAsUser: 1000
+    runAsGroup: 1000
 
   extraEnv:
     - name: LOG_LEVEL

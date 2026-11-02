@@ -1,13 +1,11 @@
-podSecurityContext:
-  fsGroup: 1400
-  # The media disk and the backups are large: only change their group when the root of the volume differs
-  fsGroupChangePolicy: OnRootMismatch
-securityContext: {}
+image:
+  registry: ghcr.io
+  repository: linuxserver/bazarr
+  tag: 1.6.2
 
-# linuxserver.io images run as this user and group: the owner of the media
-env:
-  PUID: 1400
-  PGID: 1400
+replicas: 1
+
+securityContext: {}
 
 port: 6767
 
@@ -32,13 +30,6 @@ resources:
   requests:
     cpu: 300m
     memory: 400Mi
-
-image:
-  registry: ghcr.io
-  repository: linuxserver/bazarr
-  tag: 1.6.2
-
-replicas: 1
 
 # The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:

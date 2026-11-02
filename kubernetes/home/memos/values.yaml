@@ -8,10 +8,10 @@ port: 5230
 
 # Started as root, the entrypoint chowns the data and drops to 10001; started as this user, it skips that
 podSecurityContext:
-  runAsUser: 1400
-  runAsGroup: 1400
+  runAsUser: 10001
+  runAsGroup: 10001
   runAsNonRoot: true
-  fsGroup: 1400
+  fsGroup: 10001
 securityContext:
   capabilities:
     drop:

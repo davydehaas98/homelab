@@ -9,12 +9,13 @@ port: 3000
 
 kind: Deployment
 
+# Runs as the user of the image
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1400
-  runAsGroup: 1400
-  fsGroup: 1400
-  # The media disk and the backups are large: only change their group when the root of the volume differs
+  runAsUser: 1001
+  runAsGroup: 65533
+  fsGroup: 65533
+  # The backups are large: only change their group when the root of the volume differs
   fsGroupChangePolicy: OnRootMismatch
   seccompProfile:
     type: RuntimeDefault

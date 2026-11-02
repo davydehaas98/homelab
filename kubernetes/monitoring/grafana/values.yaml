@@ -1,4 +1,6 @@
 grafana:
+  replicas: 1
+
   sidecar:
     resources:
       limits:
@@ -40,8 +42,6 @@ grafana:
           jsonData:
             handleGrafanaManagedAlerts: false
             implementation: prometheus
-
-  replicas: 1
 
   # The dashboards come from this namespace only, so no cluster role that reads Secrets everywhere
   rbac:

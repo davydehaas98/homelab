@@ -7,12 +7,12 @@ jellyfin:
   deploymentStrategy:
     type: Recreate
 
-  # Runs as the owner of the media
+  # Runs as the owner of the media, the default user of the linuxserver.io images
   podSecurityContext:
     runAsNonRoot: true
-    runAsUser: 1400
-    runAsGroup: 1400
-    fsGroup: 1400
+    runAsUser: 911
+    runAsGroup: 911
+    fsGroup: 911
     # The media disk is large: only change its group when the root of the volume differs
     fsGroupChangePolicy: OnRootMismatch
     seccompProfile:

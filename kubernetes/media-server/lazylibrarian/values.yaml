@@ -1,13 +1,12 @@
-podSecurityContext:
-  fsGroup: 1400
-  # The media disk is large: only change its group when the root of the volume differs
-  fsGroupChangePolicy: OnRootMismatch
-securityContext: {}
+# Its tags are commit hashes without an order, so Renovate can't follow them: update this by hand
+image:
+  registry: ghcr.io
+  repository: linuxserver/lazylibrarian
+  tag: 85edbb10-ls387
 
-# linuxserver.io images run as this user and group: the owner of the media
-env:
-  PUID: 1400
-  PGID: 1400
+replicas: 1
+
+securityContext: {}
 
 port: 5299
 
@@ -25,14 +24,6 @@ resources:
   requests:
     cpu: 30m
     memory: 200Mi
-
-# Its tags are commit hashes without an order, so Renovate can't follow them: update this by hand
-image:
-  registry: ghcr.io
-  repository: linuxserver/lazylibrarian
-  tag: 85edbb10-ls387
-
-replicas: 1
 
 # A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:

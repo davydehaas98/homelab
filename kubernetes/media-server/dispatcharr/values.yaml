@@ -1,7 +1,7 @@
 # IPTV manager that serves Plex as an HDHomeRun tuner and provides M3U and XMLTV output. The all-in-one image runs
 # PostgreSQL, Redis, nginx, uWSGI and Celery in one container, so its /data volume is a ZFS volume on midgard-0.
 # Left out: GPU devices and a priority boost, which the nodes do not offer. The image needs root to start its services
-# (it drops to PUID and PGID itself), so the pod runs as root with the default capabilities.
+# (it drops to user 1000 itself), so the pod runs as root with the default capabilities.
 image:
   registry: docker.io
   repository: dispatcharr/dispatcharr
@@ -14,8 +14,6 @@ env:
   DISPATCHARR_LOG_LEVEL: info
   REDIS_HOST: localhost
   CELERY_BROKER_URL: redis://localhost:6379/0
-  PUID: "1400"
-  PGID: "1400"
 
 # The first start sets up the database, which takes a few minutes
 probe:

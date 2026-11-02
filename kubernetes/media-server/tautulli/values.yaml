@@ -4,13 +4,7 @@ image:
   repository: linuxserver/tautulli
   tag: 2.18.2
 
-# linuxserver.io images run as this user and group: the owner of the media
-podSecurityContext:
-  fsGroup: 1400
 securityContext: {}
-env:
-  PUID: 1400
-  PGID: 1400
 
 port: 8181
 

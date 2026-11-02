@@ -18,8 +18,9 @@ deployment.
   only set values (see its README). New apps start from a copy of `kubernetes/_base/`, following the `add-app` skill.
 - Images must publish the architecture of their node: amd64 for an app with a volume, which runs on `midgard-0`, and
   arm64 for the rest, which run on the RK1 nodes.
-- YAML style: `resources` with `limits` before `requests` and keys alphabetical, memory in `Mi` below 1Gi and `Gi`
-  from there, double quotes, indented sequences. Templates are not linted, so keep to it there too.
+- YAML style: `image` and `replicas` first in the values of an app, `resources` with `limits` before `requests` and
+  keys alphabetical, memory in `Mi` below 1Gi and `Gi` from there, double quotes, indented sequences. Templates are not
+  linted, so keep to it there too.
 
 ## Secrets
 

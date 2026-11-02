@@ -8,10 +8,10 @@ port: 5006
 
 # The image runs as root without needing it
 podSecurityContext:
-  runAsUser: 1400
-  runAsGroup: 1400
+  runAsUser: 65532
+  runAsGroup: 65532
   runAsNonRoot: true
-  fsGroup: 1400
+  fsGroup: 65532
 securityContext:
   capabilities:
     drop:

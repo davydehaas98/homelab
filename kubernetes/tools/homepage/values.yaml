@@ -27,9 +27,9 @@ env:
 
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1400
-  runAsGroup: 1400
-  fsGroup: 1400
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
   seccompProfile:
     type: RuntimeDefault
 securityContext:

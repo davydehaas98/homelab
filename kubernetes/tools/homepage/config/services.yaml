@@ -53,7 +53,7 @@
         icon: plex.png
         href: https://plex.davydehaas.dev
         description: Media server
-        siteMonitor: https://plex.davydehaas.dev/identity
+        siteMonitor: http://plex.plex.svc.cluster.local:32400/identity
 
     - Prowlarr:
         icon: prowlarr.png
@@ -75,15 +75,14 @@
           url: http://radarr.media-server.svc.cluster.local:7878
           key: "{{HOMEPAGE_FILE_RADARR_KEY}}"
 
-    # SABnzbd rejects other hostnames, so its widget uses the public address (the /api path skips the login)
     - SABnzbd:
         icon: sabnzbd.png
         href: https://sabnzbd.davydehaas.dev
         description: Usenet downloader
-        siteMonitor: https://sabnzbd.davydehaas.dev
+        siteMonitor: http://sabnzbd.media-server.svc.cluster.local:8080
         widget:
           type: sabnzbd
-          url: https://sabnzbd.davydehaas.dev
+          url: http://sabnzbd.media-server.svc.cluster.local:8080
           key: "{{HOMEPAGE_FILE_SABNZBD_KEY}}"
 
     - Seerr:
@@ -116,7 +115,7 @@
         icon: tracearr.png
         href: https://tracearr.davydehaas.dev
         description: Playback monitoring
-        siteMonitor: https://tracearr.davydehaas.dev
+        siteMonitor: http://tracearr.media-server.svc.cluster.local:3000
 
 - Home:
     - Actual Budget:

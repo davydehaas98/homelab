@@ -20,9 +20,9 @@ args:
 # Runs as a normal user and still binds the low ports 53 and 80, as the kernel may let any process do that in this pod
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 1400
-  runAsGroup: 1400
-  fsGroup: 1400
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
   sysctls:
     - name: net.ipv4.ip_unprivileged_port_start
       value: "0"
