@@ -5,9 +5,8 @@
   "baseBranchPatterns": [
     "main"
   ],
-  "separateMinorPatch": true,
   "automergeSchedule": [
-    "* * * * *"
+    "0 * * * *"
   ],
   "packageRules": [
     {
