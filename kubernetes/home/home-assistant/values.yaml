@@ -39,7 +39,7 @@ resources:
 serviceAccountName: home-assistant
 initContainers:
   - name: config-init
-    image: docker.io/kiwigrid/k8s-sidecar:2.14.1
+    image: docker.io/kiwigrid/k8s-sidecar:2.14.3
     env:
       # One run, then the container exits and the pod goes on
       - name: METHOD
@@ -72,7 +72,7 @@ initContainers:
         memory: 40Mi
   - name: config-watch
     restartPolicy: Always
-    image: docker.io/kiwigrid/k8s-sidecar:2.14.1
+    image: docker.io/kiwigrid/k8s-sidecar:2.14.3
     env:
       - name: IGNORE_ALREADY_PROCESSED
         value: "true"
