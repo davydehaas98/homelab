@@ -26,6 +26,6 @@ The Applications have no finalizer, so removing one never deletes its workloads.
    workloads by name. The VerticalPodAutoscalers go with the workloads.
 4. **Volumes.** A ZFS PersistentVolume is `Retain`: once its claim is gone, delete the PV and give the user the command
    that destroys the data: deleting the ZFSVolume for a volume made by a StorageClass, `zfs destroy` under `<pool>/k8s`
-   for a static one, which also leaves `volumes` in `kubernetes/storage/zfs-localpv/values.yaml`. Its copy under
-   `tank/backup/fast` goes the same way. Its Velero and Barman backups expire by themselves.
+   for a static one, which also leaves `volumes` in `kubernetes/storage/zfs-localpv/values.yaml`. Its Velero and Barman
+   backups expire by themselves.
 5. **Report** what is gone, what the user still has to run, and anything left (a shared namespace, a dataset).

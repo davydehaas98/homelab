@@ -9,8 +9,8 @@ itself, and claims with the label `velero.io/exclude-from-backup: "true"`: the m
 cache. A pod with the annotation `backup.velero.io/backup-volumes` would get a copy of its live files instead of a
 snapshot, so don't set it.
 
-The dumps and copies of [`storage/zfs-localpv`](../zfs-localpv/README.md) run next to this until restores from here are
-proven.
+The CloudNativePG databases also have their own backups, see [`storage/cloudnative-pg`](../cloudnative-pg/README.md).
+Nothing here protects against losing `tank`.
 
 `templates/velero-credentials.yaml` holds the `velero` identity of SeaweedFS and is sealed together with SeaweedFS's
 config, see the [SeaweedFS README](../seaweedfs/README.md#credentials). That rotates the Loki credentials too: restart

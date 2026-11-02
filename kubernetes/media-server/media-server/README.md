@@ -3,7 +3,7 @@
 The `media` claim is a `local` volume on the media disk of `midgard-0` (`/var/mnt/media`), and the `backups` claim is the
 static ZFS volume `media-server-backups` on `tank`, shared by the apps for their own backups. Both are in the
 `media-server` namespace. Each app has its own ZFS volume for its config, see
-[`storage/zfs-localpv`](../../storage/zfs-localpv/README.md), which also covers how they are backed up.
+[`storage/zfs-localpv`](../../storage/zfs-localpv/README.md). Velero backs up these volumes, not the media.
 
 On the disk, `data/series`, `data/movies`, `data/music` and `data/books` each hold a `library` and a `downloads` folder.
 Sonarr, Radarr, Lidarr and LazyLibrarian mount only their own of these at the same path under `/data`, so an import moves
