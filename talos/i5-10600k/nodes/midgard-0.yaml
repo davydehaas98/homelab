@@ -1,3 +1,6 @@
+machine:
+  type: worker
+---
 apiVersion: v1alpha1
 kind: KernelModuleConfig
 name: zfs

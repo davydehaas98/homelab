@@ -5,16 +5,22 @@ umask 077
 
 cd "$(dirname "$0")"
 
-while getopts b:c:n:t: flag;
+while getopts b:c:n: flag;
 do
     case ${flag} in
         b) BOARD=${OPTARG} ;;
         c) CLUSTER_NAME=${OPTARG} ;;
         n) NODE_NAME=${OPTARG} ;;
-        t) NODE_TYPE=${OPTARG} ;;
         *) exit 1 ;;
     esac
 done
+
+# The patch of the node is the single source of its type
+NODE_TYPE=$(sed -n '/^machine:/,/^---/s/^  type: //p' "${BOARD}/nodes/${NODE_NAME}.yaml")
+if [ -z "${NODE_TYPE}" ]; then
+    echo "No machine.type in ${BOARD}/nodes/${NODE_NAME}.yaml"
+    exit 1
+fi
 
 # patches/cluster.yaml is the single source of the control plane endpoint (and so of the VIP)
 CLUSTER_ENDPOINT=$(sed -n 's/^endpoint: //p' patches/cluster.yaml)

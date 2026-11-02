@@ -60,9 +60,9 @@ mode.
 
 ```shell
 sh gen-talosconfig.sh -c yggdrasil -n jotunheim-0
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0 -t controlplane   # and jotunheim-1, jotunheim-2
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-3 -t worker
-sh apply-config.sh -b i5-10600k -c yggdrasil -n midgard-0 -t worker
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0   # and jotunheim-1, jotunheim-2
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-3
+sh apply-config.sh -b i5-10600k -c yggdrasil -n midgard-0
 talosctl bootstrap --nodes jotunheim-0
 talosctl config endpoint $(sed -n 's|^endpoint: https://\(.*\):6443|\1|p' patches/cluster.yaml)
 talosctl config nodes jotunheim-0 jotunheim-1 jotunheim-2 jotunheim-3

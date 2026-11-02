@@ -3,18 +3,17 @@ set -e
 
 cd "$(dirname "$0")"
 
-while getopts b:c:n:t: flag;
+while getopts b:c:n: flag;
 do
     case ${flag} in
         b) BOARD=${OPTARG} ;;
         c) CLUSTER_NAME=${OPTARG} ;;
         n) NODE_NAME=${OPTARG} ;;
-        t) NODE_TYPE=${OPTARG} ;;
         *) exit 1 ;;
     esac
 done
 
-sh gen-config.sh -b ${BOARD} -c ${CLUSTER_NAME} -n ${NODE_NAME} -t ${NODE_TYPE}
+sh gen-config.sh -b ${BOARD} -c ${CLUSTER_NAME} -n ${NODE_NAME}
 
 echo "Applying config for '${NODE_NAME}'"
 if OUTPUT=$(talosctl apply-config \
