@@ -132,9 +132,7 @@ kyverno-policies:
   vpolExclude:
     excludeNamespaces:
       - fluent-bit
-      - intel-gpu-resource-driver
-      - kepler
-      - kube-system
+      - intel-gpu-resource-driver      - kube-system
       - node-feature-discovery
       - node-problem-detector
       - prometheus-node-exporter
@@ -152,9 +150,7 @@ kyverno-policies:
     disallow-host-path: &excludeNodeAgent
       excludeNamespaces:
         - fluent-bit
-        - intel-gpu-resource-driver
-        - kepler
-        - kube-system
+        - intel-gpu-resource-driver        - kube-system
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter
@@ -169,9 +165,7 @@ kyverno-policies:
       excludeNamespaces:
         - fluent-bit
         - home-assistant
-        - intel-gpu-resource-driver
-        - kepler
-        - kube-system
+        - intel-gpu-resource-driver        - kube-system
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter
@@ -185,9 +179,7 @@ kyverno-policies:
       excludeNamespaces:
         - fluent-bit
         - home-assistant
-        - intel-gpu-resource-driver
-        - kepler
-        - kube-system
+        - intel-gpu-resource-driver        - kube-system
         - node-feature-discovery
         - node-problem-detector
         - plex
@@ -197,9 +189,7 @@ kyverno-policies:
       excludeNamespaces:
         - fluent-bit
         - home-assistant
-        - intel-gpu-resource-driver
-        - kepler
-        - kube-system
+        - intel-gpu-resource-driver        - kube-system
         - mosquitto
         - node-feature-discovery
         - node-problem-detector
@@ -209,9 +199,7 @@ kyverno-policies:
     require-run-as-nonroot:
       excludeNamespaces:
         - fluent-bit
-        - intel-gpu-resource-driver
-        - kepler
-        - kube-system
+        - intel-gpu-resource-driver        - kube-system
         - node-feature-discovery
         - node-problem-detector
         - prometheus-node-exporter

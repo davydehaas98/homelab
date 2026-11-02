@@ -91,6 +91,8 @@ locals {
     "radarr.lan",
     "sabnzbd.lan",
     "sonarr.lan",
+    "tautulli.lan",
+    "tracearr.lan",
   ]
 
   # Their `route.aliases`, which redirect to the main name.

@@ -1,7 +1,6 @@
 # Budgeting app behind the gateway login, with its SQLite files in /data.
 image:
-  registry: ghcr.io
-  repository: actualbudget/actual
+  repository: ghcr.io/actualbudget/actual
   tag: 26.11.0
 
 port: 5006

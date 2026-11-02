@@ -1,6 +1,5 @@
 image:
-  registry: docker.io
-  repository: factoriotools/factorio
+  repository: docker.io/factoriotools/factorio
   tag: 2.1.24-rootless
 
 replicas: 1
@@ -13,6 +12,10 @@ podSecurityContext:
   fsGroup: 845
   runAsNonRoot: true
   runAsUser: 1000
+securityContext:
+  capabilities:
+    drop:
+      - ALL
 
 # The game port is UDP, so the probe checks RCON
 probe:

@@ -2,8 +2,7 @@
 # persistence database is in the volume. It needs a username and password, and only the LAN can reach it. Websockets
 # (9001) are not exposed.
 image:
-  registry: docker.io
-  repository: library/eclipse-mosquitto
+  repository: docker.io/library/eclipse-mosquitto
   tag: 2.0.22
 
 port: 1883

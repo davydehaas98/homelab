@@ -3,8 +3,7 @@
 # Left out: GPU devices and a priority boost, which the nodes do not offer. The image needs root to start its services
 # (it drops to user 1000 itself), so the pod runs as root with the default capabilities.
 image:
-  registry: docker.io
-  repository: dispatcharr/dispatcharr
+  repository: docker.io/dispatcharr/dispatcharr
   tag: 0.33.0
 
 port: 9191

@@ -2,8 +2,7 @@
 # privileges. Judge the speed by `kubectl -n minecraft logs statefulset/minecraft | grep "Can't keep up"` and
 # `kubectl top pod`.
 image:
-  registry: docker.io
-  repository: itzg/minecraft-server
+  repository: docker.io/itzg/minecraft-server
   tag: 2026.10.1-java25
 
 port: 25565

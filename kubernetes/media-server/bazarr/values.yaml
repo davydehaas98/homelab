@@ -1,6 +1,5 @@
 image:
-  registry: ghcr.io
-  repository: linuxserver/bazarr
+  repository: ghcr.io/linuxserver/bazarr
   tag: 1.6.2
 
 replicas: 1

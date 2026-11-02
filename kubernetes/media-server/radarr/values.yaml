@@ -1,6 +1,5 @@
 image:
-  registry: ghcr.io
-  repository: linuxserver/radarr
+  repository: ghcr.io/linuxserver/radarr
   tag: 6.4.4
 
 replicas: 1

@@ -8,8 +8,7 @@
 # write (automations.yaml, scripts.yaml); Velero backs the volume up, with the files of the sidecar. The location in
 # secrets.yaml is sealed in templates/home-assistant-secrets.yaml.
 image:
-  registry: ghcr.io
-  repository: home-assistant/home-assistant
+  repository: ghcr.io/home-assistant/home-assistant
   tag: 2026.10.4
 
 port: 8123

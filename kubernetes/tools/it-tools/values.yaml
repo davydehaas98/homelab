@@ -1,8 +1,7 @@
 # Static site served by nginx, no state. It runs as uid 101 on port 8080 with its own nginx.conf, as the stock
 # image starts nginx as root on port 80.
 image:
-  registry: ghcr.io
-  repository: corentinth/it-tools
+  repository: ghcr.io/corentinth/it-tools
   tag: 2024.10.22-7ca5933
 
 port: 8080

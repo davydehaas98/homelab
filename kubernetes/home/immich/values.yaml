@@ -1,11 +1,4 @@
 immich:
-  controllers:
-    main:
-      containers:
-        main:
-          image:
-            tag: v3.3.3
-
   immich:
     persistence:
       library:
@@ -28,6 +21,9 @@ immich:
           main:
             securityContext:
               allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
             resources:
               limits:
                 memory: 40Mi
@@ -52,8 +48,15 @@ immich:
       main:
         containers:
           main:
+            # Keep this tag equal to the one of the server
+            image:
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v3.3.3
             securityContext:
               allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
             resources:
               limits:
                 memory: 4Gi
@@ -80,6 +83,10 @@ immich:
       main:
         containers:
           main:
+            # Keep this tag equal to the one of machine learning
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v3.3.3
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:

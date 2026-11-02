@@ -1,8 +1,7 @@
 # Status monitor. The endpoints it checks are in config/config.yaml, with results kept in memory, so there is no
 # volume and a restart starts the history again.
 image:
-  registry: ghcr.io
-  repository: twin/gatus
+  repository: ghcr.io/twin/gatus
   tag: v5.38.0
 
 port: 8080

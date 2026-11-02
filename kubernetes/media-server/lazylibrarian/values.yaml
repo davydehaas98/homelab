@@ -1,7 +1,6 @@
 # Its tags are commit hashes without an order, so Renovate can't follow them: update this by hand
 image:
-  registry: ghcr.io
-  repository: linuxserver/lazylibrarian
+  repository: ghcr.io/linuxserver/lazylibrarian
   tag: 85edbb10-ls387
 
 replicas: 1

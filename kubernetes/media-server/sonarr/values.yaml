@@ -1,6 +1,5 @@
 image:
-  registry: ghcr.io
-  repository: linuxserver/sonarr
+  repository: ghcr.io/linuxserver/sonarr
   tag: 4.0.20
 
 replicas: 1

@@ -183,6 +183,9 @@ authentik:
         type: RuntimeDefault
     containerSecurityContext:
       allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
     resources:
       limits:
         memory: 1.5Gi
@@ -201,6 +204,9 @@ authentik:
         type: RuntimeDefault
     containerSecurityContext:
       allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
     resources:
       limits:
         memory: 650Mi

@@ -1,7 +1,6 @@
 # Notes behind the gateway login, with its SQLite database in /var/opt/memos.
 image:
-  registry: ghcr.io
-  repository: usememos/memos
+  repository: ghcr.io/usememos/memos
   tag: 26.11.0
 
 port: 5230

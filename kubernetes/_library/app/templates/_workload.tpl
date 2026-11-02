@@ -61,7 +61,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ template "app.name" . }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- with .Values.args }}
           args:
             {{- toYaml . | nindent 12 }}

@@ -3,8 +3,7 @@
 # the cluster, so the services are listed here. The files are mounted into an empty folder, as Homepage writes its logs
 # there.
 image:
-  registry: ghcr.io
-  repository: gethomepage/homepage
+  repository: ghcr.io/gethomepage/homepage
   tag: v2.7.0
 
 port: 3000

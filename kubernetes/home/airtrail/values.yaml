@@ -1,8 +1,7 @@
 # Flight log behind the gateway login. The database (templates/database.yaml) is CloudNativePG, so the app keeps no
 # state of its own and updates without a gap.
 image:
-  registry: docker.io
-  repository: johly/airtrail
+  repository: docker.io/johly/airtrail
   tag: v3.14.0
 
 port: 3000

@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: talos-backup
-              image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
               imagePullPolicy: IfNotPresent
               command:
                 - /talos-backup

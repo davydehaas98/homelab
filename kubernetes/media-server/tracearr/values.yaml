@@ -1,8 +1,7 @@
 # Playback monitoring for Plex and Jellyfin. The app keeps no state of its own: its database is templates/postgres.yaml
 # (TimescaleDB), its cache templates/valkey.yaml, and its secrets are in `tracearr-env`.
 image:
-  registry: ghcr.io
-  repository: connorgallopo/tracearr
+  repository: ghcr.io/connorgallopo/tracearr
   tag: 3.1.3
 
 port: 3000
@@ -60,6 +59,8 @@ route:
 # Sign in with Authentik (client `tracearr`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is protected by the login of the app itself, and the mobile app cannot follow a redirect
+  # The API is on the private gateway only, protected by the login of the app itself: the mobile app cannot follow a
+  # redirect, so it needs this name and the VPN
   bypassPaths:
     - /api
+  privateHostname: tracearr.lan.davydehaas.dev

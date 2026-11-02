@@ -2,8 +2,7 @@
 # by its setup wizard. Talos has the kernel module built in and a pod inherits the node's ip_forward, so it needs no
 # SYS_MODULE or sysctls. The interface has no route, see README.md.
 image:
-  registry: ghcr.io
-  repository: wg-easy/wg-easy
+  repository: ghcr.io/wg-easy/wg-easy
   tag: 15.5.0
 
 # The VPN port, UDP

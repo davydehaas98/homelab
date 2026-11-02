@@ -1,7 +1,6 @@
 # Plex monitoring. The address of Plex is set in the app; the logs of Plex are not mounted.
 image:
-  registry: ghcr.io
-  repository: linuxserver/tautulli
+  repository: ghcr.io/linuxserver/tautulli
   tag: 2.18.2
 
 securityContext: {}
@@ -38,6 +37,7 @@ route:
 # Sign in with Authentik (client `tautulli`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is protected by the API key of the app, not by the login
+  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
+  privateHostname: tautulli.lan.davydehaas.dev

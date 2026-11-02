@@ -1,8 +1,7 @@
 # Placeholder nginx page to test the apex and `www` domains, until the website has an arm64 image
 # (ghcr.io/davydehaas98/personal-website is amd64 only). Unprivileged image, so it runs non-root on 8080.
 image:
-  registry: docker.io
-  repository: nginxinc/nginx-unprivileged
+  repository: docker.io/nginxinc/nginx-unprivileged
   tag: 1.31.7-alpine
 
 replicas: 2
