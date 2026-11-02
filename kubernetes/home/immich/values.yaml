@@ -81,6 +81,8 @@ immich:
           type: RuntimeDefault
     controllers:
       main:
+        # The library is on one node, which has no memory for a second server next to the old one during an update
+        strategy: Recreate
         containers:
           main:
             # Keep this tag equal to the one of machine learning
