@@ -2,7 +2,7 @@ jellyfin:
   # No hardware transcoding: video that has to be transcoded runs on the CPU of the node.
   image:
     repository: docker.io/jellyfin/jellyfin
-    tag: "12.2"
+    tag: "12.3"
 
   # The disk can be mounted by one pod only
   deploymentStrategy:
