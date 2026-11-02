@@ -153,6 +153,7 @@ kyverno-policies:
       excludeNamespaces:
         - fluent-bit
         - intel-gpu-resource-driver
+        - kepler
         - kube-system
         - node-feature-discovery
         - node-problem-detector
@@ -169,6 +170,7 @@ kyverno-policies:
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
+        - kepler
         - kube-system
         - node-feature-discovery
         - node-problem-detector
@@ -184,6 +186,7 @@ kyverno-policies:
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
+        - kepler
         - kube-system
         - node-feature-discovery
         - node-problem-detector
@@ -195,6 +198,7 @@ kyverno-policies:
         - fluent-bit
         - home-assistant
         - intel-gpu-resource-driver
+        - kepler
         - kube-system
         - mosquitto
         - node-feature-discovery
@@ -206,6 +210,7 @@ kyverno-policies:
       excludeNamespaces:
         - fluent-bit
         - intel-gpu-resource-driver
+        - kepler
         - kube-system
         - node-feature-discovery
         - node-problem-detector
