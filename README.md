@@ -82,6 +82,7 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 | grafana               | Dashboards                  |
 | grafana-dashboards    | Dashboards as ConfigMaps    |
 | grafana-mcp           | Grafana MCP server          |
+| kepler                | Power use per pod           |
 | loki                  | Log storage                 |
 | node-problem-detector | Kernel and hardware reports |
 | prometheus            | Metrics and alerts          |

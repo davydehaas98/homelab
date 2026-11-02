@@ -1,5 +1,5 @@
-# Kepler reads the CPU energy counters (RAPL) of the node, which Rockchip boards do not have. Check that
-# the pods find a power meter before enabling this app.
+# Power use per pod, from the CPU's energy counters (RAPL). Only midgard-0 has those: the RK1 nodes have no power
+# sensors at all, so it runs there only.
 kepler:
   config:
     log:
@@ -10,6 +10,13 @@ kepler:
     interval: 30s
 
   daemonset:
+    nodeSelector:
+      kubernetes.io/hostname: midgard-0
+    tolerations:
+      - key: davydehaas.dev/dedicated
+        operator: Equal
+        value: storage
+        effect: NoSchedule
     resources:
       limits:
         memory: 300Mi

@@ -133,6 +133,7 @@ kyverno-policies:
     excludeNamespaces:
       - fluent-bit
       - intel-gpu-resource-driver
+      - kepler
       - kube-system
       - node-feature-discovery
       - node-problem-detector
