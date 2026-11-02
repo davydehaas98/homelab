@@ -51,7 +51,7 @@ immich:
             # Keep this tag equal to the one of the server
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v3.3.3
+              tag: v3.3.5
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
@@ -86,7 +86,7 @@ immich:
             # Keep this tag equal to the one of machine learning
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v3.3.3
+              tag: v3.3.5
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
