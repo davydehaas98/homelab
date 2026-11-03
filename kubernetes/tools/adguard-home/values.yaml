@@ -4,7 +4,7 @@
 # cover. Left out: the container's own mounts under /opt/adguardhome, which hold the program itself.
 image:
   repository: docker.io/adguard/adguardhome
-  tag: v0.107.79
+  tag: v0.107.80
 
 # The web interface, as its configuration on the volume has it
 port: 80
