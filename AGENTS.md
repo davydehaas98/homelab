@@ -48,6 +48,8 @@ deployment.
   `zfs-fast` (default, NVMe) or `zfs-tank` (RAIDZ1, for large files). A pod with such a volume can only run there and
   must tolerate its taint, which the library chart does. The media is a `local` volume on the same node. The RK1 nodes
   have no usable data disk, so node-local storage there (Longhorn) is not an option.
+- **Network.** Databases, caches and SeaweedFS only take connections from their own clients, through a `NetworkPolicy`
+  in the templates of the app. A new client of one needs a rule there; Hubble shows what Cilium drops.
 - **Monitoring.** Prometheus picks up ServiceMonitors and PodMonitors from all namespaces. Its CRDs come from the
   `prometheus-crd` app, which must match the operator version. Grafana only reads dashboard ConfigMaps from its
   own namespace.

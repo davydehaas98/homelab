@@ -1,0 +1,30 @@
+# Only the S3 API is reachable, and only by the backups and Loki: CloudNativePG (its databases in any namespace, so a
+# restore test elsewhere works too), Velero and talos-backup
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: seaweedfs
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: seaweedfs
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchExpressions:
+              - key: cnpg.io/cluster
+                operator: Exists
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+                  - cnpg-system
+                  - loki
+                  - talos-backup
+                  - velero
+      ports:
+        - port: 8333

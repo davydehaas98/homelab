@@ -1,0 +1,36 @@
+# The namespace is shared with the other media apps, so only Tracearr reaches its database and cache
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tracearr-postgres
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: tracearr-postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: tracearr
+      ports:
+        - port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tracearr-valkey
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: tracearr-valkey
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: tracearr
+      ports:
+        - port: 6379

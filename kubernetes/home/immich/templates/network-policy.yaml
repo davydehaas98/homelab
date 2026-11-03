@@ -1,0 +1,37 @@
+# Only the pods of this namespace reach the database and the cache, and the CloudNativePG operator the database
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: immich-database
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: immich-database
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cnpg-system
+      ports:
+        - port: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: immich-valkey
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: immich
+      app.kubernetes.io/name: valkey
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - port: 6379
