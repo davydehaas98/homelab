@@ -1,5 +1,6 @@
-# Only the S3 API is reachable, and only by the backups and Loki: CloudNativePG (its databases in any namespace, so a
-# restore test elsewhere works too), Velero and talos-backup
+# Its own namespace reaches every port (the bucket hook of the chart uses the master). Others only reach the S3 API, and
+# only the backups and Loki: CloudNativePG (its databases in any namespace, so a restore test elsewhere works too), Velero
+# and talos-backup
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -11,6 +12,8 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    - from:
+        - podSelector: {}
     - from:
         - namespaceSelector: {}
           podSelector:
