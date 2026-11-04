@@ -29,9 +29,9 @@ secret velero-credentials velero "$(jq -n --arg s "$velero" '{cloud: "[default]\
   | seal kubernetes/storage/velero/templates/velero-credentials.yaml
 secret talos-backup-s3-credentials talos-backup "$(jq -n --arg s "$tb" '{"access-key": "talos-backup", "secret-key": $s}')" \
   | seal kubernetes/core/talos-backup/templates/s3-credentials.yaml
-for app in airtrail immich nextcloud; do
-  secret database-backup-credentials "$app" "$(jq -n --arg s "$cnpg" '{ACCESS_KEY_ID: "cnpg", ACCESS_SECRET_KEY: $s}')" \
-    | seal "kubernetes/home/$app/templates/database-backup-credentials.yaml"
+for app in home/airtrail home/immich home/nextcloud security/authentik; do
+  secret database-backup-credentials "${app#*/}" "$(jq -n --arg s "$cnpg" '{ACCESS_KEY_ID: "cnpg", ACCESS_SECRET_KEY: $s}')" \
+    | seal "kubernetes/$app/templates/database-backup-credentials.yaml"
 done
 unset loki velero tb cnpg config
 ```

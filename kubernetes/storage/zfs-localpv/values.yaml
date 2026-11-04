@@ -43,6 +43,11 @@ volumes:
     size: 2Gi
     namespace: airtrail
     claim: airtrail-database-1
+  - name: authentik-database
+    pool: fast
+    size: 2Gi
+    namespace: authentik
+    claim: authentik-database-1
   - name: authentik-postgresql
     pool: fast
     size: 2Gi
