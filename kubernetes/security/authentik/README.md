@@ -5,23 +5,23 @@ Identity provider at <https://auth.davydehaas.dev>. On a new install, set the `a
 
 ## Secrets
 
-`templates/authentik-credentials.yaml` is Secret `authentik-credentials`, read by the server, worker and Postgres:
-
-- `AUTHENTIK_SECRET_KEY`: signs cookies and user IDs; never change it after the first install.
-- `AUTHENTIK_POSTGRESQL__PASSWORD` and `password`: the `authentik` database user, equal.
-- `postgres-password`: the Postgres admin.
-
-Regenerating rotates the database passwords, so do it only before the first install, from this folder:
+`templates/authentik-credentials.yaml` is Secret `authentik-credentials` with `AUTHENTIK_SECRET_KEY`, which signs
+cookies and user IDs; never change it after the first install. To generate it, only before the first install, from this
+folder:
 
 ```shell
-pw=$(openssl rand -hex 32)
-jq -n --arg key "$(openssl rand -base64 60 | tr -d '\n')" --arg pw "$pw" --arg admin "$(openssl rand -hex 32)" '{
+jq -n --arg key "$(openssl rand -base64 60 | tr -d '\n')" '{
   apiVersion: "v1", kind: "Secret", type: "Opaque",
   metadata: {name: "authentik-credentials", namespace: "authentik"},
-  stringData: {AUTHENTIK_SECRET_KEY: $key, AUTHENTIK_POSTGRESQL__PASSWORD: $pw, password: $pw, "postgres-password": $admin}
+  stringData: {AUTHENTIK_SECRET_KEY: $key}
 }' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > templates/authentik-credentials.yaml
-unset pw
 ```
+
+## Database
+
+PostgreSQL run by CloudNativePG (`templates/database.yaml`), which makes the database password in the Secret
+`authentik-database-app`. Its backups are in `templates/database-backup.yaml`, see
+[CloudNativePG](../../storage/cloudnative-pg/README.md).
 
 ## OIDC clients
 

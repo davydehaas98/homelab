@@ -48,11 +48,6 @@ volumes:
     size: 2Gi
     namespace: authentik
     claim: authentik-database-1
-  - name: authentik-postgresql
-    pool: fast
-    size: 2Gi
-    namespace: authentik
-    claim: authentik-postgresql-data
   - name: factorio-config
     pool: fast
     size: 5Gi

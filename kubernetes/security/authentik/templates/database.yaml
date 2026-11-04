@@ -1,7 +1,6 @@
 # PostgreSQL for Authentik, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which creates the Secret
 # `authentik-database-app` for it. The database is on a ZFS volume on midgard-0 (see kubernetes/storage/zfs-localpv);
-# one instance, as each instance needs a volume of its own. It was imported once from the old database of the chart's
-# `postgresql`, which is only read at bootstrap.
+# one instance, as each instance needs a volume of its own.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -35,21 +34,6 @@ spec:
     initdb:
       database: authentik
       owner: authentik
-      import:
-        type: microservice
-        databases:
-          - authentik
-        source:
-          externalCluster: authentik-postgresql
-  externalClusters:
-    - name: authentik-postgresql
-      connectionParameters:
-        host: authentik-postgresql
-        user: authentik
-        dbname: authentik
-      password:
-        name: authentik-credentials
-        key: password
   storage:
     size: 2Gi
     pvcTemplate:
