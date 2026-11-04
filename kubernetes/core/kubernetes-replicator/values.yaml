@@ -1,5 +1,9 @@
 # A SealedSecret cannot be copied; annotate the Secret it makes
 kubernetes-replicator:
+  # Copies a changed or deleted copy back within a minute instead of 30
+  args:
+    - --resync-period=1m
+
   podSecurityContext:
     fsGroup: 2000
     seccompProfile:

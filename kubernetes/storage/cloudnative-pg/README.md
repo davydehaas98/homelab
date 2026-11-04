@@ -3,8 +3,10 @@
 The operator, and the Barman Cloud plugin that backs up its databases to the bucket `cnpg` on SeaweedFS. The plugin runs
 next to the operator; its certificates come from cert-manager.
 
-A database app has `templates/database-backup.yaml` with an ObjectStore and a ScheduledBackup, the sealed Secret
-`database-backup-credentials`, and the plugin in `plugins` of its Cluster. The Cluster's pod then gets a sidecar that
+A database app has `templates/database-backup.yaml` with an ObjectStore and a ScheduledBackup, and the plugin in
+`plugins` of its Cluster. The ObjectStore reads the Secret `database-backup-credentials`, which kubernetes-replicator
+copies from `templates/database-backup-credentials.yaml` here into the namespaces in its annotation; a new database adds
+its namespace there. The Cluster's pod then gets a sidecar that
 archives the WAL continuously and takes a base backup nightly, kept 14 days, so a database can be restored to any moment
 in that time. The credentials are made in the [SeaweedFS README](../seaweedfs/README.md#credentials).
 
