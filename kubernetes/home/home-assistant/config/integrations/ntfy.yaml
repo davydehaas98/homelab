@@ -1,0 +1,13 @@
+# Publishes to the topic `home` on ntfy (kubernetes/tools/ntfy), as the ntfy user `home-assistant`, which may only
+# publish there. `ntfy_authorization` in secrets.yaml is `Bearer <token>`. Call it as action `rest_command.ntfy` with
+# `message` and optionally `title`, `priority` (1 to 5, default 3) and `tags` (comma-separated).
+rest_command:
+  ntfy:
+    url: http://ntfy.ntfy.svc.cluster.local:8080/
+    method: post
+    content_type: application/json
+    headers:
+      Authorization: !secret ntfy_authorization
+    payload: >-
+      {{ {"topic": "home", "message": message, "title": title | default(""), "priority": priority | default(3) | int,
+          "tags": (tags | default("")).split(",") | reject("eq", "") | list} | to_json }}

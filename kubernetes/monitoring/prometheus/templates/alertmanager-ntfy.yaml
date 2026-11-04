@@ -1,0 +1,15 @@
+# The token of the ntfy user alertmanager, which may only publish to the topic alerts (kubernetes/tools/ntfy)
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: alertmanager-ntfy
+  namespace: prometheus
+spec:
+  encryptedData:
+    token: AgBs5yzbWIc+sL91U8PPhpf7rfNYx0ZXV/rMEwwaAtzcIL2L5M7mJukmV9mK3po+YZLmXf+kcqJj6bA/0Ysm/Yt4WyuxJPS6s5qJ6Dukao9fXuPp09X4UX+Muyh2iHJSAKQDazc6UjMSpzNaEpJ8+CjnapB/0+7dz08g4pXoJIBIijxRQcEtBRX52RpknXVuC3/PunJxqMIBmQMa+xzrGhdrQy2cTlnlEhLOIIryAgLKwaql6G5LGlSTtUWIbkACEQmiBSL0uKWNcKhpwucQcU5eGSRPIRIYYGibNb2LjO00wGvRcv+sVW/McKJG1/zhnbrQzFJqHpv+foBzrRzBiQ8WPDncEW81Jv1ApDKyNswvd3/vFpKt/tsymi/rjPk4I7d/NlkcQWOXk5N3GX3WUxoSWUMigMJP/qRBs/B1GsNiZQMThxnFBejFjLrX7QokXv2V1ycjk9r5oGHSRYy5AQ8/bc0+ZMV4fuenjE2C847i95iaePvITAqbUZovSmrWXl6Mxfxe3qE5UXzOPFTPOUGfQEyKnrTDI0W2zFgkQ/m4yQLNKLJl9qycnoTYq1dWsq7hHl6mXCuuHrL74xEOr6WzwONNc+AUguW+2Llyk/lbFlOy2MejkN8C66EKEgp4DuFmn/mNdNRb6CMbqldL25RmkKta0xOGb78GnTXm7jnweKvlfOFRB7uWInIj0CcMR7wS1rf+80xwV9ettxVdjEYMv761/vJsWpZfCwfGSQWbHw==
+  template:
+    metadata:
+      name: alertmanager-ntfy
+      namespace: prometheus
+    type: Opaque

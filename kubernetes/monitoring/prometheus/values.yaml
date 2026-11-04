@@ -80,10 +80,10 @@ kube-prometheus-stack:
                 storage: 10Gi
 
   alertmanager:
-    # Everything to Discord except the alerts below
+    # Everything to Discord and ntfy except the alerts below
     config:
       route:
-        receiver: discord
+        receiver: default
         group_by:
           - namespace
           - alertname
@@ -98,13 +98,22 @@ kube-prometheus-stack:
               - alertname = "InfoInhibitor"
       receivers:
         - name: "null"
-        - name: discord
+        - name: default
           discord_configs:
             - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord/webhook-url
               send_resolved: true
+          # Topic `alerts`, formatted by ntfy's built-in Alertmanager template; the token is of the ntfy user
+          # `alertmanager`, which may only publish there (kubernetes/tools/ntfy)
+          webhook_configs:
+            - url: http://ntfy.ntfy.svc.cluster.local:8080/alerts?template=alertmanager
+              send_resolved: true
+              http_config:
+                authorization:
+                  credentials_file: /etc/alertmanager/secrets/alertmanager-ntfy/token
     alertmanagerSpec:
       secrets:
         - alertmanager-discord
+        - alertmanager-ntfy
       resources:
         limits:
           memory: 150Mi
