@@ -1,5 +1,4 @@
-# Notifications to the phone. The action is named after the name of the phone in the Companion app, so it changes with
-# a new phone. The editor shows these but cannot save them; new ones made there go to automations.yaml on the volume.
+# Power of the washing machine plug.
 - id: '1767795795548'
   alias: Washing machine done
   description: ''

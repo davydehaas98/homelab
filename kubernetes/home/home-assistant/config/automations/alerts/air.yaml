@@ -1,0 +1,35 @@
+# Air quality and humidity, with thresholds above what the sensors show in normal use.
+- id: "1793700000005"
+  alias: Ventilate
+  description: ""
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.living_vindstyrka_pm25
+      above: 25
+      for:
+        minutes: 15
+      variables:
+        message: "Fine dust in the living room is {{ states('sensor.living_vindstyrka_pm25') }} µg/m³"
+    - trigger: numeric_state
+      entity_id: sensor.living_vindstyrka_voc_index
+      above: 350
+      for:
+        minutes: 30
+      variables:
+        message: "The VOC index in the living room is {{ states('sensor.living_vindstyrka_voc_index') }}"
+    - trigger: numeric_state
+      entity_id:
+        - sensor.bedroom_sensor_humidity
+        - sensor.living_sensor_humidity
+      above: 65
+      for:
+        minutes: 30
+      variables:
+        message: "The humidity is {{ trigger.to_state.state }}% ({{ trigger.to_state.name }})"
+  conditions: []
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Ventilate
+        message: "{{ message }}"
+  mode: single

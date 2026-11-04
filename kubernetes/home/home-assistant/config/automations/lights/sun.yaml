@@ -1,0 +1,39 @@
+# Lights by sunrise and sunset.
+- id: '1740052749577'
+  alias: Sunrise
+  description: ''
+  triggers:
+    - trigger: time
+      at: 08:00:00
+    - trigger: sun
+      event: sunrise
+      offset: 0
+  conditions: []
+  actions:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        area_id:
+          - living_room
+          - bedroom
+  mode: single
+- id: '1740052903670'
+  alias: Sunset
+  description: ''
+  triggers:
+    - trigger: sun
+      event: sunset
+      offset: -01:00:00
+  conditions: []
+  actions:
+    - action: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 50
+        kelvin: 3385
+      target:
+        area_id:
+          - living_room
+          - bedroom
+  mode: single

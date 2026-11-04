@@ -1,0 +1,48 @@
+# Lights when coming home and leaving.
+- id: '1740053048200'
+  alias: Coming home
+  description: ''
+  triggers:
+    - trigger: zone
+      entity_id: person.davy
+      zone: zone.home
+      event: enter
+  # Only when Sunset would have switched the lights on
+  conditions:
+    - condition: or
+      conditions:
+        - condition: sun
+          after: sunset
+          after_offset: "-01:00:00"
+        - condition: sun
+          before: sunrise
+  actions:
+    - action: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 50
+        color_temp_kelvin: 2000
+      target:
+        entity_id:
+          - light.kitchen_light_strip
+          - light.living_light_go
+        area_id:
+          - kitchen
+          - bedroom
+  mode: single
+- id: '1746124120811'
+  alias: Leaving home
+  description: ''
+  triggers:
+    - trigger: zone
+      entity_id: person.davy
+      zone: zone.home
+      event: leave
+  conditions: []
+  actions:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        floor_id: '0'
+  mode: single

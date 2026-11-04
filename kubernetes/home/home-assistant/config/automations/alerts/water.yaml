@@ -1,0 +1,42 @@
+# The leak detection of the water meter gateway. It flaps through unavailable on a reconnect, so only off to on counts.
+- id: "1793700000001"
+  alias: Water leak
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.smart_gateways_watermeter_b1c334_leak_detect
+      from: "off"
+      to: "on"
+  conditions: []
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Water leak
+        message: The water meter detects a leak
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0
+  mode: single
+# Normal use has never kept water flowing for more than 40 minutes on end.
+- id: "1793700000002"
+  alias: Water running
+  description: ""
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.smart_gateways_watermeter_b1c334_water_flow
+      above: 0
+      for:
+        hours: 1
+  conditions: []
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Water running
+        message: Water has been flowing for an hour without a break
+        data:
+          push:
+            interruption-level: time-sensitive
+  mode: single

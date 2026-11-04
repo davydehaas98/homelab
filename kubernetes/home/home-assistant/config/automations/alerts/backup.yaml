@@ -1,0 +1,34 @@
+# The automatic backup of Home Assistant, which runs each night.
+- id: "1793700000003"
+  alias: Backup failed
+  description: ""
+  triggers:
+    - trigger: state
+      entity_id: event.backup_automatic_backup
+  conditions:
+    - condition: template
+      value_template: "{{ trigger.to_state.attributes.event_type == 'failed' }}"
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Backup failed
+        message: "{{ trigger.to_state.attributes.reason | default('The automatic backup of Home Assistant failed') }}"
+  mode: single
+# The automatic backup runs each night.
+- id: "1793700000004"
+  alias: Backup late
+  description: ""
+  triggers:
+    - trigger: time
+      at: "12:00:00"
+  conditions:
+    - condition: template
+      value_template: >-
+        {{ as_timestamp(states('sensor.backup_last_successful_automatic_backup'), 0)
+           < as_timestamp(now()) - 26 * 3600 }}
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Backup late
+        message: There has been no successful backup of Home Assistant for more than a day
+  mode: single

@@ -1,0 +1,26 @@
+# Once a day, when the grid is far cleaner than usual (typically around 400 gCO2eq/kWh).
+- id: "1793700000006"
+  alias: Green electricity
+  description: ""
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.electricity_maps_co2_intensity
+      below: 250
+      for:
+        minutes: 15
+  conditions:
+    - condition: time
+      after: "08:00:00"
+      before: "21:00:00"
+    - condition: template
+      value_template: >-
+        {{ this.attributes.last_triggered is none
+           or as_local(this.attributes.last_triggered).date() != now().date() }}
+  actions:
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Green electricity
+        message: >-
+          The grid is at {{ states('sensor.electricity_maps_co2_intensity') }} gCO2eq/kWh, a good moment for the
+          washing machine
+  mode: single

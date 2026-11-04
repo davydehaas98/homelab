@@ -1,0 +1,21 @@
+# Lights for the night, run by hand.
+- id: '1771863323896'
+  alias: Sleep
+  description: ''
+  triggers: []
+  conditions: []
+  actions:
+    - action: light.turn_off
+      metadata: {}
+      target:
+        area_id:
+          - bedroom
+          - living_room
+      data: {}
+    - action: light.turn_on
+      metadata: {}
+      target:
+        area_id: kitchen
+      data:
+        brightness_pct: 15
+  mode: single

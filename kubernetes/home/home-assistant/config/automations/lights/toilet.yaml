@@ -1,7 +1,4 @@
-# The toilet light follows the motion sensor.
-# Moved here from the automation editor, with the same ids, so the entities keep their history and state. The
-# editor shows them but cannot save them: change them in git. New ones made in the editor go to automations.yaml on
-# the volume.
+# The toilet light follows the motion sensor, dimmed from 23:00 to 07:00.
 - id: '1751388526592'
   alias: Toilet occupied
   description: ''
@@ -16,7 +13,7 @@
     - action: light.turn_on
       metadata: {}
       data:
-        brightness_pct: 100
+        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 100 }}"
       target:
         device_id: 3171401fcd0c5fccfeb8da3c588b3d04
   mode: single
