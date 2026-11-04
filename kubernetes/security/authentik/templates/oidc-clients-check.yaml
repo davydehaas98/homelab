@@ -1,11 +1,20 @@
-{{- /* Every OIDC client needs its Secret in authentik.global.envFrom, or its blueprint finds no credentials */ -}}
+{{- /* Every OIDC client needs its Secrets in authentik.global.envFrom, or its blueprint finds no credentials: the old
+authentik-oidc-<slug>, and the app's own Secret with the prefix <slug>- that the blueprint reads */ -}}
 {{- $refs := list -}}
+{{- $prefixed := dict -}}
 {{- range .Values.authentik.global.envFrom -}}
-{{- $refs = append $refs (.secretRef | default dict).name -}}
+{{- $name := (.secretRef | default dict).name -}}
+{{- $refs = append $refs $name -}}
+{{- with .prefix -}}{{- $_ := set $prefixed . $name -}}{{- end -}}
 {{- end -}}
 {{- range .Values.oidcClients -}}
-{{- $name := printf "authentik-oidc-%s" .slug -}}
-{{- if not (has $name $refs) -}}
-{{- fail (printf "oidcClients: add `- secretRef: {name: %s}` to authentik.global.envFrom in values.yaml" $name) -}}
+{{- $old := printf "authentik-oidc-%s" .slug -}}
+{{- if not (has $old $refs) -}}
+{{- fail (printf "oidcClients: add `- secretRef: {name: %s}` to authentik.global.envFrom in values.yaml" $old) -}}
+{{- end -}}
+{{- $prefix := printf "%s-" .slug -}}
+{{- $want := printf "%s-oidc-credentials" .slug -}}
+{{- if ne (get $prefixed $prefix) $want -}}
+{{- fail (printf "oidcClients: add `- prefix: %s` with `secretRef: {name: %s}` to authentik.global.envFrom in values.yaml" $prefix $want) -}}
 {{- end -}}
 {{- end -}}

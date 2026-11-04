@@ -37,5 +37,5 @@ slug is the issuer path (`/application/o/<slug>/`) in the app's `SecurityPolicy`
 
 3. After the sync, restart `authentik-worker`: blueprints read the credentials at start.
 
-The Argo CD (`argocd-authentik-oidc`, keys `clientID`/`clientSecret`) and Prometheus applications were made by hand
-first; their blueprints adopted them, so remove their old, unused providers in the UI.
+The Argo CD and Prometheus applications were made by hand first; their blueprints adopted them, so remove their old,
+unused providers in the UI.

@@ -1,4 +1,6 @@
-# Clients of templates/blueprints.yaml, with credentials in templates/oidc-client-<slug>.yaml listed in envFrom
+# Clients of templates/blueprints.yaml. Their credentials are the app's Secret `<slug>-oidc-credentials` (keys client-id
+# and client-secret), copied here by kubernetes-replicator and listed in envFrom with the prefix
+# <slug>-. Still also in templates/oidc-client-<slug>.yaml, until those are removed.
 oidcClients:
   - name: Actual Budget
     slug: actual-budget
@@ -151,6 +153,85 @@ authentik:
           name: authentik-oidc-tracearr
       - secretRef:
           name: authentik-oidc-zigbee2mqtt
+      # The app's own Secret, copied here by kubernetes-replicator, as <slug>-<key>
+      - prefix: actual-budget-
+        secretRef:
+          name: actual-budget-oidc-credentials
+      - prefix: adguard-home-
+        secretRef:
+          name: adguard-home-oidc-credentials
+      - prefix: airtrail-
+        secretRef:
+          name: airtrail-oidc-credentials
+      - prefix: argocd-
+        secretRef:
+          name: argocd-oidc-credentials
+      - prefix: bazarr-
+        secretRef:
+          name: bazarr-oidc-credentials
+      - prefix: dispatcharr-
+        secretRef:
+          name: dispatcharr-oidc-credentials
+      - prefix: gatus-
+        secretRef:
+          name: gatus-oidc-credentials
+      - prefix: grafana-
+        secretRef:
+          name: grafana-oidc-credentials
+      - prefix: headlamp-
+        secretRef:
+          name: headlamp-oidc-credentials
+      - prefix: homepage-
+        secretRef:
+          name: homepage-oidc-credentials
+      - prefix: hubble-
+        secretRef:
+          name: hubble-oidc-credentials
+      - prefix: it-tools-
+        secretRef:
+          name: it-tools-oidc-credentials
+      - prefix: lazylibrarian-
+        secretRef:
+          name: lazylibrarian-oidc-credentials
+      - prefix: lidarr-
+        secretRef:
+          name: lidarr-oidc-credentials
+      - prefix: memos-
+        secretRef:
+          name: memos-oidc-credentials
+      - prefix: nextcloud-
+        secretRef:
+          name: nextcloud-oidc-credentials
+      - prefix: omni-tools-
+        secretRef:
+          name: omni-tools-oidc-credentials
+      - prefix: prowlarr-
+        secretRef:
+          name: prowlarr-oidc-credentials
+      - prefix: prometheus-
+        secretRef:
+          name: prometheus-oidc-credentials
+      - prefix: radarr-
+        secretRef:
+          name: radarr-oidc-credentials
+      - prefix: policy-reporter-
+        secretRef:
+          name: policy-reporter-oidc-credentials
+      - prefix: sabnzbd-
+        secretRef:
+          name: sabnzbd-oidc-credentials
+      - prefix: sonarr-
+        secretRef:
+          name: sonarr-oidc-credentials
+      - prefix: tautulli-
+        secretRef:
+          name: tautulli-oidc-credentials
+      - prefix: tracearr-
+        secretRef:
+          name: tracearr-oidc-credentials
+      - prefix: zigbee2mqtt-
+        secretRef:
+          name: zigbee2mqtt-oidc-credentials
 
   blueprints:
     configMaps:

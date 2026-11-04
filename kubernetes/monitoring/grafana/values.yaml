@@ -51,7 +51,7 @@ grafana:
 
   extraSecretMounts:
     - name: auth-generic-oauth-secret-mount
-      secretName: grafana-oauth-credentials
+      secretName: grafana-oidc-credentials
       defaultMode: 0440
       mountPath: /etc/secrets/auth_generic_oauth
       readOnly: true
@@ -64,8 +64,8 @@ grafana:
       name: Authentik
       allow_sign_up: true
       use_pkce: true
-      client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
-      client_secret: $__file{/etc/secrets/auth_generic_oauth/client_secret}
+      client_id: $__file{/etc/secrets/auth_generic_oauth/client-id}
+      client_secret: $__file{/etc/secrets/auth_generic_oauth/client-secret}
       scopes: "openid email profile offline_access"
       email_attribute_path: email
       login_attribute_path: preferred_username

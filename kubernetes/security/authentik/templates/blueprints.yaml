@@ -4,7 +4,7 @@ metadata:
   name: authentik-blueprints
 data:
   {{- range .Values.oidcClients }}
-  {{- $env := upper (replace "-" "_" .slug) }}
+  {{- /* The app's Secret, copied here and read with envFrom prefix <slug>-, see values.yaml */}}
   {{ .slug }}.yaml: |
     version: 1
     metadata:
@@ -13,7 +13,7 @@ data:
       - model: authentik_providers_oauth2.oauth2provider
         id: provider
         identifiers:
-          client_id: !Env {{ $env }}_CLIENT_ID
+          client_id: !Env {{ .slug }}-client-id
         attrs:
           name: Provider for {{ .name }}
           authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
@@ -22,8 +22,8 @@ data:
           grant_types:
             - authorization_code
             - refresh_token
-          client_id: !Env {{ $env }}_CLIENT_ID
-          client_secret: !Env {{ $env }}_CLIENT_SECRET
+          client_id: !Env {{ .slug }}-client-id
+          client_secret: !Env {{ .slug }}-client-secret
           redirect_uris:
             - matching_mode: strict
               url: {{ .redirectURL }}

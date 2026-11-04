@@ -15,12 +15,12 @@ argo-cd:
       admin.enabled: "false"
       # For the Homepage widget
       accounts.homepage: apiKey
-      # Credentials in the Secret `argocd-authentik-oidc`
+      # Credentials in the Secret `argocd-oidc-credentials`
       oidc.config: |
         name: Authentik
         issuer: https://auth.davydehaas.dev/application/o/argocd/
-        clientID: $argocd-authentik-oidc:clientID
-        clientSecret: $argocd-authentik-oidc:clientSecret
+        clientID: $argocd-oidc-credentials:client-id
+        clientSecret: $argocd-oidc-credentials:client-secret
         requestedScopes:
           - openid
           - profile
