@@ -1,0 +1,13 @@
+# ntfy's own metrics (`ntfy_messages_published_success` and friends), on a port of their own so the route does not
+# publish them
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: ntfy
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ntfy
+  podMetricsEndpoints:
+    - portNumber: 9090
+      path: /metrics

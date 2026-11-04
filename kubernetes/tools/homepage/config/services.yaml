@@ -230,6 +230,12 @@
         description: Developer utilities
         siteMonitor: http://it-tools.it-tools.svc.cluster.local:8080
 
+    - ntfy:
+        icon: ntfy.png
+        href: https://ntfy.davydehaas.dev
+        description: Push notifications
+        siteMonitor: http://ntfy.ntfy.svc.cluster.local:8080/v1/health
+
     - Omni Tools:
         icon: mdi-tools
         href: https://omni-tools.davydehaas.dev

@@ -69,6 +69,7 @@ locals {
     "lidarr",
     "memos",
     "nextcloud",
+    "ntfy",
     "omni-tools",
     "policy",
     "prometheus",

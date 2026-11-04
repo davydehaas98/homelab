@@ -1,0 +1,68 @@
+# Push notifications at https://ntfy.davydehaas.dev, with its own login: nobody reads or publishes without a user or
+# token. Users and tokens are made with the `ntfy` CLI in the pod (see README.md) and kept in the volume.
+image:
+  repository: docker.io/binwiederhier/ntfy
+  tag: v2.37.2
+
+port: 8080
+
+args:
+  - serve
+
+# The image runs as root by default; it only needs to write its volume
+podSecurityContext:
+  runAsUser: 65532
+  runAsGroup: 65532
+  runAsNonRoot: true
+  fsGroup: 65532
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+env:
+  NTFY_BASE_URL: https://ntfy.davydehaas.dev
+  NTFY_LISTEN_HTTP: ":8080"
+  # Envoy sets X-Forwarded-For, but the public gateway does not see the real client address, so all anonymous
+  # visitors share one rate limit; users and tokens have their own
+  NTFY_BEHIND_PROXY: "true"
+  NTFY_AUTH_FILE: /var/lib/ntfy/user.db
+  NTFY_AUTH_DEFAULT_ACCESS: deny-all
+  NTFY_CACHE_FILE: /var/lib/ntfy/cache.db
+  NTFY_ATTACHMENT_CACHE_DIR: /var/lib/ntfy/attachments
+  # The iOS app only gets instant notifications through ntfy.sh, which forwards a poll request without the message
+  NTFY_UPSTREAM_BASE_URL: https://ntfy.sh
+  NTFY_ENABLE_METRICS: "true"
+  NTFY_METRICS_LISTEN_HTTP: ":9090"
+
+probe:
+  httpGet:
+    path: /v1/health
+    port: http
+
+resources:
+  limits:
+    memory: 100Mi
+  requests:
+    cpu: 10m
+    memory: 30Mi
+
+# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), made by the StorageClass
+persistence:
+  size: 1Gi
+  mountPath: /var/lib/ntfy
+  storageClass: zfs-fast
+
+route:
+  enabled: true
+  hostnames:
+    - ntfy.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+  # The phone apps and the publishers sign in to ntfy itself
+  auth: native
+
+oidc:
+  enabled: false

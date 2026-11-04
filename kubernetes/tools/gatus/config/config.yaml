@@ -278,6 +278,16 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
+  - name: ntfy
+    group: Tools
+    url: http://ntfy.ntfy.svc.cluster.local:8080/v1/health
+    interval: 1m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].healthy == true"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Omni Tools
     group: Tools
     url: http://omni-tools.omni-tools.svc.cluster.local:8080
