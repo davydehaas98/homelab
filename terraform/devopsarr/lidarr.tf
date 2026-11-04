@@ -4,7 +4,7 @@ resource "lidarr_root_folder" "lidarr" {
   name                    = "music"
   new_item_monitor_option = "all"
   path                    = "/data/music/library"
-  quality_profile_id      = 3 # Standard
+  quality_profile_id      = 2 # Lossless, with high-quality lossy as a fallback until FLAC turns up (set in the UI)
   tags                    = []
 }
 
@@ -17,19 +17,21 @@ resource "lidarr_naming" "lidarr" {
 }
 
 resource "lidarr_media_management" "lidarr" {
-  allow_fingerprinting      = "newFiles"
-  chmod_folder              = "755"
-  chown_group               = ""
-  create_empty_folders      = false
-  delete_empty_folders      = true
-  download_propers_repacks  = "preferAndUpgrade"
-  extra_file_extensions     = "srt"
-  file_date                 = "none"
-  hardlinks_copy            = true
-  import_extra_files        = false
-  minimum_free_space        = 100
-  recycle_bin_days          = 7
-  recycle_bin_path          = ""
+  allow_fingerprinting     = "newFiles"
+  chmod_folder             = "755"
+  chown_group              = ""
+  create_empty_folders     = false
+  delete_empty_folders     = true
+  download_propers_repacks = "preferAndUpgrade"
+  extra_file_extensions    = "lrc"
+  file_date                = "none"
+  hardlinks_copy           = true
+  # Keeps the lyrics that come with a release
+  import_extra_files = true
+  minimum_free_space = 100
+  recycle_bin_days   = 7
+  # Next to the library, so Plex and Jellyfin do not see it; emptied after recycle_bin_days
+  recycle_bin_path          = "/data/music/recycle"
   rescan_after_refresh      = "always"
   set_permissions           = false
   skip_free_space_check     = false

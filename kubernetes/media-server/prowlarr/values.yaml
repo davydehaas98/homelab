@@ -8,6 +8,13 @@ securityContext: {}
 
 port: 9696
 
+# The API key, from templates/prowlarr-api-key.yaml; it overrides the one in config.xml
+env:
+  PROWLARR__AUTH__APIKEY:
+    secretKeyRef:
+      name: prowlarr-api-key
+      key: api-key
+
 resources:
   limits:
     cpu: 1000m

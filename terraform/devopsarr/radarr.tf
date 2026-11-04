@@ -11,7 +11,8 @@ resource "radarr_naming" "radarr" {
 }
 
 resource "radarr_media_management" "radarr" {
-  auto_rename_folders                         = false
+  # Renames a folder when its movie's title, year or IMDb id changes
+  auto_rename_folders                         = true
   auto_unmonitor_previously_downloaded_movies = false
   chmod_folder                                = "755"
   chown_group                                 = ""
@@ -22,14 +23,16 @@ resource "radarr_media_management" "radarr" {
   enable_media_info                           = true
   extra_file_extensions                       = "srt"
   file_date                                   = "none"
-  import_extra_files                          = false
-  minimum_free_space_when_importing           = 100
-  paths_default_static                        = false
-  recycle_bin                                 = ""
-  recycle_bin_cleanup_days                    = 7
-  rescan_after_refresh                        = "always"
-  set_permissions_linux                       = false
-  skip_free_space_check_when_importing        = false
+  # Keeps the subtitles that come with a release, forced ones included; Bazarr fills in the rest
+  import_extra_files                = true
+  minimum_free_space_when_importing = 100
+  paths_default_static              = false
+  # Next to the library, so Plex and Jellyfin do not see it; emptied after recycle_bin_cleanup_days
+  recycle_bin                          = "/data/movies/recycle"
+  recycle_bin_cleanup_days             = 7
+  rescan_after_refresh                 = "always"
+  set_permissions_linux                = false
+  skip_free_space_check_when_importing = false
 }
 
 resource "radarr_download_client_sabnzbd" "sabnzbd" {

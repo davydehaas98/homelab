@@ -1,0 +1,18 @@
+# The API key of Prowlarr, which it reads from PROWLARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage;
+# terraform/devopsarr/env.sh reads it too
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: prowlarr-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgB5YEBDqraHBOL8tLER61jWfRPK3NMELa6DvRnDsn72ElpII9bvqs1PDLGjAgu5baUKyytYr43basIXDqY3a1mS4xFqteLU2cJCFpXwLqKvy4bvjZyJF2kHBy0r/v15TbnRZG7dQDWIxHG6rpICJ+z5dkB8KPQfpJEa7NPo8jdTi+BZSTz986KS9YnjP8b2q4DxnKlgPNW8J+Z74vhBziPcvWNRsInSg9tiyG4f1WElfa4DOnoTJ2nK5MsbVSqbvefphXNT5beQaWvdLaAiOZ+Bi7Fqnn27K8TEJOeBY2uIKAJsTECoHj0MpQSwzALVJhcCSFFc0oz9MeG/oq0+SnQn65VfETp7Powz05dfGrZs8ua6MO1Cs4lQJUF0/3J6aKXh583Z5cEfv5azt7q4qprEcq6F8mg7s2gCYkVmj1PCBqF66tgrOVvyShyDluHveFit1kIJjUEvpNtGsjK2RnU3NmfcyTOOPWQ82iCTMKLzDybaVh2cdqmuqoMNaC5aKcMOP/NZupAlZ4cjExuucvYFNzA/VZUccFdoNwhPqtxWxSHAYPrqaNoT0chBl9w87IqlgAyWq9uDFpSYkcrCYt/B4BUfbVCZ1/rXu1Vby8NCHqk8LIJF+LsbgYY2UfIbShdqQNNDweqMyczkNCHQcWiL/ropAuxLri9O6vPw0i++KunSLEtZb17AWF/okZGT2S1YHhFYLN5HWN6A22ZR6Zvis6RDvf4HFriP2e5ct4Wo8g==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replicate-to: homepage
+      name: prowlarr-api-key
+      namespace: media-server
+    type: Opaque

@@ -1,0 +1,18 @@
+# The API key of Radarr, which it reads from RADARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage;
+# terraform/devopsarr/env.sh reads it too
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: radarr-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgBnj9sNDGNWHgkozH6YkuKiiXNNfXfEl5JQdi0axVSKp3mkuRNxonQkL80fAOHYDIaOU7P0E8BydzzaSh6wZfTGYdaf0YvtL/1Z4ogVlIc4k2Pc7tPeSM+4G98uTef6lXyzWMHHJ4x+iRgTGKPNJ5RbJObKsY41t23YnGSktmjD6Nk41STh8zAQvkQXSdGikJXVmo9GweNzTxq5i6oZuS4CW+Xkm45U2vrp89EARwLhNmZAUU6SpMqZ0ruXPA1gkS0bCi+9pdl9WxEYMS0tRgf9yOjQFOahOypiVv6v3uuF9RSFCjoPCL3OFckESDgNUuQbYXnNnr5qebZlTvOALxnZn3E3D4j9xcQPB9AopFgeVvYrIXqTgmyYLD3hOiCeWUf7mWCwE+TiWHhDVG+Bn6WuUlYn2ImLvBa0f/RVRtwynefrgfwLOb2vnk/pyYigtgOhl2yc4BzQuKYkF99KYfRLIsZWlOxYfDxzqM1YEGaOksEoLFKJVPw6UUbPblnmwultDATYpgmHvu7FPXaAU+B2BRn33CfkZYwtVAP6eOXU0OUyFZA3IaJK673Y+hhW2kmHguoM5KBeCo8IkJSvPq/0HZVQyZb7t7P3Yd1YCPpJWVplCZtBUVKa3YbigYxAk1LMlwyUNzJkgxg64bTRr9SpFOnm+2N6+PXvqvh4zu2K7DwQGrFqqIm4FI6ACLpf0SGlqgrYe5UDHWkG6MzJ1T7COH+VhsN1lY0IyNFoUXf54g==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replicate-to: homepage
+      name: radarr-api-key
+      namespace: media-server
+    type: Opaque

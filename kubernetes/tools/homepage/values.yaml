@@ -9,15 +9,15 @@ kind: Deployment
 
 env:
   HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev
-  # Read for `{{HOMEPAGE_FILE_...}}`
+  # Read for `{{HOMEPAGE_FILE_...}}`: homepage-keys, and the API keys of the *arr apps (see configFiles)
   HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_BAZARR_KEY
   HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/homepage/HOMEPAGE_VAR_JELLYFIN_KEY
-  HOMEPAGE_FILE_LIDARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_LIDARR_KEY
-  HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_PROWLARR_KEY
-  HOMEPAGE_FILE_RADARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_RADARR_KEY
+  HOMEPAGE_FILE_LIDARR_KEY: /run/secrets/lidarr/api-key
+  HOMEPAGE_FILE_PROWLARR_KEY: /run/secrets/prowlarr/api-key
+  HOMEPAGE_FILE_RADARR_KEY: /run/secrets/radarr/api-key
   HOMEPAGE_FILE_SABNZBD_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SABNZBD_KEY
   HOMEPAGE_FILE_SEERR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SEERR_KEY
-  HOMEPAGE_FILE_SONARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_SONARR_KEY
+  HOMEPAGE_FILE_SONARR_KEY: /run/secrets/sonarr/api-key
 
 podSecurityContext:
   runAsNonRoot: true
@@ -57,12 +57,33 @@ configFiles:
     keys:
       - HOMEPAGE_VAR_BAZARR_KEY
       - HOMEPAGE_VAR_JELLYFIN_KEY
-      - HOMEPAGE_VAR_LIDARR_KEY
-      - HOMEPAGE_VAR_PROWLARR_KEY
-      - HOMEPAGE_VAR_RADARR_KEY
       - HOMEPAGE_VAR_SABNZBD_KEY
       - HOMEPAGE_VAR_SEERR_KEY
-      - HOMEPAGE_VAR_SONARR_KEY
+    defaultMode: 0440
+  # Copied here from media-server by kubernetes-replicator
+  - name: lidarr-api-key
+    mountPath: /run/secrets/lidarr
+    secret: lidarr-api-key
+    keys:
+      - api-key
+    defaultMode: 0440
+  - name: prowlarr-api-key
+    mountPath: /run/secrets/prowlarr
+    secret: prowlarr-api-key
+    keys:
+      - api-key
+    defaultMode: 0440
+  - name: radarr-api-key
+    mountPath: /run/secrets/radarr
+    secret: radarr-api-key
+    keys:
+      - api-key
+    defaultMode: 0440
+  - name: sonarr-api-key
+    mountPath: /run/secrets/sonarr
+    secret: sonarr-api-key
+    keys:
+      - api-key
     defaultMode: 0440
 
 route:

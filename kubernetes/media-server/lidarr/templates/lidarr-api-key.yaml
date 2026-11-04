@@ -1,0 +1,18 @@
+# The API key of Lidarr, which it reads from LIDARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage;
+# terraform/devopsarr/env.sh reads it too
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: lidarr-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgCWnZ9pKrtzP04nqUWfjUyXC5fbHh6GnAUVHnv90+LK1H1pYlyWCLmUlUNSeG+FiOyMu1CYjq3HOhHsfh5J7tv6TkuqU7b1XwgcdScaddRlNEPlmPx9mRRqz4dV4ORlQhl4/ukS9A70GcYbUD8WSY4xMdB6wybOPWqz1Mjf6l3aUP0EUoqC1l8H4XatwjhAroCVfU/CpcYAUjpcu5ehd3Jmuv2xZCf8QJLJdZTiyVJEm54gw3hu6bFeofdYM17zesP5ceMOf0bN+zVaKcz89vfVsBZ0KoQ1dZIh7pc1Sacy144xfef6scAZAHS24xeWkjPj5ccA7ANQ8Eb/a/C9jUm+VSZrqmdJvDKZpZNE+ZBKV5OKwEXAkscNco6pkJBCDuRbZZcpX+NGu2sEPHyalDD2FF48zQbHLNnAtWyqp5rKmVhpMZdpb9Wi6bX9+7Q2zsfEWf5YDRZxYrMUdhii4FpUQcEAxnhppV8LMLxi/eMS0vR55uEvsM37+JEQU5GnnO2wg7/LZfaqUC2ZPixPFplw82mxHwc9AlrWyUJR7ggOtfANb/rZ/W9hCgEU4eeBif4vSStJ2/CXEBzxYNze7+K7SrzERFLPNBOu5DB5/WLHvynVwWCLssKHR0HI29zHm1acRD584J93D+6hv4z2gxAoJyi+HIBwjMeOgmmGHoIg54JibEWfqWFmNkahi4JmRsrfEpUD09hDCFxu4iqDkZGJvDg69arKeyGsDsijvbAtNw==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replicate-to: homepage
+      name: lidarr-api-key
+      namespace: media-server
+    type: Opaque

@@ -1,0 +1,18 @@
+# The API key of Sonarr, which it reads from SONARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage;
+# terraform/devopsarr/env.sh reads it too
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: sonarr-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgAx1Nq1Ka64uax3P91sKJzFMvjLeIt1zRmsUubyUei60VyhBp5Sdj0CoqSrIth6c4dk64dV61liHULbnCIX03aoA29eFTs3HKoSMBvF9V6w4jR3i+OhAcsiLcMvAF+xPbmnhQhtj7Fjk3l/R7hpSEmd2csXfkHYd1Pqh1M7IvaD36Yzp3tbjMG/OSY1OkM5odVmbFph8RO+uj6zx4ngJpKtSSaHc1lABsvZgU/RW+lEFnl9WpH7U/DZ7fgQVIh86/rUskmS7+I5tugVSUtpUfdMjsW5H1nXB6Yz8gvA4KbQUsHN9FZBW8NnVrxsXMh0O/OOQgAj9pfxsDkBFtH6XQ2pf/bMAYTAVhyzY0VnHhtiTAqhB2WUuT3m0eR/gDD6GUICxMoF3gKkYkfaRNGGodCUc6K9kKnAklIoF+X2JeJOWtHzNlriaCo5DomUhSVRzjJ9r0zgyDVHXwCoXTfSYcf1RyxJa8KQWOrxYOzj9NTmCo7kZZSXcd+t1AFF2pSUIHFBW4hKVdnp/v20nxEXR0QL+B1zh9b++h1pDVLTT4i2j+aSZPuWAMzz/zyPBSQyoYGZMbM0gEIuz8PLb4DVFTW/D6jYGC0/tm6YZFig3gpqJ31oMj5+pzMrbyndInQw5vVQU/HSDTHMzNyk3F5VPYqLUwGpva0LX8qePcGqxyAnRHENae1NUSpTIKDvEMj4kMfwy2dvoHeIaARHifdH8CWN3mEln/oWVwn4T3qaxgVGQg==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replicate-to: homepage
+      name: sonarr-api-key
+      namespace: media-server
+    type: Opaque

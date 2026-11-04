@@ -16,20 +16,22 @@ resource "sonarr_naming" "sonarr" {
 }
 
 resource "sonarr_media_management" "sonarr" {
-  chmod_folder                = "755"
-  chown_group                 = ""
-  create_empty_folders        = false
-  delete_empty_folders        = true
-  download_propers_repacks    = "doNotPrefer"
-  enable_media_info           = true
-  episode_title_required      = "bulkSeasonReleases"
-  extra_file_extensions       = "srt"
-  file_date                   = "none"
-  hardlinks_copy              = true
-  import_extra_files          = false
-  minimum_free_space          = 100
-  recycle_bin_days            = 7
-  recycle_bin_path            = ""
+  chmod_folder             = "755"
+  chown_group              = ""
+  create_empty_folders     = false
+  delete_empty_folders     = true
+  download_propers_repacks = "doNotPrefer"
+  enable_media_info        = true
+  episode_title_required   = "bulkSeasonReleases"
+  extra_file_extensions    = "srt"
+  file_date                = "none"
+  hardlinks_copy           = true
+  # Keeps the subtitles that come with a release, forced ones included; Bazarr fills in the rest
+  import_extra_files = true
+  minimum_free_space = 100
+  recycle_bin_days   = 7
+  # Next to the library, so Plex and Jellyfin do not see it; emptied after recycle_bin_days
+  recycle_bin_path            = "/data/series/recycle"
   rescan_after_refresh        = "always"
   set_permissions             = false
   skip_free_space_check       = false

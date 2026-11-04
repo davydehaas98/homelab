@@ -1,0 +1,16 @@
+# The NZBgeek API key, read by terraform/devopsarr/env.sh; Terraform sets it on the indexer in Prowlarr, which only
+# returns it masked
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: prowlarr-nzbgeek
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgCRc6Ouii3XLZf7dLVPmOhd91WgMkwildZ4gPCdXnuEYzCOX/8L0BU+CDsAQYPwOCzf8oylhYsVJZCqRvmXSSzbT72CQ+Rj+0QIg55ELfAjcePB/kU2KaErEdOX1vUMPLhYz0eCY6rzhxW0vKIANO1oVjX7rJrl2Q+cgKEy7wfLUN/lkPpuCjfmFfAX0KiuyN+Jh2xOGZz9qWAYbdh8aZ+JUy4TZIqaUFJ4tFklozKugdHJo04ujGvE+Ej0vbBc4NiU6vMHjloGT3PI8/SD6wS7CxN6FugDq0E/p31ozDsLxunitHEK6iFUFxXX8yk9ENHhDHVlhSyAWBLCkwP+XUgwNDTfvFLq8B9yzhEI9drTaryXDyzq0CGjA1BFHfaZaqZB2exl8XeKe8OaaEzTKW2wh46M5AuqsI08xc7VkCqbfiDwJ6IOJRxv63yGONrOOiKLPwX1Z1zL6NiopctnIs68hyuQjhWtmRvdk9EDbvxFR44MyRKf6jQj16jXabkjNOgfJPJWbioVXJyOI2w6h5FYu88S0nsVTujPYTNo1ihQ7ra5liJ/nyjC/vKkCKFTxNIAbvBAlb4nWYG52dIGNeYnQoCGsXufVuVff7TXjRbIJkxU/lRfGbtQfZfJQF4rdeCuY3R7nxo15OQkPrBlnYpWY9AKmFL50pdos3T9UIjo7i8r8BfwUy9DUeyy0pDE0Ledsq7RWlqxF3IKjnbULjENvy/JAO1xfXsnz7QmtyZvQA==
+  template:
+    metadata:
+      name: prowlarr-nzbgeek
+      namespace: media-server
+    type: Opaque

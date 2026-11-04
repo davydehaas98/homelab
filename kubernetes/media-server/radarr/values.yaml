@@ -8,6 +8,13 @@ securityContext: {}
 
 port: 7878
 
+# The API key, from templates/radarr-api-key.yaml; it overrides the one in config.xml
+env:
+  RADARR__AUTH__APIKEY:
+    secretKeyRef:
+      name: radarr-api-key
+      key: api-key
+
 media:
   claimName: media
   # One mount, so an import moves the file instead of copying it
