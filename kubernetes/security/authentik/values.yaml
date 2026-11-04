@@ -1,6 +1,5 @@
 # Clients of templates/blueprints.yaml. Their credentials are the app's Secret `<slug>-oidc-credentials` (keys client-id
-# and client-secret), copied here by kubernetes-replicator and listed in envFrom with the prefix
-# <slug>-. Still also in templates/oidc-client-<slug>.yaml, until those are removed.
+# and client-secret), copied here by kubernetes-replicator and listed in envFrom with the prefix <slug>-.
 oidcClients:
   - name: Actual Budget
     slug: actual-budget
@@ -101,58 +100,6 @@ authentik:
             key: password
     # The chart does not template this list; templates/oidc-clients-check.yaml checks it
     envFrom:
-      - secretRef:
-          name: authentik-oidc-actual-budget
-      - secretRef:
-          name: authentik-oidc-adguard-home
-      - secretRef:
-          name: authentik-oidc-airtrail
-      - secretRef:
-          name: authentik-oidc-argocd
-      - secretRef:
-          name: authentik-oidc-bazarr
-      - secretRef:
-          name: authentik-oidc-dispatcharr
-      - secretRef:
-          name: authentik-oidc-gatus
-      - secretRef:
-          name: authentik-oidc-grafana
-      - secretRef:
-          name: authentik-oidc-headlamp
-      - secretRef:
-          name: authentik-oidc-homepage
-      - secretRef:
-          name: authentik-oidc-hubble
-      - secretRef:
-          name: authentik-oidc-it-tools
-      - secretRef:
-          name: authentik-oidc-lazylibrarian
-      - secretRef:
-          name: authentik-oidc-lidarr
-      - secretRef:
-          name: authentik-oidc-memos
-      - secretRef:
-          name: authentik-oidc-nextcloud
-      - secretRef:
-          name: authentik-oidc-omni-tools
-      - secretRef:
-          name: authentik-oidc-policy-reporter
-      - secretRef:
-          name: authentik-oidc-prometheus
-      - secretRef:
-          name: authentik-oidc-prowlarr
-      - secretRef:
-          name: authentik-oidc-radarr
-      - secretRef:
-          name: authentik-oidc-sabnzbd
-      - secretRef:
-          name: authentik-oidc-sonarr
-      - secretRef:
-          name: authentik-oidc-tautulli
-      - secretRef:
-          name: authentik-oidc-tracearr
-      - secretRef:
-          name: authentik-oidc-zigbee2mqtt
       # The app's own Secret, copied here by kubernetes-replicator, as <slug>-<key>
       - prefix: actual-budget-
         secretRef:

@@ -28,14 +28,16 @@ PostgreSQL run by CloudNativePG (`templates/database.yaml`), which makes the dat
 Each entry in `oidcClients` gets a blueprint with a provider, an application and an `authentik Admins` binding. Its
 slug is the issuer path (`/application/o/<slug>/`) in the app's `SecurityPolicy`. To add one:
 
-1. Add the entry to `oidcClients`, and `authentik-oidc-<slug>` to `envFrom` (the render fails without it).
-2. Seal one random pair into both Secrets, from this folder in the dev container:
+1. Add the entry to `oidcClients`, and to `envFrom` the app's Secret `<slug>-oidc-credentials` with the prefix
+   `<slug>-` (the render fails without it).
+2. Seal a random pair into that Secret, which kubernetes-replicator copies here, from this folder in the dev container:
 
    ```shell
    sh seal-oidc-client.sh -s <slug> -n <namespace> -a <group>/<app>
    ```
 
-3. After the sync, restart `authentik-worker`: blueprints read the credentials at start.
+The changed `envFrom` restarts the server and worker, and the worker applies the blueprints at start. An app whose
+Secret has another name or other keys, or no replicator annotation, has no credentials here.
 
 The Argo CD and Prometheus applications were made by hand first; their blueprints adopted them, so remove their old,
 unused providers in the UI.

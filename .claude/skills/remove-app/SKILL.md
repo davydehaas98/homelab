@@ -19,8 +19,8 @@ The Applications have no finalizer, so removing one never deletes its workloads.
 1. **Stop it** with `suspend: true` and let it sync, so nothing writes to the volumes while they are removed.
 2. **In git, in one change:** set `deploy: false` (or delete `kubernetes/<group>/<app>/`), remove its hostnames from
    `kubernetes_apps`/`kubernetes_aliases` in `terraform/cloudflare/davydehaas.dev/dns_record.tf`, its OIDC client from
-   Authentik (`oidcClients`, `envFrom` and `templates/oidc-client-<slug>.yaml` in `kubernetes/security/authentik`), its
-   entries in Homepage, Gatus and `nlRedirects` (`kubernetes/core/envoy-gateway/values.yaml`), and any Kyverno exemption
+   Authentik (`oidcClients` and `envFrom` in `kubernetes/security/authentik`), its entries in Homepage, Gatus and
+   `nlRedirects` (`kubernetes/core/envoy-gateway/values.yaml`), and any Kyverno exemption
    for its image in `kubernetes/security/kyverno/values.yaml`. Validate with `scripts/validate.sh -t`.
 3. **After the sync, in the cluster** (the user's go-ahead): delete its namespace, or, when other apps share it, its
    workloads by name. The VerticalPodAutoscalers go with the workloads.
