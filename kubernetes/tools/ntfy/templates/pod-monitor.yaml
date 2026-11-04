@@ -8,5 +8,5 @@ spec:
     matchLabels:
       app.kubernetes.io/name: ntfy
   podMetricsEndpoints:
-    - portNumber: 9090
+    - port: metrics
       path: /metrics

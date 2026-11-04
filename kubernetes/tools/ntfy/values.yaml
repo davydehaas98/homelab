@@ -4,6 +4,7 @@ image:
   tag: v2.37.2
 
 port: 8080
+metricsPort: 9090
 
 args:
   - serve

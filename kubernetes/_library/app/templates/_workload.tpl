@@ -86,6 +86,11 @@ spec:
               hostPort: {{ . }}
               {{- end }}
               protocol: {{ .Values.protocol | default "TCP" }}
+            {{- with .Values.metricsPort }}
+            - name: metrics
+              containerPort: {{ . }}
+              protocol: TCP
+            {{- end }}
           {{- $resources := deepCopy (.Values.resources | default dict) }}
           {{- if .Values.gpu }}
           {{- $_ := set $resources "claims" (list (dict "name" "gpu")) }}
