@@ -44,9 +44,6 @@ oidcClients:
   - name: Lidarr
     slug: lidarr
     redirectURL: https://lidarr.davydehaas.dev/oauth2/callback
-  - name: Longhorn
-    slug: longhorn
-    redirectURL: https://longhorn.davydehaas.dev/oauth2/callback
   - name: Memos
     slug: memos
     redirectURL: https://memos.davydehaas.dev/oauth2/callback
@@ -57,9 +54,6 @@ oidcClients:
   - name: Omni Tools
     slug: omni-tools
     redirectURL: https://omni-tools.davydehaas.dev/oauth2/callback
-  - name: Open WebUI
-    slug: open-webui
-    redirectURL: https://open-webui.davydehaas.dev/oauth/oidc/callback
   - name: Prowlarr
     slug: prowlarr
     redirectURL: https://prowlarr.davydehaas.dev/oauth2/callback
@@ -134,15 +128,11 @@ authentik:
       - secretRef:
           name: authentik-oidc-lidarr
       - secretRef:
-          name: authentik-oidc-longhorn
-      - secretRef:
           name: authentik-oidc-memos
       - secretRef:
           name: authentik-oidc-nextcloud
       - secretRef:
           name: authentik-oidc-omni-tools
-      - secretRef:
-          name: authentik-oidc-open-webui
       - secretRef:
           name: authentik-oidc-policy-reporter
       - secretRef:

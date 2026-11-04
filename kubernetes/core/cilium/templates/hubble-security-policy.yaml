@@ -15,9 +15,9 @@ spec:
       tokenEndpoint: https://auth.davydehaas.dev/application/o/token/
       endSessionEndpoint: https://auth.davydehaas.dev/application/o/hubble/end-session/
     clientIDRef:
-      name: oidc-credentials
+      name: hubble-oidc-credentials
     clientSecret:
-      name: oidc-credentials
+      name: hubble-oidc-credentials
     redirectURL: https://hubble.davydehaas.dev/oauth2/callback
     logoutPath: /oauth2/logout
     scopes:

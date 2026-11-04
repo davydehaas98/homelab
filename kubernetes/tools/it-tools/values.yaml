@@ -71,7 +71,5 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sealed as `oidc-credentials`, before the library named them
 oidc:
   enabled: true
-  secretName: oidc-credentials
