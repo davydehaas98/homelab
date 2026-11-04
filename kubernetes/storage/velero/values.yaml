@@ -47,6 +47,11 @@ velero:
   snapshotsEnabled: false
   deployNodeAgent: true
 
+  # For the backup alerts in monitoring/prometheus; the chart's autodetect does not see the CRD under Argo CD
+  metrics:
+    serviceMonitor:
+      enabled: true
+
   resources:
     limits:
       memory: 1Gi

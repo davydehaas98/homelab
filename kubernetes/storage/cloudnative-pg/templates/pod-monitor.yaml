@@ -1,0 +1,20 @@
+# The metrics of every database in the cluster, including the backup metrics of the Barman Cloud plugin
+# (`barman_cloud_cloudnative_pg_io_*`), for the backup alerts in monitoring/prometheus. Each database's NetworkPolicy
+# lets Prometheus reach port 9187.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cnpg-databases
+  namespace: cnpg-system
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      cnpg.io/podRole: instance
+  podMetricsEndpoints:
+    - port: metrics
+      relabelings:
+        - sourceLabels:
+            - __meta_kubernetes_pod_label_cnpg_io_cluster
+          targetLabel: cluster

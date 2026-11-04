@@ -17,3 +17,9 @@ spec:
               kubernetes.io/metadata.name: cnpg-system
       ports:
         - port: 8000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: prometheus
+      ports:
+        - port: 9187

@@ -1,0 +1,80 @@
+# The nightly backups: Velero (volumes and resources, kubernetes/storage/velero) and the Barman Cloud plugin of each
+# CloudNativePG database (kubernetes/storage/cloudnative-pg). Both run once a day, so a backup older than 26 hours was
+# missed. An idle database archives no WAL for hours, so only a backlog or a failure of archiving counts.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backups
+  namespace: prometheus
+spec:
+  groups:
+    - name: velero
+      rules:
+        - alert: VeleroBackupTooOld
+          expr: time() - velero_backup_last_successful_timestamp{schedule="velero-daily"} > 26 * 3600
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`The last successful Velero backup is {{ $value | humanizeDuration }} old`}}"
+            description: "Check `kubectl -n velero get backups` and the logs of deploy/velero."
+        - alert: VeleroBackupFailed
+          expr: >-
+            increase(velero_backup_failure_total{schedule="velero-daily"}[2h]) > 0
+            or increase(velero_backup_partial_failure_total{schedule="velero-daily"}[2h]) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "A Velero backup failed or partly failed"
+            description: "`velero backup describe <name> --details` lists the items that failed."
+        # Without the metrics the alerts above can never fire
+        - alert: VeleroMetricsMissing
+          expr: absent(velero_backup_last_successful_timestamp{schedule="velero-daily"})
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Prometheus has no Velero backup metrics"
+            description: "Check the ServiceMonitor `velero` and its target in Prometheus."
+    - name: cloudnative-pg
+      rules:
+        - alert: DatabaseBackupTooOld
+          expr: time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp > 26 * 3600
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`The last backup of {{ $labels.namespace }}/{{ $labels.cluster }} is {{ $value | humanizeDuration }} old`}}"
+            description: "Check its ScheduledBackup and `kubectl get backups.postgresql.cnpg.io -n <namespace>`."
+        - alert: DatabaseBackupFailed
+          expr: >-
+            barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp
+            > barman_cloud_cloudnative_pg_io_last_available_backup_timestamp
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`The last backup of {{ $labels.namespace }}/{{ $labels.cluster }} failed`}}"
+            description: "The error is in the status of its failed Backup."
+        - alert: DatabaseWalArchivingFailing
+          expr: >-
+            cnpg_collector_pg_wal_archive_status{value="ready"} > 10
+            or cnpg_pg_stat_archiver_last_failed_time > cnpg_pg_stat_archiver_last_archived_time
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`WAL archiving of {{ $labels.namespace }}/{{ $labels.cluster }} is failing`}}"
+            description: >-
+              Unarchived WAL stays on the database's volume until it fills up. Check `ContinuousArchiving` in the
+              Cluster's status and the logs of its plugin sidecar.
+        # Without the metrics the alerts above can never fire: one database's target is down, or none is scraped
+        - alert: DatabaseMetricsMissing
+          expr: >-
+            up{job="cnpg-system/cnpg-databases"} == 0
+            or absent(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp)
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`Prometheus gets no metrics of CloudNativePG database {{ $labels.namespace }}/{{ $labels.cluster }}`}}"
+            description: "Check the PodMonitor `cnpg-databases` in cnpg-system and the database's NetworkPolicy."

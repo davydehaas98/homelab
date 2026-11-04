@@ -1,4 +1,4 @@
-# Only the pods of this namespace and the CloudNativePG operator reach the database
+# Only the pods of this namespace, the CloudNativePG operator and Prometheus (metrics) reach the database
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -18,3 +18,9 @@ spec:
               kubernetes.io/metadata.name: cnpg-system
       ports:
         - port: 8000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: prometheus
+      ports:
+        - port: 9187
