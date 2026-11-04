@@ -36,7 +36,6 @@ flowchart TB
     apps -->|app backups| tank
     immich -->|photo library| tank
     immich -->|database| fast
-    fast -->|nightly copy| tank
 
     github -->|syncs main| argo
     argo -->|deploys| apps

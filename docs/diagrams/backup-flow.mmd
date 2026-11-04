@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph k8s["Cluster yggdrasil"]
+        etcd[("etcd<br/>RK1 control plane")]
+        subgraph midgard["midgard-0"]
+            volumes[("ZFS volumes")]
+            databases[("CloudNativePG<br/>databases")]
+            seaweed[("SeaweedFS<br/>on tank")]
+        end
+    end
+
+    you([You])
+    onepassword(["1Password"])
+    offsite(["Off-site copy"])
+
+    volumes -->|"Velero, 02:00 UTC: snapshot,<br/>Kopia upload, kept 30 days"| seaweed
+    databases -->|"Barman: WAL continuously,<br/>base backup 00:30 UTC, kept 14 days"| seaweed
+    etcd -->|"talos-backup, 03:00 UTC,<br/>age-encrypted"| seaweed
+    you -->|"backup-configs.sh: Talos secrets,<br/>client configs, sealed-secrets keys"| onepassword
+    seaweed -.->|not set up yet| offsite
+
+    classDef server fill:#e8eef7,stroke:#5b7bb0,color:#000
+    classDef cluster fill:#eaf5ea,stroke:#4f9a4f,color:#000
+    classDef missing fill:#fbeaea,stroke:#b05b5b,color:#000,stroke-dasharray: 5 5
+    class midgard server
+    class k8s cluster
+    class offsite missing

@@ -10,7 +10,36 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 - `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
 - `terraform/`: Cloudflare DNS and the arr settings (devopsarr), see [`terraform/README.md`](terraform/README.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
-- `docs/`: Mermaid diagrams ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter gateways.
+- `docs/`: the diagrams below ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter
+  gateways.
+
+## Diagrams
+
+### Architecture
+
+![Architecture](docs/diagrams/architecture.png)
+
+### Request and login
+
+![Request and login](docs/diagrams/login-flow.png)
+
+### Deploy
+
+![Deploy](docs/diagrams/deploy-flow.png)
+
+### Backups
+
+![Backups](docs/diagrams/backup-flow.png)
+
+### Media stack
+
+![Media stack](docs/diagrams/media-stack.png)
+
+### Media request
+
+Sonarr handles series and Radarr movies; the flow is the same.
+
+![Media request](docs/diagrams/request-flow.png)
 
 ## Apps
 
@@ -115,6 +144,7 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 | headlamp     | Kubernetes dashboard |
 | homepage     | Start page           |
 | it-tools     | Developer utilities  |
+| ntfy         | Push notifications   |
 | omni-tools   | Everyday utilities   |
 
 ## Hardware

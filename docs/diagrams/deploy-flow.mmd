@@ -1,0 +1,26 @@
+flowchart LR
+    you([You])
+    renovate([Renovate])
+    main[("GitHub<br/>main")]
+
+    subgraph k8s["Cluster yggdrasil"]
+        argo["Argo CD<br/>ApplicationSet"]
+        api["Kubernetes API"]
+        kyverno["Kyverno<br/>route login, audits"]
+        sealed["Sealed Secrets<br/>controller"]
+    end
+
+    cloudflare(["Cloudflare DNS"])
+    discord(["Discord"])
+
+    you -->|push or merge| main
+    renovate -->|"PRs, automerges patch and digest"| main
+    main -->|"syncs kubernetes/"| argo
+    argo -->|"an Application per argocd.yaml"| api
+    kyverno -.->|admission| api
+    sealed -->|decrypts SealedSecrets| api
+    main -->|"terraform-cloudflare workflow"| cloudflare
+    argo -.->|"failed sync, unhealthy"| discord
+
+    classDef cluster fill:#eaf5ea,stroke:#4f9a4f,color:#000
+    class k8s cluster

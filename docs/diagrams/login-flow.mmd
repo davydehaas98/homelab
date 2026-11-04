@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    participant Browser
+    participant DNS as Cloudflare DNS
+    participant Envoy as Envoy Gateway<br/>(UniFi port forward)
+    participant Authentik
+    participant App
+
+    Browser->>DNS: app.davydehaas.dev
+    DNS-->>Browser: home address
+    Browser->>Envoy: HTTPS
+
+    alt Gateway login, no session yet
+        Envoy-->>Browser: Redirect to Authentik
+        Browser->>Authentik: Sign in
+        Authentik-->>Browser: Redirect with code
+        Browser->>Envoy: Callback
+        Envoy->>Authentik: Code for token
+        Envoy-->>Browser: Session cookie
+    end
+
+    Note over Envoy,App: Apps with their own login (Plex, Jellyfin, Home Assistant, Seerr, ntfy) skip the block above
+    Envoy->>App: HTTPRoute
+    App-->>Browser: Response
