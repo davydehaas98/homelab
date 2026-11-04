@@ -11,13 +11,12 @@ name: eno1
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
-# The schematic of i5-10600k/gen-schematic-id.sh; without it the install drops the extensions. tuppr only swaps the
-# version.
+# Without the schematic the install drops the extensions
 installer:
   image: factory.talos.dev/metal-installer/48e7f69daccf166e3b63a595e1b2854da6faccb7cc0bf08a6e5191ea270430ef:v1.14.5
 provisioning:
   diskSelector:
-    # The only SATA SSD; the NVMe and the hard disks hold the ZFS pools and the media
+    # The NVMe and hard disks hold the ZFS pools and the media
     match: disk.transport == "sata" && !disk.rotational
   wipe: false
 ---
@@ -25,7 +24,6 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: i5-10600k
-# Only the apps pinned to the node's storage and GPU, and the DaemonSets, run here
 taints:
   davydehaas.dev/dedicated: storage:NoSchedule
 ---
@@ -36,7 +34,7 @@ auto: "off"
 ---
 apiVersion: v1alpha1
 kind: ExistingVolumeConfig
-# The ext4 media partition from Ubuntu, labelled `media` with sgdisk, mounted at /var/mnt/media
+# The ext4 media partition from Ubuntu
 name: media
 discovery:
   volumeSelector:

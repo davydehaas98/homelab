@@ -1,11 +1,10 @@
 node-problem-detector:
-  # Newer than the default of the chart, which has known vulnerabilities. Renovate needs the repository to follow the
-  # tag.
+  # Newer than the chart default, which has known vulnerabilities
   image:
     repository: registry.k8s.io/node-problem-detector/node-problem-detector
     tag: v1.37.0
 
-  # Talos has no Docker, and no journal for the chart's default monitor of it
+  # Talos has no Docker and no journal
   settings:
     log_monitors:
       - /config/kernel-monitor.json

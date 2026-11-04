@@ -1,11 +1,9 @@
-# Custom formats of Sonarr and Radarr, with their score per quality profile (see quality_profiles.tf). A score of
-# -10000 blocks a release.
+# Scores per quality profile in quality_profiles.tf; -10000 blocks a release
 locals {
-  # HDR10, HDR10+ and HLG, but not HDRip (an SD or HD re-encode)
+  # Not HDRip, a re-encode
   hdr = "\\bHDR(?!Rip)|\\bHLG\\b"
 
   custom_formats = {
-    # Any 5.1 or 7.1 track (also written 51 or 6CH), and the surround-only codecs
     surround_sound = {
       name   = "SS"
       apps   = ["sonarr", "radarr"]
@@ -49,8 +47,7 @@ locals {
         { name = "HDR", value = local.hdr },
       ]
     }
-    # Releases with a proper or repack fix. Scored here instead of through "Propers and Repacks" in media management,
-    # which would rank them above every custom format.
+    # Scored here, as the media management setting would rank them above every format
     repack_proper = {
       name   = "Repack/Proper"
       apps   = ["sonarr", "radarr"]
@@ -59,7 +56,6 @@ locals {
         { name = "Repack/Proper", value = "\\b(REPACK\\d?|PROPER|RERIP)\\b" },
       ]
     }
-    # Side-by-side and other 3D releases
     three_d = {
       name   = "3D"
       apps   = ["sonarr", "radarr"]
@@ -68,7 +64,6 @@ locals {
         { name = "3D", value = "\\b3D\\b" },
       ]
     }
-    # Full Blu-ray discs instead of video files
     br_disk = {
       name   = "BR-DISK"
       apps   = ["sonarr", "radarr"]
@@ -77,7 +72,6 @@ locals {
         { name = "BR-DISK", value = "\\b(COMPLETE.?(UHD.?)?BLU-?RAY|BDMV|BD(25|50|66|100))\\b" },
       ]
     }
-    # Low-bitrate release groups
     low_quality = {
       name   = "LQ"
       apps   = ["sonarr", "radarr"]
@@ -86,7 +80,6 @@ locals {
         { name = "LQ", value = "\\b(YTS|YIFY|aXXo|PSA|MeGusta)\\b" },
       ]
     }
-    # SD or HD blown up to a higher resolution
     upscaled = {
       name   = "Upscaled"
       apps   = ["sonarr", "radarr"]
@@ -104,7 +97,7 @@ locals {
         { name = "SDR", value = "\\bSDR\\b" },
       ]
     }
-    # AV1, which many Plex clients cannot direct play
+    # Many Plex clients cannot direct play AV1
     av1 = {
       name   = "AV1"
       apps   = ["sonarr", "radarr"]
@@ -113,7 +106,7 @@ locals {
         { name = "AV1", value = "\\bAV1\\b" },
       ]
     }
-    # Dolby Vision without an HDR10 fallback, which shows wrong colours on players without DV
+    # Wrong colours on players without Dolby Vision
     dv_without_hdr = {
       name   = "DV (w/o HDR)"
       apps   = ["sonarr", "radarr"]
@@ -123,7 +116,7 @@ locals {
         { name = "Not HDR", value = local.hdr, negate = true },
       ]
     }
-    # Dubs in other languages than the original or English (-2 is Original, 1 is English)
+    # -2 is Original, 1 is English
     not_original_language = {
       name   = "Not Original or English"
       apps   = ["sonarr", "radarr"]
@@ -133,7 +126,7 @@ locals {
         { name = "Not English", value = "1", implementation = "LanguageSpecification", negate = true },
       ]
     }
-    # Both the original language and English. Every release of an English series or movie has it.
+    # Every English release has it
     multi_audio = {
       name   = "Multi Audio"
       apps   = ["sonarr", "radarr"]

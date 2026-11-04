@@ -1,11 +1,5 @@
-# Denies an HTTPRoute that says nothing about its login: it needs the annotation `davydehaas.dev/auth` with `gateway` (a
-# login at the gateway, an Envoy Gateway SecurityPolicy with `oidc`) or the reason it has none: `native` (the app's own
-# login), `public`, `redirect` (an alias route that only redirects) or `bypass` (the paths of an app that skip the login).
-# The library chart sets the annotation, see kubernetes/_library/app/README.md; other charts set it in their values or
-# templates. It checks the annotation only, not the SecurityPolicy, as a route and its policy are created in one sync in no
-# set order: verify-route-login below checks that a `gateway` route really has its policy. The temporary routes that
-# cert-manager makes for a challenge are left out. If Kyverno is down, a route cannot be created or changed.
-# The CRD is in this chart, so the first sync cannot dry-run the policy before the CRD exists.
+# Denies an HTTPRoute without `davydehaas.dev/auth`: gateway, native, public, redirect or bypass (library README).
+# The CRD is in this chart, so the first sync cannot dry-run this policy.
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
@@ -37,8 +31,7 @@ spec:
         The route needs the annotation davydehaas.dev/auth: gateway (a login at the gateway), or native, public,
         redirect or bypass as the reason it has none. See kubernetes/_library/app/README.md.
 ---
-# Audits that a route that says `gateway` has a SecurityPolicy with `oidc` that targets it, so the annotation is true. It
-# only reports, as the policy may come a moment after the route.
+# Audits that a `gateway` route has an OIDC SecurityPolicy
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
@@ -72,8 +65,7 @@ spec:
       message: >-
         The route says davydehaas.dev/auth: gateway, but no SecurityPolicy with oidc targets it.
 ---
-# Kyverno reads the HTTPRoutes (the policy reports need it) and the SecurityPolicies of Envoy Gateway to check that a
-# route has its login
+# For the reports and verify-route-login
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

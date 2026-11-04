@@ -1,4 +1,3 @@
-# Budgeting app behind the gateway login, with its SQLite files in /data.
 image:
   repository: ghcr.io/actualbudget/actual
   tag: 26.11.0
@@ -26,7 +25,6 @@ resources:
     cpu: 20m
     memory: 90Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   mountPath: /data
@@ -37,7 +35,6 @@ route:
   enabled: true
   hostnames:
     - actual.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - budget.davydehaas.dev
   parentRefs:
@@ -45,6 +42,5 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `actual-budget`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true

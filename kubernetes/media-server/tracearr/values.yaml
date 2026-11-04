@@ -1,5 +1,4 @@
-# Playback monitoring for Plex and Jellyfin. The app keeps no state of its own: its database is templates/postgres.yaml
-# (TimescaleDB), its cache templates/valkey.yaml, and its secrets are in `tracearr-env`.
+# Its database, cache and secrets are in templates/ and `tracearr-env`
 image:
   repository: ghcr.io/connorgallopo/tracearr
   tag: 3.1.3
@@ -8,13 +7,11 @@ port: 3000
 
 kind: Deployment
 
-# Runs as the user of the image
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1001
   runAsGroup: 65533
   fsGroup: 65533
-  # The backups are large: only change their group when the root of the volume differs
   fsGroupChangePolicy: OnRootMismatch
   seccompProfile:
     type: RuntimeDefault
@@ -34,7 +31,6 @@ envFrom:
   - secretRef:
       name: tracearr-env
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: tracearr
@@ -56,11 +52,9 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `tracearr`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the login of the app itself: the mobile app cannot follow a
-  # redirect, so it needs this name and the VPN
+  # The mobile app cannot follow a redirect, so it uses this name over the VPN
   bypassPaths:
     - /api
   privateHostname: tracearr.lan.davydehaas.dev

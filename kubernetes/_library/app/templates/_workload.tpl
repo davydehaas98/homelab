@@ -34,7 +34,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if or .Values.persistence .Values.media .Values.backups }}
-      # The volumes are on midgard-0 (kubernetes/storage/zfs-localpv), which only runs the apps whose data is there
       tolerations:
         - key: davydehaas.dev/dedicated
           operator: Equal
@@ -46,7 +45,7 @@ spec:
       {{- end }}
       {{- if .Values.hostNetwork }}
       hostNetwork: true
-      # Keeps the names of the cluster (mosquitto.mosquitto.svc and so on) working on the host network
+      # Keeps cluster names working on the host network
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       securityContext: {{ toYaml (merge (deepCopy (.Values.podSecurityContext | default dict)) (dict "seccompProfile" (dict "type" "RuntimeDefault"))) | nindent 8 }}
@@ -94,8 +93,7 @@ spec:
           resources: {{ toYaml $resources | nindent 12 }}
           securityContext: {{ toYaml (merge (deepCopy (.Values.securityContext | default dict)) (dict "allowPrivilegeEscalation" false)) | nindent 12 }}
           {{- $probe := .Values.probe | default (dict "httpGet" (dict "path" "/" "port" "http")) }}
-          # The first start of an app with a new database runs its migrations, which can take minutes.
-          # The liveness probe only starts once this one succeeds (up to 15 minutes), instead of killing the app halfway.
+          # Migrations on a first start can take minutes
           startupProbe: {{ toYaml (merge (deepCopy $probe) (dict "periodSeconds" 10 "failureThreshold" 90)) | nindent 12 }}
           livenessProbe: {{ toYaml $probe | nindent 12 }}
           readinessProbe: {{ toYaml $probe | nindent 12 }}
@@ -127,7 +125,6 @@ spec:
             {{- end }}
             {{- end }}
             {{- with .Values.backups }}
-            # After the volume of /config, so the backups of the app stay outside its database volume
             - mountPath: {{ .mountPath | default "/config/Backups" }}
               name: backups
               subPath: {{ .subPath }}

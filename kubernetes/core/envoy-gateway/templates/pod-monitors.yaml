@@ -1,4 +1,4 @@
-# Envoy Gateway does not create monitors itself, both the proxies and the controller serve metrics on 19001
+# Envoy Gateway makes no monitors; both serve metrics on 19001
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:

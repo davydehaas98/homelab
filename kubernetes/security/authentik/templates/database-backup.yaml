@@ -1,4 +1,3 @@
-# The backup of the database in the bucket `cnpg` on SeaweedFS, see kubernetes/storage/cloudnative-pg/README.md
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:

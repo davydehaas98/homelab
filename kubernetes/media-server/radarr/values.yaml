@@ -10,7 +10,7 @@ port: 7878
 
 media:
   claimName: media
-  # One mount with only its own downloads and library, so an import moves the file instead of copying it
+  # One mount, so an import moves the file instead of copying it
   mounts:
     - mountPath: /data/movies
       subPath: data/movies
@@ -23,12 +23,10 @@ resources:
     cpu: 150m
     memory: 1000Mi
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: radarr
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   storageClass: zfs-fast
@@ -38,7 +36,6 @@ route:
   enabled: true
   hostnames:
     - radarr.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - movies.davydehaas.dev
   parentRefs:
@@ -46,10 +43,8 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `radarr`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
   privateHostname: radarr.lan.davydehaas.dev

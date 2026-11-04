@@ -1,11 +1,10 @@
-# Notes behind the gateway login, with its SQLite database in /var/opt/memos.
 image:
   repository: ghcr.io/usememos/memos
   tag: 26.11.0
 
 port: 5230
 
-# Started as root, the entrypoint chowns the data and drops to 10001; started as this user, it skips that
+# As this user, the entrypoint skips its chown
 podSecurityContext:
   runAsUser: 10001
   runAsGroup: 10001
@@ -16,7 +15,7 @@ securityContext:
     drop:
       - ALL
 
-# The Service `memos` makes Kubernetes set MEMOS_PORT to tcp://<ip>:5230, which Memos reads as port 0
+# The Service makes Kubernetes set MEMOS_PORT to a URL, which Memos reads as port 0
 env:
   MEMOS_PORT: 5230
 
@@ -27,7 +26,6 @@ resources:
     cpu: 10m
     memory: 40Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   mountPath: /var/opt/memos
@@ -43,6 +41,5 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `memos`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true

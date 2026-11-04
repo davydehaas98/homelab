@@ -1,10 +1,7 @@
 #!/bin/sh
 set -e
 #
-# Seals one random client ID and secret for an OIDC client into both Secrets: the one Authentik reads
-# (templates/oidc-client-<slug>.yaml) and the one of the app (<app>/templates/oidc-credentials.yaml). The values stay
-# in the shell and are never printed or written in plain text. Running it again replaces both, so the client gets a
-# new pair. Needs `kubeseal` with access to the cluster, `jq` and `openssl`.
+# Seals a random OIDC client ID and secret for Authentik and the app, without printing them.
 #
 # Usage: sh seal-oidc-client.sh -s <slug> -n <namespace> -a <group>/<app>
 
@@ -29,7 +26,6 @@ PREFIX=$(echo "${SLUG}" | tr 'a-z-' 'A-Z_')
 CLIENT_ID=$(openssl rand -hex 20)
 CLIENT_SECRET=$(openssl rand -hex 32)
 
-# Prints a sealed Secret holding the pair under the given keys: <name> <namespace> <id key> <secret key>
 sealed_secret() {
     jq -n --arg name "$1" --arg namespace "$2" --arg idKey "$3" --arg secretKey "$4" \
         --arg id "${CLIENT_ID}" --arg secret "${CLIENT_SECRET}" \

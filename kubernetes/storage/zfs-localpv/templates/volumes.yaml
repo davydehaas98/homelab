@@ -1,5 +1,4 @@
-# The static volumes of values.yaml: an existing dataset, imported with a ZFSVolume that is already Ready, so the
-# driver only mounts it. Neither has a finalizer or is pruned, so removing an entry never destroys a dataset.
+# No finalizer and not pruned, so removing an entry never destroys a dataset
 {{- range .Values.volumes }}
 {{- $pool := printf "%s/k8s" .pool }}
 ---

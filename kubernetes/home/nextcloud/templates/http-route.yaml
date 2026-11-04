@@ -39,7 +39,7 @@ spec:
           responseHeaderModifier:
             remove:
               - X-Powered-By
-      # Large uploads and syncs outlast the default route timeout
+      # Large uploads outlast the default timeout
       timeouts:
         request: 0s
       backendRefs:

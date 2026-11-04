@@ -2,8 +2,7 @@ cloudnative-pg:
   crds:
     create: true
 
-  # Its webhooks fail closed, so while it is down no database cluster can be changed. One replica leads
-  # (`--leader-elect`), the other waits. The chart has no PodDisruptionBudget, see templates/pod-disruption-budget.yaml.
+  # Its webhooks fail closed; one replica leads, the other waits
   replicaCount: 2
 
   resources:
@@ -13,7 +12,6 @@ cloudnative-pg:
       cpu: 30m
       memory: 100Mi
 
-# Backs up the databases to the bucket `cnpg` on SeaweedFS, see README.md. Its TLS certificates come from cert-manager.
 plugin-barman-cloud:
   resources:
     limits:

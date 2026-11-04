@@ -1,13 +1,9 @@
 #!/bin/sh
 set -e
 #
-# Flashes a Talos image to a Turing Pi 2 node slot and powers it on.
+# Flashes a Talos image to a Turing Pi 2 slot and powers it on. Needs TPI_HOST, TPI_USER and TPI_PASS.
 #
 # Usage: sh flash.sh <hostname> <slot>
-#   hostname  matches the image built by gen-image.sh, e.g. jotunheim-1
-#   slot      Turing Pi node slot number (1-4)
-#
-# Requires TPI_HOST / TPI_USER / TPI_PASS to be set.
 
 cd "$(dirname "$0")/.."
 

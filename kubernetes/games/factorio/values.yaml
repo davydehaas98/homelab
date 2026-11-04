@@ -7,7 +7,7 @@ replicas: 1
 port: 34197
 protocol: UDP
 
-# The rootless image runs as uid 1000 in group 0, and the volume is writable through the group 845
+# uid 1000 in group 0; the volume is writable through group 845
 podSecurityContext:
   fsGroup: 845
   runAsNonRoot: true
@@ -17,7 +17,7 @@ securityContext:
     drop:
       - ALL
 
-# The game port is UDP, so the probe checks RCON
+# The game port is UDP, so probe RCON
 probe:
   tcpSocket:
     port: 27015
@@ -29,14 +29,12 @@ resources:
     cpu: 30m
     memory: 800Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   mountPath: /factorio
   storageClass: zfs-fast
   volumeName: zfs-factorio-config
 
-# Reachable on the LAN at this address, outside the HTTP gateway
 service:
   type: LoadBalancer
   annotations:

@@ -12,8 +12,7 @@ velero:
         - mountPath: /target
           name: plugins
 
-  # The image runs as the named user cnb (1002:1000), so runAsNonRoot needs the numbers. The node agent has its own
-  # security context.
+  # The image's user is named, so runAsNonRoot needs the numbers
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1002
@@ -27,7 +26,6 @@ velero:
         - ALL
 
   configuration:
-    # SeaweedFS S3 gateway, bucket `velero`, see README.md
     backupStorageLocation:
       - name: default
         provider: aws
@@ -37,14 +35,13 @@ velero:
           region: us-east-1
           s3ForcePathStyle: "true"
           s3Url: http://seaweedfs-all-in-one.seaweedfs:8333
-    # Snapshots stay on the node only until they are copied to the bucket, by Kopia in a pod per volume
+    # Snapshots only stay on the node until Kopia copies them to the bucket
     volumeSnapshotLocation: []
     uploaderType: kopia
     features: EnableCSI
 
   credentials:
     useSecret: true
-    # SealedSecret with key `cloud`, see README.md
     existingSecret: velero-credentials
 
   snapshotsEnabled: false
@@ -57,15 +54,13 @@ velero:
       cpu: 30m
       memory: 450Mi
 
-  # It reads the volumes of other pods from the host as root, which needs a Kyverno exemption
-  # (kubernetes/security/kyverno); seccomp and no privilege escalation it can take. The chart's runAsUser 0 stays.
+  # Reads other pods' volumes from the host as root, with a Kyverno exemption
   nodeAgent:
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
     containerSecurityContext:
       allowPrivilegeEscalation: false
-    # Also on midgard-0, where the volumes on ZFS are
     tolerations:
       - key: davydehaas.dev/dedicated
         operator: Equal
@@ -78,8 +73,7 @@ velero:
         cpu: 10m
         memory: 100Mi
 
-  # Daily at 02:00 UTC, an hour before talos-backup. Each volume is snapshotted, copied to the bucket and the snapshot
-  # removed, as it counts towards the quota of its volume. See README.md for what is left out.
+  # An hour before talos-backup; snapshots are removed after the copy, as they count towards the quota
   schedules:
     daily:
       schedule: "0 2 * * *"

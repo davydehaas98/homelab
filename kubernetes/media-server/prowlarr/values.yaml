@@ -16,12 +16,10 @@ resources:
     cpu: 60m
     memory: 250Mi
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: prowlarr
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   storageClass: zfs-fast
@@ -38,7 +36,6 @@ route:
 
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
   privateHostname: prowlarr.lan.davydehaas.dev

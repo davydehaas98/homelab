@@ -1,4 +1,4 @@
-# Quality profiles of Sonarr and Radarr. Both apps use the same quality ids, but name the sources differently.
+# Both apps use the same quality ids, but name the sources differently
 locals {
   qualities = {
     bluray_720p  = { id = 6, name = "Bluray-720p", resolution = 720, source = "bluray" }
@@ -20,7 +20,7 @@ locals {
     radarr = { bluray = "bluray", webrip = "webrip", webdl = "webdl", tv = "tv" }
   }
 
-  # Groups from best to worst. Groups with a name share a rank (the WEB groups ids are the apps' own).
+  # Best to worst; named groups share a rank
   quality_groups = {
     hd = [
       { qualities = ["bluray_1080p"] },
@@ -40,8 +40,7 @@ locals {
     ]
   }
 
-  # The cutoff is a quality or group id per app. Series stop at WEB, as few get a Blu-ray that is better, movies at
-  # Blu-ray.
+  # Series stop at WEB, movies at Blu-ray
   quality_profiles = {
     hd = {
       name   = "1080p/720p"
@@ -66,8 +65,7 @@ resource "sonarr_quality_profile" "this" {
   for_each = local.quality_profiles
 
   cutoff = each.value.cutoff.sonarr
-  # Includes the Multi Audio score, so series in another language than English wait for a release that also has
-  # English. For English series every release has it.
+  # Includes Multi Audio, so other-language series wait for a release with English
   cutoff_format_score = 60
   format_items = [
     for key, format in sonarr_custom_format.this : {
@@ -98,8 +96,7 @@ resource "sonarr_quality_profile" "this" {
 resource "radarr_quality_profile" "this" {
   for_each = local.quality_profiles
 
-  cutoff = each.value.cutoff.radarr
-  # Includes the Multi Audio score, as for Sonarr
+  cutoff              = each.value.cutoff.radarr
   cutoff_format_score = 60
   format_items = [
     for key, format in radarr_custom_format.this : {
@@ -107,10 +104,8 @@ resource "radarr_quality_profile" "this" {
       name   = format.name
       score  = local.profile_scores[each.key][key]
     }
-    # The apps leave formats scored 0 out of a profile
     if local.profile_scores[each.key][key] != 0
   ]
-  # Languages are filtered through custom formats, as in Sonarr
   language = {
     id   = -1
     name = "Any"

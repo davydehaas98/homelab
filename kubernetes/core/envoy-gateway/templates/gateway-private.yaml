@@ -1,6 +1,4 @@
-# Only for the home network: the UniFi gateway forwards nothing to its address, so its routes are not on the internet.
-# For what should not be public: the MCP servers under *.mcp.davydehaas.dev, the rest under *.lan.davydehaas.dev. Their
-# records point to this address, see terraform/cloudflare/davydehaas.dev/dns_record.tf.
+# Not forwarded by the UniFi gateway, so only on the home network
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:

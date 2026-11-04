@@ -21,7 +21,7 @@ terraform {
   }
 }
 
-# On the private gateway (oidc.privateHostname of the apps), so an apply needs the home network or the VPN
+# On the private gateway, so an apply needs the home network or the VPN
 provider "lidarr" {
   url     = "https://lidarr.lan.davydehaas.dev"
   api_key = var.lidarr_api_key

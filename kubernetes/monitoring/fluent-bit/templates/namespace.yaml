@@ -3,5 +3,4 @@ kind: Namespace
 metadata:
   name: fluent-bit
   labels:
-    # Host access (hostPath) is needed by this app, Talos enforces baseline by default
     pod-security.kubernetes.io/enforce: privileged

@@ -1,4 +1,4 @@
-# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), left out of the backups
+# Left out of the backups
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

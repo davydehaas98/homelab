@@ -1,6 +1,4 @@
-# Its own namespace reaches every port (the bucket hook of the chart uses the master). Others only reach the S3 API, and
-# only the backups and Loki: CloudNativePG (its databases in any namespace, so a restore test elsewhere works too), Velero
-# and talos-backup
+# Others only reach the S3 API: databases in any namespace, Loki and the backups
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

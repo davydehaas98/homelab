@@ -1,4 +1,3 @@
-# Only the pods of this namespace and the CloudNativePG operator reach the database
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

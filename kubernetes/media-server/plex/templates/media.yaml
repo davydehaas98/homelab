@@ -1,4 +1,3 @@
-# The media disk of midgard-0, as in kubernetes/media-server/media-server, whose claim is in the namespace there
 apiVersion: v1
 kind: PersistentVolume
 metadata:

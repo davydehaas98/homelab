@@ -1,6 +1,4 @@
-# Versions the nodes are upgraded to (templates/). Renovate bumps them; keep the Talos tag equal to `talosctl` in
-# mise.toml and the Kubernetes tag equal to `kubectl`. The Application syncs by hand (argocd.yaml): a sync starts
-# the upgrade, one node at a time.
+# Keep equal to `talosctl` and `kubectl` in mise.toml; a manual sync starts the upgrade
 talos:
   image:
     repository: ghcr.io/siderolabs/talos

@@ -1,20 +1,15 @@
-# Start page. Its config is in this file and the API keys of the widgets in the Secret `homepage-keys`
-# (templates/keys.yaml), mounted as files that Homepage reads for `{{HOMEPAGE_FILE_...}}`. There is no Docker socket in
-# the cluster, so the services are listed here. The files are mounted into an empty folder, as Homepage writes its logs
-# there.
+# The services are listed in config/, as there is no Docker socket
 image:
   repository: ghcr.io/gethomepage/homepage
   tag: v2.7.0
 
 port: 3000
 
-# No volume, so it updates without a gap
 kind: Deployment
 
 env:
-  # Requests for other hosts are refused
   HOMEPAGE_ALLOWED_HOSTS: homepage.davydehaas.dev
-  # Paths of the API keys, which Homepage reads for `{{HOMEPAGE_FILE_...}}`
+  # Read for `{{HOMEPAGE_FILE_...}}`
   HOMEPAGE_FILE_BAZARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_BAZARR_KEY
   HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/homepage/HOMEPAGE_VAR_JELLYFIN_KEY
   HOMEPAGE_FILE_LIDARR_KEY: /run/secrets/homepage/HOMEPAGE_VAR_LIDARR_KEY
@@ -74,7 +69,6 @@ route:
   enabled: true
   hostnames:
     - homepage.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - home.davydehaas.dev
   parentRefs:

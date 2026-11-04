@@ -1,3 +1,2 @@
-# Registers the app with the ApplicationSet; keys in kubernetes/README.md
 # The ServiceAccount kind below only exists with the Talos API access of talos/patches/controlplane.yaml
 deploy: true

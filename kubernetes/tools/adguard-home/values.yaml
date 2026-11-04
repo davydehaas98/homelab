@@ -1,12 +1,8 @@
-# DNS filter for the LAN. Its configuration and data are on one disk, with the configuration (AdGuardHome.yaml, users,
-# upstreams, filters, rewrites) in `conf` and the statistics and query log in `work`. Copy the folders of the home
-# server into the disk before the first start: a new disk starts the setup wizard on port 3000, which the probes do not
-# cover. Left out: the container's own mounts under /opt/adguardhome, which hold the program itself.
+# A new disk starts the setup wizard on port 3000, which the probes do not cover
 image:
   repository: docker.io/adguard/adguardhome
   tag: v0.107.80
 
-# The web interface, as its configuration on the volume has it
 port: 80
 
 args:
@@ -16,7 +12,6 @@ args:
   - -w
   - /data/work
 
-# Runs as a normal user and still binds the low ports 53 and 80, as the kernel may let any process do that in this pod
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 65532
@@ -26,8 +21,7 @@ podSecurityContext:
     - name: net.ipv4.ip_unprivileged_port_start
       value: "0"
 securityContext:
-  # The binary of the image carries a file capability to bind low ports. The kernel refuses to run it when the container
-  # has dropped that capability, so it is added back (allowed by the restricted Pod Security profile)
+  # The binary carries a file capability to bind low ports, so the kernel needs it kept
   capabilities:
     drop:
       - ALL
@@ -41,20 +35,17 @@ resources:
     cpu: 10m
     memory: 80Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 2Gi
   mountPath: /data
   storageClass: zfs-fast
   volumeName: zfs-adguard-home-config
 
-# Behind the gateway login (client `adguard-home`, credentials in templates/oidc-credentials.yaml), and then its own
-# login from the configuration. The DNS port is a separate Service and does not pass the gateway.
+# The gateway login, then its own; DNS has its own Service
 route:
   enabled: true
   hostnames:
     - adguard.davydehaas.dev
-  # Redirect to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - adguardhome.davydehaas.dev
   parentRefs:

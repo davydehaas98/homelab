@@ -1,25 +1,21 @@
-# Chat UI for an Ollama outside the cluster, which runs the models. The first account to sign up becomes the admin.
+# The first account to sign up becomes the admin
 open-webui:
   ollama:
     enabled: false
   ollamaUrls:
     - http://192.168.1.44:11434
 
-  # Not needed for one replica
   pipelines:
     enabled: false
   websocket:
     enabled: false
 
-  # Only local models
   enableOpenaiApi: false
 
   extraEnvVars:
     - name: TZ
       value: Europe/Amsterdam
-    # Sign in with Authentik (application `open-webui`), the credentials are in the `oidc-credentials`
-    # Secret of this namespace, see the Authentik README.md. The password login stays as a fallback,
-    # set ENABLE_LOGIN_FORM to "false" once the SSO login works.
+    # Set ENABLE_LOGIN_FORM to "false" once the SSO login works
     - name: WEBUI_URL
       value: https://open-webui.davydehaas.dev
     - name: ENABLE_OAUTH_SIGNUP

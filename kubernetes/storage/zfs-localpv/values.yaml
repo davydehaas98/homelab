@@ -2,7 +2,7 @@ zfs-localpv:
   analytics:
     enabled: false
 
-  # The snapshot CRDs and controller come from the snapshot-controller app
+  # From the snapshot-controller app
   crds:
     csi:
       volumeSnapshots:
@@ -16,7 +16,6 @@ zfs-localpv:
     # Talos' root is read-only
     encrKeysDir: /var/openebs/keys
 
-    # The pools are on midgard-0 only
     nodeSelector:
       kubernetes.io/hostname: midgard-0
     tolerations:
@@ -25,8 +24,7 @@ zfs-localpv:
         value: storage
         effect: NoSchedule
 
-# Static volumes, each a dataset `<pool>/k8s/<name>` with its PV `zfs-<name>` bound to `namespace`/`claim`, which
-# the app's chart makes on the pool's StorageClass. `shared: "yes"` allows several pods to mount it.
+# Existing datasets `<pool>/k8s/<name>`, imported as PV `zfs-<name>` for `namespace`/`claim`
 volumes:
   - name: actual-budget-config
     pool: fast
@@ -86,7 +84,7 @@ volumes:
   - name: media-server-backups
     pool: tank
     size: 10Gi
-    # Mounted by several pods; the driver refuses a second mount otherwise
+    # Mounted by several pods
     shared: "yes"
     namespace: media-server
     claim: backups

@@ -1,4 +1,3 @@
-# Redirects to the hostname of the route, so the login and the sync clients use one address
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

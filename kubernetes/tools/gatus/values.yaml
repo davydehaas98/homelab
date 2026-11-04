@@ -1,18 +1,15 @@
-# Status monitor. The endpoints it checks are in config/config.yaml, with results kept in memory, so there is no
-# volume and a restart starts the history again.
+# Results are kept in memory
 image:
   repository: ghcr.io/twin/gatus
   tag: v5.38.0
 
 port: 8080
 
-# No volume, so it updates without a gap
 kind: Deployment
 
 env:
   GATUS_CONFIG_PATH: /config/config.yaml
 
-# DISCORD_WEBHOOK_URL, used in config/config.yaml
 envFrom:
   - secretRef:
       name: gatus-discord
@@ -46,7 +43,6 @@ route:
   enabled: true
   hostnames:
     - gatus.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - status.davydehaas.dev
   parentRefs:

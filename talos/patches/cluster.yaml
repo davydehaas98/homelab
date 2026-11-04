@@ -10,20 +10,16 @@ taints:
 ---
 apiVersion: v1alpha1
 kind: KubeFlannelCNIConfig
-# Disables the default CNI
 $patch: delete
 ---
 apiVersion: v1alpha1
 kind: SecurityProfileConfig
-# talosctl gen config defaults this to true, which requires the sandboxd service to run the
-# container plane inside an isolated sandbox namespace. That service isn't present on this
-# installer image, so cri hangs forever waiting for a sandbox namespace that never appears.
+# The installer image has no sandboxd, so cri would hang
 workloadIsolation: false
 ---
 apiVersion: v1alpha1
 kind: ResolverConfig
-# The nodes keep the router as DNS server, with a public fallback, instead of the DHCP-provided DNS, which becomes
-# AdGuard Home on this cluster: without DNS the nodes cannot pull the image to bring it back
+# Not DHCP's DNS, which is AdGuard Home: without DNS the nodes cannot pull its image
 nameservers:
   - address: 192.168.1.1
   - address: 1.1.1.1

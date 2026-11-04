@@ -1,4 +1,3 @@
-# What the Kubernetes widget reads: the nodes and pods, and their usage from metrics-server. Nothing that writes.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

@@ -11,11 +11,9 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: {{ $name }}
-  # Sign in with Authentik (application `{{ $slug }}`), restrict who may log in with policy bindings there.
-  # The client credentials are in the `{{ $secret }}` Secret of this namespace, see the Authentik README.md
   oidc:
     provider:
-      # Set explicitly, so Envoy Gateway does not fetch the discovery document: a fetch while Authentik restarts marks the policy Invalid
+      # Set, so a discovery fetch while Authentik restarts cannot mark the policy Invalid
       issuer: https://auth.davydehaas.dev/application/o/{{ $slug }}/
       authorizationEndpoint: https://auth.davydehaas.dev/application/o/authorize/
       tokenEndpoint: https://auth.davydehaas.dev/application/o/token/

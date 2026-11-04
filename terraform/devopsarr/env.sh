@@ -1,9 +1,6 @@
 #!/bin/sh
 #
-# Exports the secrets of this stack as TF_VAR_* in the current shell, read from the apps in the cluster: the API
-# keys from their config, the Discord webhooks from their API. Prowlarr only returns the NZBgeek key masked, so that
-# one is asked for without echo, unless TF_VAR_nzbgeek_api_key is set already. Nothing is printed or written to disk.
-# Needs `kubectl` with access to the cluster, and `yq`. Run it in the dev container (.devcontainer/README.md).
+# Exports the secrets of this stack as TF_VAR_* from the apps in the cluster, without printing them.
 #
 # Usage: . ./env.sh (in terraform/devopsarr)
 
@@ -15,7 +12,6 @@ arr_api_key() {
     arr_exec "$1" "sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:\1:p' /config/config.xml"
 }
 
-# Usage: arr_web_hook_url <app> <port> <api version> <api key>
 arr_web_hook_url() {
     arr_exec "$1" "curl -s -H 'X-Api-Key: $4' http://localhost:$2/api/$3/notification" |
         yq -p json '.[] | select(.implementation == "Discord") | .fields[] | select(.name == "webHookUrl") | .value'

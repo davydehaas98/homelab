@@ -4,7 +4,7 @@ immich:
       library:
         existingClaim: immich-library
 
-  # Job queues are lost when valkey restarts, as in a default install. It runs as the valkey user (999).
+  # Job queues are lost when it restarts
   valkey:
     enabled: true
     defaultPodOptions:
@@ -31,8 +31,7 @@ immich:
                 cpu: 30m
                 memory: 30Mi
 
-  # The machine learning image runs as any user, its cache is an emptyDir. It keeps to the worker: its jobs use several
-  # cores for hours, which slows etcd and the API server on the control plane nodes.
+  # Its long jobs would slow etcd on the control plane nodes
   machine-learning:
     defaultPodOptions:
       nodeSelector:
@@ -48,7 +47,7 @@ immich:
       main:
         containers:
           main:
-            # Keep this tag equal to the one of the server
+            # Keep equal to the server's tag
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
               tag: v3.3.6
@@ -64,8 +63,6 @@ immich:
                 cpu: 80m
                 memory: 2.5Gi
 
-  # The server image runs as root but has a node user (1000), which owns the library. It runs on midgard-0, where the
-  # library is.
   server:
     defaultPodOptions:
       tolerations:
@@ -81,11 +78,11 @@ immich:
           type: RuntimeDefault
     controllers:
       main:
-        # The library is on one node, which has no memory for a second server next to the old one during an update
+        # midgard-0 has no memory for a second server during an update
         strategy: Recreate
         containers:
           main:
-            # Keep this tag equal to the one of machine learning
+            # Keep equal to the machine learning tag
             image:
               repository: ghcr.io/immich-app/immich-server
               tag: v3.3.6

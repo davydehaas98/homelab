@@ -1,9 +1,7 @@
 #!/bin/sh
 set -e
 #
-# Renders apps at a git ref and in the working tree, and prints the difference (diff -u), to see what a change or a
-# chart bump does to the manifests before pushing. Both sides are built in a temporary directory, so the working tree
-# and its charts/ stay as they are. Run it in the dev container (.devcontainer/README.md).
+# Prints the difference between the apps' manifests at a git ref and in the working tree.
 #
 # Usage: sh scripts/render-diff.sh [-r <ref>] <group>/<app> [<group>/<app> ...]   (ref: default HEAD)
 

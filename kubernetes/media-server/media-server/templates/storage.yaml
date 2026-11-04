@@ -1,5 +1,4 @@
-# The media disk of midgard-0 (ext4, mounted by Talos at /var/mnt/media), shared by the apps in this namespace, which
-# all run on that node. Each app mounts its own subPaths from the `media` claim.
+# The media disk of midgard-0; each app mounts its own subPaths
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -40,8 +39,7 @@ spec:
     requests:
       storage: 14Ti
 ---
-# The backups of the apps (Servarr: System > Backup), a ZFS volume on `tank` (kubernetes/storage/zfs-localpv). One
-# folder per app, mounted at /config/Backups.
+# The apps' own backups, one folder per app
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

@@ -1,4 +1,3 @@
-# The toilet light, dimmed from 23:00 to 07:00.
 toilet:
   sequence:
     - if:

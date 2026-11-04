@@ -12,7 +12,7 @@ spec:
   hostnames:
     - open-webui.davydehaas.dev
   rules:
-    # Chat responses stream for a long time
+    # Responses stream for a long time
     - timeouts:
         request: 0s
       backendRefs:

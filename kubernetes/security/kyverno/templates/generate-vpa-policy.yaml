@@ -1,8 +1,4 @@
-# A VerticalPodAutoscaler for every Deployment, StatefulSet and DaemonSet, so a new app needs no entry in the vpa
-# chart. It only recommends (`updateMode: "Off"`); the vpa chart runs no updater. The generated VPA is named after the
-# workload, labeled `generated-by: kyverno`, and with `synchronize` Kyverno deletes it with the workload. Kyverno skips
-# kube-system, so the vpa chart lists those workloads itself.
-# The CRD is in this chart, so the first sync cannot dry-run the policy before the CRD exists.
+# A recommend-only VPA per workload. The CRD is in this chart, so the first sync cannot dry-run this policy.
 apiVersion: policies.kyverno.io/v1
 kind: GeneratingPolicy
 metadata:
@@ -16,8 +12,7 @@ spec:
     synchronize:
       enabled: true
   matchConstraints:
-    # Not in the namespaces of Kyverno itself and the ones it ignores by default. A workload with the label
-    # `davydehaas.dev/vpa: "false"` gets no VPA.
+    # Label `davydehaas.dev/vpa: "false"` opts a workload out
     namespaceSelector:
       matchExpressions:
         - key: kubernetes.io/metadata.name

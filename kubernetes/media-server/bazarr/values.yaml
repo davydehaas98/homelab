@@ -30,13 +30,11 @@ resources:
     cpu: 300m
     memory: 400Mi
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: bazarr
   mountPath: /config/backup
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   storageClass: zfs-fast
@@ -46,7 +44,6 @@ route:
   enabled: true
   hostnames:
     - bazarr.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - subtitles.davydehaas.dev
   parentRefs:
@@ -54,6 +51,5 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `bazarr`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true

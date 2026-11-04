@@ -1,5 +1,4 @@
-# Every other name: the gateway redirects the names in nlRedirects (kubernetes/core/envoy-gateway/values.yaml) and answers
-# 404 for the rest. A record of its own always wins over this one.
+# Other names: redirected or a 404 by the gateway
 resource "cloudflare_dns_record" "wildcard" {
   provider = cloudflare.nl
 
@@ -138,8 +137,6 @@ resource "cloudflare_dns_record" "minecraft_skyfactory_srv" {
   }
 }
 
-# Sender Policy Framework (SPF)
-# https://en.wikipedia.org/wiki/Sender_Policy_Framework
 resource "cloudflare_dns_record" "spf1" {
   provider = cloudflare.nl
 
@@ -152,8 +149,6 @@ resource "cloudflare_dns_record" "spf1" {
   content = "\"v=spf1 include:_spf.mx.cloudflare.email ~all\""
 }
 
-# Domain-based Message Authentication, Reporting and Conformance (DMARC)
-# https://en.wikipedia.org/wiki/DMARC
 resource "cloudflare_dns_record" "dmarc" {
   provider = cloudflare.nl
 
@@ -166,8 +161,6 @@ resource "cloudflare_dns_record" "dmarc" {
   content = "\"v=DMARC1; p=reject; adkim=r; aspf=r;\""
 }
 
-# DomainKeys Identified Mail (DKIM)
-# https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail
 resource "cloudflare_dns_record" "dkim1" {
   provider = cloudflare.nl
 

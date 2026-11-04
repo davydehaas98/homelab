@@ -1,7 +1,6 @@
 {{- /* Helm must not render the Go templates of the ApplicationSet, so the manifest is a raw string. */ -}}
 {{ `
-# One Application per kubernetes/<group>/<app>/argocd.yaml with deploy: true. The file's keys are the per-app options,
-# see kubernetes/README.md. An app without the file, or without deploy: true, is not deployed.
+# One Application per argocd.yaml with deploy: true; keys in kubernetes/README.md
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -9,7 +8,7 @@ metadata:
   namespace: argocd
 spec:
   goTemplate: true
-  # Optional keys in argocd.yaml are absent otherwise, and the default (error) would fail the render
+  # Optional keys of argocd.yaml may be absent
   goTemplateOptions: ["missingkey=default"]
   generators:
     - git:
@@ -24,14 +23,10 @@ spec:
           - path: kubernetes/security/*/argocd.yaml
           - path: kubernetes/storage/*/argocd.yaml
           - path: kubernetes/tools/*/argocd.yaml
-      # A missing deploy key does not match, so it counts as disabled
       selector:
         matchLabels:
           deploy: "true"
-  # The Applications have no resources-finalizer, so deleting one (an app directory removed, or deploy: false) leaves its
-  # workloads, volumes and databases; deleting those stays a manual act. preserveResourcesOnDeletion does not cover
-  # that, it only applies when the ApplicationSet itself is deleted (tested: with the finalizer, removing a generator
-  # entry deleted the workloads too).
+  # No resources-finalizer: removing an app leaves its workloads and volumes
   syncPolicy:
     preserveResourcesOnDeletion: true
   template:
@@ -65,12 +60,11 @@ spec:
             duration: 5s
             factor: 2
             maxDuration: 10m
-  # Only the optional parts live here; a patch replaces lists, so syncOptions is repeated in full.
+  # A patch replaces lists, so syncOptions is repeated
   templatePatch: |
     {{- if .serverSideApply }}
     metadata:
       annotations:
-        # The API server fills in defaults (for example on HTTPRoutes), compare against its result instead
         argocd.argoproj.io/compare-options: ServerSideDiff=true
     {{- end }}
     {{- if or .valueFiles .suspend .ignoreDifferences .serverSideApply (and (hasKey . "autoSync") (not .autoSync)) }}

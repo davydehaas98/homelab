@@ -1,11 +1,9 @@
-# Apps are checked at their address in the cluster or their public one, which also checks the certificate. Gatus
-# follows redirects, so a login page counts as up.
+# Gatus follows redirects, so a login page counts as up
 metrics: true
 
 storage:
   type: memory
 
-# Notifies Discord after three failed checks, and when the endpoint recovers
 alerting:
   discord:
     webhook-url: ${DISCORD_WEBHOOK_URL}
@@ -100,7 +98,7 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
-  # SABnzbd rejects other hostnames, so it is checked at its public address
+  # SABnzbd rejects other hostnames
   - name: SABnzbd
     group: Media
     url: https://sabnzbd.davydehaas.dev
@@ -156,7 +154,7 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
-  # Nextcloud rejects other hostnames, as does Homepage
+  # Both reject other hostnames
   - name: Nextcloud
     group: Home
     url: http://nextcloud.nextcloud.svc.cluster.local:8080/status.php
@@ -297,7 +295,7 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
-  # Plex answers its root with 401, so it is checked at a path without a login
+  # Plex answers its root with 401
   - name: Plex
     group: Media
     url: https://plex.davydehaas.dev/identity

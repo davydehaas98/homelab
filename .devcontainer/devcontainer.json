@@ -4,15 +4,12 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  // kubectl and talosctl read their default configs (~/.kube/config, ~/.talos/config) from the host.
-  // HOME is set on Linux/macOS and USERPROFILE on Windows, so exactly one of them expands.
-  // Claude Code keeps its login and settings in a named volume, so they survive rebuilds.
+  // HOME on Linux and macOS, USERPROFILE on Windows: exactly one expands
   "mounts": [
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.kube,target=/root/.kube,type=bind",
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.talos,target=/root/.talos,type=bind",
     "source=homelab-claude-config,target=/root/.claude,type=volume"
   ],
-  // Token of the Grafana MCP server (.mcp.json), set on the host
   "remoteEnv": {
     "GRAFANA_MCP_TOKEN": "${localEnv:GRAFANA_MCP_TOKEN}"
   },

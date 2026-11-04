@@ -1,4 +1,4 @@
-# The namespace is shared with the other media apps, so only Tracearr reaches its database and cache
+# The namespace is shared with the other media apps
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

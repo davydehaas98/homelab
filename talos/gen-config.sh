@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-# Machine configs contain the cluster secrets, keep them private to your user
 umask 077
 
 cd "$(dirname "$0")"
@@ -15,14 +14,12 @@ do
     esac
 done
 
-# The patch of the node is the single source of its type
 NODE_TYPE=$(sed -n '/^machine:/,/^---/s/^  type: //p' "${BOARD}/nodes/${NODE_NAME}.yaml")
 if [ -z "${NODE_TYPE}" ]; then
     echo "No machine.type in ${BOARD}/nodes/${NODE_NAME}.yaml"
     exit 1
 fi
 
-# patches/cluster.yaml is the single source of the control plane endpoint (and so of the VIP)
 CLUSTER_ENDPOINT=$(sed -n 's/^endpoint: //p' patches/cluster.yaml)
 CLUSTER_IP=${CLUSTER_ENDPOINT#https://}
 CLUSTER_IP=${CLUSTER_IP%:*}
@@ -35,7 +32,7 @@ if [ "${NODE_TYPE}" = "controlplane" ]; then
     sed "s/__CLUSTER_IP__/${CLUSTER_IP}/" patches/controlplane.yaml > gen/${NODE_NAME}.controlplane.yaml
     CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @gen/${NODE_NAME}.controlplane.yaml"
 fi
-# The node patch goes last, so its taints survive the cluster patch removing the default ones
+# Last, so its taints survive the cluster patch removing the default ones
 CONFIG_PATCHES="${CONFIG_PATCHES} --config-patch @${BOARD}/nodes/${NODE_NAME}.yaml"
 
 talosctl gen config \

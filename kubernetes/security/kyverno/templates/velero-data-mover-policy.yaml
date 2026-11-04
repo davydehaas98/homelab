@@ -1,7 +1,5 @@
-# Velero starts a pod per volume to upload or restore a snapshot, on the node of the volume, and does not give it the
-# tolerations of its node agent, so it waits forever on midgard-0. This adds the toleration to those pods only. If Kyverno
-# is down, a pod of Velero starts without it and waits.
-# The CRD is in this chart, so the first sync cannot dry-run the policy before the CRD exists.
+# Velero's data mover pods lack the toleration of midgard-0.
+# The CRD is in this chart, so the first sync cannot dry-run this policy.
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:

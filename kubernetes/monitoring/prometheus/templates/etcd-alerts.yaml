@@ -1,6 +1,4 @@
-# etcd of the control plane nodes, scraped from port 2381 (job kube-etcd, see values.yaml). The data is on the eMMC of the
-# nodes, so slow disk writes show here first. The rules of the chart are not used: they need its etcd monitor, which
-# needs an Endpoints object that Argo CD does not sync.
+# etcd is on eMMC, so slow disk writes show here first
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:

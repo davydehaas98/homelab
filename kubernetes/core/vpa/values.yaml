@@ -1,11 +1,9 @@
-# Only the recommender runs: every VerticalPodAutoscaler here uses `updateMode: "Off"`, so VPA only
-# recommends requests (`kubectl get vpa -A`) and never evicts or mutates pods. Enable the updater and
-# admission controller again before switching a VPA to another mode.
+# Only the recommender: every VPA uses `updateMode: "Off"`
 vpa:
   recommender:
     enabled: true
     extraArgs:
-      # The chart defaults to debug logging (4)
+      # The chart default is debug logging
       v: "1"
       pod-recommendation-min-cpu-millicores: 5
       pod-recommendation-min-memory-mb: 10
@@ -25,10 +23,7 @@ vpa:
   admissionController:
     enabled: false
 
-# Workloads that get a VerticalPodAutoscaler (templates/vertical-pod-autoscalers.yaml), as `<Kind>/<name>` per
-# namespace. Only kube-system is listed: Kyverno skips it, and generates a VPA for every other workload
-# (kubernetes/security/kyverno/templates/generate-vpa-policy.yaml). Their recommendations are on the VPA dashboard in
-# Grafana.
+# Only kube-system, which Kyverno skips; it generates the VPAs of the other namespaces
 workloads:
   kube-system:
     - DaemonSet/cilium

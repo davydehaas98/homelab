@@ -1,12 +1,10 @@
-# MQTT broker for Zigbee2MQTT, Home Assistant and the meter gateways. The config is in this file and only the
-# persistence database is in the volume. It needs a username and password, and only the LAN can reach it. Websockets
-# (9001) are not exposed.
+# Only the persistence database is on the volume
 image:
   repository: docker.io/library/eclipse-mosquitto
   tag: 2.0.22
 
 port: 1883
-# The meter gateways use the address of midgard-0, where the volume keeps this pod
+# The meter gateways use the address of midgard-0
 hostPort: 1883
 
 podSecurityContext:
@@ -33,14 +31,13 @@ resources:
     cpu: 10m
     memory: 20Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   mountPath: /mosquitto/data
   storageClass: zfs-fast
   volumeName: zfs-mosquitto-config
 
-# Mosquitto wants its password file owned by its own user, and a mounted Secret is owned by root: copy it at the start
+# Mosquitto wants its password file owned by itself, so copy the mounted Secret
 args:
   - sh
   - -c
@@ -63,7 +60,7 @@ configFiles:
         persistence_location /mosquitto/data/
         log_dest stdout
 
-        # One account (admin) for all clients, sealed by seal-passwd.sh into templates/mosquitto-passwd.yaml
+        # Sealed by seal-passwd.sh
         allow_anonymous false
         password_file /mosquitto/run/passwd
 
@@ -75,7 +72,6 @@ configFiles:
       - passwd
     defaultMode: 0440
 
-# Reachable on the LAN at this address, outside the HTTP gateway
 service:
   type: LoadBalancer
   annotations:

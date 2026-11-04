@@ -1,5 +1,4 @@
-# One node at a time, each waiting until every node is Ready again. The nodes keep their own schematic (the
-# installer image of their current config).
+# One node at a time; each keeps its own schematic
 apiVersion: tuppr.home-operations.com/v1alpha1
 kind: TalosUpgrade
 metadata:

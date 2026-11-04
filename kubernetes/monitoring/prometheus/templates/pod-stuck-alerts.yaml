@@ -1,5 +1,4 @@
-# A pod that waits in ContainerCreating for ten minutes: usually a volume that cannot mount. The rules of the chart only
-# fire after 15 minutes to an hour.
+# Usually a volume that cannot mount; the chart's rules fire much later
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:

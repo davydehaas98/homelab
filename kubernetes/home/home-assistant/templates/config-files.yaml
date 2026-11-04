@@ -1,7 +1,4 @@
-# The configuration in config/, one ConfigMap per folder of /config, subfolders included. The sidecar writes each file
-# where the annotation says (see values.yaml), and Home Assistant picks a changed file up when YAML is reloaded
-# (Developer tools > YAML), without a restart of the pod. A file that is removed from git stays on the volume until it is
-# deleted there.
+# One ConfigMap per folder. A file removed from git stays on the volume until deleted there.
 {{- $folders := dict }}
 {{- range $path, $_ := .Files.Glob "config/**.yaml" }}
 {{- $_ := set $folders (dir $path) true }}

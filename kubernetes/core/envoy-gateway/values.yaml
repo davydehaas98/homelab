@@ -14,11 +14,11 @@ gateway-helm:
       logging:
         level:
           default: info
-      # Backend resources for upstreams outside the cluster (templates/plex.yaml)
+      # For templates/plex.yaml
       extensionApis:
         enableBackend: true
 
-# Names under davydehaas.nl that redirect to the same name under davydehaas.dev (templates/nl-redirects.yaml)
+# Redirected to the same name under davydehaas.dev
 nlRedirects:
   - actual
   - adguard

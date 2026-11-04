@@ -1,3 +1,2 @@
-# Registers the app with the ApplicationSet; keys in kubernetes/README.md
 # Off until it is switched on, see README.md
 deploy: false

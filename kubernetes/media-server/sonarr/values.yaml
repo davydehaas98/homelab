@@ -10,7 +10,7 @@ port: 8989
 
 media:
   claimName: media
-  # One mount with only its own downloads and library, so an import moves the file instead of copying it
+  # One mount, so an import moves the file instead of copying it
   mounts:
     - mountPath: /data/series
       subPath: data/series
@@ -23,12 +23,10 @@ resources:
     cpu: 40m
     memory: 1000Mi
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server
 backups:
   claimName: backups
   subPath: sonarr
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   storageClass: zfs-fast
@@ -38,7 +36,6 @@ route:
   enabled: true
   hostnames:
     - sonarr.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - series.davydehaas.dev
   parentRefs:
@@ -48,7 +45,6 @@ route:
 
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
   privateHostname: sonarr.lan.davydehaas.dev

@@ -1,6 +1,4 @@
-# The DSMR smart gateway of the electricity and gas meter: the status of the gateway from MQTT, and the meters that sum
-# the readings of the DSMR Reader integration (added in the UI) per hour, day, week, month, quarter and year. The broker
-# itself is added in the UI (mosquitto in the home namespace).
+# The gateway's status from MQTT, and meters over the DSMR Reader readings
 mqtt:
   sensor:
     - name: "DSMR running firmware version"
@@ -72,7 +70,6 @@ utility_meter:
     source: sensor.dsmr_reading_electricity_returned_2
     cycle: hourly
 
-  # Daily values for electricity, peak and off-peak
   daily_energy_delivered_offpeak:
     unique_id: daily_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1
@@ -91,7 +88,6 @@ utility_meter:
     source: sensor.dsmr_reading_electricity_returned_2
     cycle: daily
 
-  # Calculations per month
   monthly_energy_delivered_offpeak:
     unique_id: monthly_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1

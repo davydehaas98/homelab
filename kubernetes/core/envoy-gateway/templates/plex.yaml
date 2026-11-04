@@ -1,5 +1,4 @@
-# Plex runs on the network of midgard-0 (kubernetes/media-server/plex). Streams are one long response, so no route
-# timeout. A Backend, as Argo CD does not sync EndpointSlices.
+# A Backend, as Argo CD does not sync EndpointSlices; no timeout, as a stream is one long response
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:

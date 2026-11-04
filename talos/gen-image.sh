@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 #
-# Generates an image schematic ID for the node and downloads the image from factory.talos.dev.
+# Downloads the node's image from factory.talos.dev.
 #
 # Usage: sh gen-image.sh -b <board> -n <node-name> -v <talos-version>
 
@@ -21,7 +21,6 @@ echo "
 Generating Talos image.. (node: '${NODE_NAME}', version: '${TALOS_VERSION}')
 "
 
-# Retrieve image schematic ID
 ID=$(sh ${BOARD}/gen-schematic-id.sh "${NODE_NAME}")
 
 case ${BOARD} in
@@ -29,7 +28,6 @@ case ${BOARD} in
     *) IMAGE_TYPE=metal-arm64.raw ;;
 esac
 
-# Retrieve image
 WEBSITE=https://factory.talos.dev/image/${ID}/${TALOS_VERSION}/${IMAGE_TYPE}
 IMAGE=gen/${NODE_NAME}.${IMAGE_TYPE}
 
@@ -44,7 +42,6 @@ echo "
 Decompressing image '${IMAGE}.xz' ..
 "
 
-# Decompress .xz file
 xz --decompress --force --verbose ${IMAGE}.xz
 
 echo "

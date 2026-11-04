@@ -79,9 +79,7 @@ resource "radarr_notification_discord" "discord" {
   web_hook_url                     = var.radarr_discord_web_hook_url
 }
 
-# Minimum sizes in MB per minute against fake and mislabelled releases. The smallest real encodes in the library are
-# about 7.5 at 720p, 8.6 at 1080p and 43 at 2160p. A maximum of 1000 is no limit in practice; the provider cannot
-# leave it empty.
+# MB per minute against fake releases; the provider cannot leave the maximum empty
 locals {
   radarr_quality_definitions = {
     "HDTV-720p"    = { id = 15, min_size = 5, preferred_size = 95, max_size = 100 }

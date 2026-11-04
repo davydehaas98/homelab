@@ -1,4 +1,3 @@
-# Widgets use the address of an app in the cluster, or its public one
 - Media:
     - Bazarr:
         icon: bazarr.png
@@ -243,7 +242,7 @@
         siteMonitor: http://omni-tools.omni-tools.svc.cluster.local:8080
 
 - Games:
-    # No widget: GameDig gets no answer from a server that is not in Factorio's public list
+    # No widget: GameDig gets no answer from an unlisted server
     - Factorio:
         icon: mdi-factory
         description: Game server

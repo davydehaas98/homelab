@@ -8,10 +8,6 @@ resource "cloudflare_dns_record" "wireguard" {
   proxied = false
 }
 
-# Prevent email spoofing
-
-# Sender Policy Framework (SPF)
-# https://en.wikipedia.org/wiki/Sender_Policy_Framework
 resource "cloudflare_dns_record" "spf1" {
   name    = "davydehaas.dev"
   ttl     = 1
@@ -22,8 +18,6 @@ resource "cloudflare_dns_record" "spf1" {
   content = "\"v=spf1 -all\""
 }
 
-# Domain-based Message Authentication, Reporting and Conformance (DMARC)
-# https://en.wikipedia.org/wiki/DMARC
 resource "cloudflare_dns_record" "dmarc" {
   name    = "_dmarc"
   ttl     = 1
@@ -34,8 +28,6 @@ resource "cloudflare_dns_record" "dmarc" {
   content = "\"v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s;\""
 }
 
-# DomainKeys Identified Mail (DKIM)
-# https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail
 resource "cloudflare_dns_record" "dkim1" {
   name    = "*._domainkey"
   ttl     = 1
@@ -47,7 +39,6 @@ resource "cloudflare_dns_record" "dkim1" {
 }
 
 locals {
-  # HTTPRoute hostnames.
   kubernetes_apps = [
     "actual",
     "adguard",
@@ -84,7 +75,7 @@ locals {
     "zigbee",
   ]
 
-  # HTTPRoute hostnames on the private gateway, only reachable from the home network.
+  # Private gateway, only on the home network
   kubernetes_private_apps = [
     "grafana.mcp",
     "lidarr.lan",
@@ -96,7 +87,7 @@ locals {
     "tracearr.lan",
   ]
 
-  # Their `route.aliases`, which redirect to the main name.
+  # `route.aliases`
   kubernetes_aliases = [
     "adguardhome",
     "authentik",
@@ -116,13 +107,11 @@ locals {
     "usenet",
   ]
 
-  # Game servers, on their default ports.
   game_servers = [
     "factorio",
   ]
 
-  # Minecraft servers and their public ports. Off the default port 25565 a server also gets an SRV record, so
-  # players connect without typing the port.
+  # Off port 25565 a server also gets an SRV record
   minecraft_servers = {
     minecraft  = 25565
     ftb        = 25566
@@ -131,7 +120,7 @@ locals {
   }
 }
 
-# Not proxied: the UniFi gateway forwards the traffic to the Kubernetes gateway.
+# Not proxied: the UniFi gateway forwards to the Kubernetes gateway
 resource "cloudflare_dns_record" "kubernetes_app" {
   for_each = toset(concat(local.kubernetes_apps, local.kubernetes_aliases))
 
@@ -145,8 +134,7 @@ resource "cloudflare_dns_record" "kubernetes_app" {
   proxied = false
 }
 
-# A private address, which only resolves to something on the home network: the UniFi gateway forwards nothing to it
-# (kubernetes/core/envoy-gateway/templates/gateway-private.yaml).
+# A private address, not forwarded by the UniFi gateway
 resource "cloudflare_dns_record" "kubernetes_private_app" {
   for_each = toset(local.kubernetes_private_apps)
 
@@ -160,9 +148,7 @@ resource "cloudflare_dns_record" "kubernetes_private_app" {
   proxied = false
 }
 
-# Any other name also reaches the Kubernetes gateway, which answers with its 404 page
-# (kubernetes/core/envoy-gateway/templates/not-found.yaml) instead of the browser showing a DNS error. The records
-# above take precedence.
+# Other names get the gateway's 404 page instead of a DNS error
 resource "cloudflare_dns_record" "wildcard" {
   name    = "*"
   ttl     = 1

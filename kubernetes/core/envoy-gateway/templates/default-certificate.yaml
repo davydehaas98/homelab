@@ -20,8 +20,7 @@ spec:
     - digital signature
     - key encipherment
 ---
-# A certificate of its own for the apex: Envoy Gateway only offers HTTP/2 when the certificates of the listeners do not
-# overlap, as a browser would reuse a connection for a name it shares a certificate with and get a 404 from this listener
+# Its own certificate: Envoy only offers HTTP/2 when listener certificates do not overlap
 kind: Certificate
 apiVersion: cert-manager.io/v1
 metadata:
@@ -43,7 +42,7 @@ spec:
     - digital signature
     - key encipherment
 ---
-# The names on the private gateway, of their own for the same reason
+# Its own for the same reason
 kind: Certificate
 apiVersion: cert-manager.io/v1
 metadata:

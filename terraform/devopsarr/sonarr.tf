@@ -95,8 +95,7 @@ resource "sonarr_metadata" "plex" {
   tags            = []
 }
 
-# Minimum sizes in MB per minute against fake and mislabelled releases, kept low as small HEVC encodes of series go
-# down to about 4 at 1080p. A maximum of 1000 is no limit in practice; the provider cannot leave it empty.
+# MB per minute against fake releases, low for small HEVC encodes
 locals {
   sonarr_quality_definitions = {
     "HDTV-720p"    = { id = 7, min_size = 3, preferred_size = 95, max_size = 125 }

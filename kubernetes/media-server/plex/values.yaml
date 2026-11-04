@@ -1,5 +1,4 @@
-# On the network of midgard-0 (192.168.1.44), which the port forward of 32400, the route of
-# kubernetes/core/envoy-gateway/templates/plex.yaml and Tautulli use.
+# On the host network of midgard-0, for the port forward and Tautulli
 image:
   repository: ghcr.io/linuxserver/plex
   tag: 1.43.5
@@ -11,7 +10,6 @@ securityContext: {}
 port: 32400
 hostNetwork: true
 
-# Answers without a login
 probe:
   httpGet:
     path: /identity
@@ -24,17 +22,16 @@ resources:
     cpu: 100m
     memory: 1Gi
 
-# Hardware transcoding on the UHD 630
 gpu:
   deviceClassName: gpu.intel.com
 
-# A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), with what cannot be rebuilt: the databases and settings
+# Only what cannot be rebuilt: the databases and settings
 persistence:
   size: 100Gi
   storageClass: zfs-fast
   volumeName: zfs-plex-config
 
-# Previews, artwork and cache, which Plex can rebuild, on a volume that is not backed up (templates/cache.yaml)
+# Previews, artwork and cache, not backed up
 extraClaims:
   - name: plex-cache
     mounts:
@@ -66,6 +63,5 @@ emptyDirs:
     mountPath: /transcode
     sizeLimit: 20Gi
 
-# Behind kubernetes/core/envoy-gateway/templates/plex.yaml, which reaches the node's port
 route:
   enabled: false

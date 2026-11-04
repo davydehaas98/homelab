@@ -1,5 +1,3 @@
-# Each volume is a dataset under the pool's `k8s` dataset, with the pool's compression and options. `zfs-fast` is the
-# default StorageClass.
 {{- range $name, $pool := dict "zfs-fast" "fast" "zfs-tank" "tank" }}
 ---
 apiVersion: storage.k8s.io/v1

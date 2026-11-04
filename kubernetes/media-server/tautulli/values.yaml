@@ -1,4 +1,3 @@
-# Plex monitoring. The address of Plex is set in the app; the logs of Plex are not mounted.
 image:
   repository: ghcr.io/linuxserver/tautulli
   tag: 2.18.2
@@ -19,7 +18,6 @@ resources:
     cpu: 20m
     memory: 200Mi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 10Gi
   storageClass: zfs-fast
@@ -34,10 +32,8 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `tautulli`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
   privateHostname: tautulli.lan.davydehaas.dev

@@ -18,8 +18,7 @@ kyverno:
       enabled: true
       backgroundScanWorkers: 2
       backgroundScanInterval: 1h
-      # The scan keeps to config.resourceFilters, whose defaults skip ReplicaSets: an old revision scaled to 0 keeps its
-      # old pod template, so it would fail long after the fix. The pods and their Deployments are still checked.
+      # The defaults skip ReplicaSets, whose old revisions would fail long after a fix
       skipResourceFilters: false
     configMapCaching:
       enabled: true
@@ -39,8 +38,7 @@ kyverno:
     clusterAdmissionReports:
       enabled: true
 
-  # Three replicas on different nodes: while the admission controller is down, the webhooks fail. The budget keeps
-  # two up during a node drain.
+  # The webhooks fail while the admission controller is down; two stay up in a drain
   admissionController:
     replicas: 3
 
@@ -64,7 +62,7 @@ kyverno:
 
     replicas: 1
 
-    # Creates the VerticalPodAutoscalers of templates/generate-vpa-policy.yaml
+    # For templates/generate-vpa-policy.yaml
     rbac:
       clusterRole:
         extraResources:
@@ -124,11 +122,10 @@ kyverno-policies:
   podSecurityStandard: restricted
   podSecuritySeverity: low
   validationFailureAction: Audit
-  # The policies only audit, so a pod is admitted when Kyverno does not answer
+  # The policies only audit, so admit when Kyverno does not answer
   failurePolicy: Ignore
 
-  # Infrastructure that needs the host (paths, network, namespaces) or root: node agents, the CNI, the storage driver.
-  # They cannot meet the standard, so leave them out of the reports and let the rest show what can be fixed.
+  # Infrastructure that needs the host or root and cannot meet the standard
   vpolExclude:
     excludeNamespaces:
       - fluent-bit
@@ -139,14 +136,8 @@ kyverno-policies:
       - prometheus-node-exporter
       - zfs-localpv
 
-  # These images start their init as root and drop to another user: linuxserver (s6, PUID/PGID, fails without SETUID,
-  # SETGID and CHOWN, tested with another runAsUser), Home Assistant (s6), Dispatcharr (entrypoint with su, and
-  # Postgres, Redis and nginx in one container) and Nextcloud (apache drops to www-data). A per-policy entry replaces
-  # the defaults above, so they are repeated.
-  # Home Assistant runs on the host network (values.yaml of the app), which these two policies forbid; Kubernetes also
-  # sets a host port equal to each container port then. Its config sidecars run as root to write the config of the
-  # root Home Assistant.
-  # The Velero node agent reads the volumes of other pods from /var/lib/kubelet on the host, as root.
+  # Images that start as root and drop to another user (linuxserver, Home Assistant, Dispatcharr, Nextcloud), Home
+  # Assistant on the host network, and the Velero node agent. An entry replaces the defaults, so they are repeated.
   vpolExcludeByPolicy:
     disallow-host-path: &excludeNodeAgent
       excludeNamespaces:

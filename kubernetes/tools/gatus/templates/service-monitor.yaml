@@ -1,4 +1,3 @@
-# Gatus' own results (`gatus_results_endpoint_success` and friends), enabled by `metrics: true` in config/config.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

@@ -1,13 +1,10 @@
-# Vanilla Minecraft, to test how a game server runs on an RK1. Without RCON, and without autopause, which needs extra
-# privileges. Judge the speed by `kubectl -n minecraft logs statefulset/minecraft | grep "Can't keep up"` and
-# `kubectl top pod`.
+# To test a game server on an RK1. No autopause, which needs extra privileges.
 image:
   repository: docker.io/itzg/minecraft-server
   tag: 2026.10.1-java25
 
 port: 25565
 
-# The image runs as this user when it is not started as root
 podSecurityContext:
   fsGroup: 1000
   runAsUser: 1000
@@ -38,8 +35,7 @@ env:
   WHITELIST: Capta1nCreeper,Draakjeiscool
   ENFORCE_WHITELIST: "TRUE"
 
-# The server port is TCP and the container starts slowly (it downloads the server and makes the world), so the probe
-# checks the port and the startup probe of the library allows 15 minutes
+# The server port is TCP
 probe:
   tcpSocket:
     port: 25565
@@ -51,14 +47,12 @@ resources:
     cpu: 450m
     memory: 1.5Gi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   mountPath: /data
   storageClass: zfs-fast
   volumeName: zfs-minecraft-config
 
-# Reachable on the LAN at this address, outside the HTTP gateway
 service:
   type: LoadBalancer
   annotations:

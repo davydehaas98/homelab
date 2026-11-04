@@ -1,5 +1,4 @@
-# Ships the container logs to Loki, replacing promtail (end-of-life). Talos service logs need a logging
-# destination in the machine config (UDP) and an input here, they are not set up.
+# Talos service logs are not shipped
 fluent-bit:
   rbac:
     create: true
@@ -32,7 +31,6 @@ fluent-bit:
       cpu: 100m
       memory: 60Mi
 
-  # Do not ship the logs of this agent itself
   podAnnotations:
     fluentbit.io/exclude: "true"
 
@@ -88,7 +86,7 @@ fluent-bit:
         Host loki-gateway.loki.svc.cluster.local
         Port 80
         Labels job=kubernetes,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],stream=$stream,node=${NODE_NAME}
-        # Send only the log text, the pod metadata is in the labels
+        # The pod metadata is in the labels
         Remove_Keys kubernetes,stream,logtag
         Drop_Single_Key raw
   # yamllint enable rule:line-length

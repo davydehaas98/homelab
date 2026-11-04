@@ -47,7 +47,6 @@ cilium:
 
   rollOutCiliumPods: true
 
-  # Requests from the VPA recommendations (`kubectl -n kube-system get vpa`), rounded up
   operator:
     # Two, so a drain doesn't leave new pods waiting for an IP
     replicas: 2
@@ -73,7 +72,6 @@ cilium:
         cpu: 10m
         memory: 70Mi
 
-  # The init containers run briefly, then the agent starts
   initResources:
     limits:
       memory: 550Mi
@@ -113,8 +111,7 @@ cilium:
         method: cronJob
 
     metrics:
-      # The metrics and labels the Hubble dashboards query. HTTP metrics only cover traffic that goes
-      # through Cilium's L7 proxy.
+      # HTTP metrics only cover traffic through the L7 proxy
       enabled:
         - dns:query;ignoreAAAA;labelsContext=source_namespace,destination_namespace
         - drop:labelsContext=source_namespace,destination_namespace

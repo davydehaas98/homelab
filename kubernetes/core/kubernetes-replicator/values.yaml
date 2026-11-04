@@ -1,5 +1,4 @@
-# Copies Secrets and ConfigMaps to other namespaces, by annotation (replicator.v1.mittwald.de/replicate-to). A
-# SealedSecret cannot be copied, as it is bound to its namespace; annotate the Secret it produces instead.
+# A SealedSecret cannot be copied; annotate the Secret it makes
 kubernetes-replicator:
   podSecurityContext:
     fsGroup: 2000

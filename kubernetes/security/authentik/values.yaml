@@ -1,6 +1,4 @@
-# OIDC applications created by `templates/blueprints.yaml`. The slug must match the issuer URL in the
-# app's SecurityPolicy. Only `authentik Admins` may sign in unless `openAccess: true`. Credentials: `<SLUG>_CLIENT_ID` /
-# `<SLUG>_CLIENT_SECRET` in the SealedSecret `templates/oidc-client-<slug>.yaml`, listed in `envFrom` below.
+# Clients of templates/blueprints.yaml, with credentials in templates/oidc-client-<slug>.yaml listed in envFrom
 oidcClients:
   - name: Actual Budget
     slug: actual-budget
@@ -25,7 +23,7 @@ oidcClients:
     redirectURL: https://gatus.davydehaas.dev/oauth2/callback
   - name: Grafana
     slug: grafana
-    # Grafana maps roles from group claims, so every Authentik user may sign in
+    # Grafana maps roles from group claims
     openAccess: true
     redirectURL: https://grafana.davydehaas.dev/login/generic_oauth
   - name: Headlamp
@@ -54,7 +52,7 @@ oidcClients:
     redirectURL: https://memos.davydehaas.dev/oauth2/callback
   - name: Nextcloud
     slug: nextcloud
-    # Native OIDC through the user_oidc app of Nextcloud, next to its local login
+    # Through Nextcloud's user_oidc app
     redirectURL: https://nextcloud.davydehaas.dev/apps/user_oidc/code
   - name: Omni Tools
     slug: omni-tools
@@ -92,7 +90,7 @@ oidcClients:
 
 authentik:
   global:
-    # The database of templates/database.yaml, with the password from the Secret that CloudNativePG creates
+    # The database of templates/database.yaml
     env:
       - name: AUTHENTIK_POSTGRESQL__HOST
         value: authentik-database-rw
@@ -105,8 +103,7 @@ authentik:
           secretKeyRef:
             name: authentik-database-app
             key: password
-    # Client IDs and secrets read by the blueprints, one Secret per entry in `oidcClients`. The chart does not template
-    # this list, so add a line per client; `templates/oidc-clients-check.yaml` fails the render if one is missing.
+    # The chart does not template this list; templates/oidc-clients-check.yaml checks it
     envFrom:
       - secretRef:
           name: authentik-oidc-actual-budget
@@ -173,13 +170,12 @@ authentik:
     existingSecret:
       secretName: authentik-credentials
 
-  # The login of most apps
   server:
     replicas: 2
     pdb:
       enabled: true
       minAvailable: 1
-    # The image already runs as this user, this lets the restricted Pod Security Standard see it
+    # The image's own user, so the restricted standard sees it
     securityContext:
       runAsNonRoot: true
       runAsUser: 1000
@@ -200,7 +196,7 @@ authentik:
 
   worker:
     replicas: 1
-    # The image already runs as this user, this lets the restricted Pod Security Standard see it
+    # The image's own user, so the restricted standard sees it
     securityContext:
       runAsNonRoot: true
       runAsUser: 1000

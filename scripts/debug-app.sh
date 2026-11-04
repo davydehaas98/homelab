@@ -1,9 +1,6 @@
 #!/bin/sh
 #
-# Read-only triage of an Argo CD app: its Application (sync, health, conditions), the SealedSecrets, pods and warning
-# events in its namespace, and the status of its routes. The app is the name of the Application, the directory name
-# under kubernetes/<group>/. Nothing is changed. Needs `kubectl` and `jq` with access to the cluster. Run it in the dev
-# container (.devcontainer/README.md).
+# Read-only triage of an Argo CD app: its Application, SealedSecrets, pods, events and routes.
 #
 # Usage: sh scripts/debug-app.sh -a <app>
 

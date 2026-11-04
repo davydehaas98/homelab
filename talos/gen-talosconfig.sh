@@ -1,13 +1,10 @@
 #!/bin/sh
 set -e
 #
-# Generates cluster secrets (once) and the talosconfig, merges it into your
-# local talosctl config (~/.talos/config, kept outside the repo), and points the
-# endpoint at a real node until bootstrap brings up the control plane VIP.
+# Generates the cluster secrets (once) and the talosconfig, and merges it into ~/.talos/config.
 #
 # Usage: sh gen-talosconfig.sh -c <cluster-name> -n <node-name>
 
-# The talosconfig holds admin credentials, keep it private to your user
 umask 077
 
 cd "$(dirname "$0")"
@@ -21,7 +18,6 @@ do
     esac
 done
 
-# patches/cluster.yaml is the single source of the control plane endpoint (the VIP)
 CLUSTER_ENDPOINT=$(sed -n 's/^endpoint: //p' patches/cluster.yaml)
 
 if [ ! -f gen/secrets.yaml ]; then
@@ -44,8 +40,7 @@ echo "Generated talosconfig at gen/talosconfig"
 
 talosctl config merge gen/talosconfig
 
-# The endpoint is the control plane VIP, which only comes alive after bootstrap
-# succeeds. Point the endpoint at a real control plane node until then.
+# The VIP only comes alive after bootstrap
 talosctl config endpoint ${NODE_NAME}
 
 echo "Merged talosconfig, endpoint set to '${NODE_NAME}'"

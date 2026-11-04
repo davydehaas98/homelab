@@ -1,5 +1,3 @@
-# Flight log behind the gateway login. The database (templates/database.yaml) is CloudNativePG, so the app keeps no
-# state of its own and updates without a gap.
 image:
   repository: docker.io/johly/airtrail
   tag: v3.14.0
@@ -8,7 +6,7 @@ port: 3000
 
 kind: Deployment
 
-# The image runs as root but has a node user, and the app writes nothing to disk (tested)
+# The app writes nothing to disk
 podSecurityContext:
   runAsUser: 1000
   runAsGroup: 1000
@@ -19,9 +17,8 @@ securityContext:
       - ALL
 
 env:
-  # The public URL, which SvelteKit checks against form posts behind a proxy
+  # SvelteKit checks it against form posts
   ORIGIN: https://airtrail.davydehaas.dev
-  # The connection string CloudNativePG puts in the Secret of the database
   DB_URL:
     secretKeyRef:
       name: airtrail-database-app
@@ -43,6 +40,5 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `airtrail`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true

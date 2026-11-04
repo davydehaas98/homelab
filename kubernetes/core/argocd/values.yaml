@@ -11,11 +11,11 @@ argo-cd:
       url: https://argocd.davydehaas.dev
       timeout.reconciliation: 60s
       timeout.reconciliation.jitter: 10s
-      # Only the single sign-on below. If Authentik is down, `argocd --core` with the kubeconfig still works.
+      # If Authentik is down, `argocd --core` still works
       admin.enabled: "false"
-      # For the token of the Homepage widget, which can only read
+      # For the Homepage widget
       accounts.homepage: apiKey
-      # Single sign-on with Authentik. Client ID and secret live in the `argocd-authentik-oidc` Secret
+      # Credentials in the Secret `argocd-authentik-oidc`
       oidc.config: |
         name: Authentik
         issuer: https://auth.davydehaas.dev/application/o/argocd/
@@ -106,7 +106,6 @@ argo-cd:
         cpu: 30m
         memory: 150Mi
 
-  # Renders the manifests of every sync, so while it is down nothing syncs
   repoServer:
     replicas: 2
     pdb:
@@ -132,11 +131,9 @@ argo-cd:
         cpu: 40m
         memory: 70Mi
 
-  # Posts to Discord when an app fails to sync or turns unhealthy. The webhook is in
-  # templates/notifications-secret.yaml.
+  # Discord messages for failed syncs and unhealthy apps
   notifications:
     enabled: true
-    # The webhook SealedSecret creates it, see templates/notifications-secret.yaml
     secret:
       create: false
     resources:
@@ -156,7 +153,6 @@ argo-cd:
         headers:
           - name: Content-Type
             value: application/json
-    # The Discord message bodies are one JSON line each
     # yamllint disable rule:line-length
     templates:
       template.app-sync-failed: |

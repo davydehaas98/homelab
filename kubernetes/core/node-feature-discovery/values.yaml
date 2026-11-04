@@ -4,7 +4,7 @@ node-feature-discovery:
   master:
     replicaCount: 1
 
-    # The chart defaults are made for big clusters (limit 4Gi); here it uses ~40Mi, the VPA upper bound is ~100Mi
+    # The chart defaults are for big clusters
     resources:
       limits:
         memory: 150Mi
@@ -16,7 +16,6 @@ node-feature-discovery:
     enable: true
     replicaCount: 1
 
-    # The chart default is a 1Gi limit, it uses ~30Mi
     resources:
       limits:
         memory: 60Mi
@@ -24,9 +23,8 @@ node-feature-discovery:
         cpu: 10m
         memory: 40Mi
 
-  # The chart default is a 512Mi limit, it uses up to ~55Mi
   worker:
-    # Also on midgard-0, whose GPU label the GPU driver needs
+    # Also on midgard-0, for its GPU label
     tolerations:
       - key: davydehaas.dev/dedicated
         operator: Equal

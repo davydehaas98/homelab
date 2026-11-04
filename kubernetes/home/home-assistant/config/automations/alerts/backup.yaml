@@ -1,4 +1,3 @@
-# The automatic backup of Home Assistant, which runs each night.
 - id: "1793700000003"
   alias: Backup failed
   description: ""
@@ -14,7 +13,7 @@
         title: Backup failed
         message: "{{ trigger.to_state.attributes.reason | default('The automatic backup of Home Assistant failed') }}"
   mode: single
-# The automatic backup runs each night.
+# The backup runs nightly
 - id: "1793700000004"
   alias: Backup late
   description: ""

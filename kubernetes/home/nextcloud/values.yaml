@@ -1,7 +1,7 @@
 nextcloud:
   replicaCount: 1
 
-  # The tag is rebuilt for PHP fixes, so a node must not reuse a cached image
+  # The tag is rebuilt for PHP fixes
   image:
     pullPolicy: Always
 
@@ -15,7 +15,7 @@ nextcloud:
   nextcloud:
     host: nextcloud.davydehaas.dev
 
-    # The apache image runs as root, so only seccomp and no privilege escalation
+    # The apache image runs as root
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
@@ -31,7 +31,7 @@ nextcloud:
     mail:
       enabled: false
 
-    # The Envoy proxies are in the pod network, and Nextcloud only trusts forwarded addresses from them
+    # Trust forwarded addresses from the Envoy proxies
     extraEnv:
       - name: TRUSTED_PROXIES
         value: 10.244.0.0/16
@@ -46,8 +46,7 @@ nextcloud:
             name: nextcloud-oidc-credentials
             key: client-secret
 
-    # Sign in with Authentik (client `nextcloud`) through the user_oidc app, next to the local login. The credentials
-    # are in templates/oidc-credentials.yaml. `occ user_oidc:provider` creates or updates, so it can run on every start.
+    # OIDC through the user_oidc app; `occ user_oidc:provider` is safe to rerun
     hooks:
       before-starting: |
         php /var/www/html/occ app:install user_oidc || true
@@ -61,7 +60,7 @@ nextcloud:
           --mapping-display-name=name \
           --mapping-email=email
 
-  # The database and Valkey are in templates/, as the chart's own use images that are no longer public
+  # In templates/, as the chart's images are no longer public
   internalDatabase:
     enabled: false
 
@@ -81,7 +80,6 @@ nextcloud:
     host: nextcloud-valkey
     port: "6379"
 
-  # Runs `cron.sh` in a sidecar
   cronjob:
     enabled: true
     sidecar:
@@ -91,12 +89,10 @@ nextcloud:
         requests:
           cpu: 10m
           memory: 250Mi
-      # Root like the main container, so the same: no privilege escalation
       securityContext:
         allowPrivilegeEscalation: false
 
-  # The code and config (templates/html-volume.yaml), and apart from it the files of the users on `tank`: both ZFS
-  # volumes on midgard-0 (kubernetes/storage/zfs-localpv), whose claim names they are
+  # The code (templates/html-volume.yaml) and the users' files on `tank`
   persistence:
     enabled: true
     existingClaim: nextcloud-html
@@ -121,8 +117,7 @@ nextcloud:
       cpu: 30m
       memory: 200Mi
 
-  # The first start copies Nextcloud to the volume, which takes longer than the liveness probe allows; it may kill the
-  # container only after this probe has passed
+  # The first start copies Nextcloud to the volume
   startupProbe:
     enabled: true
     initialDelaySeconds: 30

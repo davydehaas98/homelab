@@ -10,7 +10,6 @@ grafana:
         memory: 150Mi
     dashboards:
       enabled: true
-      # Sort dashboards into the folder named by their `grafana_folder` annotation
       folderAnnotation: grafana_folder
       provider:
         foldersFromFilesStructure: true
@@ -43,7 +42,7 @@ grafana:
             handleGrafanaManagedAlerts: false
             implementation: prometheus
 
-  # The dashboards come from this namespace only, so no cluster role that reads Secrets everywhere
+  # Dashboards only come from this namespace
   rbac:
     namespaced: true
 
@@ -75,11 +74,9 @@ grafana:
       token_url: "https://auth.davydehaas.dev/application/o/token/"
       api_url: "https://auth.davydehaas.dev/application/o/userinfo/"
       signout_redirect_url: "https://auth.davydehaas.dev/application/o/grafana/end-session/"
-      # Authentik group names: members of `authentik Admins` get GrafanaAdmin, `grafana-editors` get Editor
       # yamllint disable-line rule:line-length
       role_attribute_path: contains(groups[*], 'authentik Admins') && 'GrafanaAdmin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
-      # Only sign in through Authentik
       disable_login_form: true
       disable_signout_menu: false
     paths:
@@ -107,12 +104,10 @@ grafana:
       cpu: 40m
       memory: 850Mi
 
-  # Its init container runs as root to chown the data, which the restricted standard forbids. The data is already
-  # owned by the grafana user (472).
+  # It runs as root, and the data is already owned by grafana
   initChownData:
     enabled: false
 
-  # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
   persistence:
     type: StatefulSet
     enabled: true

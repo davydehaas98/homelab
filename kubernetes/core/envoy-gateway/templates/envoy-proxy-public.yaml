@@ -30,8 +30,7 @@ spec:
             requests:
               cpu: 30m
               memory: 90Mi
-      # The entry point of all traffic: a drain evicts one replica at a time. maxUnavailable and not minAvailable, so
-      # a replica that cannot start never blocks a drain.
+      # maxUnavailable, so a replica that cannot start never blocks a drain
       envoyPDB:
         maxUnavailable: 1
       envoyService:

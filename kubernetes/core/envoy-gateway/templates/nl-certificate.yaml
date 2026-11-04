@@ -19,7 +19,7 @@ spec:
     - digital signature
     - key encipherment
 ---
-# A certificate of its own for the apex, for the reason in default-certificate.yaml
+# Its own, see default-certificate.yaml
 kind: Certificate
 apiVersion: cert-manager.io/v1
 metadata:

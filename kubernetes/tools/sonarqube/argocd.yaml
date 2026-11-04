@@ -1,2 +1,1 @@
-# Registers the app with the ApplicationSet; keys in kubernetes/README.md
 deploy: false

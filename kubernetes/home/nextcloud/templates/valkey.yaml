@@ -1,4 +1,4 @@
-# Cache and file locking for Nextcloud. Nothing in it needs to survive a restart.
+# Nothing in it needs to survive a restart
 apiVersion: apps/v1
 kind: Deployment
 metadata:

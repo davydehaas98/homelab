@@ -3,6 +3,5 @@ kind: Namespace
 metadata:
   name: mosquitto
   labels:
-    # The broker also listens on a port of its node for the meter gateways.
-    # Talos enforces baseline by default, which does not allow it.
+    # For the host port of the meter gateways
     pod-security.kubernetes.io/enforce: privileged

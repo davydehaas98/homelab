@@ -8,15 +8,14 @@ securityContext: {}
 
 port: 8080
 
-# SABnzbd rejects requests whose Host header is not in its `host_whitelist`, also from kubelet probes by
-# name, so probe the port only. Add sabnzbd.davydehaas.dev to host_whitelist in Config > Special.
+# SABnzbd rejects Host headers not in `host_whitelist`, also from probes
 probe:
   tcpSocket:
     port: http
 
 media:
   claimName: media
-  # One mount, so a finished download moves to the folder of its category instead of being copied
+  # One mount, so a finished download is moved, not copied
   mounts:
     - mountPath: /data
       subPath: data
@@ -29,14 +28,12 @@ resources:
     cpu: 10m
     memory: 2Gi
 
-# The backups of the app are in the `backups` claim on `tank`, see kubernetes/media-server/media-server. Set the
-# Backup Folder in SABnzbd (Config > Folders) to /backup.
+# Set as the Backup Folder in SABnzbd
 backups:
   claimName: backups
   subPath: sabnzbd
   mountPath: /backup
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 1Gi
   storageClass: zfs-fast
@@ -46,7 +43,6 @@ route:
   enabled: true
   hostnames:
     - sabnzbd.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - usenet.davydehaas.dev
   parentRefs:
@@ -54,10 +50,8 @@ route:
       namespace: envoy-gateway
       sectionName: web-https
 
-# Sign in with Authentik (client `sabnzbd`), the credentials are in templates/oidc-credentials.yaml
 oidc:
   enabled: true
-  # The API is on the private gateway only, protected by the API key of the app
   bypassPaths:
     - /api
   privateHostname: sabnzbd.lan.davydehaas.dev

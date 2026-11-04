@@ -1,25 +1,13 @@
 #!/bin/sh
 set -e
 #
-# Uploads the cluster's client configs and root secrets to 1Password as
-# Document items. Creates the items on the first run and replaces their contents
-# afterwards (for example after the client certificates are renewed). Nothing is
-# printed or written to disk. Needs the 1Password desktop app integration for
-# `op`.
-#
-#   <cluster-name> talosconfig          your local talosconfig
-#   <cluster-name> kubeconfig           this cluster's kubeconfig context
-#   <cluster-name> talos secrets        gen/secrets.yaml, the root of every machine config
-#   <cluster-name> sealed-secrets keys  the controller's private keys, needed to
-#                                       decrypt the SealedSecrets in this repo
+# Uploads the talosconfig, kubeconfig, Talos secrets and sealed-secrets keys to 1Password, without printing them.
 #
 # Usage: sh backup-configs.sh -c <cluster-name>
 #
-# Download the client configs on Windows (PowerShell):
-#   op document get "<cluster-name> talosconfig" --out-file "$HOME\.talos\config"
-#   op document get "<cluster-name> kubeconfig" --out-file "$HOME\.kube\config"
-#
-# Restore the secrets (from inside talos/):
+# Restore (from talos/):
+#   op document get "<cluster-name> talosconfig" --out-file "$HOME/.talos/config"
+#   op document get "<cluster-name> kubeconfig" --out-file "$HOME/.kube/config"
 #   op document get "<cluster-name> talos secrets" --out-file gen/secrets.yaml
 #   op document get "<cluster-name> sealed-secrets keys" | kubectl apply -f -
 #   kubectl -n kube-system rollout restart deployment sealed-secrets-controller
@@ -34,10 +22,9 @@ do
     esac
 done
 
-# Reads the file contents from stdin
 upload() {
     TITLE="${CLUSTER_NAME} $1"
-    # </dev/null stops `op item get` from consuming the piped contents
+    # Keeps `op item get` from consuming the piped contents
     if op item get "${TITLE}" < /dev/null > /dev/null 2>&1; then
         op document edit "${TITLE}" - --file-name "$2" > /dev/null
     else
@@ -46,12 +33,11 @@ upload() {
     echo "Uploaded '${TITLE}'"
 }
 
-# Piped rather than redirected, because `op` failed to find stdin with a redirect
+# `op` does not find stdin with a redirect
 cat "${TALOSCONFIG:-$HOME/.talos/config}" | upload talosconfig config
 cat gen/secrets.yaml | upload "talos secrets" secrets.yaml
 
-# Only this cluster's context, with the certificates inlined. Captured first so
-# a kubectl failure stops the script instead of uploading an empty document.
+# Captured first, so a kubectl failure does not upload an empty document
 KUBECONFIG_CONTENT=$(kubectl config view --minify --flatten --context "admin@${CLUSTER_NAME}")
 printf '%s\n' "${KUBECONFIG_CONTENT}" | upload kubeconfig config
 

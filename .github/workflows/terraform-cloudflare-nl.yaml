@@ -57,7 +57,7 @@ jobs:
       - name: Validate
         run: terraform validate
 
-      # Exit code 2 means the plan has changes, which the apply job waits on
+      # Exit code 2 means changes, which the apply job waits on
       - name: Plan
         id: plan
         run: |
@@ -68,14 +68,14 @@ jobs:
           [ "$code" -ne 1 ] || exit 1
           if [ "$code" -eq 2 ]; then echo "changes=true"; else echo "changes=false"; fi >> "$GITHUB_OUTPUT"
 
-  # Plans again instead of reusing the plan file, which would carry the secrets in an artifact.
+  # Plans again, as a plan file would carry the secrets in an artifact
   apply:
     name: Apply
     needs: plan
     if: needs.plan.outputs.changes == 'true' && github.event_name == 'workflow_dispatch' && inputs.apply
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Applies run one at a time; a newer waiting apply replaces an older one, as it plans a newer commit
+    # A newer waiting apply replaces an older one
     concurrency:
       group: terraform-cloudflare-davydehaas-nl
       cancel-in-progress: false

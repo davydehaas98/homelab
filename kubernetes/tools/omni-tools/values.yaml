@@ -1,12 +1,10 @@
-# Static site served by nginx, no state. It runs as uid 101 on port 8080 with its own nginx.conf, as the stock
-# image starts nginx as root on port 80.
+# Its own nginx.conf, as the stock image runs nginx as root on port 80
 image:
   repository: docker.io/iib0011/omni-tools
   tag: 0.7.0
 
 port: 8080
 
-# No volume, so it updates without a gap
 kind: Deployment
 
 podSecurityContext:
@@ -21,7 +19,6 @@ securityContext:
     drop:
       - ALL
 
-# nginx writes its pid and temp files here
 emptyDirs:
   - name: tmp
     mountPath: /tmp

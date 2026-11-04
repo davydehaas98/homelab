@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: node-feature-discovery
   labels:
-    # Host access (hostPath, host network) is needed by this app, Talos enforces baseline by default
+    # Needs host paths and the host network
     pod-security.kubernetes.io/enforce: privileged

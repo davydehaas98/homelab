@@ -1,4 +1,3 @@
-# Air quality and humidity, with thresholds above what the sensors show in normal use.
 - id: "1793700000005"
   alias: Ventilate
   description: ""

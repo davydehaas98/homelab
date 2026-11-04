@@ -1,5 +1,3 @@
-# The sidecar that puts the configuration of Home Assistant on the volume (values.yaml: initContainers) reads the
-# ConfigMaps and Secrets with the label `home-assistant-config` of this namespace through the Kubernetes API.
 apiVersion: v1
 kind: ServiceAccount
 metadata:

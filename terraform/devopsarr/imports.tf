@@ -1,4 +1,4 @@
-# Adopts the settings made in the UI. No-ops while the local state has them, and they adopt them again if it is lost.
+# Adopts the settings made in the UI
 
 import {
   to = sonarr_root_folder.sonarr

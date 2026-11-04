@@ -1,7 +1,6 @@
 seerr-chart:
   fullnameOverride: seerr
 
-  # Runs as the user of the image
   podSecurityContext:
     fsGroup: 1000
   securityContext:
@@ -17,7 +16,6 @@ seerr-chart:
   service:
     port: 5055
 
-  # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), which the claim binds to by name
   tolerations:
     - key: davydehaas.dev/dedicated
       operator: Equal
@@ -37,7 +35,7 @@ seerr-chart:
       cpu: 10m
       memory: 300Mi
 
-  # Requests come from outside, so there is no login at the gateway: Seerr has its own
+  # Seerr has its own login
   route:
     main:
       enabled: true
@@ -49,7 +47,7 @@ seerr-chart:
           sectionName: web-https
       hostnames:
         - seerr.davydehaas.dev
-    # Redirect to the hostname above. The chart adds its own rule after this one, which is never reached
+    # The chart's own rule after this one is never reached
     aliases:
       enabled: true
       annotations:

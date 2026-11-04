@@ -20,8 +20,7 @@ descheduler:
   serviceMonitor:
     enabled: true
 
-  # Small cluster with mostly single-replica apps on a volume: only clean up and fix misplaced pods, no
-  # load based rebalancing
+  # Only clean up and fix misplaced pods, no load-based rebalancing
   deschedulerPolicyAPIVersion: descheduler/v1alpha2
   deschedulerPolicy:
     maxNoOfPodsToEvictPerNode: 2

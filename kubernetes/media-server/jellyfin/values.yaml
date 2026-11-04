@@ -1,20 +1,18 @@
 jellyfin:
-  # No hardware transcoding: video that has to be transcoded runs on the CPU of the node.
+  # No hardware transcoding
   image:
     repository: docker.io/jellyfin/jellyfin
     tag: "12.4"
 
-  # The disk can be mounted by one pod only
   deploymentStrategy:
     type: Recreate
 
-  # Runs as the owner of the media, the default user of the linuxserver.io images
+  # The owner of the media
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 911
     runAsGroup: 911
     fsGroup: 911
-    # The media disk is large: only change its group when the root of the volume differs
     fsGroupChangePolicy: OnRootMismatch
     seccompProfile:
       type: RuntimeDefault
@@ -37,7 +35,6 @@ jellyfin:
       - name: TZ
         value: Europe/Amsterdam
 
-  # The config and the media are on midgard-0
   tolerations:
     - key: davydehaas.dev/dedicated
       operator: Equal
@@ -47,7 +44,6 @@ jellyfin:
   persistence:
     config:
       existingClaim: jellyfin-config
-    # The library is mounted at the paths below, not at /media
     media:
       enabled: false
 
@@ -55,14 +51,12 @@ jellyfin:
     - name: library
       persistentVolumeClaim:
         claimName: media
-    # Set the transcode path of Jellyfin (Dashboard > Playback > Transcoding) to /data/transcode. It lives in memory,
-    # which counts against the memory limit of the pod.
+    # Set as the transcode path in Jellyfin; counts against the memory limit
     - name: transcode
       emptyDir:
         medium: Memory
         sizeLimit: 1Gi
 
-  # The library is read-only
   volumeMounts:
     - name: library
       mountPath: /movies
@@ -79,7 +73,6 @@ jellyfin:
     - name: transcode
       mountPath: /data/transcode
 
-  # Jellyfin has its own login, so no login at the gateway
   httpRoute:
     enabled: true
     annotations:

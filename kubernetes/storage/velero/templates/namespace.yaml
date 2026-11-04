@@ -3,5 +3,4 @@ kind: Namespace
 metadata:
   name: velero
   labels:
-    # The node agent mounts the kubelet pod directory from the host
     pod-security.kubernetes.io/enforce: privileged

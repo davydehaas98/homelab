@@ -1,4 +1,4 @@
-# The leak detection of the water meter gateway. It flaps through unavailable on a reconnect, so only off to on counts.
+# Only off to on: it flaps through unavailable on a reconnect
 - id: "1793700000001"
   alias: Water leak
   description: ""
@@ -20,7 +20,7 @@
               critical: 1
               volume: 1.0
   mode: single
-# Normal use has never kept water flowing for more than 40 minutes on end.
+# Normal use never ran longer than 40 minutes
 - id: "1793700000002"
   alias: Water running
   description: ""

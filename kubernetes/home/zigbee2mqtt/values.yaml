@@ -1,9 +1,6 @@
-# Official chart. It merges the `zigbee2mqtt:` block below over the configuration.yaml on the data volume, so only
-# set what must differ. The network key, devices and groups stay in the volume: a new volume makes Zigbee2MQTT form a
-# new network on the coordinator.
+# Merged over configuration.yaml on the volume, which keeps the network key, devices and groups
 zigbee2mqtt:
   statefulset:
-    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv)
     storage:
       enabled: true
       size: 1Gi
@@ -16,7 +13,7 @@ zigbee2mqtt:
         value: storage
         effect: NoSchedule
 
-    # The MQTT password of the broker's account admin, from templates/zigbee2mqtt-mqtt.yaml
+    # From templates/zigbee2mqtt-mqtt.yaml
     env:
       - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
         valueFrom:
@@ -31,8 +28,7 @@ zigbee2mqtt:
         cpu: 10m
         memory: 200Mi
 
-    # Runs as the image's node user (1000), which owns the data (the files were
-    # chowned once)
+    # The image's node user, which owns the data
     podSecurityContext:
       runAsUser: 1000
       runAsGroup: 1000
@@ -40,7 +36,7 @@ zigbee2mqtt:
       seccompProfile:
         type: RuntimeDefault
 
-    # The chart defaults to privileged with SYS_ADMIN for a USB adapter, not needed for a network coordinator
+    # The chart's privileged default is for a USB adapter
     securityContext:
       privileged: false
       allowPrivilegeEscalation: false
@@ -49,7 +45,7 @@ zigbee2mqtt:
         drop:
           - ALL
 
-  # The yq init container that merges the configuration defaults to root; it only edits files of the same user
+  # Root by default, but it only edits files of this user
   secretesMigratorContainer:
     securityContext:
       runAsUser: 1000
@@ -74,7 +70,7 @@ zigbee2mqtt:
 
   zigbee2mqtt:
     timezone: Europe/Amsterdam
-    # The chart sets the Home Assistant status topic of Zigbee2MQTT 1.x
+    # The chart sets the topic of Zigbee2MQTT 1.x
     homeassistant:
       status_topic: homeassistant/status
     mqtt:
@@ -84,10 +80,9 @@ zigbee2mqtt:
     serial:
       port: tcp://192.168.1.30:6638
       adapter: zstack
-    # The chart replaces the whole `advanced` block of configuration.yaml, so it repeats the network of the coordinator:
-    # without it Zigbee2MQTT refuses to start. The network key is in secret.yaml on the data volume, not in git.
+    # The chart replaces the whole block, and Zigbee2MQTT refuses to start without the network
     advanced:
-      # The maximum of the coordinator; the chart default is 5
+      # The coordinator's maximum
       transmit_power: 20
       channel: 11
       pan_id: 22479

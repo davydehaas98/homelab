@@ -1,4 +1,3 @@
-# The photos and videos, a ZFS volume on `tank` (kubernetes/storage/zfs-localpv)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

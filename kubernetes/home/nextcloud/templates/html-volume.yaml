@@ -1,5 +1,4 @@
-# The code, config, themes and custom apps of Nextcloud: some 30,000 small files, on a ZFS volume on midgard-0 (see
-# kubernetes/storage/zfs-localpv).
+# Code, config, themes and apps: some 30,000 small files
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

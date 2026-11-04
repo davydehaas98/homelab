@@ -1,15 +1,12 @@
-# PostgreSQL with VectorChord for Immich, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which must be
-# deployed first. The extension comes from an image volume. The database is on a ZFS volume on midgard-0 (see
-# kubernetes/storage/zfs-localpv); one instance, as each instance needs a volume of its own.
+# VectorChord comes from an image volume
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: immich-database
 spec:
   instances: 1
-  # The budget of the primary blocks every drain with one instance, so a node upgrade could never finish
+  # With one instance, its budget would block every drain
   enablePDB: false
-  # Backs up to the bucket `cnpg`, see templates/database-backup.yaml
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
@@ -54,7 +51,6 @@ kind: Database
 metadata:
   name: immich-database
 spec:
-  # CloudNativePG creates this database and user, and the Secret `immich-database-app` for them
   name: app
   owner: app
   cluster:

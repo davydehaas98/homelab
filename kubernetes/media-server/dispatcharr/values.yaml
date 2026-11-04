@@ -1,7 +1,4 @@
-# IPTV manager that serves Plex as an HDHomeRun tuner and provides M3U and XMLTV output. The all-in-one image runs
-# PostgreSQL, Redis, nginx, uWSGI and Celery in one container, so its /data volume is a ZFS volume on midgard-0.
-# Left out: GPU devices and a priority boost, which the nodes do not offer. The image needs root to start its services
-# (it drops to user 1000 itself), so the pod runs as root with the default capabilities.
+# All-in-one image that needs root to start its services and drops to 1000 itself
 image:
   repository: docker.io/dispatcharr/dispatcharr
   tag: 0.33.0
@@ -14,7 +11,7 @@ env:
   REDIS_HOST: localhost
   CELERY_BROKER_URL: redis://localhost:6379/0
 
-# The first start sets up the database, which takes a few minutes
+# The first start sets up the database
 probe:
   httpGet:
     path: /
@@ -27,26 +24,23 @@ resources:
     cpu: 200m
     memory: 1.5Gi
 
-# A ZFS volume on midgard-0, see kubernetes/storage/zfs-localpv
 persistence:
   size: 5Gi
   mountPath: /data
   storageClass: zfs-fast
   volumeName: zfs-dispatcharr-config
 
-# Plex reaches the tuner on this address, outside the HTTP gateway
+# Plex reaches the tuner here
 service:
   type: LoadBalancer
   annotations:
     lbipam.cilium.io/ips: 192.168.1.59
 
-# The web UI is behind the gateway login (client `dispatcharr`). Only the paths that players call with the credentials
-# of an account skip it, as the app leaves its other output paths open.
+# Only the player paths, which need an account's credentials, skip the login
 route:
   enabled: true
   hostnames:
     - dispatcharr.davydehaas.dev
-  # Redirects to the hostname above, see kubernetes/_library/app/README.md
   aliases:
     - dvr.davydehaas.dev
   parentRefs:

@@ -1,4 +1,4 @@
-# Cache and job queue of Tracearr. Nothing in it needs to survive a restart.
+# Nothing in it needs to survive a restart
 apiVersion: apps/v1
 kind: Deployment
 metadata:

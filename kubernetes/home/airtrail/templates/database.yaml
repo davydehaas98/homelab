@@ -1,18 +1,14 @@
-# PostgreSQL for AirTrail, run by CloudNativePG (kubernetes/storage/cloudnative-pg), which must be deployed first,
-# and which creates the Secret `airtrail-database-app` for it. The database is on a ZFS volume on midgard-0 (see
-# kubernetes/storage/zfs-localpv); one instance, as each instance needs a volume of its own.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: airtrail-database
   annotations:
-    # While the app is suspended (argocd.yaml), the database pod stops and its volume stays
+    # Hibernates while the app is suspended
     cnpg.io/hibernation: {{ if eq (toString .Values.suspend) "true" }}"on"{{ else }}"off"{{ end }}
 spec:
   instances: 1
-  # The budget of the primary blocks every drain with one instance, so a node upgrade could never finish
+  # With one instance, its budget would block every drain
   enablePDB: false
-  # Backs up to the bucket `cnpg`, see templates/database-backup.yaml
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true

@@ -28,7 +28,7 @@ data:
             - matching_mode: strict
               url: {{ .redirectURL }}
           signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
-          # Set explicitly, so every provider gets the same lifetimes whatever default it was created with
+          # The same lifetimes for every provider
           access_token_validity: hours=1
           refresh_token_validity: days=1
           property_mappings:

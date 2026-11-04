@@ -1,5 +1,4 @@
-# What Headlamp may read. Everyone who passes the Authentik login uses the service account, so this is the limit of the
-# UI: `view` (no Secrets) plus the cluster-scoped objects and metrics that `view` leaves out, and nothing that writes.
+# The limit of the UI: `view` plus cluster-scoped objects and metrics, read-only
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

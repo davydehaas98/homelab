@@ -1,4 +1,3 @@
-# Switch lights off.
 turn_everything_off:
   sequence:
     - action: light.turn_off

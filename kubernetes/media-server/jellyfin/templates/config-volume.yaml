@@ -1,6 +1,4 @@
-# The config (database and metadata), on a ZFS volume on midgard-0 (see kubernetes/storage/zfs-localpv). Jellyfin has
-# its own backup feature in the dashboard. The chart cannot bind a claim to a volume by name, so the claim is made here
-# and the chart uses it (`persistence.config.existingClaim`).
+# The chart cannot bind a claim to a volume by name
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
