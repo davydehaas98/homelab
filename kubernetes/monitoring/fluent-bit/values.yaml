@@ -26,7 +26,7 @@ fluent-bit:
 
   resources:
     limits:
-      memory: 60Mi
+      memory: 150Mi
     requests:
       cpu: 100m
       memory: 60Mi

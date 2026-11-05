@@ -134,12 +134,13 @@ loki:
   read:
     replicas: 1
     legacyReadTarget: false
+    # Wide queries over days need far more than its idle use
     resources:
       limits:
-        memory: 200Mi
+        memory: 1Gi
       requests:
         cpu: 30m
-        memory: 150Mi
+        memory: 350Mi
     persistence:
       size: 5Gi
     affinity: null

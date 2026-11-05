@@ -21,7 +21,7 @@ env:
 
 resources:
   limits:
-    memory: 60Mi
+    memory: 150Mi
   requests:
     cpu: 10m
     memory: 40Mi

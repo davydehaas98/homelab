@@ -52,7 +52,7 @@ cilium:
     replicas: 2
     resources:
       limits:
-        memory: 150Mi
+        memory: 300Mi
       requests:
         cpu: 30m
         memory: 150Mi
@@ -80,10 +80,10 @@ cilium:
 
   resources:
     limits:
-      memory: 800Mi
+      memory: 1.5Gi
     requests:
       cpu: 200m
-      memory: 500Mi
+      memory: 650Mi
 
   monitor:
     enabled: true
@@ -132,10 +132,10 @@ cilium:
       rollOutPods: true
       resources:
         limits:
-          memory: 90Mi
+          memory: 150Mi
         requests:
           cpu: 10m
-          memory: 50Mi
+          memory: 80Mi
       prometheus:
         enabled: true
         serviceMonitor:

@@ -60,10 +60,10 @@ argo-cd:
     enabled: true
     resources:
       limits:
-        memory: 70Mi
+        memory: 150Mi
       requests:
         cpu: 10m
-        memory: 70Mi
+        memory: 90Mi
     exporter:
       enabled: true
       resources:
@@ -101,7 +101,7 @@ argo-cd:
 
     resources:
       limits:
-        memory: 150Mi
+        memory: 300Mi
       requests:
         cpu: 30m
         memory: 150Mi

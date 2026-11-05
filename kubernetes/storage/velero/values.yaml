@@ -54,10 +54,10 @@ velero:
 
   resources:
     limits:
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 30m
-      memory: 450Mi
+      memory: 700Mi
 
   # Reads other pods' volumes from the host as root, with a Kyverno exemption
   nodeAgent:

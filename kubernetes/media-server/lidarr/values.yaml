@@ -25,10 +25,10 @@ media:
 resources:
   limits:
     cpu: 500m
-    memory: 350Mi
+    memory: 700Mi
   requests:
     cpu: 30m
-    memory: 300Mi
+    memory: 400Mi
 
 backups:
   claimName: backups

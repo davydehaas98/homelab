@@ -5,10 +5,10 @@ descheduler:
   resources:
     limits:
       cpu: null
-      memory: 90Mi
+      memory: 200Mi
     requests:
       cpu: 10m
-      memory: 80Mi
+      memory: 90Mi
 
   podSecurityContext:
     seccompProfile:
