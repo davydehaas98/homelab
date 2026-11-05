@@ -83,7 +83,8 @@ fluent-bit:
       [OUTPUT]
         Name loki
         Match kubernetes.*
-        Host loki-gateway.loki.svc.cluster.local
+        # The trailing dot skips the search domains, of which the node's localdomain goes to the gateway's DNS
+        Host loki-gateway.loki.svc.cluster.local.
         Port 80
         Labels job=kubernetes,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],container=$kubernetes['container_name'],stream=$stream,node=${NODE_NAME}
         # The pod metadata is in the labels

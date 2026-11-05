@@ -55,5 +55,10 @@ trivy-operator:
           drop:
             - ALL
 
+  # The operator and trivy-server, whose database updates slowed etcd on the eMMC of a control plane node; the chart has
+  # no affinity, so the one RK1 node without etcd
+  nodeSelector:
+    kubernetes.io/hostname: jotunheim-3
+
   serviceMonitor:
     enabled: true

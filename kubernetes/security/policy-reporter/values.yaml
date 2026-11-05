@@ -42,6 +42,13 @@ policy-reporter:
   #   type: postgres
   #   secretRef: policy-reporter-credentials
 
+  # In memory: the database is small but rewritten constantly, which slowed etcd on the same eMMC; it is rebuilt from
+  # the reports on start
+  sqliteVolume:
+    emptyDir:
+      medium: Memory
+      sizeLimit: 32Mi
+
   monitoring:
     enabled: true
 
