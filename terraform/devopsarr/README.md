@@ -9,7 +9,7 @@ defaults. Settings left out here are managed in the apps' UI.
 |-----------------------|------------------------------------------------------------------------------------------------|
 | `sonarr.tf`           | Root folder, naming, media management, SABnzbd, delay profile, Discord, Plex metadata, quality definitions |
 | `radarr.tf`           | Root folder, naming, media management, SABnzbd, delay profile, Discord, quality definitions   |
-| `lidarr.tf`           | Root folder, naming, media management, Discord                                                 |
+| `lidarr.tf`           | Root folder, the `Lossless` quality profile, naming, media management, Discord                 |
 | `prowlarr.tf`         | The apps Prowlarr syncs its indexers to, the Usenet sync profile and the NZBgeek indexer       |
 | `custom_formats.tf`   | Custom formats of Sonarr and Radarr with their score per quality profile                       |
 | `quality_profiles.tf` | The `1080p/720p` and `2160p` quality profiles of Sonarr and Radarr                             |

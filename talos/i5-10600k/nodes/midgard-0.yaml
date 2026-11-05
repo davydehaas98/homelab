@@ -11,9 +11,6 @@ name: eno1
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
-# Without the schematic the install drops the extensions
-installer:
-  image: factory.talos.dev/metal-installer/48e7f69daccf166e3b63a595e1b2854da6faccb7cc0bf08a6e5191ea270430ef:v1.14.5
 provisioning:
   diskSelector:
     # The NVMe and hard disks hold the ZFS pools and the media

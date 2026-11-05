@@ -38,9 +38,8 @@ A Raspberry Pi has no BMC: write the image to its SD card or USB SSD, and check 
 sudo dd if=gen/vanaheim-0.metal-arm64.raw of=/dev/rdiskN bs=4m status=progress
 ```
 
-The i5-10600k (`midgard-0`) boots in UEFI mode from `sda`, with systemd-boot and a UKI. Upgrades come from the installer
-image in its node file, which holds the schematic of `i5-10600k/gen-schematic-id.sh`: update it when the extensions
-change. To reinstall, write the raw image to `sda` from a live USB, as nothing else on the node has a shell:
+The i5-10600k (`midgard-0`) boots in UEFI mode from `sda`, with systemd-boot and a UKI. To reinstall, write the raw
+image to `sda` from a live USB, as nothing else on the node has a shell:
 
 ```shell
 sh gen-image.sh -b i5-10600k -n midgard-0 -v v1.14.5
@@ -72,7 +71,9 @@ talosctl health
 
 ## Upgrades
 
-One node at a time, control plane first; check it is healthy before the next:
+tuppr upgrades the nodes, keeping the schematic each node reports, so the node files hold no installer image. When a
+board's extensions change, upgrade its nodes once by hand, which builds the image from `gen-schematic-id.sh`; one node
+at a time, control plane first, and check it is healthy before the next:
 
 ```shell
 sh upgrade-talos.sh -b rk1 -n jotunheim-0 -v v1.14.2

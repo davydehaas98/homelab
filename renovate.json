@@ -18,6 +18,36 @@
       "ignoreTests": true
     },
     {
+      "description": "Talos on the nodes (tuppr) and talosctl in mise.toml, in one PR.",
+      "matchDepNames": [
+        "ghcr.io/siderolabs/talos",
+        "talosctl"
+      ],
+      "groupName": "talos",
+      "separateMinorPatch": false,
+      "separateMultipleMinor": false
+    },
+    {
+      "description": "Kubernetes on the nodes (tuppr) and kubectl in mise.toml, in one PR.",
+      "matchDepNames": [
+        "ghcr.io/siderolabs/kubelet",
+        "kubectl"
+      ],
+      "groupName": "kubernetes",
+      "separateMinorPatch": false,
+      "separateMultipleMinor": false
+    },
+    {
+      "description": "The Argo CD chart and the argocd CLI in mise.toml, in one PR.",
+      "matchDepNames": [
+        "argo-cd",
+        "argocd"
+      ],
+      "groupName": "argo-cd",
+      "separateMinorPatch": false,
+      "separateMultipleMinor": false
+    },
+    {
       "description": "linuxserver still publishes tags of Lidarr 0.8 (2021) as 8.x, which look newer than the current 3.x.",
       "matchPackageNames": [
         "ghcr.io/linuxserver/lidarr"

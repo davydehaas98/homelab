@@ -4,8 +4,89 @@ resource "lidarr_root_folder" "lidarr" {
   name                    = "music"
   new_item_monitor_option = "all"
   path                    = "/data/music/library"
-  quality_profile_id      = 2 # Lossless, with high-quality lossy as a fallback until FLAC turns up (set in the UI)
+  quality_profile_id      = lidarr_quality_profile.lossless.id
   tags                    = []
+}
+
+# Groups from highest to lowest. Lossy and Unknown (no format in the release name) are fallbacks that upgrade until
+# lossless turns up; the quality of an Unknown release is read from its files on import.
+resource "lidarr_quality_profile" "lossless" {
+  cutoff              = 1005
+  cutoff_format_score = 0
+  format_items        = []
+  min_format_score    = 0
+  name                = "Lossless"
+  quality_groups = [
+    {
+      id   = 1005
+      name = "Lossless"
+      qualities = [
+        {
+          id   = 7
+          name = "ALAC"
+        },
+        {
+          id   = 6
+          name = "FLAC"
+        },
+        {
+          id   = 35
+          name = "APE"
+        },
+        {
+          id   = 36
+          name = "WavPack"
+        },
+        {
+          id   = 21
+          name = "FLAC 24bit"
+        },
+        {
+          id   = 37
+          name = "ALAC 24bit"
+        },
+      ]
+    },
+    {
+      id   = 1004
+      name = "High Quality Lossy"
+      qualities = [
+        {
+          id   = 2
+          name = "MP3-VBR-V0"
+        },
+        {
+          id   = 12
+          name = "AAC-VBR"
+        },
+        {
+          id   = 4
+          name = "MP3-320"
+        },
+        {
+          id   = 15
+          name = "OGG Vorbis Q9"
+        },
+        {
+          id   = 11
+          name = "AAC-320"
+        },
+        {
+          id   = 14
+          name = "OGG Vorbis Q10"
+        },
+      ]
+    },
+    {
+      qualities = [
+        {
+          id   = 0
+          name = "Unknown"
+        },
+      ]
+    },
+  ]
+  upgrade_allowed = true
 }
 
 resource "lidarr_naming" "lidarr" {

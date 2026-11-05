@@ -156,6 +156,11 @@ import {
 }
 
 import {
+  to = lidarr_quality_profile.lossless
+  id = "2"
+}
+
+import {
   to = prowlarr_application_radarr.radarr
   id = "1"
 }
