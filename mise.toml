@@ -15,7 +15,7 @@ talosctl = "1.14.5"
 terraform = "1.17.1"
 # For pipx
 uv = "0.13.7"
-yq = "4.54.1"
+yq = "4.54.2"
 # Its archive keeps the binary in usr/bin
 "github:turing-machines/tpi" = { version = "1.0.7", bin_path = "usr/bin" }
 "pipx:yamllint" = "1.38.0"
