@@ -8,3 +8,7 @@ spec:
       stop: 192.168.1.70
     # Routed by BGP, see bgp-cluster-config.yaml; services keep their address above next to it until clients have moved
     - cidr: 192.168.200.0/24
+    # On the Servers VLAN over L2, only as the target of the gateway's port forward to Envoy: the gateway does not
+    # forward to an address outside its own networks
+    - start: 192.168.10.56
+      stop: 192.168.10.56
