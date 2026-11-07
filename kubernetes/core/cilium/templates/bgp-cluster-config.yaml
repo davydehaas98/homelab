@@ -1,0 +1,18 @@
+# Every node peers with the UniFi gateway over eBGP; its side is unifi/bgp.conf, which only accepts 192.168.200.0/24
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: gateway
+  annotations:
+    # The operator installs the BGP CRDs once the control plane is enabled
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  bgpInstances:
+    - name: cluster
+      localASN: 64514
+      peers:
+        - name: gateway
+          peerASN: 64513
+          peerAddress: 192.168.1.1
+          peerConfigRef:
+            name: gateway

@@ -37,3 +37,30 @@
       target:
         device_id: 3171401fcd0c5fccfeb8da3c588b3d04
   mode: single
+# The wall switch cuts the power, after which the lamp comes back with its stored brightness while the sensor stays
+# occupied; this sets the time's brightness whenever the lamp turns on or ends up far from it
+- id: '1762502400000'
+  alias: Toilet light level
+  description: ''
+  triggers:
+    - trigger: state
+      entity_id: light.toilet_light
+      to: "on"
+    - trigger: state
+      entity_id: light.toilet_light
+      attribute: brightness
+  conditions:
+    - condition: state
+      entity_id: light.toilet_light
+      state: "on"
+    - condition: template
+      value_template: >-
+        {% set target = 10 if now().hour >= 23 or now().hour < 7 else 100 %}
+        {{ ((state_attr('light.toilet_light', 'brightness') | int(0)) * 100 / 255 - target) | abs > 5 }}
+  actions:
+    - action: light.turn_on
+      data:
+        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 100 }}"
+      target:
+        entity_id: light.toilet_light
+  mode: single

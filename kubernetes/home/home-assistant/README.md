@@ -14,6 +14,7 @@ here, see `config/integrations/ui.yaml`.
 | Sleep | By hand | Bedroom and living room off, kitchen at 15% |
 | Toilet occupied | Motion in the toilet | Toilet light on, 10% from 23:00 to 07:00, else 100% |
 | Toilet free | No motion for 15 minutes | Toilet light off |
+| Toilet light level | Toilet light on or changed, as after the wall switch | Back to the brightness of Toilet occupied |
 
 ## Alerts (`config/automations/alerts`)
 

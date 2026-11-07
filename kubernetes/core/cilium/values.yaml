@@ -33,7 +33,7 @@ cilium:
     hostRoot: /sys/fs/cgroup
 
   bgpControlPlane:
-    enabled: false
+    enabled: true
 
   l2announcements:
     enabled: true

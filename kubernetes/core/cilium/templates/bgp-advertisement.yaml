@@ -1,0 +1,19 @@
+# All LoadBalancer IPs; the gateway drops those outside the BGP block, which L2 announces
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: load-balancer-ips
+  labels:
+    advertise: "bgp"
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  advertisements:
+    - advertisementType: Service
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchExpressions:
+          - key: bgp.cilium.io/ignore
+            operator: DoesNotExist
