@@ -1,8 +1,8 @@
 # Talos
 
 Run from `talos/` in the [dev container](../.devcontainer/README.md). Keep `talosctl` in `mise.toml` equal to the
-Talos version on the nodes, as its default Kubernetes version follows its own; upgrade the nodes when Renovate bumps
-it.
+Talos version on the nodes; upgrade the nodes when Renovate bumps it. `gen-config.sh` takes the Kubernetes version from
+tuppr (`kubernetes/core/tuppr/values.yaml`), so a new config matches what tuppr upgraded the nodes to.
 
 ## Backups
 
@@ -20,8 +20,8 @@ sh backup-configs.sh -c yggdrasil
 A board's schematic, node patches and scripts are in its directory (`rk1/`, `rpi4/`):
 
 ```shell
-sh gen-image.sh -b rk1 -n jotunheim-0 -v v1.14.2   # and jotunheim-1..3
-sh gen-image.sh -b rpi4 -n vanaheim-0 -v v1.14.2
+sh gen-image.sh -b rk1 -n jotunheim-0 -v v1.14.5   # and jotunheim-1..3
+sh gen-image.sh -b rpi4 -n vanaheim-0 -v v1.14.5
 ```
 
 Flash an RK1 through the BMC (firmware 2.0.0+ needs credentials for every command):
@@ -30,6 +30,8 @@ Flash an RK1 through the BMC (firmware 2.0.0+ needs credentials for every comman
 export TPI_HOST=turingpi TPI_USER=root TPI_PASS=turing
 sh rk1/flash.sh jotunheim-0 1   # node, slot
 ```
+
+The Turing Pi's switch drops VLAN-tagged frames, so an RK1 cannot tag a VLAN itself.
 
 A Raspberry Pi has no BMC: write the image to its SD card or USB SSD, and check with
 `talosctl get links --insecure -n <ip>` that the interface name matches `rpi4/nodes/vanaheim-0.yaml`.

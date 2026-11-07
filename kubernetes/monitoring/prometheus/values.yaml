@@ -57,6 +57,7 @@ kube-prometheus-stack:
                 - 192.168.1.50:2381
                 - 192.168.1.51:2381
                 - 192.168.1.52:2381
+                - 192.168.1.45:2381
       resources:
         limits:
           memory: 8Gi

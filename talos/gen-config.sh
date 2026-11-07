@@ -24,7 +24,14 @@ CLUSTER_ENDPOINT=$(sed -n 's/^endpoint: //p' patches/cluster.yaml)
 CLUSTER_IP=${CLUSTER_ENDPOINT#https://}
 CLUSTER_IP=${CLUSTER_IP%:*}
 
-echo "Generating Talos config for '${NODE_NAME}'.."
+# The version tuppr upgrades the cluster to, else a new config would bring talosctl's default
+KUBERNETES_VERSION=$(sed -n '/^kubernetes:/,/^[^ ]/s/^    tag: v//p' ../kubernetes/core/tuppr/values.yaml)
+if [ -z "${KUBERNETES_VERSION}" ]; then
+    echo "No Kubernetes version in kubernetes/core/tuppr/values.yaml"
+    exit 1
+fi
+
+echo "Generating Talos config for '${NODE_NAME}' (Kubernetes ${KUBERNETES_VERSION}).."
 
 CONFIG_PATCHES="--config-patch @patches/cluster.yaml"
 if [ "${NODE_TYPE}" = "controlplane" ]; then
@@ -39,6 +46,7 @@ talosctl gen config \
     ${CLUSTER_NAME} ${CLUSTER_ENDPOINT} \
     --output gen/${NODE_NAME}.yaml \
     --output-types ${NODE_TYPE} \
+    --kubernetes-version ${KUBERNETES_VERSION} \
     --with-cluster-discovery \
     --with-secrets gen/secrets.yaml \
     ${CONFIG_PATCHES} \
