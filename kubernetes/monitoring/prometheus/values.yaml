@@ -54,7 +54,7 @@ kube-prometheus-stack:
         - job_name: kube-etcd
           static_configs:
             - targets:
-                - 192.168.1.50:2381
+                - 192.168.10.50:2381
                 - 192.168.10.45:2381
                 - 192.168.10.44:2381
       resources:

@@ -9,7 +9,7 @@ stays in the UI.
 | `port_forwards.tf` | The port forwards to the public Envoy Gateway and Plex                               |
 | `wlan.tf`          | The Wi-Fi networks; only the guest passphrase is set here, from `terraform.tfvars`   |
 | `bgp.tf`, `bgp.conf` | The gateway's side of the BGP sessions with Cilium, as FRR config                  |
-| `clients.tf`       | The fixed addresses of the nodes on the Servers VLAN                                 |
+| `clients.tf`       | The fixed addresses of the nodes and the BMC, on the LAN or the Servers VLAN         |
 | `imports.tf`       | Import blocks that adopt the settings made in the UI                                 |
 | `ids.sh`           | Lists the IDs of the networks and port forwards, for imports                         |
 

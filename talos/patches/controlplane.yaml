@@ -6,9 +6,9 @@ cluster:
 ---
 apiVersion: v1alpha1
 kind: Layer2VIPConfig
-# gen-config.sh fills in the VIP
+# gen-config.sh fills in the VIP and the node's DHCP interface
 name: __CLUSTER_IP__
-link: end0
+link: __LINK__
 ---
 apiVersion: v1alpha1
 kind: KubeProxyConfig
@@ -33,3 +33,10 @@ allowedRoles:
 allowedKubernetesNamespaces:
   - tuppr
   - talos-backup
+---
+apiVersion: v1alpha1
+kind: KubeServiceAccountConfig
+# The issuer of the pods' tokens, from before the endpoint moved to the Servers VLAN; changing it rejects every token
+# issued before, so it stays
+issuer:
+  issuerURL: https://192.168.1.55:6443

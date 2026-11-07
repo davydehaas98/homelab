@@ -1,0 +1,3 @@
+deploy: true
+# Privileged on the host's /sys, which kube-system allows and Kyverno excludes
+namespace: kube-system

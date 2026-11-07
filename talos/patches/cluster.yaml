@@ -1,7 +1,8 @@
 apiVersion: v1alpha1
 kind: KubeClusterConfig
 clusterName: yggdrasil
-endpoint: https://192.168.1.55:6443
+# The VIP of the control plane on the Servers VLAN (patches/controlplane.yaml)
+endpoint: https://192.168.10.10:6443
 ---
 apiVersion: v1alpha1
 kind: KubeNodeConfig

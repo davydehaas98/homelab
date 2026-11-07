@@ -1,4 +1,5 @@
-# To the public Envoy Gateway (kubernetes/core/envoy-gateway); UDP 443 is HTTP/3
+# To the public Envoy Gateway (kubernetes/core/envoy-gateway) on its L2 address on the Servers VLAN: the gateway does not
+# forward to an address outside its own networks, such as Envoy's BGP address; UDP 443 is HTTP/3
 resource "unifi_port_forward" "yggdrasil" {
   name     = "yggdrasil"
   protocol = "tcp_udp"
@@ -9,7 +10,7 @@ resource "unifi_port_forward" "yggdrasil" {
   }
 
   forward = {
-    ip   = "192.168.1.56"
+    ip   = "192.168.10.56"
     port = "80,443"
   }
 }

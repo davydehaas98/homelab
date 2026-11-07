@@ -1,6 +1,7 @@
 machine:
-  type: controlplane
+  type: worker
 ---
+# Untagged: switch port 3 (the Turing Pi) is on the Servers VLAN, where DHCP reserves 192.168.10.5x
 apiVersion: v1alpha1
 kind: DHCPv4Config
 name: end0
@@ -16,6 +17,11 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: rk1
+  # On the Servers VLAN, so Cilium peers with the gateway there
+  davydehaas.dev/network: servers
+nodeIP:
+  validSubnets:
+    - 192.168.10.0/24
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig

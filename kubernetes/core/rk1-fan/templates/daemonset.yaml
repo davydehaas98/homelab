@@ -1,0 +1,46 @@
+{{- if not .Values.suspend }}
+# The kernel drives the RK1 fan from the active trip points of thermal zone 0; they reset on a reboot, so this sets them
+# again whenever the pod starts on a node
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: rk1-fan
+  labels:
+    app.kubernetes.io/name: rk1-fan
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rk1-fan
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rk1-fan
+    spec:
+      nodeSelector:
+        davydehaas.dev/model: rk1
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: rk1-fan
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              ZONE=/sys/class/thermal/thermal_zone0
+              [ "$(cat "${ZONE}/type")" = "package-thermal" ] || { echo "thermal_zone0 is not package-thermal"; exit 1; }
+              # Highest first, so the trip points stay in order while they are raised
+              for TRIP in {{ range $i, $t := reverse .Values.tripPoints }}{{ sub (len $.Values.tripPoints) $i }}:{{ $t }} {{ end }}; do
+                N=${TRIP%:*}
+                [ "$(cat "${ZONE}/trip_point_${N}_type")" = "active" ] || { echo "trip point ${N} is not active"; exit 1; }
+                echo "${TRIP#*:}000" > "${ZONE}/trip_point_${N}_temp"
+              done
+              for N in 1 2 3 4 5; do echo "trip point ${N}: $(cat "${ZONE}/trip_point_${N}_temp")"; done
+              trap 'exit 0' TERM
+              while true; do sleep 3600 & wait $!; done
+          securityContext:
+            privileged: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{- end }}

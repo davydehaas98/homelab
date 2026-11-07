@@ -1,0 +1,19 @@
+image:
+  repository: docker.io/library/busybox
+  tag: "1.37.0"
+
+# The package temperatures in °C at which the fan steps up a level, lowest first; the device tree's defaults are 45, 50,
+# 60, 70 and 80. Below the first the fan is off.
+tripPoints:
+  - 55
+  - 60
+  - 65
+  - 70
+  - 80
+
+resources:
+  limits:
+    memory: 16Mi
+  requests:
+    cpu: 1m
+    memory: 8Mi

@@ -2,9 +2,9 @@
 
 Guidance for AI coding agents in this repository.
 
-GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim-0`–`3`, arm64) and the
-storage node `midgard-0` (amd64), Cilium, and Argo CD syncing `kubernetes/` from `main`. A merge to `main` is a
-deployment.
+GitOps repo for the homelab cluster `yggdrasil`: Talos on 4x Turing RK1 nodes (`jotunheim-0`–`3`, arm64), the
+storage node `midgard-0` (amd64) and the Raspberry Pi `vanaheim-0`, Cilium, and Argo CD syncing `kubernetes/` from
+`main`. A merge to `main` is a deployment.
 
 ## Apps
 
@@ -32,12 +32,18 @@ deployment.
 
 ## How the pieces connect
 
-- **Traffic.** The UniFi gateway forwards 80, 443 and UDP 443 to the Envoy Gateway (`192.168.1.56`), the entry point.
+- **Network.** The nodes are on the Servers VLAN (`192.168.10.0/24`, untagged: the Turing Pi's switch drops VLAN tags),
+  apart from the clients on the LAN; the control plane is `jotunheim-0`, `midgard-0` and `vanaheim-0`, one per machine,
+  behind the VIP `192.168.10.10`. LoadBalancer addresses come from `192.168.200.0/24`, routed by BGP to the gateway
+  (`terraform/unifi/bgp.conf`). The gateway only port-forwards to an address in one of its own networks, so a forwarded
+  service also needs an L2 address on the Servers VLAN.
+- **Traffic.** The UniFi gateway forwards 80, 443 and UDP 443 to the Envoy Gateway's L2 address (`192.168.10.56`), the
+  entry point; the home network reaches it on `192.168.200.56`.
   The old domain `*.davydehaas.nl` serves Plex and redirects other names to `davydehaas.dev`
   (`nlRedirects` in `kubernetes/core/envoy-gateway/values.yaml`); its DNS is a wildcard. Publish an app with an `HTTPRoute` on Gateway
   `envoy-gateway` (`sectionName: web-https`), no Ingress. Every hostname needs a DNS record in `terraform/cloudflare/davydehaas.dev/dns_record.tf`:
   `kubernetes_apps`, or `kubernetes_aliases` for `route.aliases`. Tools only for the home network go on Gateway
-  `envoy-gateway-private` (`192.168.1.61`, not forwarded) under `*.mcp.davydehaas.dev`, and APIs under
+  `envoy-gateway-private` (`192.168.200.61`, not forwarded) under `*.mcp.davydehaas.dev`, and APIs under
   `*.lan.davydehaas.dev` with `oidc.privateHostname` of the library chart, each with a record in
   `kubernetes_private_apps`. The public gateway does not see real client addresses, so do not restrict by source address
   there.

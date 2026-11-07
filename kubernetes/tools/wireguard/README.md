@@ -12,5 +12,6 @@ Setup, in order:
 2. Set `deploy: true` in `argocd.yaml`, push, and open the interface through the port-forward. The setup wizard asks for
    the admin account, the public host and the port.
 3. Check the interface settings: the device should be `eth0`, and turn IPv6 off if the pod has none.
-4. Forward UDP 51820 to `192.168.200.61`, on the UniFi gateway and on any modem in front of it.
+4. Forward UDP 51820 on the UniFi gateway, and on any modem in front of it. The gateway only forwards to an address on
+   one of its networks, so give the service an L2 address on the Servers VLAN too, as Envoy has `192.168.10.56`.
 5. Add the clients in the interface.

@@ -1,0 +1,3 @@
+apiVersion: v2
+name: rk1-fan
+version: 1.0.0

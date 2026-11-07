@@ -7,7 +7,7 @@ flowchart TB
 
     subgraph k8s["Cluster yggdrasil, Talos"]
         subgraph rk1["4x Turing RK1, arm64"]
-            envoy["Envoy Gateway<br/>192.168.1.56"]
+            envoy["Envoy Gateway<br/>192.168.10.56, BGP 192.168.200.56"]
             argo["Argo CD"]
         end
         subgraph midgard["midgard-0, amd64: apps with data"]

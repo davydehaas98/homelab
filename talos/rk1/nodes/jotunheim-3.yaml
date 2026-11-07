@@ -1,22 +1,10 @@
 machine:
   type: worker
 ---
-apiVersion: v1alpha1
-kind: LinkConfig
-name: end0
-up: true
----
-# The Servers VLAN, apart from the clients on the untagged LAN; DHCP reserves 192.168.10.53
-apiVersion: v1alpha1
-kind: VLANConfig
-name: end0.10
-vlanID: 10
-parent: end0
-up: true
----
+# Untagged: switch port 3 (the Turing Pi) is on the Servers VLAN, where DHCP reserves 192.168.10.5x
 apiVersion: v1alpha1
 kind: DHCPv4Config
-name: end0.10
+name: end0
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
@@ -29,6 +17,8 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: rk1
+  # On the Servers VLAN, so Cilium peers with the gateway there
+  davydehaas.dev/network: servers
 nodeIP:
   validSubnets:
     - 192.168.10.0/24

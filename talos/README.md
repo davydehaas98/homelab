@@ -1,8 +1,9 @@
 # Talos
 
 Run from `talos/` in the [dev container](../.devcontainer/README.md). Keep `talosctl` in `mise.toml` equal to the
-Talos version on the nodes; upgrade the nodes when Renovate bumps it. `gen-config.sh` takes the Kubernetes version from
-tuppr (`kubernetes/core/tuppr/values.yaml`), so a new config matches what tuppr upgraded the nodes to.
+Talos version on the nodes; upgrade the nodes when Renovate bumps it. `gen-config.sh` takes the Talos and Kubernetes
+versions from tuppr (`kubernetes/core/tuppr/values.yaml`) and the installer image from the node's schematic, so a new
+config matches what tuppr upgraded the nodes to, and the VIP goes on the node's DHCP interface.
 
 ## Backups
 
@@ -61,9 +62,10 @@ mode.
 
 ```shell
 sh gen-talosconfig.sh -c yggdrasil -n jotunheim-0
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0   # and jotunheim-1, jotunheim-2
-sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-3
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-0   # the control plane, one per machine
 sh apply-config.sh -b i5-10600k -c yggdrasil -n midgard-0
+sh apply-config.sh -b rpi4 -c yggdrasil -n vanaheim-0
+sh apply-config.sh -b rk1 -c yggdrasil -n jotunheim-1   # and jotunheim-2, jotunheim-3
 talosctl bootstrap --nodes jotunheim-0
 talosctl config endpoint $(sed -n 's|^endpoint: https://\(.*\):6443|\1|p' patches/cluster.yaml)
 talosctl config nodes jotunheim-0 jotunheim-1 jotunheim-2 jotunheim-3
