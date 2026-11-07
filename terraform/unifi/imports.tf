@@ -34,3 +34,8 @@ import {
   to = unifi_wlan.iot
   id = "69b7fa76ced232b12fe23d36"
 }
+
+import {
+  to = unifi_bgp.cilium
+  id = "6aef08e190a452520c7d5a4f"
+}

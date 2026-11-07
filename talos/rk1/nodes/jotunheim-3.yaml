@@ -2,8 +2,21 @@ machine:
   type: worker
 ---
 apiVersion: v1alpha1
-kind: DHCPv4Config
+kind: LinkConfig
 name: end0
+up: true
+---
+# The Servers VLAN, apart from the clients on the untagged LAN; DHCP reserves 192.168.10.53
+apiVersion: v1alpha1
+kind: VLANConfig
+name: end0.10
+vlanID: 10
+parent: end0
+up: true
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: end0.10
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
@@ -16,6 +29,9 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: rk1
+nodeIP:
+  validSubnets:
+    - 192.168.10.0/24
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
