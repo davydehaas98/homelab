@@ -3,6 +3,9 @@ cluster:
     extraArgs:
       # For Prometheus. Applying it restarts etcd, so one node at a time.
       listen-metrics-urls: http://0.0.0.0:2381
+      # The eMMC and SD card are too slow for the defaults (100 and 1000)
+      heartbeat-interval: "250"
+      election-timeout: "2500"
 ---
 apiVersion: v1alpha1
 kind: Layer2VIPConfig
