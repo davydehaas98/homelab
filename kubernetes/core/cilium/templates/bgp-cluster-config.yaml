@@ -1,5 +1,5 @@
-# Every node peers with the UniFi gateway on the Servers VLAN over eBGP; its side is terraform/unifi/bgp.conf, which
-# only takes nodes from 192.168.10.0/24 and routes from 192.168.200.0/24
+# Every node peers with the UniFi gateway over eBGP; its side is terraform/unifi/bgp.conf, which only takes routes from
+# 192.168.200.0/24
 apiVersion: cilium.io/v2
 kind: CiliumBGPClusterConfig
 metadata:
@@ -14,6 +14,6 @@ spec:
       peers:
         - name: gateway
           peerASN: 64513
-          peerAddress: 192.168.10.1
+          peerAddress: 192.168.1.1
           peerConfigRef:
             name: gateway
