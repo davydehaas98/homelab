@@ -1,19 +1,29 @@
-# Every node peers with the UniFi gateway over eBGP; its side is terraform/unifi/bgp.conf, which only takes routes from
-# 192.168.200.0/24
+# Every node peers over eBGP with the UniFi gateway on its own subnet: the LAN, or the Servers VLAN for the nodes labelled
+# davydehaas.dev/network=servers in their Talos config. The gateway's side is terraform/unifi/bgp.conf, which only takes
+# routes from 192.168.200.0/24.
+{{- range $name, $subnet := dict "gateway" (dict "peer" "192.168.1.1" "operator" "NotIn") "gateway-servers" (dict "peer" "192.168.10.1" "operator" "In") }}
+---
 apiVersion: cilium.io/v2
 kind: CiliumBGPClusterConfig
 metadata:
-  name: gateway
+  name: {{ $name }}
   annotations:
     # The operator installs the BGP CRDs once the control plane is enabled
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
+  nodeSelector:
+    matchExpressions:
+      - key: davydehaas.dev/network
+        operator: {{ $subnet.operator }}
+        values:
+          - servers
   bgpInstances:
     - name: cluster
       localASN: 64514
       peers:
         - name: gateway
           peerASN: 64513
-          peerAddress: 192.168.1.1
+          peerAddress: {{ $subnet.peer }}
           peerConfigRef:
             name: gateway
+{{- end }}
