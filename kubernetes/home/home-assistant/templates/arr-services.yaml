@@ -1,0 +1,12 @@
+# Short names for the Sonarr, Radarr and Lidarr integrations: their client (aiopyarr) cuts a host at a hyphen, so
+# sonarr.media-server.svc.cluster.local does not work, and the bare name only resolves in this namespace
+{{- range list "sonarr" "radarr" "lidarr" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ . }}
+spec:
+  type: ExternalName
+  externalName: {{ . }}.media-server.svc.cluster.local
+{{- end }}
