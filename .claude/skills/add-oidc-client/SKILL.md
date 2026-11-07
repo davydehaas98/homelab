@@ -16,15 +16,16 @@ Three things must land in **one change**, as a policy without its Secret breaks 
 
 1. **The client in Authentik** (`kubernetes/security/authentik/values.yaml`):
    - an entry in `oidcClients` with `name`, `slug` and `redirectURL` (the callback is `https://<host>/oauth2/callback`
-     for the gateway policy; an app with native OIDC has its own path);
+     for the gateway policy; an app with native OIDC has its own path), and `namespace` when the app's is not the slug;
    - in `envFrom`, the app's Secret `<slug>-oidc-credentials` with `prefix: <slug>-`. The render fails without it;
      the blueprint reads `<slug>-client-id` and `<slug>-client-secret`.
    - `openAccess: true` only when the app maps roles from group claims.
 2. **The sealed credentials**, one random pair in `kubernetes/<group>/<app>/templates/oidc-credentials.yaml` as Secret
    `<slug>-oidc-credentials` (keys `client-id` and `client-secret`) with the annotation
-   `replicator.v1.mittwald.de/replicate-to: authentik`, which copies it to Authentik. Run `seal-oidc-client.sh` in the
-   dev container, with `~/.kube` mounted as `kubeseal` needs the cluster. The pair is generated in the script and never
-   printed, so you may run it yourself, but never read the Secrets back.
+   `replicator.v1.mittwald.de/replication-allowed: "true"` and `replication-allowed-namespaces: authentik`, from where
+   Authentik copies it. Run `seal-oidc-client.sh` in the dev container, with `~/.kube` mounted as `kubeseal` needs the
+   cluster. The pair is generated in the script and never printed, so you may run it yourself, but never read the
+   Secrets back.
 3. **The route policy.** For a library app, `oidc.enabled: true` (and `oidc.slug` if it differs from the chart name).
    For an upstream chart, a `SecurityPolicy` in `templates/` with the issuer, authorization, token and end-session
    endpoints set explicitly (so the gateway does not fetch the discovery document), as in `zigbee2mqtt`.

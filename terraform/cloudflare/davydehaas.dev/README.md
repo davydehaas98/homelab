@@ -2,7 +2,9 @@
 
 All DNS records of `davydehaas.dev`. App hostnames (`kubernetes_apps`) and their redirect names
 (`kubernetes_aliases`, the `route.aliases` of an app) point at the public address, which the UniFi gateway forwards to the
-Kubernetes gateway. There is no wildcard record, so every new hostname goes in one of those lists.
+Kubernetes gateway; a wildcard record sends other names to its 404 page, but every app hostname still goes in one of
+those lists. Nothing is proxied, so Universal SSL is off in the dashboard (SSL/TLS → Edge Certificates): otherwise
+Cloudflare adds its own CAs to the CAA records in `root.tf`.
 
 **State** is in S3 bucket `davydehaas-terraform-state` (`eu-central-1`), key `cloudflare/davydehaas.dev/terraform.tfstate`,
 kept from when this lived in `home-server`.

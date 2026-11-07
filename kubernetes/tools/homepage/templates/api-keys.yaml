@@ -1,0 +1,10 @@
+{{- range list "lidarr" "prowlarr" "radarr" "sonarr" }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ . }}-api-key
+  annotations:
+    replicator.v1.mittwald.de/replicate-from: "media-server/{{ . }}-api-key"
+type: Opaque
+{{- end }}

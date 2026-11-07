@@ -5,10 +5,10 @@ next to the operator; its certificates come from cert-manager.
 
 A database app has `templates/database-backup.yaml` with an ObjectStore and a ScheduledBackup, and the plugin in
 `plugins` of its Cluster. The ObjectStore reads the Secret `database-backup-credentials`, which kubernetes-replicator
-copies from `templates/database-backup-credentials.yaml` here into the namespaces in its annotation; a new database adds
-its namespace there. The Cluster's pod then gets a sidecar that
-archives the WAL continuously and takes a base backup nightly, kept 14 days, so a database can be restored to any moment
-in that time. The credentials are made in the [SeaweedFS README](../seaweedfs/README.md#credentials).
+copies from `templates/database-backup-credentials.yaml` here into an empty Secret of that name in the database's
+`database-backup.yaml`; a new database adds that Secret and its namespace to the annotation here. The Cluster's pod
+then gets a sidecar that archives the WAL continuously and takes a base backup nightly, kept 14 days, so a database can
+be restored to any moment in that time. The credentials are made in the [SeaweedFS README](../seaweedfs/README.md#credentials).
 
 If archiving fails, the WAL stays on the database's own volume until that fills up, so check `ContinuousArchiving` in the
 Cluster's status after a change.

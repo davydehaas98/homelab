@@ -18,7 +18,7 @@ resource "cloudflare_dns_record" "root_caa_issue" {
   data = {
     flags = 0
     tag   = "issue"
-    value = "letsencrypt.org"
+    value = "letsencrypt.org; validationmethods=dns-01"
   }
 }
 
@@ -32,6 +32,6 @@ resource "cloudflare_dns_record" "root_caa_issuewild" {
   data = {
     flags = 0
     tag   = "issuewild"
-    value = "letsencrypt.org"
+    value = "letsencrypt.org; validationmethods=dns-01"
   }
 }

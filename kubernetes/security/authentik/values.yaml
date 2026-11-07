@@ -1,5 +1,6 @@
 # Clients of templates/blueprints.yaml. Their credentials are the app's Secret `<slug>-oidc-credentials` (keys client-id
-# and client-secret), copied here by kubernetes-replicator and listed in envFrom with the prefix <slug>-.
+# and client-secret) in `namespace` (default the slug), pulled here by kubernetes-replicator and listed in envFrom with
+# the prefix <slug>-.
 oidcClients:
   - name: Actual Budget
     slug: actual-budget
@@ -15,9 +16,11 @@ oidcClients:
     redirectURL: https://argocd.davydehaas.dev/auth/callback
   - name: Bazarr
     slug: bazarr
+    namespace: media-server
     redirectURL: https://bazarr.davydehaas.dev/oauth2/callback
   - name: Dispatcharr
     slug: dispatcharr
+    namespace: media-server
     redirectURL: https://dispatcharr.davydehaas.dev/oauth2/callback
   - name: Gatus
     slug: gatus
@@ -35,15 +38,18 @@ oidcClients:
     redirectURL: https://homepage.davydehaas.dev/oauth2/callback
   - name: Hubble
     slug: hubble
+    namespace: kube-system
     redirectURL: https://hubble.davydehaas.dev/oauth2/callback
   - name: IT Tools
     slug: it-tools
     redirectURL: https://it-tools.davydehaas.dev/oauth2/callback
   - name: LazyLibrarian
     slug: lazylibrarian
+    namespace: media-server
     redirectURL: https://lazylibrarian.davydehaas.dev/oauth2/callback
   - name: Lidarr
     slug: lidarr
+    namespace: media-server
     redirectURL: https://lidarr.davydehaas.dev/oauth2/callback
   - name: Memos
     slug: memos
@@ -57,27 +63,33 @@ oidcClients:
     redirectURL: https://omni-tools.davydehaas.dev/oauth2/callback
   - name: Prowlarr
     slug: prowlarr
+    namespace: media-server
     redirectURL: https://prowlarr.davydehaas.dev/oauth2/callback
   - name: Prometheus
     slug: prometheus
     redirectURL: https://prometheus.davydehaas.dev/oauth2/callback
   - name: Radarr
     slug: radarr
+    namespace: media-server
     redirectURL: https://radarr.davydehaas.dev/oauth2/callback
   - name: Policy Reporter
     slug: policy-reporter
     redirectURL: https://policy.davydehaas.dev/oauth2/callback
   - name: SABnzbd
     slug: sabnzbd
+    namespace: media-server
     redirectURL: https://sabnzbd.davydehaas.dev/oauth2/callback
   - name: Sonarr
     slug: sonarr
+    namespace: media-server
     redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
   - name: Tautulli
     slug: tautulli
+    namespace: media-server
     redirectURL: https://tautulli.davydehaas.dev/oauth2/callback
   - name: Tracearr
     slug: tracearr
+    namespace: media-server
     redirectURL: https://tracearr.davydehaas.dev/oauth2/callback
   - name: Zigbee2MQTT
     slug: zigbee2mqtt

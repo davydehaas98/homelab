@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database-backup-credentials
+  annotations:
+    replicator.v1.mittwald.de/replicate-from: "cnpg-system/database-backup-credentials"
+type: Opaque
+---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:

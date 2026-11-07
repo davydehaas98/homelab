@@ -12,7 +12,8 @@ spec:
   template:
     metadata:
       annotations:
-        replicator.v1.mittwald.de/replicate-to: homepage
+        replicator.v1.mittwald.de/replication-allowed: "true"
+        replicator.v1.mittwald.de/replication-allowed-namespaces: "homepage"
       name: prowlarr-api-key
       namespace: media-server
     type: Opaque

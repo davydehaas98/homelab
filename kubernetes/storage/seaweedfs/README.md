@@ -30,7 +30,8 @@ secret velero-credentials velero "$(jq -n --arg s "$velero" '{cloud: "[default]\
 secret talos-backup-s3-credentials talos-backup "$(jq -n --arg s "$tb" '{"access-key": "talos-backup", "secret-key": $s}')" \
   | seal kubernetes/core/talos-backup/templates/s3-credentials.yaml
 secret database-backup-credentials cnpg-system "$(jq -n --arg s "$cnpg" '{ACCESS_KEY_ID: "cnpg", ACCESS_SECRET_KEY: $s}')" \
-  | jq '.metadata.annotations["replicator.v1.mittwald.de/replicate-to"] = "airtrail,authentik,immich,nextcloud"' \
+  | jq '.metadata.annotations += {"replicator.v1.mittwald.de/replication-allowed": "true",
+      "replicator.v1.mittwald.de/replication-allowed-namespaces": "airtrail,authentik,immich,nextcloud"}' \
   | seal kubernetes/storage/cloudnative-pg/templates/database-backup-credentials.yaml
 unset loki velero tb cnpg config
 ```
