@@ -1,10 +1,12 @@
 machine:
-  type: worker
+  type: controlplane
 ---
 apiVersion: v1alpha1
 kind: KernelModuleConfig
 name: zfs
 ---
+# Untagged: the gateway puts it on the Servers VLAN by its MAC (the network override of its reservation in
+# terraform/unifi/clients.tf), where DHCP reserves 192.168.10.44
 apiVersion: v1alpha1
 kind: DHCPv4Config
 name: eno1
@@ -21,6 +23,11 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: i5-10600k
+  # On the Servers VLAN, so Cilium peers with the gateway there
+  davydehaas.dev/network: servers
+nodeIP:
+  validSubnets:
+    - 192.168.10.0/24
 taints:
   davydehaas.dev/dedicated: storage:NoSchedule
 ---

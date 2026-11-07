@@ -25,7 +25,7 @@ resource "unifi_port_forward" "plex" {
   }
 
   forward = {
-    ip   = "192.168.1.44"
+    ip   = "192.168.10.44"
     port = "32400"
   }
 }

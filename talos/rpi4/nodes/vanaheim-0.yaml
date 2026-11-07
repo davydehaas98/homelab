@@ -1,5 +1,5 @@
 machine:
-  type: worker
+  type: controlplane
 ---
 apiVersion: v1alpha1
 kind: DHCPv4Config
@@ -9,6 +9,7 @@ name: end0
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
 provisioning:
+  # The SD card, for now; etcd wants a USB SSD, which a slow fsync in Prometheus would call for
   diskSelector:
     match: disk.dev_path == "/dev/mmcblk0"
   wipe: false
@@ -17,6 +18,11 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   davydehaas.dev/model: rpi4
+  # On the Servers VLAN (untagged on its switch port), so Cilium peers with the gateway there
+  davydehaas.dev/network: servers
+# Only the control plane and the DaemonSets, so the SD card and the 8 GB stay for etcd
+taints:
+  node-role.kubernetes.io/control-plane: :NoSchedule
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig

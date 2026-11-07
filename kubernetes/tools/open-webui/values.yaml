@@ -3,7 +3,7 @@ open-webui:
   ollama:
     enabled: false
   ollamaUrls:
-    - http://192.168.1.44:11434
+    - http://192.168.10.44:11434
 
   pipelines:
     enabled: false
