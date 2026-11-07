@@ -6,7 +6,8 @@ image:
 
 port: 8123
 
-# For LAN discovery and HomeKit. Pick `end0` as the adapter in the UI; the sidecars keep their health port off 8080.
+# For discovery and HomeKit on midgard-0's network, the Servers VLAN; the gateway reflects mDNS to the other networks.
+# The sidecars keep their health port off 8080.
 hostNetwork: true
 
 podSecurityContext:

@@ -8,7 +8,7 @@ Agent guidance is in [`AGENTS.md`](AGENTS.md).
 - `kubernetes/`: one Helm chart per app, by group, deployed by an ApplicationSet once its `argocd.yaml` has
   `deploy: true`, see [`kubernetes/README.md`](kubernetes/README.md).
 - `talos/`: node configs and the bootstrap runbook, see [`talos/README.md`](talos/README.md).
-- `terraform/`: Cloudflare DNS and the arr settings (devopsarr), see [`terraform/README.md`](terraform/README.md).
+- `terraform/`: Cloudflare DNS, the arr settings (devopsarr) and the UniFi gateway, see [`terraform/README.md`](terraform/README.md).
 - `.devcontainer/`: the CLIs from `mise.toml`, see [`.devcontainer/README.md`](.devcontainer/README.md).
 - `docs/`: the diagrams below ([`docs/diagrams/`](docs/diagrams/README.md)) and manuals of the smart meter and water meter
   gateways.
@@ -149,9 +149,9 @@ The apps with `deploy: true` in their `argocd.yaml`, as `kubernetes/<group>/<app
 
 ## Hardware
 
-|         | Storage node (`midgard-0`)              | 4x Turing RK1 (Turing Pi 2)      |
-| ------- | --------------------------------------- | -------------------------------- |
-| CPU     | Intel i5 10600K (6 cores, amd64)        | Rockchip RK3588 (8 cores, arm64) |
-| RAM     | 2x 16 GB DDR4                           | 16 GB LPDDR4                     |
-| Storage | 128 GB SSD, 500 GB NVMe, 3x 4 TB, 16 TB | eMMC                             |
-| OS      | Talos                                   | Talos                            |
+|         | Storage node (`midgard-0`)              | 4x Turing RK1 (Turing Pi 2)      | Raspberry Pi 4 (`vanaheim-0`)     |
+| ------- | --------------------------------------- | -------------------------------- | --------------------------------- |
+| CPU     | Intel i5 10600K (6 cores, amd64)        | Rockchip RK3588 (8 cores, arm64) | Broadcom BCM2711 (4 cores, arm64) |
+| RAM     | 2x 16 GB DDR4                           | 16 GB LPDDR4                     | 8 GB LPDDR4                       |
+| Storage | 128 GB SSD, 500 GB NVMe, 3x 4 TB, 16 TB | eMMC                             | 128 GB SD card                    |
+| OS      | Talos                                   | Talos                            | Talos                             |

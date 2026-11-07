@@ -5,7 +5,7 @@ data "unifi_firewall_zone" "internal" {
   name = "Internal"
 }
 
-# The clients and, for now, the nodes; DHCP hands out the gateway as DNS server
+# The clients; DHCP hands out the gateway as DNS server
 resource "unifi_network" "lan" {
   name             = "Default"
   purpose          = "corporate"
@@ -98,7 +98,7 @@ resource "unifi_network" "iptv" {
   }
 }
 
-# Isolated: its devices reach the internet, not each other or the other networks
+# Isolated: its devices reach the internet, not each other or the other networks, apart from firewall.tf
 resource "unifi_network" "iot" {
   name             = "IoT"
   purpose          = "corporate"

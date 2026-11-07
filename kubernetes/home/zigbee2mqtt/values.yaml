@@ -78,7 +78,7 @@ zigbee2mqtt:
       user: admin
       version: 5
     serial:
-      port: tcp://192.168.1.30:6638
+      port: tcp://192.168.15.30:6638
       adapter: zstack
     # The chart replaces the whole block, and Zigbee2MQTT refuses to start without the network
     advanced:

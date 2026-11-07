@@ -36,7 +36,9 @@ storage node `midgard-0` (amd64) and the Raspberry Pi `vanaheim-0`, Cilium, and 
   apart from the clients on the LAN; the control plane is `jotunheim-0`, `midgard-0` and `vanaheim-0`, one per machine,
   behind the VIP `192.168.10.10`. LoadBalancer addresses come from `192.168.200.0/24`, routed by BGP to the gateway
   (`terraform/unifi/bgp.conf`). The gateway only port-forwards to an address in one of its own networks, so a forwarded
-  service also needs an L2 address on the Servers VLAN.
+  service also needs an L2 address on the Servers VLAN. The smart devices are on the isolated IoT VLAN
+  (`192.168.15.0/24`); only `midgard-0` and the LAN reach them, and they only reach Mosquitto on `midgard-0`
+  (`terraform/unifi/firewall.tf`).
 - **Traffic.** The UniFi gateway forwards 80, 443 and UDP 443 to the Envoy Gateway's L2 address (`192.168.10.56`), the
   entry point; the home network reaches it on `192.168.200.56`.
   The old domain `*.davydehaas.nl` serves Plex and redirects other names to `davydehaas.dev`
