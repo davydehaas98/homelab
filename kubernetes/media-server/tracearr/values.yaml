@@ -1,7 +1,7 @@
 # Its database, cache and secrets are in templates/ and `tracearr-env`
 image:
   repository: ghcr.io/connorgallopo/tracearr
-  tag: 3.1.5
+  tag: 3.1.6
 
 port: 3000
 
