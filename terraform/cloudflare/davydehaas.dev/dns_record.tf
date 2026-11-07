@@ -144,7 +144,7 @@ resource "cloudflare_dns_record" "kubernetes_private_app" {
   zone_id = var.zone_id
 
   comment = "Private Kubernetes gateway"
-  content = "192.168.1.61"
+  content = "192.168.200.61"
   proxied = false
 }
 
