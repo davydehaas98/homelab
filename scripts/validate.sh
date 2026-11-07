@@ -30,7 +30,7 @@ done
 
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
-    for STACK in terraform/cloudflare/davydehaas.dev terraform/cloudflare/davydehaas.nl terraform/devopsarr; do
+    for STACK in terraform/cloudflare/davydehaas.dev terraform/cloudflare/davydehaas.nl terraform/devopsarr terraform/unifi; do
         (
             cd "${STACK}"
             [ -f .terraform.lock.hcl ] && LOCKED=1
