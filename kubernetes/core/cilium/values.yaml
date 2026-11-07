@@ -50,6 +50,8 @@ cilium:
   operator:
     # Two, so a drain doesn't leave new pods waiting for an IP
     replicas: 2
+    # Restarts on a config change too, as it registers the CRDs of newly enabled features the agents wait for
+    rollOutPods: true
     resources:
       limits:
         memory: 300Mi
