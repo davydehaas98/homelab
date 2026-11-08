@@ -2,7 +2,7 @@
 kubernetes-replicator:
   image:
     repository: quay.io/mittwald/kubernetes-replicator
-    tag: v2.12.4
+    tag: v2.12.6
 
   # Copies a changed or deleted copy back within a minute instead of 30
   args:
