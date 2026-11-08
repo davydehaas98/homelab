@@ -7,20 +7,20 @@ stays in the UI.
 |----------------------|------------------------------------------------------------------------------------------|
 | `network.tf`         | The networks: the LAN, the Servers VLAN of the nodes, IPTV, IoT and Guest                |
 | `port_forwards.tf`   | The port forwards to the public Envoy Gateway and Plex                                   |
-| `wlan.tf`            | The Wi-Fi networks; only the guest passphrase is set here, from `terraform.tfvars`       |
+| `wlan.tf`            | The Wi-Fi networks, without their passphrases, which are set in the UI                   |
 | `bgp.tf`, `bgp.conf` | The gateway's side of the BGP sessions with Cilium, as FRR config                        |
 | `clients.tf`         | The fixed addresses of the nodes and the BMC on Servers, and of the smart devices on IoT |
 | `firewall.tf`        | The exceptions to the isolation of IoT, for the apps on `midgard-0` and the LAN          |
 | `imports.tf`         | Import blocks that adopt the settings made in the UI                                     |
-| `ids.sh`             | Lists the IDs of the networks and port forwards, for imports                             |
+| `ids.sh`             | Lists the IDs of the managed settings, for imports                                       |
 
 ## Applying
 
 Only by hand, from the home network: the provider talks to the gateway at `192.168.1.1`. The state is local
 (`terraform.tfstate`, gitignored); if it is lost, the import blocks adopt the settings again.
 
-The secrets are in `terraform.tfvars` (gitignored): `unifi_api_key`, made in UniFi Network under Settings → Control
-Plane → Integrations, and `guest_wifi_passphrase`. Never run `terraform fmt` on the whole directory, as it prints that
+The API key is `unifi_api_key` in `terraform.tfvars` (gitignored), made in UniFi Network under Settings → Control
+Plane → Integrations. Never run `terraform fmt` on the whole directory, as it prints that
 file. In the dev container:
 
 ```shell

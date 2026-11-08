@@ -10,14 +10,14 @@ resource "unifi_port_forward" "yggdrasil" {
   }
 
   forward = {
-    ip   = "192.168.10.56"
+    ip   = cidrhost(local.subnets.servers, 56)
     port = "80,443"
   }
 }
 
 # To Plex on midgard-0's host network (kubernetes/media-server/plex)
 resource "unifi_port_forward" "plex" {
-  name     = "Home server"
+  name     = "Plex"
   protocol = "tcp_udp"
 
   wan = {
@@ -26,7 +26,7 @@ resource "unifi_port_forward" "plex" {
   }
 
   forward = {
-    ip   = "192.168.10.44"
+    ip   = local.midgard_ip
     port = "32400"
   }
 }

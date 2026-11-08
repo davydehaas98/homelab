@@ -13,7 +13,7 @@ resource "unifi_firewall_policy" "midgard_to_iot" {
   source = {
     zone_id            = data.unifi_firewall_zone.internal.id
     matching_target    = "IP"
-    ips                = ["192.168.10.44"]
+    ips                = [local.midgard_ip]
     port_matching_type = "ANY"
   }
   destination = {
@@ -41,7 +41,7 @@ resource "unifi_firewall_policy" "iot_to_mosquitto" {
   destination = {
     zone_id            = data.unifi_firewall_zone.internal.id
     matching_target    = "IP"
-    ips                = ["192.168.10.44"]
+    ips                = [local.midgard_ip]
     port_matching_type = "SPECIFIC"
     port               = "1883"
   }

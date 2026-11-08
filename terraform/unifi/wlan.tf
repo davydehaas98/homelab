@@ -54,7 +54,7 @@ resource "unifi_wlan" "iot" {
   }
 }
 
-# Guests can't see each other either; the passphrase comes from terraform.tfvars and is never written to the state
+# Guests can't see each other either
 resource "unifi_wlan" "guest" {
   name          = "Bierdopje Guest"
   security      = "wpapsk"
@@ -64,9 +64,6 @@ resource "unifi_wlan" "guest" {
   wlan_bands    = ["2g", "5g"]
   is_guest      = true
   l2_isolation  = true
-
-  passphrase_wo         = var.guest_wifi_passphrase
-  passphrase_wo_version = 1
 
   pmf_mode = "optional"
 

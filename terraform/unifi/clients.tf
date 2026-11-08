@@ -11,6 +11,9 @@ locals {
     "midgard-0"   = { mac = "a8:a1:59:26:4c:4a", host = 44 }
     "vanaheim-0"  = { mac = "dc:a6:32:bf:45:b4", host = 45 }
   }
+
+  # The host network of the apps on midgard-0, for firewall.tf and port_forwards.tf
+  midgard_ip = cidrhost(local.subnets.servers, local.nodes["midgard-0"].host)
 }
 
 resource "unifi_client" "node" {
@@ -19,17 +22,15 @@ resource "unifi_client" "node" {
   mac            = each.value.mac
   name           = each.key
   network_id     = unifi_network.servers.id
-  fixed_ip       = "192.168.10.${each.value.host}"
+  fixed_ip       = cidrhost(local.subnets.servers, each.value.host)
   allow_existing = true
 }
 
-# Smart devices on the IoT VLAN, keeping the last part of their LAN address. A device moves at the apply, by its MAC,
-# and needs a new lease there: reconnect it, or restart it when wired.
+# Smart devices on the IoT VLAN that others connect to, below its DHCP range; the rest only connect out and take a
+# lease. A device moves at the apply, by its MAC, and needs a new lease there: reconnect it, or restart it when wired.
 locals {
   iot_devices = {
-    "SLZB-06"                   = { mac = "94:54:c5:ea:2e:0f", host = 30 }
-    "Smart-Gateways-P1"         = { mac = "2c:bc:bb:92:ec:dc", host = 172 }
-    "Smart-Gateways-Watermeter" = { mac = "c0:5d:89:b1:c3:34", host = 196 }
+    "SLZB-06" = { mac = "94:54:c5:ea:2e:0f", host = 30 }
   }
 }
 
@@ -39,6 +40,6 @@ resource "unifi_client" "iot" {
   mac            = each.value.mac
   name           = each.key
   network_id     = unifi_network.iot.id
-  fixed_ip       = "192.168.15.${each.value.host}"
+  fixed_ip       = cidrhost(local.subnets.iot, each.value.host)
   allow_existing = true
 }
