@@ -104,10 +104,10 @@ locals {
     "WEBRip-720p"  = { id = 10, min_size = 3, preferred_size = 95, max_size = 130 }
     "WEBDL-720p"   = { id = 11, min_size = 3, preferred_size = 95, max_size = 130 }
     "Bluray-720p"  = { id = 12, min_size = 4, preferred_size = 95, max_size = 130 }
-    "HDTV-1080p"   = { id = 8, min_size = 4, preferred_size = 95, max_size = 125 }
-    "WEBRip-1080p" = { id = 13, min_size = 4, preferred_size = 95, max_size = 1000 }
-    "WEBDL-1080p"  = { id = 14, min_size = 4, preferred_size = 95, max_size = 1000 }
-    "Bluray-1080p" = { id = 15, min_size = 4, preferred_size = 95, max_size = 1000 }
+    "HDTV-1080p"   = { id = 8, min_size = 4, preferred_size = 30, max_size = 45 }
+    "WEBRip-1080p" = { id = 13, min_size = 4, preferred_size = 30, max_size = 45 }
+    "WEBDL-1080p"  = { id = 14, min_size = 4, preferred_size = 30, max_size = 45 }
+    "Bluray-1080p" = { id = 15, min_size = 4, preferred_size = 30, max_size = 45 }
     "HDTV-2160p"   = { id = 17, min_size = 35, preferred_size = 250, max_size = 1000 }
     "WEBRip-2160p" = { id = 18, min_size = 35, preferred_size = 250, max_size = 1000 }
     "WEBDL-2160p"  = { id = 19, min_size = 35, preferred_size = 250, max_size = 1000 }

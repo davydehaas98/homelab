@@ -18,9 +18,26 @@ resource "cloudflare_dns_record" "root_caa" {
   type    = "CAA"
   zone_id = var.zone_id
 
+  comment = "Allow Let's Encrypt (cert-manager) to issue certificates"
   data = {
     flags = 0
     tag   = "issue"
-    value = "davydehaas.nl"
+    value = "letsencrypt.org; validationmethods=dns-01"
+  }
+}
+
+resource "cloudflare_dns_record" "root_caa_issuewild" {
+  provider = cloudflare.nl
+
+  name    = "davydehaas.nl"
+  ttl     = 1
+  type    = "CAA"
+  zone_id = var.zone_id
+
+  comment = "Allow Let's Encrypt (cert-manager) to issue wildcard certificates"
+  data = {
+    flags = 0
+    tag   = "issuewild"
+    value = "letsencrypt.org; validationmethods=dns-01"
   }
 }

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "terraform/cloudflare/davydehaas.dev/**"
+      - "terraform/cloudflare/**"
       - ".github/workflows/terraform-cloudflare.yaml"
   workflow_dispatch:
 
@@ -14,18 +14,29 @@ env:
   TF_VAR_ipv4_address: ${{ secrets.SERVER_IPV4_ADDRESS }}
 
 jobs:
-  plan:
-    name: Plan
+  # One state per zone, each with its own role on the state bucket
+  terraform:
+    name: ${{ matrix.zone }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - zone: davydehaas.dev
+            role: github-state-cloudflare-dev
+          - zone: davydehaas.nl
+            role: github-state-cloudflare-nl
+    # A newer run waits for the apply of an older one
+    concurrency:
+      group: terraform-cloudflare-${{ matrix.zone }}
+      cancel-in-progress: false
     defaults:
       run:
-        working-directory: terraform/cloudflare/davydehaas.dev
+        working-directory: terraform/cloudflare/${{ matrix.zone }}
     permissions:
       id-token: write
       contents: read
-    outputs:
-      changes: ${{ steps.plan.outputs.changes }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -33,7 +44,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-state-cloudflare-dev
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ matrix.role }}
           aws-region: eu-central-1
 
       - name: Setup Terraform
@@ -51,52 +62,17 @@ jobs:
       - name: Validate
         run: terraform validate
 
-      # Exit code 2 means changes, which the apply job waits on
+      # Exit code 2 means changes. The plan file holds the secrets, so it stays on the runner.
       - name: Plan
         id: plan
         run: |
           set +e
-          terraform plan -input=false -detailed-exitcode
+          terraform plan -input=false -detailed-exitcode -out=tfplan
           code=$?
           set -e
           [ "$code" -ne 1 ] || exit 1
           if [ "$code" -eq 2 ]; then echo "changes=true"; else echo "changes=false"; fi >> "$GITHUB_OUTPUT"
 
-  # Plans again, as a plan file would carry the secrets in an artifact
-  apply:
-    name: Apply
-    needs: plan
-    if: needs.plan.outputs.changes == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # A newer waiting apply replaces an older one
-    concurrency:
-      group: terraform-cloudflare-davydehaas-dev
-      cancel-in-progress: false
-    defaults:
-      run:
-        working-directory: terraform/cloudflare/davydehaas.dev
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.1
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.3.0
-        with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-state-cloudflare-dev
-          aws-region: eu-central-1
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4.0.1
-        with:
-          terraform_version: "v1.17.1"
-          terraform_wrapper: false
-
-      - name: Init
-        run: terraform init -input=false
-
       - name: Apply
-        run: terraform apply -input=false -auto-approve
+        if: steps.plan.outputs.changes == 'true'
+        run: terraform apply -input=false tfplan

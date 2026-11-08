@@ -76,9 +76,8 @@ Library charts only render through an app that uses them. `kubectl apply --dry-r
 against the cluster.
 
 Terraform without credentials: `terraform init -backend=false && terraform validate && terraform fmt -check`. CI
-applies `cloudflare/davydehaas.dev` on a merge to `main`, `cloudflare/davydehaas.nl` on a manual run, and `devopsarr/`
-and `unifi/` are applied by hand, see `terraform/README.md`. Never commit
-`*.tfvars` or state.
+applies both `cloudflare/` stacks on a merge to `main`, and `devopsarr/` and `unifi/` are applied by hand, see
+`terraform/README.md`. Never commit `*.tfvars` or state.
 
 ## Talos
 

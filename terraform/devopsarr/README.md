@@ -5,16 +5,16 @@ defaults. Settings left out here are managed in the apps' UI.
 
 ## Files
 
-| File                  | Holds                                                                                          |
-|-----------------------|------------------------------------------------------------------------------------------------|
-| `sonarr.tf`           | Root folder, naming, media management, SABnzbd, delay profile, Discord, Plex metadata, quality definitions |
-| `radarr.tf`           | Root folder, naming, media management, SABnzbd, delay profile, Discord, quality definitions   |
-| `lidarr.tf`           | Root folder, the `Lossless` quality profile, naming, media management, Discord                 |
-| `prowlarr.tf`         | The apps Prowlarr syncs its indexers to, the Usenet sync profile and the NZBgeek indexer       |
-| `custom_formats.tf`   | Custom formats of Sonarr and Radarr with their score per quality profile                       |
-| `quality_profiles.tf` | The `1080p/720p` and `2160p` quality profiles of Sonarr and Radarr                             |
-| `env.sh`              | Exports the secrets as `TF_VAR_*`, see below                                                   |
-| `imports.tf`          | Import blocks that adopt the settings made in the UI                                           |
+| File                  | Holds                                                                                    |
+|-----------------------|------------------------------------------------------------------------------------------|
+| `sonarr.tf`           | The same as `radarr.tf`, plus the Plex metadata                                          |
+| `radarr.tf`           | Root folder, naming, media management, SABnzbd, delay profile, Discord, quality sizes    |
+| `lidarr.tf`           | Root folder, the `Lossless` quality profile, naming, media management, Discord           |
+| `prowlarr.tf`         | The apps Prowlarr syncs its indexers to, the Usenet sync profile and the NZBgeek indexer |
+| `custom_formats.tf`   | Custom formats of Sonarr and Radarr with their score per quality profile                 |
+| `quality_profiles.tf` | The `1080p/720p` and `2160p` quality profiles of Sonarr and Radarr                       |
+| `env.sh`              | Exports the secrets as `TF_VAR_*`, see below                                             |
+| `imports.tf`          | Import blocks that adopt the settings made in the UI                                     |
 
 Indexers reach Sonarr, Radarr and Lidarr through the Prowlarr sync only. The Lidarr provider is behind on Lidarr's API
 and crashes on its delay profile and download clients, so those stay in the UI.
@@ -47,5 +47,6 @@ terraform init && terraform plan
 ```
 
 `env.sh` reads the API keys and webhooks from the cluster. Prowlarr only returns the NZBgeek key masked, so it is the
-SealedSecret `prowlarr-nzbgeek` in `media-server/prowlarr`; to change the key, seal the new one there. The providers use the names on the private gateway, so a plan needs the home network or the VPN. As the APIs
-return no secrets, the first apply after an import writes them again. A change made in the UI shows as drift in the next plan.
+SealedSecret `prowlarr-nzbgeek` in `media-server/prowlarr`; to change the key, seal the new one there. The providers use
+the names on the private gateway, so a plan needs the home network or the VPN. As the APIs return no secrets, the first
+apply after an import writes them again. A change made in the UI shows as drift in the next plan.

@@ -9,11 +9,12 @@ Cloudflare adds its own CAs to the CAA records in `root.tf`.
 **State** is in S3 bucket `davydehaas-terraform-state` (`eu-central-1`), key `cloudflare/davydehaas.dev/terraform.tfstate`,
 kept from when this lived in `home-server`.
 
-**CI** (`.github/workflows/terraform-cloudflare.yaml`) plans on pushes to `main` that touch this stack and on manual
-runs. A plan with changes is applied right after, with no approval, so a merge to `main` changes DNS. It needs the
-repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` (DNS edit on the zone) and `SERVER_IPV4_ADDRESS`. The IAM
-role `github-state-cloudflare-dev` comes from the `bootstrap` stack of `home-server`, and its trust policy must allow the
-subject `repo:davydehaas98/homelab:ref:refs/heads/main`, for both jobs.
+**CI** (`.github/workflows/terraform-cloudflare.yaml`) runs a job per zone, for this stack and `davydehaas.nl`, on
+pushes to `main` that touch `terraform/cloudflare/` and on manual runs. A plan with changes is applied right after, with
+no approval, so a merge to `main` changes DNS. It needs the repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`
+(DNS edit on both zones) and `SERVER_IPV4_ADDRESS`. The IAM roles `github-state-cloudflare-dev` and
+`github-state-cloudflare-nl` come from the `bootstrap` stack of `home-server`, and their trust policies must allow the
+subject `repo:davydehaas98/homelab:ref:refs/heads/main`.
 
 **Locally**, set `TF_VAR_cloudflare_api_token` and `TF_VAR_ipv4_address`, then
 `terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with
