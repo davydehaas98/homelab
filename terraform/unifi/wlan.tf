@@ -1,12 +1,16 @@
 # The Wi-Fi networks of the U7 Lite. The passphrases are set in the UI and left out here, so they stay out of git.
 
+# The default AP group, of all access points; the provider needs it set or a new WLAN fails its apply
+data "unifi_ap_group" "all" {
+  name = "All APs"
+}
+
 locals {
-  # The site's default user group, without bandwidth limits
+  # The site's default user group, without bandwidth limits; the provider has no data source to look it up
   default_user_group_id = "68adf0094834f137f22b4278"
 
-  # The default AP group, of all access points; the provider needs it set or a new WLAN fails its apply
   all_access_points = {
-    ids  = ["68adf0094834f137f22b427d"]
+    ids  = [data.unifi_ap_group.all.id]
     mode = "all"
   }
 }

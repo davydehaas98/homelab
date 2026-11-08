@@ -56,7 +56,30 @@ resource "cloudflare_dns_record" "spf1" {
   zone_id = var.zone_id
 
   comment = "SPF record to allow Cloudflare Email Routing"
-  content = "\"v=spf1 include:_spf.mx.cloudflare.email ~all\""
+  content = "\"v=spf1 include:_spf.mx.cloudflare.net ~all\""
+}
+
+# The mail servers of Cloudflare Email Routing, as its dashboard lists them
+locals {
+  email_routing_mx = {
+    isaac = 13
+    linda = 20
+    amir  = 62
+  }
+}
+
+resource "cloudflare_dns_record" "mx" {
+  for_each = local.email_routing_mx
+  provider = cloudflare.nl
+
+  name     = "davydehaas.nl"
+  ttl      = 1
+  type     = "MX"
+  zone_id  = var.zone_id
+  priority = each.value
+
+  comment = "Cloudflare Email Routing"
+  content = "${each.key}.mx.cloudflare.net"
 }
 
 resource "cloudflare_dns_record" "dmarc" {

@@ -39,3 +39,21 @@ import {
   to = cloudflare_zone_setting.this[each.key]
   id = "${var.zone_id}/${each.key}"
 }
+
+# Signed by Cloudflare; it stays pending until the DS record of the output dnssec_ds is set at the registrar
+resource "cloudflare_zone_dnssec" "this" {
+  provider = cloudflare.nl
+
+  zone_id = var.zone_id
+  status  = "active"
+}
+
+import {
+  to = cloudflare_zone_dnssec.this
+  id = var.zone_id
+}
+
+output "dnssec_ds" {
+  description = "The DS record to set at the registrar"
+  value       = cloudflare_zone_dnssec.this.ds
+}

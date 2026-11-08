@@ -13,8 +13,8 @@ kept from when this lived in `home-server`.
 pushes to `main` that touch `terraform/cloudflare/` and on manual runs. A plan with changes is applied right after, with
 no approval, so a merge to `main` changes DNS. It needs the repository secrets `AWS_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`
 (DNS, Zone Settings and SSL and Certificates edit on both zones) and `SERVER_IPV4_ADDRESS`. The IAM roles
-`github-state-cloudflare-dev` and `github-state-cloudflare-nl` come from the `bootstrap` stack of `home-server`, and
-their trust policies must allow the subject `repo:davydehaas98/homelab:ref:refs/heads/main`.
+`github-state-cloudflare-dev` and `github-state-cloudflare-nl` come from the [`bootstrap`](../../bootstrap/README.md)
+stack, and their trust policies must allow the subject `repo:davydehaas98/homelab:ref:refs/heads/main`.
 
 **Locally**, set `TF_VAR_cloudflare_api_token` and `TF_VAR_ipv4_address`, then
 `terraform init && terraform plan`. Commit `.terraform.lock.hcl`, and after a provider bump refresh it with

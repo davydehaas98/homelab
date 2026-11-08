@@ -70,3 +70,10 @@ import {
   to = unifi_firewall_policy.lan_to_iot
   id = "6aef96fa90a452520c7d813a"
 }
+
+import {
+  for_each = local.switch_ports
+
+  to = unifi_device_port.switch[each.key]
+  id = "${local.switch_mac}/${each.key}"
+}

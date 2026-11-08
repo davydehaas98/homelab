@@ -9,6 +9,7 @@ stays in the UI.
 | `port_forwards.tf`   | The port forwards to the public Envoy Gateway and Plex                                   |
 | `wlan.tf`            | The Wi-Fi networks, without their passphrases, which are set in the UI                   |
 | `bgp.tf`, `bgp.conf` | The gateway's side of the BGP sessions with Cilium, as FRR config                        |
+| `switch.tf`          | The switch ports whose native network is not the LAN, such as the Turing Pi's            |
 | `clients.tf`         | The fixed addresses of the nodes and the BMC on Servers, and of the smart devices on IoT |
 | `firewall.tf`        | The exceptions to the isolation of IoT, for the apps on `midgard-0` and the LAN          |
 | `imports.tf`         | Import blocks that adopt the settings made in the UI                                     |
