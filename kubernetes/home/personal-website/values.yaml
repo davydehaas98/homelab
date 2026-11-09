@@ -1,7 +1,6 @@
-# A placeholder until the website has an arm64 image
 image:
-  repository: docker.io/nginxinc/nginx-unprivileged
-  tag: 1.31.7-alpine
+  repository: ghcr.io/davydehaas98/personal-website
+  tag: 2026.11.0
 
 replicas: 2
 
