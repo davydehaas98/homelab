@@ -2,6 +2,7 @@
 # Keep equal to the Argo CD version in kubernetes/core/argocd
 argocd = "3.6.1"
 cilium-cli = "0.20.2"
+crane = "0.22.1"
 gh = "2.103.3"
 helm = "4.3.1"
 k9s = "0.51.0"

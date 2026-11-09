@@ -14,8 +14,7 @@
         "patch",
         "digest"
       ],
-      "automerge": true,
-      "ignoreTests": true
+      "automerge": true
     },
     {
       "description": "Talos on the nodes (tuppr) and talosctl in mise.toml, in one PR.",

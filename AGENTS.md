@@ -67,10 +67,11 @@ storage node `midgard-0` (amd64) and the Raspberry Pi `vanaheim-0`, Cilium, and 
 ## Validating
 
 CLI versions are pinned in `mise.toml`, and the dev container (`.devcontainer/`) has them. Always run the CLIs in the
-dev container, never on the host, which may lack them or have other versions. No CI checks the charts, so validate
-before pushing with `scripts/validate.sh` (yamllint on the plain YAML, see `.yamllint`, and per app the dependencies,
-lint and a render with a Namespace; `-t` adds the Terraform). `scripts/render-diff.sh` shows what a change does to an
-app's manifests. The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret (`scripts/seal-secret.sh`).
+dev container, never on the host, which may lack them or have other versions. Validate before pushing with
+`scripts/validate.sh` (yamllint on the plain YAML, see `.yamllint`, and per app the dependencies, lint, a render with a
+Namespace and the architectures of its images; `-t` adds the Terraform). The `validate` workflow runs it on the apps a
+pull request changes, and Renovate only automerges when it passes. `scripts/render-diff.sh` shows what a change does to
+an app's manifests. The same scripts triage an app (`scripts/debug-app.sh`) and seal a Secret (`scripts/seal-secret.sh`).
 
 Library charts only render through an app that uses them. `kubectl apply --dry-run=server -f -` checks a render
 against the cluster.

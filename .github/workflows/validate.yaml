@@ -1,0 +1,52 @@
+name: Validate
+
+# On every pull request, without path filters, so the check always reports and can be required
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup tools
+        uses: jdx/mise-action@v5.2.7
+        with:
+          install_args: crane helm uv yq pipx:yamllint
+
+      # The changed apps, and every app of the library chart when it changed
+      - name: Find changed apps
+        id: apps
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+        run: |
+          CHANGED=$(git diff --name-only "${BASE}...HEAD")
+          APPS=$(echo "${CHANGED}" | sed -n 's#^kubernetes/\([^_/][^/]*/[^/]*\)/.*#\1#p' | sort -u)
+          if echo "${CHANGED}" | grep -q '^kubernetes/_library/app/'; then
+            LIBRARY_APPS=$(grep -l 'file://../../_library/app' kubernetes/*/*/Chart.yaml | cut -d/ -f2,3)
+            APPS=$(printf '%s\n' "${APPS}" "${LIBRARY_APPS}")
+          fi
+          APPS=$(for APP in ${APPS}; do
+            if [ -f "kubernetes/${APP}/Chart.yaml" ]; then echo "${APP}"; fi
+          done | sort -u | tr '\n' ' ')
+          echo "Apps: ${APPS:-none}"
+          echo "apps=${APPS}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate
+        run: sh scripts/validate.sh ${{ steps.apps.outputs.apps }}

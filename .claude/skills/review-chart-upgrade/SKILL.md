@@ -19,6 +19,7 @@ Renovate automerges patch and digest updates of the charts and image tags; the r
    - new hooks: Argo CD adds `pre-delete`/`post-delete` finalizers for delete hooks, which run when the Application is
      deleted;
    - changed security contexts, resources or images.
-4. **Validate** with `scripts/validate.sh <group>/<app>`.
+4. **Validate** with `scripts/validate.sh <group>/<app>`, which also fails on an image without the architecture of
+   its node; a new tag can lack one even where the old tag had it.
 5. **Report** what changes, what in `values.yaml` must change with it, and the risk. For an app with state, say what a
    rollback would mean (a database migrated by the new version may not run on the old one).
