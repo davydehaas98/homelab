@@ -1,8 +1,8 @@
 apiVersion: v2
 name: seaweedfs
-version: 1.0.3
+version: 1.0.4
 
 dependencies:
   - name: seaweedfs
-    version: 4.52.0
+    version: 4.53.0
     repository: https://seaweedfs.github.io/seaweedfs/helm
