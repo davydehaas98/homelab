@@ -1,0 +1,29 @@
+# The other names redirect to davydehaas.nl. A route needs a listener per hostname, so not the library's route.aliases
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  annotations:
+    davydehaas.dev/auth: redirect
+  name: personal-website-aliases
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https-apex
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https-nl
+  hostnames:
+    - www.davydehaas.nl
+    - davydehaas.dev
+    - www.davydehaas.dev
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            hostname: davydehaas.nl
+            statusCode: 301
