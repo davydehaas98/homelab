@@ -20,22 +20,3 @@ spec:
             hostname: {{ . }}.davydehaas.dev
             statusCode: 301
 {{- end }}
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  annotations:
-    davydehaas.dev/auth: redirect
-  name: nl-redirect-apex
-spec:
-  parentRefs:
-    - name: envoy-gateway
-      sectionName: web-https-nl-apex
-  hostnames:
-    - davydehaas.nl
-  rules:
-    - filters:
-        - type: RequestRedirect
-          requestRedirect:
-            hostname: davydehaas.dev
-            statusCode: 301

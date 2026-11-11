@@ -49,7 +49,7 @@ spec:
       hostname: "*.davydehaas.nl"
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
@@ -62,7 +62,7 @@ spec:
       hostname: davydehaas.nl
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All
       tls:
         mode: Terminate
         certificateRefs:

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="5">
+  <noscript><meta http-equiv="refresh" content="5"></noscript>
   <title>Unavailable</title>
   <style>
     :root { color-scheme: light dark; --bg: #f5f5f4; --card: #ffffff; --text: #1c1917; --muted: #78716c; --accent: #0f766e; }
@@ -23,7 +23,17 @@
   <main>
     <p class="code">%RESPONSE_CODE%</p>
     <h1>%REQ(:AUTHORITY)% is unavailable</h1>
-    <p>The app is down or restarting. This page reloads every 5 seconds.</p>
+    <p>The app is down or restarting.</p>
+    <p>Reloading in <span id="seconds">5</span> s</p>
   </main>
+  <script>
+    let seconds = 5;
+    const label = document.getElementById("seconds");
+    setInterval(() => {
+      seconds -= 1;
+      if (seconds <= 0) location.reload();
+      else label.textContent = seconds;
+    }, 1000);
+  </script>
 </body>
 </html>

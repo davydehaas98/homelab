@@ -53,6 +53,9 @@ route:
             # yamllint disable-line rule:line-length
             value: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
   hostnames:
+    - davydehaas.nl
+  aliases:
+    - www.davydehaas.nl
     - davydehaas.dev
     - www.davydehaas.dev
   parentRefs:
@@ -62,3 +65,9 @@ route:
     - name: envoy-gateway
       namespace: envoy-gateway
       sectionName: web-https-apex
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https-nl
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https-nl-apex
