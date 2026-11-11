@@ -5,14 +5,31 @@
   "baseBranchPatterns": [
     "main"
   ],
-  "automergeSchedule": [
-    "0 * * * *"
-  ],
+  "argocd": {
+    "managerFilePatterns": [
+      "/\\.yaml$/"
+    ]
+  },
   "packageRules": [
     {
       "matchUpdateTypes": [
         "patch",
         "digest"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "A date version (2026.11.1) is no semver, so its next release can look like a patch.",
+      "matchCurrentVersion": "/^v?20\\d{2}[.-]\\d{1,2}([.-]|$)/",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "The personal website is my own image, so every release merges.",
+      "matchPackageNames": [
+        "ghcr.io/davydehaas98/personal-website"
       ],
       "automerge": true
     },
@@ -53,10 +70,5 @@
       ],
       "allowedVersions": "<8"
     }
-  ],
-  "argocd": {
-    "managerFilePatterns": [
-      "/\\.yaml$/"
-    ]
-  }
+  ]
 }
