@@ -11,6 +11,14 @@ apiVersion: v1alpha1
 kind: DHCPv4Config
 name: eno1
 ---
+# The e1000e of this I219 can stall sending with segmentation offload on, which cut the node off for minutes
+apiVersion: v1alpha1
+kind: EthernetConfig
+name: eno1
+features:
+  tx-tcp-segmentation: false
+  tx-generic-segmentation: false
+---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
 provisioning:
