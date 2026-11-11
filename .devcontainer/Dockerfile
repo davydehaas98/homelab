@@ -1,4 +1,4 @@
-FROM debian:trixie-20261005-slim
+FROM debian:13.7-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git jq openssh-client xz-utils && rm -rf /var/lib/apt/lists/*
 
@@ -10,6 +10,4 @@ ENV MISE_DATA_DIR=/opt/mise \
 COPY mise.toml /etc/mise/config.toml
 RUN mise install
 
-RUN curl -fsSL https://claude.ai/install.sh | bash
-ENV PATH="/root/.local/bin:${PATH}" \
-    CLAUDE_CONFIG_DIR=/root/.claude
+ENV CLAUDE_CONFIG_DIR=/root/.claude
