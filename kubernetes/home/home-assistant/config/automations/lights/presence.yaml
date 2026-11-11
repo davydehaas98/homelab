@@ -24,7 +24,7 @@
       target:
         entity_id:
           - light.kitchen_lightstrip
-          - light.bedroom_lamp_go
+          - light.living_lamp_go
         area_id:
           - kitchen
           - bedroom
