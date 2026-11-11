@@ -172,19 +172,4 @@ loki:
           name: loki-s3-credentials
 
   gateway:
-    enabled: true
-    image:
-      repository: nginxinc/nginx-unprivileged
-      tag: 1.31.7-alpine
-    podSecurityContext:
-      seccompProfile:
-        type: RuntimeDefault
-    verboseLogging: false
-    replicas: 1
-    resources:
-      limits:
-        memory: 40Mi
-      requests:
-        cpu: 20m
-        memory: 30Mi
-    affinity: null
+    enabled: false

@@ -22,7 +22,7 @@ grafana:
           type: loki
           access: proxy
           uid: loki
-          url: http://loki-gateway.loki.svc.cluster.local
+          url: http://loki-read.loki.svc.cluster.local:3100
           editable: false
         - name: Prometheus
           type: prometheus
