@@ -2,7 +2,7 @@
 # config/ reaches the volume through the sidecar below: reload the YAML after a change.
 image:
   repository: ghcr.io/home-assistant/home-assistant
-  tag: 2026.10.4
+  tag: 2026.11.1
 
 port: 8123
 
