@@ -1,9 +1,4 @@
 jellyfin:
-  # No hardware transcoding
-  image:
-    repository: docker.io/jellyfin/jellyfin
-    tag: "12.4"
-
   deploymentStrategy:
     type: Recreate
 
@@ -22,8 +17,6 @@ jellyfin:
       drop:
         - ALL
 
-  # The library scan (every 12 hours) starts with a burst of over 1Gi within seconds, which a limit of 1.5Gi killed
-  # every time; idle it uses about 250Mi
   resources:
     limits:
       cpu: 4000m
@@ -31,11 +24,6 @@ jellyfin:
     requests:
       cpu: 300m
       memory: 1000Mi
-
-  jellyfin:
-    env:
-      - name: TZ
-        value: Europe/Amsterdam
 
   tolerations:
     - key: davydehaas.dev/dedicated

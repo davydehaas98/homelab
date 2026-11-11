@@ -1,10 +1,5 @@
 # A SealedSecret cannot be copied; annotate the Secret it makes
 kubernetes-replicator:
-  image:
-    repository: quay.io/mittwald/kubernetes-replicator
-    tag: v2.12.6
-
-  # Copies a changed or deleted copy back within a minute instead of 30
   args:
     - --resync-period=1m
 

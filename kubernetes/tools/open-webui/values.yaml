@@ -13,8 +13,6 @@ open-webui:
   enableOpenaiApi: false
 
   extraEnvVars:
-    - name: TZ
-      value: Europe/Amsterdam
     # Set ENABLE_LOGIN_FORM to "false" once the SSO login works
     - name: WEBUI_URL
       value: https://open-webui.davydehaas.dev

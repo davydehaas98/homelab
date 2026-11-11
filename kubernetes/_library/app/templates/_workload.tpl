@@ -66,7 +66,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-            {{- range $name, $value := merge (deepCopy (.Values.env | default dict)) (dict "TZ" "Europe/Amsterdam") }}
+            {{- range $name, $value := merge (deepCopy (.Values.env | default dict)) (dict "TZ" "UTC") }}
             - name: {{ $name }}
               {{- if kindIs "map" $value }}
               valueFrom:
