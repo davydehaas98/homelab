@@ -1,7 +1,7 @@
 # Only the persistence database is on the volume
 image:
   repository: docker.io/library/eclipse-mosquitto
-  tag: 2.0.22
+  tag: 2.1.2-alpine
 
 port: 1883
 # The meter gateways use the address of midgard-0
