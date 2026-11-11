@@ -14,7 +14,7 @@ stern = "1.35.0"
 # Keep equal to the Talos version on the nodes
 talosctl = "1.14.5"
 # Keep equal to the version in the terraform-cloudflare workflow
-terraform = "1.17.1"
+terraform = "1.17.2"
 # For pipx
 uv = "0.13.7"
 yq = "4.54.3"
