@@ -16,8 +16,6 @@ node-problem-detector:
       enabled: true
     prometheusRule:
       enabled: true
-      defaultRules:
-        create: true
 
   resources:
     limits:

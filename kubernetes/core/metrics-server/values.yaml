@@ -1,18 +1,6 @@
 metrics-server:
   replicas: 2
 
-  serviceAccount:
-    create: true
-
-  rbac:
-    create: true
-
-  apiService:
-    create: true
-
-  hostNetwork:
-    enabled: false
-
   podDisruptionBudget:
     enabled: true
     minAvailable: 1
@@ -23,10 +11,6 @@ metrics-server:
     - --kubelet-use-node-status-port
     - --metric-resolution=15s
     - --kubelet-insecure-tls
-
-  service:
-    type: ClusterIP
-    port: 443
 
   metrics:
     enabled: true

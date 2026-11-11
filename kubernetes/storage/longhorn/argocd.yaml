@@ -1,3 +1,0 @@
-deploy: false
-autoSync: false
-namespace: longhorn-system

@@ -25,44 +25,33 @@ zfs-localpv:
         effect: NoSchedule
 
 # Existing datasets `<pool>/k8s/<name>`, imported as PV `zfs-<name>` for `namespace`/`claim`
+# (`pool` defaults to fast, `claim` to the name)
 volumes:
   - name: actual-budget-config
-    pool: fast
     size: 1Gi
     namespace: actual-budget
-    claim: actual-budget-config
   - name: adguard-home-config
-    pool: fast
     size: 2Gi
     namespace: adguard-home
-    claim: adguard-home-config
   - name: airtrail-database
-    pool: fast
     size: 2Gi
     namespace: airtrail
     claim: airtrail-database-1
   - name: authentik-database
-    pool: fast
     size: 2Gi
     namespace: authentik
     claim: authentik-database-1
   - name: factorio-config
-    pool: fast
     size: 5Gi
     namespace: factorio
-    claim: factorio-config
   - name: grafana-storage
-    pool: fast
     size: 16Gi
     namespace: grafana
     claim: storage-grafana-0
   - name: home-assistant-config
-    pool: fast
     size: 5Gi
     namespace: home-assistant
-    claim: home-assistant-config
   - name: immich-database
-    pool: fast
     size: 32Gi
     namespace: immich
     claim: immich-database-1
@@ -70,14 +59,11 @@ volumes:
     pool: tank
     size: 200Gi
     namespace: immich
-    claim: immich-library
   - name: loki-backend
-    pool: fast
     size: 5Gi
     namespace: loki
     claim: data-loki-backend-0
   - name: loki-write
-    pool: fast
     size: 5Gi
     namespace: loki
     claim: data-loki-write-0
@@ -89,108 +75,72 @@ volumes:
     namespace: media-server
     claim: backups
   - name: bazarr-config
-    pool: fast
     size: 1Gi
     namespace: media-server
-    claim: bazarr-config
   - name: dispatcharr-config
-    pool: fast
     size: 5Gi
     namespace: media-server
-    claim: dispatcharr-config
   - name: jellyfin-config
-    pool: fast
     size: 20Gi
     namespace: media-server
-    claim: jellyfin-config
   - name: lidarr-config
-    pool: fast
     size: 2Gi
     namespace: media-server
-    claim: lidarr-config
   - name: prowlarr-config
-    pool: fast
     size: 1Gi
     namespace: media-server
-    claim: prowlarr-config
   - name: radarr-config
-    pool: fast
     size: 5Gi
     namespace: media-server
-    claim: radarr-config
   - name: sabnzbd-config
-    pool: fast
     size: 1Gi
     namespace: media-server
-    claim: sabnzbd-config
   - name: seerr-config
-    pool: fast
     size: 1Gi
     namespace: media-server
-    claim: seerr-config
   - name: sonarr-config
-    pool: fast
     size: 5Gi
     namespace: media-server
-    claim: sonarr-config
   - name: tautulli-config
-    pool: fast
     size: 10Gi
     namespace: media-server
-    claim: tautulli-config
   - name: tracearr-postgres
-    pool: fast
     size: 10Gi
     namespace: media-server
     claim: tracearr-postgres-data
   - name: memos-config
-    pool: fast
     size: 1Gi
     namespace: memos
-    claim: memos-config
   - name: minecraft-config
-    pool: fast
     size: 5Gi
     namespace: minecraft
-    claim: minecraft-config
   - name: mosquitto-config
-    pool: fast
     size: 1Gi
     namespace: mosquitto
-    claim: mosquitto-config
   - name: nextcloud-data
     pool: tank
     size: 200Gi
     namespace: nextcloud
     claim: nextcloud-nextcloud-data
   - name: nextcloud-database
-    pool: fast
     size: 10Gi
     namespace: nextcloud
     claim: nextcloud-database-1
   - name: nextcloud-html
-    pool: fast
     size: 16Gi
     namespace: nextcloud
-    claim: nextcloud-html
   - name: plex-config
-    pool: fast
     size: 100Gi
     namespace: plex
-    claim: plex-config
   - name: plex-cache
-    pool: fast
     size: 100Gi
     namespace: plex
-    claim: plex-cache
   - name: alertmanager
-    pool: fast
     size: 2Gi
     namespace: prometheus
     # yamllint disable-line rule:line-length
     claim: alertmanager-prometheus-kube-prometheus-alertmanager-db-alertmanager-prometheus-kube-prometheus-alertmanager-0
   - name: prometheus-db
-    pool: fast
     size: 10Gi
     namespace: prometheus
     claim: prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0
@@ -200,7 +150,6 @@ volumes:
     namespace: seaweedfs
     claim: seaweedfs-all-in-one-data
   - name: zigbee2mqtt-data
-    pool: fast
     size: 1Gi
     namespace: zigbee2mqtt
     claim: data-volume-zigbee2mqtt-0

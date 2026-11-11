@@ -225,7 +225,6 @@ authentik:
         memory: 800Mi
 
   worker:
-    replicas: 1
     # The image's own user, so the restricted standard sees it
     securityContext:
       runAsNonRoot: true

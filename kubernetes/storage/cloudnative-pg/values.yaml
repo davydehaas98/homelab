@@ -1,7 +1,4 @@
 cloudnative-pg:
-  crds:
-    create: true
-
   # Its webhooks fail closed; one replica leads, the other waits
   replicaCount: 2
 

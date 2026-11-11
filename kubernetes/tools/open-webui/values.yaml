@@ -40,7 +40,6 @@ open-webui:
           key: client-secret
 
   persistence:
-    enabled: true
     size: 5Gi
 
   resources:

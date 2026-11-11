@@ -8,7 +8,6 @@ seaweedfs:
 
   allInOne:
     enabled: true
-    replicas: 1
 
     s3:
       enabled: true
@@ -51,8 +50,6 @@ seaweedfs:
     affinity: ""
 
     resources:
-      limits:
-        memory: 2Gi
       requests:
         cpu: 30m
         memory: 950Mi

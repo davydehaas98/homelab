@@ -1,6 +1,5 @@
 descheduler:
   kind: Deployment
-  deschedulingInterval: 5m
 
   resources:
     limits:

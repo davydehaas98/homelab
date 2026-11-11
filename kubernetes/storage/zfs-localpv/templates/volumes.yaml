@@ -1,6 +1,6 @@
 # No finalizer and not pruned, so removing an entry never destroys a dataset
 {{- range .Values.volumes }}
-{{- $pool := printf "%s/k8s" .pool }}
+{{- $pool := .pool | default "fast" }}
 ---
 apiVersion: zfs.openebs.io/v1
 kind: ZFSVolume
@@ -13,7 +13,7 @@ spec:
   capacity: {{ mul (trimSuffix "Gi" .size | int64) 1073741824 | quote }}
   fsType: zfs
   ownerNodeID: midgard-0
-  poolName: {{ $pool }}
+  poolName: {{ $pool }}/k8s
   volumeType: DATASET
   {{- with .shared }}
   shared: {{ . | quote }}
@@ -33,13 +33,13 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: zfs-{{ .pool }}
+  storageClassName: zfs-{{ $pool }}
   csi:
     driver: zfs.csi.openebs.io
     fsType: zfs
     volumeHandle: {{ .name }}
     volumeAttributes:
-      openebs.io/poolname: {{ $pool }}
+      openebs.io/poolname: {{ $pool }}/k8s
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -50,5 +50,5 @@ spec:
                 - midgard-0
   claimRef:
     namespace: {{ .namespace }}
-    name: {{ .claim }}
+    name: {{ .claim | default .name }}
 {{- end }}

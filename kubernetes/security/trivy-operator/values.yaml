@@ -6,7 +6,6 @@ trivy-operator:
     rbacAssessmentScannerEnabled: false
     infraAssessmentScannerEnabled: false
     clusterComplianceEnabled: false
-    exposedSecretScannerEnabled: true
     scanJobsConcurrentLimit: 1
 
   resources:

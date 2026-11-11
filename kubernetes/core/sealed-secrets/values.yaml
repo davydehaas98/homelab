@@ -1,7 +1,4 @@
 sealed-secrets:
-  createController: true
-
-  secretName: "sealed-secrets-key"
   keyrenewperiod: "0"
 
   fullnameOverride: "sealed-secrets-controller"
@@ -11,15 +8,6 @@ sealed-secrets:
       memory: 300Mi
     requests:
       memory: 70Mi
-
-  ingress:
-    enabled: false
-
-  serviceAccount:
-    create: true
-
-  rbac:
-    create: true
 
   metrics:
     serviceMonitor:
