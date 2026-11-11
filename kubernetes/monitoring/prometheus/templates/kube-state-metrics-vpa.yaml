@@ -1,0 +1,36 @@
+# VPA recommendations for the VPA dashboard, read by kube-state-metrics (customResourceState in values.yaml)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-state-metrics-vpa
+  namespace: prometheus
+data:
+  config.yaml: |
+    kind: CustomResourceStateMetrics
+    spec:
+      resources:
+        - groupVersionKind:
+            group: autoscaling.k8s.io
+            kind: VerticalPodAutoscaler
+            version: v1
+          labelsFromPath:
+            verticalpodautoscaler: [metadata, name]
+            namespace: [metadata, namespace]
+            target_kind: [spec, targetRef, kind]
+            target_name: [spec, targetRef, name]
+          metrics:
+            {{- range $bound := list "target" "lowerBound" "upperBound" }}
+            {{- range $resource := list "memory" "cpu" }}
+            - name: vpa_containerrecommendations_{{ lower $bound }}
+              help: VPA container recommendation ({{ $bound }})
+              each:
+                type: Gauge
+                gauge:
+                  path: [status, recommendation, containerRecommendations]
+                  valueFrom: [{{ $bound }}, {{ $resource }}]
+                  labelsFromPath:
+                    container: [containerName]
+              commonLabels:
+                resource: {{ $resource }}
+            {{- end }}
+            {{- end }}

@@ -1,12 +1,5 @@
 # Talos service logs are not shipped
 fluent-bit:
-  rbac:
-    create: true
-    nodeAccess: false
-    eventsAccess: false
-
-  hostNetwork: false
-
   securityContext:
     capabilities:
       drop:

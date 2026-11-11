@@ -11,9 +11,6 @@ gateway-helm:
 
   config:
     envoyGateway:
-      logging:
-        level:
-          default: info
       # For templates/plex.yaml
       extensionApis:
         enableBackend: true

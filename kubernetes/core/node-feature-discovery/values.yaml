@@ -2,8 +2,6 @@ node-feature-discovery:
   enableNodeFeatureApi: false
 
   master:
-    replicaCount: 1
-
     # The chart defaults are for big clusters
     resources:
       limits:
@@ -13,14 +11,10 @@ node-feature-discovery:
         memory: 70Mi
 
   gc:
-    enable: true
-    replicaCount: 1
-
     resources:
       limits:
         memory: 60Mi
       requests:
-        cpu: 10m
         memory: 40Mi
 
   worker:

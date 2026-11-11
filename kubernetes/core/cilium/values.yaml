@@ -42,9 +42,6 @@ cilium:
     qps: 20
     burst: 40
 
-  certgen:
-    ttlSecondsAfterFinished: null
-
   rollOutCiliumPods: true
 
   operator:
@@ -59,7 +56,6 @@ cilium:
         cpu: 30m
         memory: 150Mi
     prometheus:
-      enabled: true
       serviceMonitor:
         enabled: true
 
@@ -106,8 +102,6 @@ cilium:
     namespace: grafana
 
   hubble:
-    enabled: true
-
     tls:
       auto:
         method: cronJob

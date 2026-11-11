@@ -1,7 +1,6 @@
 # Only the recommender: every VPA uses `updateMode: "Off"`
 vpa:
   recommender:
-    enabled: true
     extraArgs:
       # The chart default is debug logging
       v: "1"
@@ -9,7 +8,6 @@ vpa:
       pod-recommendation-min-memory-mb: 10
       prometheus-address: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
       storage: prometheus
-    replicaCount: 1
     resources:
       limits:
         memory: 150Mi

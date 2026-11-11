@@ -41,7 +41,6 @@ velero:
     features: EnableCSI
 
   credentials:
-    useSecret: true
     existingSecret: velero-credentials
 
   snapshotsEnabled: false

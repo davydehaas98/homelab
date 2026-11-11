@@ -1,7 +1,6 @@
 # Every user acts as Headlamp's service account, limited by templates/rbac.yaml
 headlamp:
   config:
-    inCluster: true
     # Safe only because the route is behind the Authentik login
     unsafeUseServiceAccountToken: true
     oidc:

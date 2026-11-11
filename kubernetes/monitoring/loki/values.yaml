@@ -33,7 +33,6 @@ loki:
         chunks: loki-chunks
         ruler: loki-ruler
         admin: loki-admin
-      type: s3
       s3:
         s3: s3://seaweedfs-all-in-one.seaweedfs:8333
         endpoint: http://seaweedfs-all-in-one.seaweedfs:8333
@@ -42,9 +41,6 @@ loki:
         accessKeyId: ${S3_ACCESS_KEY}
         s3ForcePathStyle: true
         insecure: true
-      filesystem:
-        chunks_directory: /var/loki/chunks
-        rules_directory: /var/loki/rules
 
   test:
     enabled: false
@@ -98,14 +94,8 @@ loki:
       namespace: grafana
       annotations:
         grafana_folder: Loki
-      labels:
-        grafana_dashboard: "1"
     serviceMonitor:
       enabled: true
-    selfMonitoring:
-      enabled: false
-      grafanaAgent:
-        installOperator: false
 
   write:
     replicas: 1
@@ -133,7 +123,6 @@ loki:
 
   read:
     replicas: 1
-    legacyReadTarget: false
     # Wide queries over days need far more than its idle use
     resources:
       limits:

@@ -3,7 +3,6 @@ zigbee2mqtt:
   statefulset:
     storage:
       enabled: true
-      size: 1Gi
       storageClassName: zfs-fast
       existingVolume: zfs-zigbee2mqtt-data
 

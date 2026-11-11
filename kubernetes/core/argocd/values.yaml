@@ -35,13 +35,10 @@ argo-cd:
         g, authentik Admins, role:admin
         g, homepage, role:readonly
       scopes: "[groups]"
-    secret:
-      createSecret: true
     params:
       server.insecure: true
 
   controller:
-    replicas: 1
     resources:
       limits:
         memory: 4Gi
@@ -57,7 +54,6 @@ argo-cd:
     enabled: false
 
   redis:
-    enabled: true
     resources:
       limits:
         memory: 150Mi
@@ -123,7 +119,6 @@ argo-cd:
         enabled: true
 
   applicationSet:
-    replicas: 1
     resources:
       limits:
         memory: 150Mi
@@ -133,7 +128,6 @@ argo-cd:
 
   # Discord messages for failed syncs and unhealthy apps
   notifications:
-    enabled: true
     secret:
       create: false
     resources:
