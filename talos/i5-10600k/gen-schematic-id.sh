@@ -13,5 +13,6 @@ curl -s https://factory.talos.dev/schematics \
             officialExtensions:
                 - siderolabs/i915
                 - siderolabs/intel-ucode
+                - siderolabs/realtek-firmware
                 - siderolabs/zfs
     ' | jq --raw-output '.id'
