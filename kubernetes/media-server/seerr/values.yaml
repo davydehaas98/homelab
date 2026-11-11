@@ -10,8 +10,6 @@ seerr-chart:
   extraEnv:
     - name: LOG_LEVEL
       value: info
-    - name: TZ
-      value: Europe/Amsterdam
 
   service:
     port: 5055

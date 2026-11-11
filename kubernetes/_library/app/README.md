@@ -37,7 +37,7 @@ Run `helm dependency update` on the app chart before rendering it locally; Argo 
 | `replicas` | `1` | Number of pods; `0` stops the app. |
 | `suspend` | `false` | `true` stops the app (0 pods) and keeps its volume, whatever `replicas` says. The ApplicationSet sets it from `suspend: true` in the app's `argocd.yaml`. |
 | `args` | none | Arguments of the container, replacing the `CMD` of the image. |
-| `env` | | Environment variables as a map. `TZ` is always set (`Europe/Amsterdam`). A value that is a map becomes `valueFrom`, for one key of a Secret (`secretKeyRef`). |
+| `env` | | Environment variables as a map. `TZ` is always set (`UTC`). A value that is a map becomes `valueFrom`, for one key of a Secret (`secretKeyRef`). |
 | `podSecurityContext`, `securityContext`, `resources` | `{}` | Passed to the pod and the container. The pod gets `seccompProfile: RuntimeDefault` and the container `allowPrivilegeEscalation: false` unless the values set them. |
 | `nodeSelector` | none | Labels a node must have, for a heavy app that should stay off the control plane nodes. |
 | `hostNetwork` | off | Run the pod on the network of its node instead of the pod network, for an app that finds devices on the LAN (mDNS, SSDP) or that they must find, such as a HomeKit bridge. It listens on the ports of the node, and the namespace needs the label `pod-security.kubernetes.io/enforce: privileged` as the default level forbids it. The DNS policy is set so the names of the cluster keep working. |

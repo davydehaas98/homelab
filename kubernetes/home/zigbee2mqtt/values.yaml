@@ -69,7 +69,6 @@ zigbee2mqtt:
       - zigbee.davydehaas.dev
 
   zigbee2mqtt:
-    timezone: Europe/Amsterdam
     # The chart sets the topic of Zigbee2MQTT 1.x
     homeassistant:
       status_topic: homeassistant/status
