@@ -97,8 +97,8 @@ kyverno:
 kyverno-policies:
   podSecurityStandard: restricted
   podSecuritySeverity: low
-  validationFailureAction: Audit
-  # The policies only audit, so admit when Kyverno does not answer
+  validationFailureAction: Enforce
+  # Admit when Kyverno does not answer, so its outage or a cold start does not block every pod
   failurePolicy: Ignore
 
   # Infrastructure that needs the host or root and cannot meet the standard

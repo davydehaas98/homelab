@@ -5,9 +5,9 @@ description: Use when the Kyverno policy reports show failing policies (Pod Secu
 
 # Fix failing policy reports
 
-The Pod Security policies come from `kyverno-policies` in `kubernetes/security/kyverno` (restricted standard). They only
-audit (`validationFailureAction: Audit`), so they block nothing; the reports show what to fix. `require-route-login`, in
-the chart's own templates, does block.
+The Pod Security policies come from `kyverno-policies` in `kubernetes/security/kyverno` (restricted standard). They
+enforce (`validationFailureAction: Enforce`), so a workload that breaks them fails to sync; the reports show what to
+fix. `require-route-login`, in the chart's own templates, blocks too.
 
 1. **Read the reports:** `kubectl get policyreport -A -o json`, the failing results per pod (`scope.kind: Pod`) and
    policy. The background scan runs hourly, so a result older than the last change is stale; restarting
