@@ -11,7 +11,6 @@ here, see `config/integrations/ui.yaml`.
 | Sunset             | 1 hour before sunset                                   | Living room and bedroom lights on, 50%                   |
 | Coming home        | Arriving home, from 1 hour before sunset until sunrise | Kitchen, bedroom and two living room lights on, 50% warm |
 | Leaving home       | Leaving home                                           | All lights on the ground floor off                       |
-| Sleep              | By hand                                                | Bedroom and living room off, kitchen at 15%              |
 | Toilet occupied    | Motion in the toilet                                   | Toilet light on, 10% from 23:00 to 07:00, else 100%      |
 | Toilet free        | No motion for 15 minutes                               | Toilet light off                                         |
 | Toilet light level | Toilet light on or changed, as after the wall switch   | Back to the brightness of Toilet occupied                |
@@ -39,4 +38,5 @@ Push notifications to the phone.
 | ------------------- | ------------------------------------------------------------------- |
 | Turn everything off | All lights on the ground floor off                                  |
 | Turn off all lights | All lights with the label `lights` off                              |
+| Sleep               | Bedroom and living room off, kitchen at 15%                         |
 | Toilet              | Toilet light on while there is motion, as Toilet occupied, then off |
