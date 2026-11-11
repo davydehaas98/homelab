@@ -23,8 +23,8 @@
         color_temp_kelvin: 2000
       target:
         entity_id:
-          - light.kitchen_light_strip
-          - light.living_light_go
+          - light.kitchen_lightstrip
+          - light.bedroom_lamp_go
         area_id:
           - kitchen
           - bedroom

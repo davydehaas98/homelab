@@ -26,7 +26,10 @@ Push notifications to the phone.
 | Water running | Water flows for an hour without a break | Time-sensitive |
 | Backup failed | The automatic backup fails | Normal |
 | Backup late | At 12:00, no successful backup for 26 hours | Normal |
-| Ventilate | PM2.5 above 25 µg/m³ for 15 minutes, VOC index above 350 for 30 minutes, or humidity above 65% for 30 minutes | Normal |
+| Ventilate | PM2.5 above 50 µg/m³ for 15 minutes, VOC index above 350 for 30 minutes, or humidity above 70% for 30 minutes | Normal |
+| Ventilate done | The same readings below their limit for the same time, after Ventilate | Normal |
+| Humidify | Humidity below 30% for 2 hours | Normal |
+| Humidify done | Humidity above 30% for 30 minutes, after Humidify | Normal |
 | Green electricity | CO₂ intensity of the grid below 250 g/kWh for 15 minutes, 08:00 to 21:00, once a day | Normal |
 | Washing machine done | Washer plug below 4 W for 10 seconds, with the plug on for at least 5 minutes | Normal |
 
