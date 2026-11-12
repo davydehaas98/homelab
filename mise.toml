@@ -12,7 +12,7 @@ kubectl = "1.37.2"
 kubeseal = "0.41.2"
 stern = "1.35.0"
 # Keep equal to the Talos version on the nodes
-talosctl = "1.14.5"
+talosctl = "1.14.6"
 # Keep equal to the version in the terraform-cloudflare workflow
 terraform = "1.17.2"
 # For pipx
