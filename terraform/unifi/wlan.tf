@@ -7,7 +7,7 @@ data "unifi_ap_group" "all" {
 
 locals {
   # The site's default user group, without bandwidth limits; the provider has no data source to look it up
-  default_user_group_id = "68adf0094834f137f22b4278"
+  default_user_group_id = "ddcb01e1-2832-4826-9514-df47e5d39dcf"
 
   all_access_points = {
     ids  = [data.unifi_ap_group.all.id]
