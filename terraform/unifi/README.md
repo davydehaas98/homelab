@@ -3,17 +3,17 @@
 Settings of the UniFi Cloud Gateway Ultra that the cluster depends on, as far as they are managed here. Everything else
 stays in the UI.
 
-| File                 | Holds                                                                                    |
-|----------------------|------------------------------------------------------------------------------------------|
-| `network.tf`         | The networks: the LAN, the Servers VLAN of the nodes, IPTV, IoT and Guest                |
-| `port_forwards.tf`   | The port forwards to the public Envoy Gateway and Plex                                   |
-| `wlan.tf`            | The Wi-Fi networks, without their passphrases, which are set in the UI                   |
-| `bgp.tf`, `bgp.conf` | The gateway's side of the BGP sessions with Cilium, as FRR config                        |
-| `switch.tf`          | The switch ports whose native network is not the LAN, such as the Turing Pi's            |
-| `clients.tf`         | The fixed addresses of the nodes and the BMC on Servers, and of the smart devices on IoT |
-| `firewall.tf`        | The exceptions to the isolation of IoT, for the apps on `midgard-0` and the LAN          |
-| `imports.tf`         | Import blocks that adopt the settings made in the UI                                     |
-| `ids.sh`             | Lists the IDs of the managed settings, for imports                                       |
+| File                 | Holds                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `network.tf`         | The networks: the LAN, the Servers VLAN of the nodes, IPTV, IoT and Guest                 |
+| `port_forwards.tf`   | The port forwards to the public Envoy Gateway and Plex                                    |
+| `wlan.tf`            | The Wi-Fi networks, without their passphrases, which are set in the UI                    |
+| `bgp.tf`, `bgp.conf` | The gateway's side of the BGP sessions with Cilium, as FRR config                         |
+| `switch.tf`          | The switch and gateway ports whose native network is not the LAN, such as the Turing Pi's |
+| `clients.tf`         | The fixed addresses of the nodes and the BMC on Servers, and of the smart devices on IoT  |
+| `firewall.tf`        | The exceptions to the isolation of IoT, for the apps on `midgard-0` and the LAN           |
+| `imports.tf`         | Import blocks that adopt the settings made in the UI                                      |
+| `ids.sh`             | Lists the IDs of the managed settings, for imports                                        |
 
 ## Applying
 
