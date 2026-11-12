@@ -1,7 +1,7 @@
 [tools]
 # Keep equal to the Argo CD version in kubernetes/core/argocd
 argocd = "3.6.1"
-cilium-cli = "0.20.2"
+cilium-cli = "0.20.3"
 claude = "2.1.322"
 crane = "0.22.1"
 gh = "2.103.3"
