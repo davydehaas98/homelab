@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup tools
-        uses: jdx/mise-action@v5.2.7
+        uses: jdx/mise-action@v5.2.8
         with:
           install_args: crane helm uv yq pipx:yamllint
 
