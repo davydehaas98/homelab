@@ -1,7 +1,7 @@
 # Users and tokens: see README.md
 image:
   repository: docker.io/binwiederhier/ntfy
-  tag: v2.37.2
+  tag: v2.38.0
 
 port: 8080
 metricsPort: 9090
