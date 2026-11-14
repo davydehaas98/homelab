@@ -1,7 +1,7 @@
 # To test a game server on an RK1. No autopause, which needs extra privileges.
 image:
   repository: docker.io/itzg/minecraft-server
-  tag: 2026.10.1-java25
+  tag: 2026.11.0-java25
 
 port: 25565
 
