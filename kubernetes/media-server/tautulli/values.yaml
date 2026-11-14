@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/linuxserver/tautulli
-  tag: 2.18.2
+  tag: 2.19.1
 
 securityContext: {}
 
