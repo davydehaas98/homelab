@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/linuxserver/radarr
-  tag: 6.4.4
+  tag: 7.0.3
 
 replicas: 1
 
