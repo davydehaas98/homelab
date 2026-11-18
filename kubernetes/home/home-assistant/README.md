@@ -7,9 +7,7 @@ here, see `config/integrations/ui.yaml`.
 
 | Automation         | When                                                   | Does                                                     |
 | ------------------ | ------------------------------------------------------ | -------------------------------------------------------- |
-| Sunrise            | 08:00 or sunrise                                       | Living room and bedroom lights off                       |
-| Sunset             | 1 hour before sunset                                   | Living room and bedroom lights on, 50%                   |
-| Coming home        | Arriving home, from 1 hour before sunset until sunrise | Kitchen, bedroom and two living room lights on, 50% warm |
+| Coming home        | Arriving home, from 1 hour before sunset until sunrise | Bedroom, Iris, kitchen and Go on, 50% warm; hallway 20%  |
 | Leaving home       | Leaving home                                           | All lights on the ground floor off                       |
 | Toilet occupied    | Motion in the toilet                                   | Toilet light on, 10% from 23:00 to 07:00, else 100%      |
 | Toilet free        | No motion for 15 minutes                               | Toilet light off                                         |
@@ -38,5 +36,5 @@ Push notifications to the phone.
 | ------------------- | ------------------------------------------------------------------- |
 | Turn everything off | All lights on the ground floor off                                  |
 | Turn off all lights | All lights with the label `lights` off                              |
-| Sleep               | Bedroom and living room off, kitchen at 15%                         |
+| Sleep               | Bedroom and living room off, hallway at 20%                         |
 | Toilet              | Toilet light on while there is motion, as Toilet occupied, then off |

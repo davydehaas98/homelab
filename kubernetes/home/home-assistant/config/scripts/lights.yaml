@@ -28,9 +28,9 @@ sleep:
     - action: light.turn_on
       metadata: {}
       target:
-        area_id: kitchen
+        entity_id: light.hallway_light
       data:
-        brightness_pct: 15
+        brightness_pct: 20
   alias: Sleep
   description: ''
   mode: single

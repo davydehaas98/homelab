@@ -26,6 +26,29 @@ mqtt:
       unique_id: dsmr_ip_address
       state_topic: dsmr/smart_gateways/ip_address
 
+template:
+  - sensor:
+      - name: "Electricity today"
+        unique_id: electricity_today
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: >-
+          {{ (states('sensor.daily_energy_delivered_peak') | float(0)
+              + states('sensor.daily_energy_delivered_offpeak') | float(0)) | round(3) }}
+        availability: >-
+          {{ has_value('sensor.daily_energy_delivered_peak') and has_value('sensor.daily_energy_delivered_offpeak') }}
+      # Prices per kWh as in the energy settings; a measurement, so the statistics keep each day's maximum
+      - name: "Electricity cost today"
+        unique_id: electricity_cost_today
+        unit_of_measurement: "€"
+        state_class: measurement
+        state: >-
+          {{ (states('sensor.daily_energy_delivered_offpeak') | float(0) * 0.27345
+              + states('sensor.daily_energy_delivered_peak') | float(0) * 0.26135) | round(2) }}
+        availability: >-
+          {{ has_value('sensor.daily_energy_delivered_peak') and has_value('sensor.daily_energy_delivered_offpeak') }}
+
 utility_meter:
   gasusage_this_hour:
     unique_id: gasusage_this_hour

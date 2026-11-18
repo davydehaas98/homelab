@@ -6,7 +6,6 @@
       entity_id: person.davy
       zone: zone.home
       event: enter
-  # Only when Sunset would have switched the lights on
   conditions:
     - condition: or
       conditions:
@@ -25,9 +24,32 @@
         entity_id:
           - light.kitchen_lightstrip
           - light.living_lamp_go
-        area_id:
-          - kitchen
-          - bedroom
+          - light.bedroom_light
+    - action: light.turn_on
+      data:
+        brightness_pct: 20
+        color_temp_kelvin: 2000
+      target:
+        entity_id: light.hallway_light
+    # The Iris has no color temperature and often misses the first command
+    - repeat:
+        sequence:
+          - action: light.turn_on
+            data:
+              brightness_pct: 50
+              xy_color: [0.598, 0.383]
+            target:
+              entity_id: light.bedroom_lamp_iris
+          - delay:
+              seconds: 15
+        until:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: light.bedroom_lamp_iris
+                state: "on"
+              - condition: template
+                value_template: "{{ repeat.index >= 3 }}"
   mode: single
 - id: '1746124120811'
   alias: Leaving home
