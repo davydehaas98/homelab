@@ -38,3 +38,7 @@ Push notifications to the phone.
 | Turn off all lights | All lights with the label `lights` off                              |
 | Sleep               | Bedroom and living room off, hallway at 20%                         |
 | Toilet              | Toilet light on while there is motion, as Toilet occupied, then off |
+
+## Prices (`config/integrations/prices.yaml`)
+
+The electricity and water prices, each with the date it starts. The energy settings and the cost sensors read them.

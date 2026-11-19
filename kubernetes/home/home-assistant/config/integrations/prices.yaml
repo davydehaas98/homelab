@@ -1,0 +1,40 @@
+# Prices for the energy settings and the cost sensors. Each price applies from its date, the first also before it;
+# add a new one ahead of time and the sensor switches on that day.
+template:
+  - sensor:
+      # Tariff 1 is dal, tariff 2 normaal; delivery prices with energy tax and VAT
+      - name: "Electricity price tariff 1"
+        unique_id: electricity_price_tariff_1
+        unit_of_measurement: "EUR/kWh"
+        state: >-
+          {% set prices = {
+            "2025-01-01": 0.26466,
+            "2025-12-13": 0.24571,
+            "2026-01-01": 0.23370,
+            "2026-12-13": 0.24475,
+          } %}
+          {{ prices | dictsort | selectattr(0, "le", now().date() | string) | map(attribute=1) | list | last
+             | default(prices.values() | first) }}
+      - name: "Electricity price tariff 2"
+        unique_id: electricity_price_tariff_2
+        unit_of_measurement: "EUR/kWh"
+        state: >-
+          {% set prices = {
+            "2025-01-01": 0.25256,
+            "2025-12-13": 0.23361,
+            "2026-01-01": 0.22160,
+            "2026-12-13": 0.29419,
+          } %}
+          {{ prices | dictsort | selectattr(0, "le", now().date() | string) | map(attribute=1) | list | last
+             | default(prices.values() | first) }}
+      - name: "Water price"
+        unique_id: water_price
+        unit_of_measurement: "EUR/m³"
+        state: >-
+          {% set prices = {
+            "2024-01-01": 1.25,
+            "2025-01-01": 1.41,
+            "2026-01-01": 1.51,
+          } %}
+          {{ prices | dictsort | selectattr(0, "le", now().date() | string) | map(attribute=1) | list | last
+             | default(prices.values() | first) }}

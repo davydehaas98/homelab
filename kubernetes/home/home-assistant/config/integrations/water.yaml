@@ -5,12 +5,13 @@ utility_meter:
     source: sensor.smart_gateways_watermeter_b1c334_usage_total
     cycle: daily
 
-# Price per m³ since 2026-01-01, as in the energy settings; a measurement, so the statistics keep each day's maximum
+# A measurement, so the statistics keep each day's maximum
 template:
   - sensor:
       - name: "Water cost today"
         unique_id: water_cost_today
         unit_of_measurement: "€"
         state_class: measurement
-        state: "{{ (states('sensor.water_today') | float(0) / 1000 * 1.51) | round(2) }}"
-        availability: "{{ has_value('sensor.water_today') }}"
+        state: >-
+          {{ (states('sensor.water_today') | float(0) / 1000 * states('sensor.water_price') | float(0)) | round(2) }}
+        availability: "{{ has_value('sensor.water_today') and has_value('sensor.water_price') }}"

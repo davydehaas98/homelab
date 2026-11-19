@@ -38,16 +38,19 @@ template:
               + states('sensor.daily_energy_delivered_offpeak') | float(0)) | round(3) }}
         availability: >-
           {{ has_value('sensor.daily_energy_delivered_peak') and has_value('sensor.daily_energy_delivered_offpeak') }}
-      # Prices per kWh as in the energy settings; a measurement, so the statistics keep each day's maximum
+      # Off-peak (dal) is tariff 1, peak (normaal) tariff 2; a measurement, so the statistics keep each day's maximum
       - name: "Electricity cost today"
         unique_id: electricity_cost_today
         unit_of_measurement: "€"
         state_class: measurement
         state: >-
-          {{ (states('sensor.daily_energy_delivered_offpeak') | float(0) * 0.27345
-              + states('sensor.daily_energy_delivered_peak') | float(0) * 0.26135) | round(2) }}
+          {{ (states('sensor.daily_energy_delivered_offpeak') | float(0)
+                * states('sensor.electricity_price_tariff_1') | float(0)
+              + states('sensor.daily_energy_delivered_peak') | float(0)
+                * states('sensor.electricity_price_tariff_2') | float(0)) | round(2) }}
         availability: >-
-          {{ has_value('sensor.daily_energy_delivered_peak') and has_value('sensor.daily_energy_delivered_offpeak') }}
+          {{ has_value('sensor.daily_energy_delivered_peak') and has_value('sensor.daily_energy_delivered_offpeak')
+             and has_value('sensor.electricity_price_tariff_1') and has_value('sensor.electricity_price_tariff_2') }}
 
 utility_meter:
   gasusage_this_hour:
