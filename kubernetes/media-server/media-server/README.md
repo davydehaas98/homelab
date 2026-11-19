@@ -9,7 +9,8 @@ On the disk, `data/series`, `data/movies`, `data/music` and `data/books` each ho
 Sonarr, Radarr, Lidarr and LazyLibrarian mount only their own of these at the same path under `/data`, so an import moves
 the file instead of copying it, and they can't see each other's media. SABnzbd mounts all of `data` at `/data` for the same reason. Its
 folders `/data/downloads/incomplete` and `/data/downloads/complete` and the `downloads` folder per category are in
-its config, not in Terraform. Bazarr uses the paths of the `*arr` apps, and Plex and Jellyfin mount each `library`.
+its config, not in Terraform. `data/movies-4k` and `data/series-4k` are the same for Radarr 4K and Sonarr 4K, which
+Plex mounts as separate libraries. Bazarr uses the paths of the `*arr` apps, and Plex and Jellyfin mount each `library`.
 
 The media disk has no redundancy until a second 16T disk gets a pool, the media is copied over, and this disk is wiped
 and attached as its mirror (`zpool attach`).

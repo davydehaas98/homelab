@@ -1,0 +1,53 @@
+image:
+  repository: ghcr.io/linuxserver/radarr
+  tag: 7.0.3
+
+replicas: 1
+
+securityContext: {}
+
+port: 7878
+
+# The API key, from templates/radarr-4k-api-key.yaml; it overrides the one in config.xml
+env:
+  RADARR__AUTH__APIKEY:
+    secretKeyRef:
+      name: radarr-4k-api-key
+      key: api-key
+
+media:
+  claimName: media
+  # One mount, so an import moves the file instead of copying it
+  mounts:
+    - mountPath: /data/movies-4k
+      subPath: data/movies-4k
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 150m
+    memory: 1000Mi
+
+backups:
+  claimName: backups
+  subPath: radarr-4k
+
+persistence:
+  size: 5Gi
+  storageClass: zfs-fast
+
+route:
+  enabled: true
+  hostnames:
+    - radarr-4k.davydehaas.dev
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+      sectionName: web-https
+
+oidc:
+  enabled: true
+  bypassPaths:
+    - /api

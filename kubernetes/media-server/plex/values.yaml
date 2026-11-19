@@ -52,6 +52,12 @@ media:
     - mountPath: /series
       subPath: data/series/library
       readOnly: true
+    - mountPath: /movies-4k
+      subPath: data/movies-4k/library
+      readOnly: true
+    - mountPath: /series-4k
+      subPath: data/series-4k/library
+      readOnly: true
     - mountPath: /music
       subPath: data/music/library
       readOnly: true

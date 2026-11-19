@@ -1,4 +1,4 @@
-{{- range list "lidarr" "prowlarr" "radarr" "sonarr" }}
+{{- range list "lidarr" "prowlarr" "radarr" "radarr-4k" "sonarr" "sonarr-4k" }}
 ---
 apiVersion: v1
 kind: Secret

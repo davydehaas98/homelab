@@ -74,6 +74,16 @@
           url: http://radarr.media-server.svc.cluster.local:7878
           key: "{{HOMEPAGE_FILE_RADARR_KEY}}"
 
+    - Radarr 4K:
+        icon: radarr.png
+        href: https://radarr-4k.davydehaas.dev
+        description: Movie management in 4K
+        siteMonitor: http://radarr-4k.media-server.svc.cluster.local:7878
+        widget:
+          type: radarr
+          url: http://radarr-4k.media-server.svc.cluster.local:7878
+          key: "{{HOMEPAGE_FILE_RADARR_4K_KEY}}"
+
     - SABnzbd:
         icon: sabnzbd.png
         href: https://sabnzbd.davydehaas.dev
@@ -103,6 +113,16 @@
           type: sonarr
           url: http://sonarr.media-server.svc.cluster.local:8989
           key: "{{HOMEPAGE_FILE_SONARR_KEY}}"
+
+    - Sonarr 4K:
+        icon: sonarr.png
+        href: https://sonarr-4k.davydehaas.dev
+        description: Series management in 4K
+        siteMonitor: http://sonarr-4k.media-server.svc.cluster.local:8989
+        widget:
+          type: sonarr
+          url: http://sonarr-4k.media-server.svc.cluster.local:8989
+          key: "{{HOMEPAGE_FILE_SONARR_4K_KEY}}"
 
     - Tautulli:
         icon: tautulli.png

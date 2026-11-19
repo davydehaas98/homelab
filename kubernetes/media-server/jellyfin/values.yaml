@@ -63,6 +63,23 @@ jellyfin:
     - name: transcode
       mountPath: /data/transcode
 
+  # kubelet creates a missing subPath as root, so the owner of the media creates them first
+  extraInitContainers:
+    - name: media-dirs
+      image: docker.io/library/busybox:1.37.0
+      command:
+        - sh
+        - -c
+        - umask 002 && mkdir -p /media/data/movies/library /media/data/music/library /media/data/series/library
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      volumeMounts:
+        - name: library
+          mountPath: /media
+
   httpRoute:
     enabled: true
     annotations:

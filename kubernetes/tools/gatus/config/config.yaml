@@ -62,6 +62,24 @@ endpoints:
       - "[RESPONSE_TIME] < 2000"
     alerts:
       - type: discord
+  - name: Radarr 4K
+    group: Media
+    url: http://radarr-4k.media-server.svc.cluster.local:7878
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
+  - name: Sonarr 4K
+    group: Media
+    url: http://sonarr-4k.media-server.svc.cluster.local:8989
+    interval: 1m
+    conditions:
+      - "[STATUS] < 400"
+      - "[RESPONSE_TIME] < 2000"
+    alerts:
+      - type: discord
   - name: Lidarr
     group: Media
     url: http://lidarr.media-server.svc.cluster.local:8686

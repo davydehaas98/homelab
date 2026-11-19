@@ -1,0 +1,18 @@
+# The API key of Radarr 4K, which it reads from RADARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: radarr-4k-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgAQEKN3sNk2j5HyZB5+V/5nCTSgVjET0wsqf4FZREjrYf5a6Lm2TKYsuhgD76QnKKc2WbOzbfLDzU8GrA7kc4pJojEOHersTxPnGD+o/zwRYA5B8HXeVK2PPorUz941Tm+TCRMG+mc0crFWM4rkJzFtCzY045x3hzhEaQQgDKOVh6V7Uyz70/lG3gXGonYl9hjFKiVmUhxve0Bx8LX/yUXw8M/MkRmegkDxNYAVwWHIPYmTlgNW3h5GP4PULbjAeJLtKJqDyQKdGNVfa3k4SWoLCJEbBpNmHiAu6Y0Yq5mCKZmu8q59Rxg6+J7UeCSONZwN8zfk20MS65zCvK+lFHIH9WYeNaUpCQA75S7NtxNl4vyFKx0ojg9xq7OZgVa1XTTEC0AxZI4pcRQQi6f1S8v+DOpKMdEc2QKg1XXICqCroeYVaoSbl3oS11UraHI3xWqz9d2804ZUlYtaKPdxUaWXc5855M1+7LsAc2VmuXLjO+S39PUzf2Hba/CZFsmv1ecZc+8u81lyoUmtlhnWjiatBum2H1uIZniJW4QOLhiBQILuNc/9apqZc4BF5r4tpopImEAa97awJW8u0E+hO6zAA11mawLndvSojOIbSMCLLECkIuaI1Jp14iD9zbxYXK4+whf0/Z1hnzAJMbjbBVuvpj1QLK7t5MutiRaloREFrEt5jDCd/ydsL18daFUURk6V1wkm69sciOKiT8D0sYXRCWe+UAwdIBGKJ0gCli5qfA==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replication-allowed: "true"
+        replicator.v1.mittwald.de/replication-allowed-namespaces: homepage
+      name: radarr-4k-api-key
+      namespace: media-server
+    type: Opaque

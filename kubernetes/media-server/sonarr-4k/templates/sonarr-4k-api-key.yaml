@@ -1,0 +1,18 @@
+# The API key of Sonarr 4K, which it reads from SONARR__AUTH__APIKEY. kubernetes-replicator copies it to homepage
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: sonarr-4k-api-key
+  namespace: media-server
+spec:
+  encryptedData:
+    api-key: AgChtrR7RqMQE1zuR5A/ZQq9BE/ADMI1qw3oXCI5tgqI6uM+9MaIuOmvnNe18pge71u7rbIxkmD58YoebdP4IqVuYnchO7HNacUcg5UPhv1v0wSUWBYYocPgUhNLmbJKQU8biWIRz/8wKJ3crVLPrH4w/MoUtZ9To7NOtw7+Ui0/YaCywA3HMqSuhIUr6hrTIkBr1tBHEIenHiaIuLEsMPjlREa3x/7a6YHZFBn8M+L0MKlgmXSFdGCCLRVXJ3AOZoq1W0ncyuYXHsdl+8W3oF/r0dePY/HVG8kB+1DISAQ68wzsst33f7InZ49Osdshw1rpSFyBvTQB2FP/lFXIrqPIV3B0lkOB9Z+D1J3+buTW3uzFf7zn9bqSs/hNX0QUq/dx/o2TxTWFwlHmep7sg2u5OH4JDYcTv8m6T/IuB6fPIb9Sq61tjSAsZbit8OICDvG2dDZYw4p6bb2Gt/2WNHXCAGPur7Tv/apODCT53n0z0MojwGpcyckHJxnT9HwAEAtg0TsqHREZxke8M/TVuhx0FLhi9vl48gYtw4Cf1o8jFJbF/yuzmYFvenKy/0WAE7I8h3IvV5rZJg7Rmsr7oA5HdFF594rtQxF2uhGiopN5/wqLJYw0OJHD1DRdPsJyii/4ZtT/8C2P5V80hHraKC/EwpSjnxJ+J7SpDqCkbKtLdCCDnu8EeQKsAwPOYWHdh2nS8C0x4nL/S2KT30gT9OhwgzvxqnMbIgfCmqTi2caRAA==
+  template:
+    metadata:
+      annotations:
+        replicator.v1.mittwald.de/replication-allowed: "true"
+        replicator.v1.mittwald.de/replication-allowed-namespaces: homepage
+      name: sonarr-4k-api-key
+      namespace: media-server
+    type: Opaque

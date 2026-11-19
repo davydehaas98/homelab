@@ -54,9 +54,32 @@ spec:
         - name: gpu
           resourceClaimTemplateName: {{ template "app.fullname" . }}-gpu
       {{- end }}
-      {{- with .Values.initContainers }}
+      {{- $mediaMounts := (.Values.media | default dict).mounts }}
+      {{- if or $mediaMounts .Values.initContainers }}
       initContainers:
+        {{- with $mediaMounts }}
+        # kubelet creates a missing subPath as root, so the owner of the media creates them first
+        - name: media-dirs
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          command:
+            - sh
+            - -c
+            - umask 002 && mkdir -p{{ range . }} /media/{{ .subPath }}{{ end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 911
+            runAsNonRoot: true
+            runAsUser: 911
+          volumeMounts:
+            - mountPath: /media
+              name: media
+        {{- end }}
+        {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       containers:
         - name: {{ template "app.name" . }}

@@ -72,6 +72,10 @@ oidcClients:
     slug: radarr
     namespace: media-server
     redirectURL: https://radarr.davydehaas.dev/oauth2/callback
+  - name: Radarr 4K
+    slug: radarr-4k
+    namespace: media-server
+    redirectURL: https://radarr-4k.davydehaas.dev/oauth2/callback
   - name: Policy Reporter
     slug: policy-reporter
     redirectURL: https://policy.davydehaas.dev/oauth2/callback
@@ -83,6 +87,10 @@ oidcClients:
     slug: sonarr
     namespace: media-server
     redirectURL: https://sonarr.davydehaas.dev/oauth2/callback
+  - name: Sonarr 4K
+    slug: sonarr-4k
+    namespace: media-server
+    redirectURL: https://sonarr-4k.davydehaas.dev/oauth2/callback
   - name: Tautulli
     slug: tautulli
     namespace: media-server
@@ -173,6 +181,9 @@ authentik:
       - prefix: radarr-
         secretRef:
           name: radarr-oidc-credentials
+      - prefix: radarr-4k-
+        secretRef:
+          name: radarr-4k-oidc-credentials
       - prefix: policy-reporter-
         secretRef:
           name: policy-reporter-oidc-credentials
@@ -182,6 +193,9 @@ authentik:
       - prefix: sonarr-
         secretRef:
           name: sonarr-oidc-credentials
+      - prefix: sonarr-4k-
+        secretRef:
+          name: sonarr-4k-oidc-credentials
       - prefix: tautulli-
         secretRef:
           name: tautulli-oidc-credentials
