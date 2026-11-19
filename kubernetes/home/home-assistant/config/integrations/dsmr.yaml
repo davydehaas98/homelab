@@ -53,31 +53,6 @@ template:
              and has_value('sensor.electricity_price_tariff_1') and has_value('sensor.electricity_price_tariff_2') }}
 
 utility_meter:
-  gasusage_this_hour:
-    unique_id: gasusage_this_hour
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: hourly
-  gasusage_today:
-    unique_id: gasusage_today
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: daily
-  gasusage_this_week:
-    unique_id: gasusage_this_week
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: weekly
-  gasusage_this_month:
-    unique_id: gasusage_this_month
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: monthly
-  gasusage_this_quarter:
-    unique_id: gasusage_this_quarter
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: quarterly
-  gasusage_this_year:
-    unique_id: gasusage_this_year
-    source: sensor.dsmr_consumption_gas_delivered
-    cycle: yearly
-
   hourly_energy_delivered_offpeak:
     unique_id: hourly_energy_delivered_offpeak
     source: sensor.dsmr_reading_electricity_delivered_1
