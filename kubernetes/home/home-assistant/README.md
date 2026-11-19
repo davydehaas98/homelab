@@ -9,7 +9,7 @@ here, see `config/integrations/ui.yaml`.
 | ------------------ | ------------------------------------------------------ | -------------------------------------------------------- |
 | Coming home        | Arriving home, from 1 hour before sunset until sunrise | Bedroom, Iris, kitchen and Go on, 50% warm; hallway 20%  |
 | Leaving home       | Leaving home                                           | All lights on the ground floor off                       |
-| Toilet occupied    | Motion in the toilet                                   | Toilet light on, 10% from 23:00 to 07:00, else 100%      |
+| Toilet occupied    | Motion in the toilet                                   | Toilet light on, 10% from 23:00 to 07:00, else 50%       |
 | Toilet free        | No motion for 15 minutes                               | Toilet light off                                         |
 | Toilet light level | Toilet light on or changed, as after the wall switch   | Back to the brightness of Toilet occupied                |
 

@@ -8,7 +8,7 @@ toilet:
         - action: light.turn_on
           metadata: {}
           data:
-            brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 100 }}"
+            brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 50 }}"
           target:
             device_id: 3171401fcd0c5fccfeb8da3c588b3d04
         - wait_for_trigger:

@@ -12,7 +12,7 @@
     - action: light.turn_on
       metadata: {}
       data:
-        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 100 }}"
+        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 50 }}"
       target:
         device_id: 3171401fcd0c5fccfeb8da3c588b3d04
   mode: single
@@ -55,12 +55,12 @@
       state: "on"
     - condition: template
       value_template: >-
-        {% set target = 10 if now().hour >= 23 or now().hour < 7 else 100 %}
+        {% set target = 10 if now().hour >= 23 or now().hour < 7 else 50 %}
         {{ ((state_attr('light.toilet_light', 'brightness') | int(0)) * 100 / 255 - target) | abs > 5 }}
   actions:
     - action: light.turn_on
       data:
-        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 100 }}"
+        brightness_pct: "{{ 10 if now().hour >= 23 or now().hour < 7 else 50 }}"
       target:
         entity_id: light.toilet_light
   mode: single
