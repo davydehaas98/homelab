@@ -1,7 +1,7 @@
 # All-in-one image that needs root to start its services and drops to 1000 itself
 image:
   repository: docker.io/dispatcharr/dispatcharr
-  tag: 0.33.0
+  tag: 0.34.1
 
 port: 9191
 
