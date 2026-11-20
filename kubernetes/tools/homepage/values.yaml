@@ -1,7 +1,7 @@
 # The services are listed in config/, as there is no Docker socket
 image:
   repository: ghcr.io/gethomepage/homepage
-  tag: v2.7.0
+  tag: v2.8.0
 
 port: 3000
 
