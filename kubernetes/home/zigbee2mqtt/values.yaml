@@ -86,3 +86,6 @@ zigbee2mqtt:
       pan_id: 22479
       ext_pan_id: [150, 163, 44, 38, 246, 255, 19, 29]
       network_key: "!secret network_key"
+      # Info logs every MQTT message
+      log_namespaced_levels:
+        "z2m:mqtt": "warning"
