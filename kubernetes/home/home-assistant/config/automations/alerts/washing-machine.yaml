@@ -1,32 +1,18 @@
-- id: '1767795795548'
+- id: "1767795795548"
   alias: Washing machine done
-  description: ''
+  description: ""
   triggers:
-    - type: power
-      device_id: 663337a96fda9f3f0eae7c980eff5407
-      entity_id: af4688462207bb5bcc85f8aa3599944b
-      domain: sensor
-      trigger: device
+    - trigger: numeric_state
+      entity_id: sensor.storage_plug_washing_machine_power
       below: 4
       for:
-        hours: 0
-        minutes: 0
         seconds: 10
   conditions:
-    - condition: and
-      conditions:
-        - condition: device
-          type: is_on
-          device_id: 663337a96fda9f3f0eae7c980eff5407
-          entity_id: adbd9d9f88a4e97306ec2c32b56d09ad
-          domain: switch
-          for:
-            hours: 0
-            minutes: 5
-            seconds: 0
+    # A restart of Zigbee2MQTT or Home Assistant is not the end of a wash
+    - condition: template
+      value_template: "{{ trigger.from_state.state not in ['unavailable', 'unknown'] }}"
   actions:
     - action: notify.mobile_app_davys_iphone_18_pro_max
-      metadata: {}
       data:
         message: Washer is done
   mode: single
