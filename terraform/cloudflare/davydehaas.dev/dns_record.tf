@@ -122,7 +122,7 @@ locals {
   }
 }
 
-# Not proxied: the UniFi gateway forwards to the Kubernetes gateway
+# Not proxied, as Cloudflare forbids streaming
 resource "cloudflare_dns_record" "kubernetes_app" {
   for_each = toset(concat(local.kubernetes_apps, local.kubernetes_aliases))
 
@@ -131,7 +131,7 @@ resource "cloudflare_dns_record" "kubernetes_app" {
   type    = "A"
   zone_id = var.zone_id
 
-  comment = "Port forward to the Kubernetes gateway"
+  comment = "Public Kubernetes gateway"
   content = var.ipv4_address
   proxied = false
 }
@@ -157,7 +157,7 @@ resource "cloudflare_dns_record" "wildcard" {
   type    = "A"
   zone_id = var.zone_id
 
-  comment = "Port forward to the Kubernetes gateway, for its 404 page"
+  comment = "Public Kubernetes gateway, for its 404 page"
   content = var.ipv4_address
   proxied = false
 }
