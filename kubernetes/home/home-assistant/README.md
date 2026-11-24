@@ -28,7 +28,8 @@ Push notifications to the phone.
 | Humidify             | Humidity below 30% for 2 hours                                                                                | Normal                     |
 | Humidify done        | Humidity above 30% for 30 minutes, after Humidify                                                             | Normal                     |
 | Green electricity    | CO₂ intensity of the grid below 250 g/kWh for 15 minutes, 08:00 to 21:00, once a day                          | Normal                     |
-| Washing machine done | Washer plug below 4 W for 10 seconds, with the plug on for at least 5 minutes                                 | Normal                     |
+| Washing machine done | Washer plug below 4 W for 10 seconds, not right after a restart                                               | Normal                     |
+| Zigbee updates       | At 04:00, after asking Zigbee2MQTT to check every Zigbee device for a firmware update                         | Normal                     |
 
 ## Scripts (`config/scripts`)
 

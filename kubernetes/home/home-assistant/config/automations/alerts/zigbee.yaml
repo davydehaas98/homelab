@@ -1,0 +1,34 @@
+# Zigbee2MQTT only checks a device when the device asks, which Hue lamps rarely do; sleeping devices miss the check
+- id: "1793700000007"
+  alias: Zigbee updates
+  description: ""
+  triggers:
+    - trigger: time
+      at: "04:00:00"
+  conditions: []
+  actions:
+    - repeat:
+        for_each: >-
+          {{ integration_entities('mqtt') | select('match', 'update\.') | map('device_attr', 'name') | list }}
+        sequence:
+          - action: mqtt.publish
+            data:
+              topic: zigbee2mqtt/bridge/request/device/ota_update/check
+              payload: '{"id": "{{ repeat.item }}"}'
+          # A check takes up to 20 seconds, and Zigbee2MQTT runs them one at a time
+          - delay:
+              seconds: 30
+    - variables:
+        devices: >-
+          {% set ns = namespace(names=[]) %}
+          {% for e in integration_entities('mqtt') | select('match', 'update\.') | select('is_state', 'on') %}
+            {% set ns.names = ns.names + [device_attr(e, 'name_by_user') or device_attr(e, 'name')] %}
+          {% endfor %}
+          {{ ns.names }}
+    - condition: template
+      value_template: "{{ devices | count > 0 }}"
+    - action: notify.mobile_app_davys_iphone_18_pro_max
+      data:
+        title: Zigbee updates
+        message: "Firmware update available for {{ devices | join(', ') }}"
+  mode: single
