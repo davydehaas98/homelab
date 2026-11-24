@@ -1,5 +1,5 @@
 ---
-name: ha-inspector
+name: hass-inspector
 description: Use for read-only questions about Home Assistant and its devices, such as history and statistics in the recorder, the dashboards and registries in .storage, logs, and what arrives over MQTT. Returns the conclusion with its numbers, not the raw output.
 tools: Bash, PowerShell, Read, Grep, Glob
 model: sonnet
