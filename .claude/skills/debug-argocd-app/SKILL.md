@@ -26,9 +26,12 @@ logs and route status, and changes nothing. The steps say what to make of it and
 4. **Sync fails on a missing CRD** (`no matches for kind`): the app depends on another app's CRDs
    (`sealed-secrets`, `envoy-gateway`, `prometheus-crd`). Failed first syncs are not retried. Check that the app
    owning the CRDs is Healthy, then ask the user to sync this one.
-5. **Perpetually OutOfSync**: the API server adds defaults. Look at `argocd app diff <app>` or the resource's diff in
-   the UI. Fix with `serverSideApply: true` (which adds `ServerSideDiff`) or `ignoreDifferences`, both in
-   the app's `argocd.yaml`.
+5. **Perpetually OutOfSync**: the API server adds defaults. Look at the resource's diff in the UI, or at
+   `argocd app diff <app> --core`, which needs a kubeconfig whose context namespace is `argocd` and otherwise fails
+   with `configmap "argocd-cm" not found`. Set it on a copy, as `~/.kube/config` is the host's:
+   `cp ~/.kube/config /tmp/kubeconfig && export KUBECONFIG=/tmp/kubeconfig && kubectl config set-context --current
+   --namespace=argocd`. Fix with `serverSideApply: true` (which adds `ServerSideDiff`) or `ignoreDifferences`, both
+   in the app's `argocd.yaml`.
 6. **SealedSecret not decrypting**: `kubectl -n <ns> get sealedsecret` and `describe` it, and
    `kubectl -n kube-system logs deploy/sealed-secrets-controller`. A seal is bound to its name and namespace, so a
    renamed Secret or a changed `namespace:` needs a re-seal (skill `seal-secret`). `no key could decrypt` means the

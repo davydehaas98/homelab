@@ -16,13 +16,27 @@ machine is recreated) and restart VS Code:
 When `podman` says the connection is refused, run `pwsh .devcontainer/podman-fix.ps1`: it restarts the machine, whose SSH
 port can stop listening while it shows as running.
 
-Without VS Code:
+## Desktop app
+
+Without VS Code, the container runs in the background with sshd on `127.0.0.1:2222`, for the Code tab's SSH sessions.
+It lets in the public key mounted as `authorized_keys`, which the SSH agent must hold, and keeps its host key and the
+logins of Claude Code and `gh` in volumes:
 
 ```shell
 podman build -t homelab-dev -f .devcontainer/Dockerfile .
-podman run --rm -it -v "$PWD":/workspace -v ~/.kube:/root/.kube -v ~/.talos:/root/.talos \
-  -v homelab-claude-config:/root/.claude -e GRAFANA_MCP_TOKEN -w /workspace localhost/homelab-dev sh
+podman run -d --name homelab-dev --hostname homelab --restart unless-stopped -p 127.0.0.1:2222:22 \
+  -v "$PWD:/workspace" -v "$HOME/.kube:/root/.kube" -v "$HOME/.talos:/root/.talos" \
+  -v "$HOME/.ssh/homelab-ssh.pub:/etc/ssh/authorized_keys:ro" -v homelab-dev-ssh:/etc/ssh/keys \
+  -v homelab-claude-config:/root/.claude -v homelab-gh-config:/root/.config/gh \
+  -v "$HOME/.claude/CLAUDE.md:/root/.claude/CLAUDE.md:ro" -e GRAFANA_MCP_TOKEN -w /workspace localhost/homelab-dev
 ```
+
+Add the host to `~/.ssh/config` (`HostName 127.0.0.1`, `Port 2222`, `User root`, the key as `IdentityFile`) and its
+alias as an SSH connection in the desktop app, with folder `/workspace`. The agent isn't forwarded, so commits made
+there are unsigned. A rebuilt image needs `podman rm -f homelab-dev` and the run again.
+
+The container also serves Remote Control as `homelab`, for the Claude app, once `claude` in `/workspace` has trusted
+the folder and `claude remote-control` has been enabled there by hand; its log is `/var/log/remote-control.log`.
 
 ## Cluster CLIs
 

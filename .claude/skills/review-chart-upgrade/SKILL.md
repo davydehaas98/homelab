@@ -12,7 +12,8 @@ Renovate automerges patch and digest updates of the charts and image tags; the r
    new app version): breaking changes, renamed or removed values, new required values, minimum Kubernetes version.
 2. **Check this repo's values** against them: every key the app's `values.yaml` sets under the dependency must still
    exist, with the same meaning. A renamed key is silently ignored.
-3. **Render the difference:** on the PR branch, `scripts/render-diff.sh -r origin/main <group>/<app>`. Look for:
+3. **Render the difference:** on the PR branch, in a clone outside the working tree,
+   `scripts/render-diff.sh -r origin/main <group>/<app>`. Look for:
    - removed or renamed resources (Argo CD prunes them; a renamed PVC or StatefulSet means new, empty storage);
    - changed selectors or StatefulSet volume templates, which Kubernetes refuses to change in place;
    - CRD changes, and whether the app needs `serverSideApply`; `prometheus-crd` must match the operator version;
