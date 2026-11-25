@@ -89,73 +89,31 @@ loki:
         memory: 20Mi
 
   monitoring:
+    namespace: grafana
     dashboards:
       enabled: true
-      namespace: grafana
       annotations:
         grafana_folder: Loki
     serviceMonitor:
       enabled: true
 
-  write:
-    replicas: 1
+  singleBinary:
+    # Wide queries over days need far more than its idle use
     resources:
       limits:
-        memory: 8Gi
+        memory: 4Gi
       requests:
-        cpu: 250m
-        memory: 2.5Gi
-    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
+        cpu: 100m
+        memory: 750Mi
+    # zfs-fast only exists on midgard-0 (kubernetes/storage/zfs-localpv)
     persistence:
       size: 5Gi
       storageClass: zfs-fast
-    tolerations: &storage-tolerations
+    tolerations:
       - key: davydehaas.dev/dedicated
         operator: Equal
         value: storage
         effect: NoSchedule
-    affinity: null
-    extraArgs:
-      - "-config.expand-env=true"
-    extraEnvFrom:
-      - secretRef:
-          name: loki-s3-credentials
-
-  read:
-    replicas: 1
-    # Wide queries over days need far more than its idle use
-    resources:
-      limits:
-        memory: 1Gi
-      requests:
-        cpu: 30m
-        memory: 350Mi
-    persistence:
-      size: 5Gi
-    affinity: null
-    extraArgs:
-      - "-config.expand-env=true"
-    extraEnvFrom:
-      - secretRef:
-          name: loki-s3-credentials
-
-  backend:
-    replicas: 1
-    resources:
-      limits:
-        memory: 250Mi
-      requests:
-        cpu: 30m
-        memory: 150Mi
-    # A ZFS volume on midgard-0 (kubernetes/storage/zfs-localpv), bound to the claim of the StatefulSet
-    persistence:
-      size: 5Gi
-      storageClass: zfs-fast
-      enableStatefulSetAutoDeletePVC: false
-    tolerations: *storage-tolerations
-    affinity: null
-    extraArgs:
-      - "-config.expand-env=true"
     extraEnvFrom:
       - secretRef:
           name: loki-s3-credentials
