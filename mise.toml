@@ -16,7 +16,7 @@ talosctl = "1.14.7"
 # Keep equal to the version in the terraform-cloudflare workflow
 terraform = "1.17.2"
 # For pipx
-uv = "0.13.8"
+uv = "0.13.10"
 yq = "4.54.3"
 # Its archive keeps the binary in usr/bin
 "github:turing-machines/tpi" = { version = "1.0.7", bin_path = "usr/bin" }
