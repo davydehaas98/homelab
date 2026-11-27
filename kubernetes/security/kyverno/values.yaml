@@ -9,15 +9,6 @@ kyverno:
     backgroundScan:
       # The defaults skip ReplicaSets, whose old revisions would fail long after a fix
       skipResourceFilters: false
-    reports:
-      chunkSize: 1000
-
-  cleanupJobs:
-    admissionReports:
-      enabled: true
-
-    clusterAdmissionReports:
-      enabled: true
 
   # The webhooks fail while the admission controller is down; two stay up in a drain
   admissionController:
@@ -112,9 +103,9 @@ kyverno-policies:
       - prometheus-node-exporter
       - zfs-localpv
 
-  # Images that start as root and drop to another user (linuxserver, Home Assistant, Dispatcharr, Nextcloud), Home
-  # Assistant on the host network, and Velero, whose node agent and per-volume backup pods run as root with host
-  # access. An entry replaces the defaults, so they are repeated.
+  # Images that start as root and drop to another user (linuxserver, Home Assistant, Dispatcharr, Nextcloud), and so
+  # keep their capabilities, Home Assistant on the host network, and Velero, whose node agent and per-volume backup pods
+  # run as root with host access. An entry replaces the defaults, so they are repeated.
   vpolExcludeByPolicy:
     disallow-host-path: &excludeVelero
       excludeNamespaces:
@@ -163,7 +154,7 @@ kyverno-policies:
         - plex
         - prometheus-node-exporter
         - zfs-localpv
-    require-run-as-nonroot:
+    require-run-as-nonroot: &excludeRootInit
       excludeNamespaces:
         - fluent-bit
         - intel-gpu-resource-driver
@@ -182,3 +173,4 @@ kyverno-policies:
               'docker.io/dispatcharr/dispatcharr:',
               'docker.io/library/nextcloud:'
             ].exists(p, c.image.startsWith(p)))
+    disallow-capabilities-strict: *excludeRootInit
