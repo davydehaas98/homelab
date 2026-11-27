@@ -1,7 +1,7 @@
 # A new disk starts the setup wizard on port 3000, which the probes do not cover
 image:
   repository: docker.io/adguard/adguardhome
-  tag: v0.107.80
+  tag: v1.0.0
 
 port: 80
 
