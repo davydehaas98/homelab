@@ -7,7 +7,6 @@ set -e
 # Usage: sh scripts/validate.sh [-t] [<group>/<app> ...]
 
 cd "$(dirname "$0")/.."
-. scripts/helm-deps.sh
 
 while getopts t flag;
 do
@@ -74,7 +73,7 @@ git ls-files -z '*.yaml' '*.yml' | xargs -0 yamllint
 
 for APP in "$@"; do
     echo "Validating ${APP}.."
-    if ! build_deps "kubernetes/${APP}" || ! helm lint "kubernetes/${APP}" ||
+    if ! helm dependency update "kubernetes/${APP}" > /dev/null || ! helm lint "kubernetes/${APP}" ||
         ! helm template "kubernetes/${APP}" --api-versions monitoring.coreos.com/v1 > "${RENDER}"; then
         FAILED=1
         continue
@@ -91,6 +90,7 @@ done
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
     for STACK in terraform/cloudflare/davydehaas.dev terraform/cloudflare/davydehaas.nl terraform/devopsarr terraform/unifi; do
+        echo "-- ${STACK}"
         LOCKED=""
         [ -f "${STACK}/.terraform.lock.hcl" ] && LOCKED=1
         terraform -chdir="${STACK}" init -backend=false > /dev/null
