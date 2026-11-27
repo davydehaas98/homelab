@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: 1
   source:
     repoURL: https://github.com/dotdc/grafana-dashboards-kubernetes
-    targetRevision: v3.0.9
+    targetRevision: v3.1.0
     path: ./
   destination:
     server: https://kubernetes.default.svc
