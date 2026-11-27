@@ -91,10 +91,6 @@ argo-cd:
           namespace: envoy-gateway
           sectionName: web-https
 
-    configEnabled: false
-
-    rbacConfigCreate: false
-
     resources:
       limits:
         memory: 300Mi

@@ -19,16 +19,16 @@ policy-reporter:
         cpu: 10m
         memory: 30Mi
 
-  kyvernoPlugin:
-    enabled: true
-    replicaCount: 1
+  plugin:
+    kyverno:
+      enabled: true
 
-    resources:
-      limits:
-        memory: 150Mi
-      requests:
-        cpu: 10m
-        memory: 40Mi
+      resources:
+        limits:
+          memory: 150Mi
+        requests:
+          cpu: 10m
+          memory: 40Mi
 
   # database:
   #   type: postgres
@@ -43,7 +43,3 @@ policy-reporter:
 
   monitoring:
     enabled: true
-
-  global:
-    plugins:
-      kyverno: true

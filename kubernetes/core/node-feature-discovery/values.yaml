@@ -1,6 +1,4 @@
 node-feature-discovery:
-  enableNodeFeatureApi: false
-
   master:
     # The chart defaults are for big clusters
     resources:
@@ -31,7 +29,3 @@ node-feature-discovery:
       requests:
         cpu: 30m
         memory: 60Mi
-
-  tls:
-    enable: true
-    certManager: true
