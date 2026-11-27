@@ -2,30 +2,19 @@
 #
 # Read-only triage of an Argo CD app: its Application, SealedSecrets, pods, events and routes.
 #
-# Usage: sh scripts/debug-app.sh -a <app>
+# Usage: sh scripts/debug-app.sh <app>
 
-while getopts a: flag;
-do
-    case ${flag} in
-        a) APP=${OPTARG} ;;
-        *) exit 1 ;;
-    esac
-done
-
-if [ -z "${APP}" ]; then
-    echo "Usage: sh scripts/debug-app.sh -a <app>" >&2
-    exit 1
-fi
+APP=$1
+[ -n "${APP}" ] || { grep '^# Usage' "$0" >&2; exit 1; }
 
 echo "== Application"
-if ! kubectl -n argocd get application "${APP}" -o json > /tmp/debug-app.json; then
+if ! APPLICATION=$(kubectl -n argocd get application "${APP}" -o json); then
     echo "Not deployed: it needs kubernetes/<group>/<app>/argocd.yaml with deploy: true"
     exit 1
 fi
-jq '{project: .spec.project, namespace: .spec.destination.namespace, sync: .status.sync.status, health: .status.health.status,
-     conditions: .status.conditions, operation: .status.operationState.message}' /tmp/debug-app.json
-NAMESPACE=$(jq -r '.spec.destination.namespace' /tmp/debug-app.json)
-rm -f /tmp/debug-app.json
+echo "${APPLICATION}" | jq '{project: .spec.project, namespace: .spec.destination.namespace, sync: .status.sync.status,
+    health: .status.health.status, conditions: .status.conditions, operation: .status.operationState.message}'
+NAMESPACE=$(echo "${APPLICATION}" | jq -r '.spec.destination.namespace')
 
 echo "== SealedSecrets in ${NAMESPACE}"
 kubectl -n "${NAMESPACE}" get sealedsecret -o json 2> /dev/null |
@@ -38,8 +27,7 @@ echo "== Warning events in ${NAMESPACE}"
 kubectl -n "${NAMESPACE}" get events --field-selector type=Warning --sort-by=.lastTimestamp 2>&1 | tail -n 15
 
 echo "== Previous logs of restarting pods"
-for POD in $(kubectl -n "${NAMESPACE}" get pods -o json |
-    jq -r '.items[] | select(any(.status.containerStatuses[]?; .restartCount > 0)) | .metadata.name'); do
+for POD in $(kubectl -n "${NAMESPACE}" get pods -o json | jq -r '.items[] | select(any(.status.containerStatuses[]?; .restartCount > 0)) | .metadata.name'); do
     echo "-- ${POD}"
     kubectl -n "${NAMESPACE}" logs "${POD}" --previous --tail=20 2>&1
 done

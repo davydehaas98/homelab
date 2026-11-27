@@ -38,6 +38,7 @@ else
         '{apiVersion: "v1", kind: "Secret", type: "Opaque", metadata: {name: $name, namespace: $namespace}}')
 fi
 
+KEY_COUNT=$(set -- ${KEYS}; echo $#)
 trap 'stty echo 2> /dev/null || true' EXIT INT
 for KEY in ${KEYS}; do
     if [ -t 0 ]; then
@@ -46,7 +47,7 @@ for KEY in ${KEYS}; do
         IFS= read -r VALUE
         stty echo
         printf '\n' >&2
-    elif [ "$(set -- ${KEYS}; echo $#)" -eq 1 ]; then
+    elif [ "${KEY_COUNT}" -eq 1 ]; then
         VALUE=$(cat)
     else
         # Without a trailing newline `read` fails, but still sets the value

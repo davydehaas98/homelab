@@ -9,7 +9,7 @@ Read-only first: `get`, `describe`, `logs`, `events`. Do not sync, delete, resta
 known and the user agrees. The fix goes in git, as `AGENTS.md` says; a merge to `main` is a deployment.
 
 The namespace is the app name unless `namespace:` is set in the app's `argocd.yaml`. Run the CLIs in the dev container.
-Start with `scripts/debug-app.sh -a <app>`, which prints the Application, SealedSecrets, pods, warning events, previous
+Start with `scripts/debug-app.sh <app>`, which prints the Application, SealedSecrets, pods, warning events, previous
 logs and route status, and changes nothing. The steps say what to make of it and where to dig further.
 
 1. **Is it deployed at all?** The app needs `kubernetes/<group>/<app>/argocd.yaml` with `deploy: true`, and its

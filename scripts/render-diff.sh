@@ -6,6 +6,7 @@ set -e
 # Usage: sh scripts/render-diff.sh [-r <ref>] <group>/<app> [<group>/<app> ...]   (ref: default HEAD)
 
 cd "$(dirname "$0")/.."
+. scripts/helm-deps.sh
 
 REF=HEAD
 while getopts r: flag;
@@ -27,10 +28,7 @@ tar cf - --exclude='*/charts/*' --exclude='*/Chart.lock' kubernetes | tar x -C "
 render() {
     dir="$1/kubernetes/$2"
     [ -f "${dir}/Chart.yaml" ] || { echo "# not in this version" ; return; }
-    for url in $(yq -N '.dependencies[].repository' "${dir}/Chart.yaml" | grep '^http' || true); do
-        helm repo add "$(echo "${url}" | md5sum | cut -c1-8)" "${url}" --force-update > /dev/null
-    done
-    helm dependency build "${dir}" > /dev/null
+    build_deps "${dir}"
     NAMESPACE=""
     if [ -f "${dir}/argocd.yaml" ]; then
         NAMESPACE=$(yq '.namespace // ""' "${dir}/argocd.yaml")

@@ -7,6 +7,7 @@ set -e
 # Usage: sh scripts/validate.sh [-t] [<group>/<app> ...]
 
 cd "$(dirname "$0")/.."
+. scripts/helm-deps.sh
 
 while getopts t flag;
 do
@@ -22,7 +23,7 @@ IMAGES=$(mktemp)
 trap 'rm -f "${RENDER}" "${IMAGES}"' EXIT
 
 # Prints each workload's image with the architectures it needs: amd64 with a volume (midgard-0), both for a
-# DaemonSet, arm64 for the rest (the RK1 nodes), unless a nodeSelector names one
+# DaemonSet, arm64 for the rest (the RK1 nodes), unless a nodeSelector names one or the Intel GPU (midgard-0)
 list_images() {
     yq eval -N '
         select(.kind | test("^(Deployment|StatefulSet|DaemonSet|Job|CronJob|Pod)$")) |
@@ -31,6 +32,7 @@ list_images() {
         (.spec.jobTemplate.spec.template.spec // .spec.template.spec // .spec) as $pod |
         (
             if $pod.nodeSelector."kubernetes.io/arch" then $pod.nodeSelector."kubernetes.io/arch"
+            elif $pod.nodeSelector."intel.feature.node.kubernetes.io/gpu" then "amd64"
             elif $kind == "DaemonSet" then "amd64,arm64"
             elif ($claims | length) > 0 or ([$pod.volumes[] | select(.persistentVolumeClaim)] | length) > 0 then "amd64"
             else "arm64"
@@ -72,9 +74,11 @@ git ls-files -z '*.yaml' '*.yml' | xargs -0 yamllint
 
 for APP in "$@"; do
     echo "Validating ${APP}.."
-    helm dependency update "kubernetes/${APP}" > /dev/null
-    helm lint "kubernetes/${APP}"
-    helm template "kubernetes/${APP}" --api-versions monitoring.coreos.com/v1 > "${RENDER}"
+    if ! build_deps "kubernetes/${APP}" || ! helm lint "kubernetes/${APP}" ||
+        ! helm template "kubernetes/${APP}" --api-versions monitoring.coreos.com/v1 > "${RENDER}"; then
+        FAILED=1
+        continue
+    fi
     if ! grep -q '^kind: Namespace$' "${RENDER}"; then
         echo "Warning: the render of ${APP} has no Namespace, which then has to come from another app"
     fi
@@ -87,14 +91,12 @@ done
 if [ -n "${TERRAFORM}" ]; then
     echo "Validating terraform.."
     for STACK in terraform/cloudflare/davydehaas.dev terraform/cloudflare/davydehaas.nl terraform/devopsarr terraform/unifi; do
-        (
-            cd "${STACK}"
-            [ -f .terraform.lock.hcl ] && LOCKED=1
-            terraform init -backend=false > /dev/null
-            terraform validate
-            terraform fmt -check
-            [ -n "${LOCKED}" ] || rm -f .terraform.lock.hcl
-        )
+        LOCKED=""
+        [ -f "${STACK}/.terraform.lock.hcl" ] && LOCKED=1
+        terraform -chdir="${STACK}" init -backend=false > /dev/null
+        terraform -chdir="${STACK}" validate
+        terraform -chdir="${STACK}" fmt -check
+        [ -n "${LOCKED}" ] || rm -f "${STACK}/.terraform.lock.hcl"
     done
 fi
 

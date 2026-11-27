@@ -158,9 +158,9 @@ resource "unifi_network" "guest" {
   network_isolation = false
 
   dhcp_server = {
-    enabled = true
-    start   = cidrhost(local.subnets.guest, 6)
-    stop    = cidrhost(local.subnets.guest, 254)
+    enabled           = true
+    start             = cidrhost(local.subnets.guest, 6)
+    stop              = cidrhost(local.subnets.guest, 254)
     leasetime         = "24h0m0s"
     conflict_checking = true
 
