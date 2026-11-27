@@ -23,11 +23,9 @@ grafana-mcp:
     - oncall
     - pyroscope
 
-  # The kubelet probes by pod IP; the bearer token guards the endpoint
   extraArgs:
     - -t
     - streamable-http
-    - --allowed-hosts=*
 
   # Its own port skips the host validation
   metrics:
@@ -36,19 +34,6 @@ grafana-mcp:
 
   serviceMonitor:
     enabled: true
-
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: mcp-http
-    periodSeconds: 10
-
-  livenessProbe:
-    httpGet:
-      path: /healthz
-      port: mcp-http
-    initialDelaySeconds: 15
-    periodSeconds: 20
 
   resources:
     limits:
