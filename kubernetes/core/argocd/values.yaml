@@ -34,7 +34,6 @@ argo-cd:
       policy.csv: |
         g, authentik Admins, role:admin
         g, homepage, role:readonly
-      scopes: "[groups]"
     params:
       server.insecure: true
 

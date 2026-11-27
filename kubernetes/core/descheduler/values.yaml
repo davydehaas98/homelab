@@ -20,7 +20,6 @@ descheduler:
     enabled: true
 
   # Only clean up and fix misplaced pods, no load-based rebalancing
-  deschedulerPolicyAPIVersion: descheduler/v1alpha2
   deschedulerPolicy:
     maxNoOfPodsToEvictPerNode: 2
     maxNoOfPodsToEvictPerNamespace: 2
